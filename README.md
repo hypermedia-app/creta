@@ -1,1 +1,1 @@
-# labyrinth
+# @hydrofoil/labyrinth
