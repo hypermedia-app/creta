@@ -58,5 +58,53 @@ describe('laybrinth/resource', () => {
       // then
       expect(status).to.eq(200)
     })
+
+    it('return 403 OK when operation is restricted and user does not have correct permissions', async () => {
+      // given
+      const app = express()
+      app.use(hydraBox({
+        setup(hydra) {
+          hydra.operation
+            .addOut(auth.required, true)
+            .addList(auth.permissions, 'admin')
+            .addList(auth.permissions, ['user', 'editor'])
+        },
+        user: {
+          id: 'john-doe',
+          permissions: ['user'],
+        },
+      }))
+      app.use(get)
+
+      // when
+      const { status } = await request(app).get('/')
+
+      // then
+      expect(status).to.eq(403)
+    })
+
+    it('return 200 OK when operation is restricted and user does have correct permissions', async () => {
+      // given
+      const app = express()
+      app.use(hydraBox({
+        setup(hydra) {
+          hydra.operation
+            .addOut(auth.required, true)
+            .addList(auth.permissions, 'admin')
+            .addList(auth.permissions, ['user', 'editor'])
+        },
+        user: {
+          id: 'john-doe',
+          permissions: ['admin'],
+        },
+      }))
+      app.use(get)
+
+      // when
+      const { status } = await request(app).get('/')
+
+      // then
+      expect(status).to.eq(200)
+    })
   })
 })

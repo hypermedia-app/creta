@@ -10,7 +10,7 @@ interface MiddlewareOptions {
   setup?: (hydra: HydraBox) => void
   user?: {
     id: string
-    permissions: []
+    permissions: string[]
   }
 }
 
