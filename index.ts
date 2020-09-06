@@ -1,6 +1,6 @@
-import { middleware } from 'hydra-box'
+import { middleware, ResourceLoader } from 'hydra-box'
 import cors from 'cors'
-import { Express } from 'express'
+import { RequestHandler, Router } from 'express'
 import debug, { Debugger } from 'debug'
 import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
@@ -17,7 +17,7 @@ export { SparqlQueryLoader } from './lib/loader'
 RdfResource.factory.addMixin(...Object.values(Hydra))
 
 interface MiddlewareParams {
-  loader: any
+  loader: ResourceLoader
   baseUri: string
   codePath: string
   apiPath: string
@@ -25,12 +25,14 @@ interface MiddlewareParams {
   errorMappers?: IErrorMapper[]
 }
 
-export async function hydraBox(app: Express, { loader, baseUri, codePath, apiPath, log = debug('app'), errorMappers = [] }: MiddlewareParams) {
-  app.use(logRequest(log))
-  app.use(cors({
+export async function hydraBox({ loader, baseUri, codePath, apiPath, log = debug('app'), errorMappers = [] }: MiddlewareParams): Promise<RequestHandler> {
+  const router = Router()
+
+  router.use(logRequest(log))
+  router.use(cors({
     exposedHeaders: ['link', 'location'],
   }))
-  app.use(middleware(
+  router.use(middleware(
     await createApi({ baseUri, codePath, apiPath, log }),
     {
       loader,
@@ -42,9 +44,11 @@ export async function hydraBox(app: Express, { loader, baseUri, codePath, apiPat
       },
     }))
 
-  app.use(function (req, res, next) {
+  router.use(function (req, res, next) {
     next(new NotFoundError())
   })
-  app.use(logRequestError(log))
-  app.use(httpProblemMiddleware(errorMappers))
+  router.use(logRequestError(log))
+  router.use(httpProblemMiddleware(errorMappers))
+
+  return router
 }

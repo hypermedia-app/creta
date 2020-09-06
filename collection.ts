@@ -7,6 +7,7 @@ import { hex, hydraBox, query } from './lib/namespace'
 import { IriTemplate, IriTemplateMixin } from '@rdfine/hydra'
 import { getMemberQuery } from './lib/query/collection'
 import { loadLinkedResources } from './lib/query/eagerLinks'
+import { protectedResource } from './resource'
 
 const pageSize = 12
 
@@ -21,7 +22,7 @@ function templateParamsForPage(query: AnyPointer, page: number) {
   return clone.deleteOut(hydra.pageIndex).addOut(hydra.pageIndex, page)
 }
 
-export const get = asyncMiddleware(async (req, res) => {
+export const get = protectedResource(asyncMiddleware(async (req, res) => {
   const dataset = $rdf.dataset([...req.hydra.resource.dataset])
   const collection = clownface({ dataset }).namedNode(req.hydra.resource.term)
 
@@ -77,5 +78,5 @@ export const get = asyncMiddleware(async (req, res) => {
   }
 
   res.setLink(req.hydra.resource.term.value, 'canonical')
-  res.dataset(dataset)
-})
+  return res.dataset(dataset)
+}))
