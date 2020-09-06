@@ -29,6 +29,7 @@
   ],
   "include": [
     "types.ts",
-    "types"
+    "types",
+    "test"
   ]
 }

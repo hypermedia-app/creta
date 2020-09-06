@@ -1,7 +1,8 @@
 declare module 'hydra-box' {
     import {Request, RequestHandler, Router} from 'express';
     import Api = require('hydra-box/Api');
-    import {DatasetCore, Term} from 'rdf-js';
+    import {DatasetCore, Term, NamedNode} from 'rdf-js';
+    import {GraphPointer} from 'clownface';
 
     interface Options {
         baseIriFromRequest?: boolean
@@ -29,6 +30,17 @@ declare module 'hydra-box' {
         interface ResourceLoader {
             forClassOperation (term: Term, req: Request): Promise<Array<Resource>>
             forPropertyOperation (term: Term, req: Request): Promise<Array<PropertyResource>>
+        }
+
+        interface HydraBox {
+          api: Api;
+          term: NamedNode;
+          resource: {
+            term: NamedNode;
+            dataset: DatasetCore;
+            types: Set<NamedNode>;
+          };
+          operation: GraphPointer
         }
     }
 

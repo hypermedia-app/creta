@@ -23,9 +23,9 @@ export function preprocessResource(basePath: string): RequestHandler {
     const resourcePointer = clownface(req.hydra.resource)
 
     const enrichmentPromises = clownface(req.hydra.api)
-        .node(resourcePointer.out(rdf.type).terms)
-        .out(query.preprocess)
-        .map(pointer => loaders.load<Enrichment>(pointer, { basePath }))
+      .node(resourcePointer.out(rdf.type).terms)
+      .out(query.preprocess)
+      .map(pointer => loaders.load<Enrichment>(pointer, { basePath }))
 
     const enrichment = await Promise.all(enrichmentPromises)
     await Promise.all(enrichment.map(enrich => enrich && enrich(req, resourcePointer)))
@@ -67,8 +67,8 @@ export class SparqlQueryLoader implements ResourceLoader {
   async forPropertyOperation(term: Term): Promise<PropertyResource[]> {
     log(`loading resource ${term.value} by object usage`)
     const bindings = await SELECT`?g ?link`
-        .WHERE`GRAPH ?g { ?g ?link ${term} }`
-        .execute(this.__client.query)
+      .WHERE`GRAPH ?g { ?g ?link ${term} }`
+      .execute(this.__client.query)
 
     const candidates = await Promise.all(bindings.map<Promise<PropertyResource | null>>(async result => {
       const resource = await this.load(result.g)

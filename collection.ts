@@ -12,7 +12,7 @@ const pageSize = 12
 
 function templateParamsForPage(query: AnyPointer, page: number) {
   const clone = clownface({ dataset: $rdf.dataset([...query.dataset]) })
-      .in().toArray()[0]
+    .in().toArray()[0]
 
   if (!clone) {
     return clownface({ dataset: $rdf.dataset() }).blankNode().addOut(hydra.pageIndex, page)
@@ -47,7 +47,7 @@ export const get = asyncMiddleware(async (req, res) => {
   await dataset.import(page)
 
   collection.namedNode(req.hydra.resource.term)
-      .addOut(hydra.member, clownface({ dataset }).has(rdf.type, collection.out(hydra.manages).has(hydra.property, rdf.type).out(hydra.object)))
+    .addOut(hydra.member, clownface({ dataset }).has(rdf.type, collection.out(hydra.manages).has(hydra.property, rdf.type).out(hydra.object)))
 
   dataset.addAll(await loadLinkedResources(collection.out(hydra.member), includeLinked, req.sparql))
 
@@ -60,20 +60,20 @@ export const get = asyncMiddleware(async (req, res) => {
     })
 
     collection
-        .addOut(hydra.view, view => {
-          const pageIndex = Number.parseInt(request.out(hydra.pageIndex).value || '1')
-          const totalPages = Math.floor(total / pageSize) + 1
+      .addOut(hydra.view, view => {
+        const pageIndex = Number.parseInt(request.out(hydra.pageIndex).value || '1')
+        const totalPages = Math.floor(total / pageSize) + 1
 
-          view.addOut(rdf.type, hydra.PartialCollectionView)
-          view.addOut(hydra.first, $rdf.namedNode(template!.expand(templateParamsForPage(request, 1))))
-          view.addOut(hydra.last, $rdf.namedNode(template!.expand(templateParamsForPage(request, totalPages))))
-          if (pageIndex > 1) {
-            view.addOut(hydra.previous, $rdf.namedNode(template!.expand(templateParamsForPage(request, pageIndex - 1))))
-          }
-          if (pageIndex < totalPages) {
-            view.addOut(hydra.next, $rdf.namedNode(template!.expand(templateParamsForPage(request, pageIndex + 1))))
-          }
-        })
+        view.addOut(rdf.type, hydra.PartialCollectionView)
+        view.addOut(hydra.first, $rdf.namedNode(template!.expand(templateParamsForPage(request, 1))))
+        view.addOut(hydra.last, $rdf.namedNode(template!.expand(templateParamsForPage(request, totalPages))))
+        if (pageIndex > 1) {
+          view.addOut(hydra.previous, $rdf.namedNode(template!.expand(templateParamsForPage(request, pageIndex - 1))))
+        }
+        if (pageIndex < totalPages) {
+          view.addOut(hydra.next, $rdf.namedNode(template!.expand(templateParamsForPage(request, pageIndex + 1))))
+        }
+      })
   }
 
   res.setLink(req.hydra.resource.term.value, 'canonical')
