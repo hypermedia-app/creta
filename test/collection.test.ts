@@ -20,10 +20,10 @@ describe('labyrinth/collection', () => {
       app.use(get)
 
       // when
-      const { status } = await request(app).get('/')
+      const response = request(app).get('/')
 
       // then
-      expect(status).to.eq(403)
+      await response.expect(403)
     })
 
     it('sets canonical link header', async () => {

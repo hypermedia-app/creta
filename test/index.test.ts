@@ -2,10 +2,11 @@ import { describe, it } from 'mocha'
 import path from 'path'
 import express from 'express'
 import request from 'supertest'
-import { expect } from 'chai'
+import $rdf from 'rdf-ext'
 import { hydraBox } from '../index'
 import { ex } from './support/namespace'
 import { loader } from './support/hydra-box'
+import TermSet from '@rdfjs/term-set'
 
 describe('labyrinth', () => {
   const baseUri = ex().value
@@ -23,11 +24,36 @@ describe('labyrinth', () => {
     }))
 
     // when
-    const { status, headers } = await request(app).get('/')
+    const response = request(app).get('/')
 
     // then
-    expect(status).to.eq(404)
-    expect(headers).to.have.property('content-type')
-    expect(headers['content-type']).to.include('application/problem+json')
+    await response
+      .expect(404)
+      .expect('content-type', /application\/problem\+json/)
+  })
+
+  it('returns 403 problem+json when handler returns UnauthorizedError', async () => {
+    // given
+    const app = express()
+    app.use(await hydraBox({
+      baseUri,
+      apiPath,
+      codePath,
+      loader: loader({
+        classResource: [{
+          dataset: $rdf.dataset(),
+          term: ex(),
+          types: new TermSet([ex.Protected]),
+        }],
+      }),
+    }))
+
+    // when
+    const response = request(app).get('/').set('host', 'example.com')
+
+    // then
+    await response
+      .expect(403)
+      .expect('content-type', /application\/problem\+json/)
   })
 })

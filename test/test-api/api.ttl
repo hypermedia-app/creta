@@ -1,3 +1,12 @@
+@base          <http://example.com/> .
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+@prefix auth:  <http://hypermedia.app/auth#> .
+@prefix code:  <https://code.described.at/> .
 
-<api> a hydra:ApiDocumentation .
+<api> a                    hydra:ApiDocumentation ;
+      hydra:supportedClass <Protected> .
+
+<Protected> a                        hydra:Class ;
+            hydra:supportedOperation [ auth:required true ;
+                                       hydra:method  "GET";
+                                       code:implementedBy "(req, res, next) => next(require('http-errors').Forbidden())"^^code:EcmaScript ] .
