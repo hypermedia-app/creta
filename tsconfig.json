@@ -16,9 +16,19 @@
     "strict": true,
     "strictNullChecks": true,
     "allowSyntheticDefaultImports": true,
+    "declaration": true,
     "typeRoots": [
       "node_modules/@types",
       "types"
     ]
-  }
+  },
+  "files": [
+    "index.ts",
+    "collection.ts",
+    "resource.ts"
+  ],
+  "include": [
+    "types.ts",
+    "types"
+  ]
 }
