@@ -4,7 +4,7 @@
   "description": "Build Hydra APIs on top of hydra-box",
   "scripts": {
     "lint": "eslint . --ext .ts --quiet --ignore-path .gitignore --ignore-path .eslintignore",
-    "test": "TS_NODE_TRANSPILE_ONLY=true c8 --all --reporter=lcov mocha test/**/*.test.ts",
+    "test": "c8 --all --reporter=lcov mocha test/**/*.test.ts",
     "build": "tsc"
   },
   "files": [
@@ -41,7 +41,12 @@
     "sparql-http-client": "^2.2.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/register": "^7.11.5",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/preset-typescript": "^7.10.4",
     "@rdfjs/express-handler": "^1",
+    "@rdfjs/formats-common": "^2.1.0",
     "@tpluscode/eslint-config": "^0.1.0",
     "@types/chai": "^4.2.12",
     "@types/clownface": "^1.0.0",
@@ -79,7 +84,6 @@
     "sinon": "^9.0.3",
     "standard": "^14.3.4",
     "supertest": "^4.0.2",
-    "ts-node": "^9.0.0",
     "typescript": "^4.0.2"
   },
   "mocha": {
@@ -87,7 +91,7 @@
       "./**/*.ts"
     ],
     "require": [
-      "ts-node/register"
+      "test/babel.js"
     ]
   },
   "husky": {

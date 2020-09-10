@@ -5,7 +5,7 @@ import $rdf from 'rdf-ext'
 import TermSet from '@rdfjs/term-set'
 import { auth, query } from './lib/namespace'
 import { loadLinkedResources } from './lib/query/eagerLinks'
-import guard = require('express-jwt-permissions')
+import guard from 'express-jwt-permissions'
 
 const permission = guard()
 
