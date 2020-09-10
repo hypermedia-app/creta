@@ -365,7 +365,7 @@
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.2.12.tgz#6160ae454cd89dae05adc3bb97997f488b608201"
   integrity sha512-aN5IAC8QNtSUdQzxu7lGBgYAOuU1tmRU4c9dIq5OKGf/SBVjXo+ffM2wEjudAWbgpOhy60nLoAGH1xm8fpCKFQ==
 
-"@types/clownface@^1.0.0":
+"@types/clownface@*", "@types/clownface@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/clownface/-/clownface-1.0.0.tgz#e73483c15477b7f1d8e238dcc3edc872516b93e1"
   integrity sha512-mSb1tpiRYzIDRl3bubv0uVDxk0cb5Q80wT1ns7GbQ4sZ8QRNnyb/K4PnDEo2bKlBDFB1zgTa3/UQtRP32b5v0g==
@@ -503,6 +503,22 @@
   integrity sha512-NBzHFHp2vHOJkPlSqzsOrkEsD9grKn+PdFjZieIw59pc0FlRG6WEQAjQZvHzFxJlYzC6ZDCFyTA1wBvUnnzUQw==
   dependencies:
     "@types/node" "*"
+
+"@types/rdf-loader-code@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@types/rdf-loader-code/-/rdf-loader-code-0.3.0.tgz#300b94dafe272d895c7017f86c44559bc3181ff4"
+  integrity sha512-yTezYvnyI0uObPcSb9rXGowsDJyhwMlPAe6mHfoYQU11+j6oO9nQmVQmS5toiIRN8wqCnYlkxgHmnHK05WTqtw==
+  dependencies:
+    "@types/rdf-js" "*"
+    "@types/rdf-loaders-registry" "*"
+
+"@types/rdf-loaders-registry@*", "@types/rdf-loaders-registry@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@types/rdf-loaders-registry/-/rdf-loaders-registry-0.2.0.tgz#3e8a8fb44502571a9b4f08eec6864eb17a752e1a"
+  integrity sha512-tuyNTAFAMYtGG/M06hV39IPnJTmTj6cHZSYHr3ltPeZqUj/C/nyUaKoR3TDWaFXftZYm/wsnr6rl3fpm+1keNA==
+  dependencies:
+    "@types/clownface" "*"
+    "@types/rdf-js" "*"
 
 "@types/rdfjs__express-handler@^1.1.1":
   version "1.1.1"

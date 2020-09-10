@@ -3,10 +3,10 @@ import path from 'path'
 import express from 'express'
 import request from 'supertest'
 import $rdf from 'rdf-ext'
+import TermSet from '@rdfjs/term-set'
 import { hydraBox } from '../index'
 import { ex } from './support/namespace'
 import { loader } from './support/hydra-box'
-import TermSet from '@rdfjs/term-set'
 
 describe('labyrinth', () => {
   const baseUri = ex().value
