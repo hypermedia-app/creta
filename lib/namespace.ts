@@ -1,6 +1,5 @@
 import namespace from '@rdfjs/namespace'
 
-export const hex = namespace('http://hydra-ex.rest/vocab/')
 export const hydraBox = namespace('http://hydra-box.org/schema/')
-export const query = namespace('http://query.described.at/')
+export const query = namespace('http://hypermedia.app/query#')
 export const auth = namespace('http://hypermedia.app/auth#')

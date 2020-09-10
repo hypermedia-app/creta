@@ -106,7 +106,21 @@ function createOrdering(api: GraphPointer, collection: GraphPointer, subject: Va
   }
 }
 
-export async function getMemberQuery(api: GraphPointer, collection: GraphPointer, query: AnyPointer, variables: IriTemplate | null, pageSize: number, basePath: string) {
+interface CollectionQueryParams {
+  api: GraphPointer
+  collection: GraphPointer
+  query: AnyPointer
+  variables: IriTemplate | null
+  pageSize: number
+  basePath: string
+}
+
+interface SparqlQueries {
+  members: Pick<ReturnType<typeof CONSTRUCT>, 'execute'>
+  totals: Pick<ReturnType<typeof SELECT>, 'execute'>
+}
+
+export async function getSparqlQuery({ api, basePath, collection, pageSize, query, variables } : CollectionQueryParams): Promise<SparqlQueries> {
   const subject = $rdf.variable('member')
   const managesBlockPatterns = collection.out(hydra.manages).toArray().reduce(createManagesBlockPatterns(subject), sparql``)
   let filterPatters: Array<string | SparqlTemplateResult> = []

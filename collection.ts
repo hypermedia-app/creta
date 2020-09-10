@@ -1,11 +1,13 @@
 import asyncMiddleware from 'middleware-async'
-import clownface, { AnyPointer } from 'clownface'
+import clownface, { AnyPointer, GraphPointer, MultiPointer } from 'clownface'
 import $rdf from 'rdf-ext'
 import { DatasetCore } from 'rdf-js'
+import { ResourceIdentifier } from '@tpluscode/rdfine'
+import { Request } from 'express'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
-import { hex, hydraBox, query } from './lib/namespace'
 import { IriTemplate, IriTemplateMixin } from '@rdfine/hydra'
-import { getMemberQuery } from './lib/query/collection'
+import { hydraBox, query } from './lib/namespace'
+import { getSparqlQuery } from './lib/query/collection'
 import { loadLinkedResources } from './lib/query/eagerLinks'
 import { protectedResource } from './resource'
 
@@ -19,7 +21,51 @@ function templateParamsForPage(query: AnyPointer, page: number) {
     return clownface({ dataset: $rdf.dataset() }).blankNode().addOut(hydra.pageIndex, page)
   }
 
+  if (page === 1) {
+    return clone.deleteOut(hydra.pageIndex)
+  }
+
   return clone.deleteOut(hydra.pageIndex).addOut(hydra.pageIndex, page)
+}
+
+function getTemplate(req: Request): IriTemplate | null {
+  const templateVariables = req.hydra.operation.out(hydraBox.variables) as MultiPointer<ResourceIdentifier>
+  if (templateVariables.term) {
+    return new IriTemplateMixin.Class(templateVariables.toArray()[0])
+  }
+
+  return null
+}
+
+function addTemplateMappings(collection: GraphPointer, template: IriTemplate, request: AnyPointer): void {
+  collection.addOut(query.templateMappings, currMappings => {
+    template.mapping.forEach(mapping => {
+      const property = mapping.property.id
+      currMappings.addOut(property, request.out(property))
+    })
+  })
+}
+
+function addCollectionViews(collection: GraphPointer, total: number, template: IriTemplate, request: AnyPointer): void {
+  if (!template.mapping.some(m => m.property.equals(hydra.pageIndex))) {
+    return
+  }
+
+  collection
+    .addOut(hydra.view, view => {
+      const pageIndex = Number.parseInt(request.out(hydra.pageIndex).value || '1')
+      const totalPages = Math.floor(total / pageSize) + 1
+
+      view.addOut(rdf.type, hydra.PartialCollectionView)
+      view.addOut(hydra.first, $rdf.namedNode(template.expand(templateParamsForPage(request, 1))))
+      view.addOut(hydra.last, $rdf.namedNode(template.expand(templateParamsForPage(request, totalPages))))
+      if (pageIndex > 1) {
+        view.addOut(hydra.previous, $rdf.namedNode(template.expand(templateParamsForPage(request, pageIndex - 1))))
+      }
+      if (pageIndex < totalPages) {
+        view.addOut(hydra.next, $rdf.namedNode(template.expand(templateParamsForPage(request, pageIndex + 1))))
+      }
+    })
 }
 
 export const get = protectedResource(asyncMiddleware(async (req, res) => {
@@ -30,22 +76,28 @@ export const get = protectedResource(asyncMiddleware(async (req, res) => {
   if (req.dataset) {
     request = clownface({ dataset: await req.dataset() })
   }
-  const templateVariables = req.hydra.operation.out(hydraBox.variables)
+
   const includeLinked = req.hydra.operation.out(query.include)
 
-  let template: IriTemplate | null = null
-  if (templateVariables.term) {
-    template = new IriTemplateMixin.Class(templateVariables.toArray()[0] as any)
-  }
-  const pageQuery = await getMemberQuery(clownface(req.hydra.api), collection, request, template, pageSize, req.hydra.api.codePath)
+  const template = getTemplate(req)
+
+  const pageQuery = await getSparqlQuery({
+    api: clownface(req.hydra.api),
+    collection,
+    query: request,
+    variables: template,
+    pageSize,
+    basePath: req.hydra.api.codePath,
+  })
 
   const page = await pageQuery.members.execute(req.sparql.query)
   let total = 0
-  for await (const result of await pageQuery.totals.execute(req.sparql.query)) {
+  const totals = pageQuery.totals.execute(req.sparql.query)
+  for await (const result of await totals) {
     total = Number.parseInt(result.count.value)
     collection.addOut(hydra.totalItems, total)
   }
-  await dataset.import(page)
+  await collection.dataset.import(page)
 
   collection.namedNode(req.hydra.resource.term)
     .addOut(hydra.member, clownface({ dataset }).has(rdf.type, collection.out(hydra.manages).has(hydra.property, rdf.type).out(hydra.object)))
@@ -53,28 +105,8 @@ export const get = protectedResource(asyncMiddleware(async (req, res) => {
   dataset.addAll(await loadLinkedResources(collection.out(hydra.member), includeLinked, req.sparql))
 
   if (template) {
-    collection.addOut(hex.currentMappings, currMappings => {
-      template!.mapping.forEach(mapping => {
-        const property = mapping.property.id
-        currMappings.addOut(property, request.out(property))
-      })
-    })
-
-    collection
-      .addOut(hydra.view, view => {
-        const pageIndex = Number.parseInt(request.out(hydra.pageIndex).value || '1')
-        const totalPages = Math.floor(total / pageSize) + 1
-
-        view.addOut(rdf.type, hydra.PartialCollectionView)
-        view.addOut(hydra.first, $rdf.namedNode(template!.expand(templateParamsForPage(request, 1))))
-        view.addOut(hydra.last, $rdf.namedNode(template!.expand(templateParamsForPage(request, totalPages))))
-        if (pageIndex > 1) {
-          view.addOut(hydra.previous, $rdf.namedNode(template!.expand(templateParamsForPage(request, pageIndex - 1))))
-        }
-        if (pageIndex < totalPages) {
-          view.addOut(hydra.next, $rdf.namedNode(template!.expand(templateParamsForPage(request, pageIndex + 1))))
-        }
-      })
+    addTemplateMappings(collection, template, request)
+    addCollectionViews(collection, total, template, request)
   }
 
   res.setLink(req.hydra.resource.term.value, 'canonical')

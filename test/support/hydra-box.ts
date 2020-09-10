@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express'
 import { HydraBox, PropertyResource, Resource, ResourceLoader } from 'hydra-box'
-import cf from 'clownface'
+import cf, { AnyPointer } from 'clownface'
 import $rdf from 'rdf-ext'
 import TermSet from '@rdfjs/term-set'
 import rdfHandler from '@rdfjs/express-handler'
@@ -15,9 +15,10 @@ interface MiddlewareOptions {
     id: string
     permissions: string[]
   }
+  query?: AnyPointer
 }
 
-export function hydraBox({ setup, user }: MiddlewareOptions = {}): RequestHandler {
+export function hydraBox({ setup, user, query }: MiddlewareOptions = {}): RequestHandler {
   const hydra: HydraBox = {
     operation: cf({ dataset: $rdf.dataset() }).blankNode(),
     term: $rdf.namedNode('request'),
@@ -55,6 +56,9 @@ export function hydraBox({ setup, user }: MiddlewareOptions = {}): RequestHandle
         select: sinon.stub().resolves([]),
         update: sinon.stub(),
       },
+    }
+    if (query) {
+      req.dataset = async () => query.dataset
     }
     return next()
   }
