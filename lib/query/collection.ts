@@ -146,7 +146,7 @@ export async function getSparqlQuery({ api, basePath, collection, pageSize, quer
   }
 
   return {
-    members: CONSTRUCT`?s ?p ?o. ?is ?io ?ip`.WHERE`
+    members: CONSTRUCT`?s ?p ?o`.WHERE`
         {
             ${subselect}
         }
