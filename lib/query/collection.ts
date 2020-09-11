@@ -1,7 +1,7 @@
 import { CONSTRUCT, SELECT } from '@tpluscode/sparql-builder'
 import { hydra, ldp, rdf } from '@tpluscode/rdf-ns-builders'
-import * as $rdf from '@rdfjs/data-model'
-import { AnyPointer, GraphPointer } from 'clownface'
+import $rdf from 'rdf-ext'
+import cf, { AnyPointer, GraphPointer } from 'clownface'
 import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
 import { IriTemplate, IriTemplateMapping } from '@rdfine/hydra'
 import { Term, Variable } from 'rdf-js'
@@ -109,18 +109,18 @@ function createOrdering(api: GraphPointer, collection: GraphPointer, subject: Va
 interface CollectionQueryParams {
   api: GraphPointer
   collection: GraphPointer
-  query: AnyPointer
+  query?: AnyPointer
   variables: IriTemplate | null
   pageSize: number
   basePath: string
 }
 
 interface SparqlQueries {
-  members: Pick<ReturnType<typeof CONSTRUCT>, 'execute'>
-  totals: Pick<ReturnType<typeof SELECT>, 'execute'>
+  members: ReturnType<typeof CONSTRUCT>
+  totals: ReturnType<typeof SELECT>
 }
 
-export async function getSparqlQuery({ api, basePath, collection, pageSize, query, variables } : CollectionQueryParams): Promise<SparqlQueries> {
+export async function getSparqlQuery({ api, basePath, collection, pageSize, query = cf({ dataset: $rdf.dataset() }), variables } : CollectionQueryParams): Promise<SparqlQueries> {
   const subject = $rdf.variable('member')
   const managesBlockPatterns = collection.out(hydra.manages).toArray().reduce(createManagesBlockPatterns(subject), sparql``)
   let filterPatters: Array<string | SparqlTemplateResult> = []

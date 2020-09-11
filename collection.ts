@@ -1,7 +1,6 @@
 import asyncMiddleware from 'middleware-async'
 import clownface, { AnyPointer, GraphPointer, MultiPointer } from 'clownface'
 import $rdf from 'rdf-ext'
-import { DatasetCore } from 'rdf-js'
 import { ResourceIdentifier } from '@tpluscode/rdfine'
 import { Request } from 'express'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
@@ -12,6 +11,7 @@ import { loadLinkedResources } from './lib/query/eagerLinks'
 import { protectedResource } from './resource'
 
 const pageSize = 12
+const emptyDataset = clownface({ dataset: $rdf.dataset() })
 
 function templateParamsForPage(query: AnyPointer, page: number) {
   const clone = clownface({ dataset: $rdf.dataset([...query.dataset]) })
@@ -37,7 +37,7 @@ function getTemplate(req: Request): IriTemplate | null {
   return null
 }
 
-function addTemplateMappings(collection: GraphPointer, template: IriTemplate, request: AnyPointer): void {
+function addTemplateMappings(collection: GraphPointer, template: IriTemplate, request: AnyPointer = emptyDataset): void {
   collection.addOut(query.templateMappings, currMappings => {
     template.mapping.forEach(mapping => {
       const property = mapping.property.id
@@ -46,7 +46,7 @@ function addTemplateMappings(collection: GraphPointer, template: IriTemplate, re
   })
 }
 
-function addCollectionViews(collection: GraphPointer, total: number, template: IriTemplate, request: AnyPointer): void {
+function addCollectionViews(collection: GraphPointer, total: number, template: IriTemplate, request: AnyPointer = emptyDataset): void {
   if (!template.mapping.some(m => m.property.equals(hydra.pageIndex))) {
     return
   }
@@ -72,7 +72,7 @@ export const get = protectedResource(asyncMiddleware(async (req, res) => {
   const dataset = $rdf.dataset([...req.hydra.resource.dataset])
   const collection = clownface({ dataset }).namedNode(req.hydra.resource.term)
 
-  let request = clownface<DatasetCore>({ dataset: $rdf.dataset() })
+  let request: AnyPointer | undefined
   if (req.dataset) {
     request = clownface({ dataset: await req.dataset() })
   }
