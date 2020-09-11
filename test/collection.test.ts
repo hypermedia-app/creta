@@ -31,7 +31,7 @@ describe('labyrinth/collection', () => {
       totals: {
         execute: sinon.stub().resolves([]),
       },
-    })
+    } as any)
   })
 
   afterEach(() => {
@@ -171,7 +171,7 @@ describe('labyrinth/collection', () => {
             count: { value: 1000 },
           }]),
         },
-      })
+      } as any)
       app.use(get)
 
       // when

@@ -2,16 +2,16 @@ import { ErrorMapper } from 'http-problem-details-mapper'
 import { ProblemDocument } from 'http-problem-details'
 import error from 'http-errors'
 
-export class UnauthorizedErrorMapper extends ErrorMapper {
+export class ForbiddenErrorMapper extends ErrorMapper {
   public constructor() {
-    super(error.Unauthorized)
+    super(error.Forbidden)
   }
 
   public mapError(error: Error): ProblemDocument {
     return new ProblemDocument({
-      title: 'Login required',
+      title: 'Access denied',
       detail: error.message,
-      status: 401,
+      status: 403,
     })
   }
 }
