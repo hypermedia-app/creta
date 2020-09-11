@@ -39,7 +39,7 @@ describe('labyrinth/lib/query/collection', () => {
           api: cf({ dataset: $rdf.dataset() }).blankNode(),
           collection: cf({ dataset: $rdf.dataset() })
             .blankNode()
-            .addOut(hydra.manages, null as any, manages => {
+            .addOut(hydra.manages, manages => {
               manages.addOut(hydra.property, rdf.type)
               manages.addOut(hydra.object, schema.Person)
             }),
@@ -62,11 +62,11 @@ describe('labyrinth/lib/query/collection', () => {
           api: cf({ dataset: $rdf.dataset() }).blankNode(),
           collection: cf({ dataset: $rdf.dataset() })
             .blankNode()
-            .addOut(hydra.manages, null as any, manages => {
+            .addOut(hydra.manages, manages => {
               manages.addOut(hydra.property, rdf.type)
               manages.addOut(hydra.object, schema.Person)
             })
-            .addOut(hydra.manages, null as any, manages => {
+            .addOut(hydra.manages, manages => {
               manages.addOut(hydra.property, ex.foo)
             }),
           pageSize: 10,
@@ -88,7 +88,7 @@ describe('labyrinth/lib/query/collection', () => {
           api: cf({ dataset: $rdf.dataset() }).blankNode(),
           collection: cf({ dataset: $rdf.dataset() })
             .blankNode()
-            .addOut(hydra.manages, null as any, manages => {
+            .addOut(hydra.manages, manages => {
               manages.addOut(hydra.subject, ex.JohnDoe)
               manages.addOut(hydra.object, ex.JaneDoe)
             }),
@@ -111,7 +111,7 @@ describe('labyrinth/lib/query/collection', () => {
           api: cf({ dataset: $rdf.dataset() }).blankNode(),
           collection: cf({ dataset: $rdf.dataset() })
             .blankNode()
-            .addOut(hydra.manages, null as any, manages => {
+            .addOut(hydra.manages, manages => {
               manages.addOut(hydra.property, schema.knows)
               manages.addOut(hydra.subject, ex.JohnDoe)
             }),

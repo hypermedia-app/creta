@@ -7,6 +7,7 @@ import { IriTemplate, IriTemplateMapping } from '@rdfine/hydra'
 import { Term, Variable } from 'rdf-js'
 import { loaders } from '../rdfLoaders'
 import { query } from '../namespace'
+import { log, warn } from '../logger'
 
 interface CreatePattern {
   (options: { subject: Variable; predicate: Term; object: AnyPointer }): string | SparqlTemplateResult
@@ -17,6 +18,7 @@ function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPoin
     const property = mapping.property
 
     if (hydra.pageIndex.equals(property.id)) {
+      log('Skipping hydra:pageIndex property from query filters')
       return ''
     }
 
@@ -31,7 +33,10 @@ function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPoin
     }
 
     const createPattern = await loaders.load<CreatePattern>(queryFilters.toArray()[0], { basePath })
-    if (!createPattern) return ''
+    if (!createPattern) {
+      warn('Failed to load pattern function')
+      return ''
+    }
 
     return createPattern({
       subject,

@@ -1,17 +1,16 @@
 import * as hb from 'hydra-box'
 import type Api from 'hydra-box/Api'
 import walk from '@fcostarodrigo/walk'
-import { Debugger } from 'debug'
+import { log } from './logger'
 
 interface ApiInit {
   baseUri: string
   codePath: string
   defaultBase?: string
   apiPath: string
-  log?: Debugger
 }
 
-export async function createApi({ apiPath, baseUri, codePath, defaultBase = 'urn:hydra-box:api', log }: ApiInit): Promise<Api> {
+export async function createApi({ apiPath, baseUri, codePath, defaultBase = 'urn:hydra-box:api' }: ApiInit): Promise<Api> {
   const options: Api.Options = {
     path: '/api',
     codePath,
@@ -23,7 +22,7 @@ export async function createApi({ apiPath, baseUri, codePath, defaultBase = 'urn
       continue
     }
 
-    log && log(`Loading api from file ${file}`)
+    log(`Loading api from file ${file}`)
     if (api) {
       api = await api.fromFile(file)
     } else {

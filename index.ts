@@ -1,7 +1,6 @@
 import { middleware, ResourceLoader } from 'hydra-box'
 import cors from 'cors'
 import { RequestHandler, Router } from 'express'
-import debug, { Debugger } from 'debug'
 import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
 import { createApi } from './lib'
@@ -21,19 +20,18 @@ interface MiddlewareParams {
   baseUri: string
   codePath: string
   apiPath: string
-  log?: Debugger
   errorMappers?: IErrorMapper[]
 }
 
-export async function hydraBox({ loader, baseUri, codePath, apiPath, log = debug('app'), errorMappers = [] }: MiddlewareParams): Promise<RequestHandler> {
+export async function hydraBox({ loader, baseUri, codePath, apiPath, errorMappers = [] }: MiddlewareParams): Promise<RequestHandler> {
   const router = Router()
 
-  router.use(logRequest(log))
+  router.use(logRequest)
   router.use(cors({
     exposedHeaders: ['link', 'location'],
   }))
   router.use(middleware(
-    await createApi({ baseUri, codePath, apiPath, log }),
+    await createApi({ baseUri, codePath, apiPath }),
     {
       loader,
       middleware: {
@@ -47,7 +45,7 @@ export async function hydraBox({ loader, baseUri, codePath, apiPath, log = debug
   router.use(function (req, res, next) {
     next(new NotFoundError())
   })
-  router.use(logRequestError(log))
+  router.use(logRequestError)
   router.use(httpProblemMiddleware(errorMappers))
 
   return router
