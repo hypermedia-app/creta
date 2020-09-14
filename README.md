@@ -19,14 +19,10 @@ import express from 'express'
 import * as path from 'path'
 import { hydraBox, SparqlQueryLoader } from '@hydrofoil/labyrinth'
 
-// a SPARQL Query endpoint URL. This would be Fuseki's default
-const endpointUrl = 'http://localhost:3030/query'
 // base path to load JavaScript code referenced in Api Documentation
 const codePath = path.join(__dirname, 'lib')
 // path to load the Api Documentation from Turtle files
 const apiPath = path.join(__dirname, 'hydra')
-// resource loader which retrieves RDF from the triple store
-const loader = new SparqlQueryLoader({ endpointUrl })
 // base resource namespace
 const baseUri = 'http://example.com/'
 
@@ -34,10 +30,17 @@ async function main() {
   const app = express()
     
   app.use(await hydraBox({
-    loader,
     codePath,
     apiPath,
     baseUri,
+    // SPARQL endpoint
+    sparql: {
+      endpointUrl, // Query
+      updateUrl,   // Update 
+      storeUrl,    // Graph Protocol,
+      user,        // (optional) endpoint user name
+      password,    // (optiona) endpoint password
+    }
   }))
   
   app.listen(8080)

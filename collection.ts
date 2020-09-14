@@ -90,9 +90,9 @@ export const get = protectedResource(asyncMiddleware(async (req, res) => {
     basePath: req.hydra.api.codePath,
   })
 
-  const page = await pageQuery.members.execute(req.sparql.query)
+  const page = await pageQuery.members.execute(req.app.locals.sparql.query)
   let total = 0
-  const totals = pageQuery.totals.execute(req.sparql.query)
+  const totals = pageQuery.totals.execute(req.app.locals.sparql.query)
   for await (const result of await totals) {
     total = Number.parseInt(result.count.value)
     collection.addOut(hydra.totalItems, total)
@@ -102,7 +102,7 @@ export const get = protectedResource(asyncMiddleware(async (req, res) => {
   collection.namedNode(req.hydra.resource.term)
     .addOut(hydra.member, clownface({ dataset }).has(rdf.type, collection.out(hydra.manages).has(hydra.property, rdf.type).out(hydra.object)))
 
-  dataset.addAll(await loadLinkedResources(collection.out(hydra.member), includeLinked, req.sparql))
+  dataset.addAll(await loadLinkedResources(collection.out(hydra.member), includeLinked, req.app.locals.sparql))
 
   if (template) {
     addTemplateMappings(collection, template, request)

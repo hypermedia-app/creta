@@ -55,5 +55,5 @@ export const get = protectedResource(asyncMiddleware(async (req, res) => {
   }
 
   const pointer = clownface({ dataset, term: req.hydra.resource.term })
-  return res.dataset(dataset.merge(await loadLinkedResources(pointer, types.out(query.include), req.sparql)))
+  return res.dataset(dataset.merge(await loadLinkedResources(pointer, types.out(query.include), req.app.locals.sparql)))
 }))
