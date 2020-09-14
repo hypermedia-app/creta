@@ -13,8 +13,12 @@ const log = debug('hydra:store')
 export class SparqlQueryLoader implements ResourceLoader {
   private readonly __client: ParsingClient
 
-  public constructor({ client }: { client: ParsingClient }) {
-    this.__client = client
+  public constructor({ endpointUrl, password, user }: { endpointUrl: string; user?: string; password?: string }) {
+    this.__client = new ParsingClient({
+      endpointUrl,
+      password,
+      user,
+    })
   }
 
   async load(term: Term): Promise<Resource | null> {
