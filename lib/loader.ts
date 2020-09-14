@@ -1,38 +1,14 @@
 import { Term } from 'rdf-js'
 import $rdf from 'rdf-ext'
-import { Request, RequestHandler } from 'express'
-import asyncMiddleware from 'middleware-async'
 import { PropertyResource, Resource, ResourceLoader } from 'hydra-box'
 import { CONSTRUCT, SELECT } from '@tpluscode/sparql-builder'
 import debug from 'debug'
 import ParsingClient from 'sparql-http-client/ParsingClient'
-import clownface, { GraphPointer } from 'clownface'
+import clownface from 'clownface'
 import TermSet from '@rdfjs/term-set'
 import { rdf } from '@tpluscode/rdf-ns-builders'
-import { query } from './namespace'
-import { loaders } from './rdfLoaders'
 
 const log = debug('hydra:store')
-
-interface Enrichment {
-  (req: Request, pointer: GraphPointer): Promise<void>
-}
-
-export function preprocessResource(basePath: string): RequestHandler {
-  return asyncMiddleware(async (req, res, next) => {
-    const resourcePointer = clownface(req.hydra.resource)
-
-    const enrichmentPromises = clownface(req.hydra.api)
-      .node(resourcePointer.out(rdf.type).terms)
-      .out(query.preprocess)
-      .map(pointer => loaders.load<Enrichment>(pointer, { basePath }))
-
-    const enrichment = await Promise.all(enrichmentPromises)
-    await Promise.all(enrichment.map(enrich => enrich && enrich(req, resourcePointer)))
-
-    next()
-  })
-}
 
 export class SparqlQueryLoader implements ResourceLoader {
   private readonly __client: ParsingClient

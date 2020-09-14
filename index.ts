@@ -4,12 +4,11 @@ import { RequestHandler, Router } from 'express'
 import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
 import { createApi } from './lib'
-import { preprocessResource } from './lib/loader'
 import { NotFoundError } from './lib/error'
 import { logRequest, logRequestError } from './lib/logger'
 import { httpProblemMiddleware } from './lib/problemDetails'
 import { IErrorMapper } from 'http-problem-details-mapper'
-import { removeHydraTypes } from './lib/middleware'
+import { removeHydraTypes, preprocessResource } from './lib/middleware'
 
 export { SparqlQueryLoader } from './lib/loader'
 
