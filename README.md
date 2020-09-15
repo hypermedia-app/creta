@@ -17,7 +17,7 @@ Labyrinth exports an async factory function which creates an express handler.
 ```js
 import express from 'express'
 import * as path from 'path'
-import { hydraBox, SparqlQueryLoader } from '@hydrofoil/labyrinth'
+import { hydraBox } from '@hydrofoil/labyrinth'
 
 // base path to load JavaScript code referenced in Api Documentation
 const codePath = path.join(__dirname, 'lib')
