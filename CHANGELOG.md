@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.1.4
+
+### Patch Changes
+
+- 80f2183: Fix usages of app.sparql
+
 ## 0.1.2
 
 ### Patch Changes
