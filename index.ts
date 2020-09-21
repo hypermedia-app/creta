@@ -9,6 +9,7 @@ import { NotFoundError } from './lib/error'
 import { logRequest, logRequestError } from './lib/logger'
 import { httpProblemMiddleware } from './lib/problemDetails'
 import { IErrorMapper } from 'http-problem-details-mapper'
+import { NamedNode } from 'rdf-js'
 import { removeHydraTypes, preprocessResource } from './lib/middleware'
 import { SparqlQueryLoader } from './lib/loader'
 
@@ -16,12 +17,17 @@ export { SparqlQueryLoader } from './lib/loader'
 
 RdfResource.factory.addMixin(...Object.values(Hydra))
 
+export interface User {
+  id?: NamedNode
+}
+
 declare module 'express-serve-static-core' {
-  interface Locals {
+  interface Application {
     sparql?: StreamClient
   }
 
   export interface Request {
+    user?: User
     hydra: HydraBox
   }
 }
@@ -43,7 +49,7 @@ interface MiddlewareParams {
 
 export async function hydraBox(app: Express, { loader, baseUri, codePath, apiPath, errorMappers = [], sparql }: MiddlewareParams): Promise<void> {
   if (sparql) {
-    app.locals.sparql = new StreamClient(sparql)
+    app.sparql = new StreamClient(sparql)
   }
 
   app.use(logRequest)

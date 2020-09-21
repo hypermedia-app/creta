@@ -8,11 +8,12 @@ import sinon from 'sinon'
 import setLink from 'set-link'
 import StreamStore from 'sparql-http-client/StreamStore'
 import Endpoint from 'sparql-http-client/Endpoint'
+import { NamedNode } from 'rdf-js'
 
 interface MiddlewareOptions {
   setup?: (hydra: HydraBox) => void
   user?: {
-    id: string
+    id: NamedNode
     permissions: string[]
   }
   query?: AnyPointer

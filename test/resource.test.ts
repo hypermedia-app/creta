@@ -2,6 +2,7 @@ import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import express from 'express'
 import request from 'supertest'
+import { namedNode } from '@rdfjs/data-model'
 import { hydraBox } from './support/hydra-box'
 import { get } from '../resource'
 import { auth } from '../lib/namespace'
@@ -46,7 +47,7 @@ describe('laybrinth/resource', () => {
           hydra.operation.addOut(auth.required, true)
         },
         user: {
-          id: 'john-doe',
+          id: namedNode('john-doe'),
           permissions: [],
         },
       }))
@@ -70,7 +71,7 @@ describe('laybrinth/resource', () => {
             .addList(auth.permissions, ['user', 'editor'])
         },
         user: {
-          id: 'john-doe',
+          id: namedNode('john-doe'),
           permissions: ['user'],
         },
       }))
@@ -94,7 +95,7 @@ describe('laybrinth/resource', () => {
             .addList(auth.permissions, ['user', 'editor'])
         },
         user: {
-          id: 'john-doe',
+          id: namedNode('john-doe'),
           permissions: ['admin'],
         },
       }))
