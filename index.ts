@@ -1,4 +1,4 @@
-import { middleware, ResourceLoader } from 'hydra-box'
+import { HydraBox, middleware, ResourceLoader } from 'hydra-box'
 import cors from 'cors'
 import { Express } from 'express'
 import RdfResource from '@tpluscode/rdfine'
@@ -15,6 +15,16 @@ import { SparqlQueryLoader } from './lib/loader'
 export { SparqlQueryLoader } from './lib/loader'
 
 RdfResource.factory.addMixin(...Object.values(Hydra))
+
+declare module 'express-serve-static-core' {
+  interface Locals {
+    sparql?: StreamClient
+  }
+
+  export interface Request {
+    hydra: HydraBox
+  }
+}
 
 interface MiddlewareParams {
   loader?: ResourceLoader
