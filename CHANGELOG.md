@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.1.2
+
+### Patch Changes
+
+- f90de11: Initialize a streaming client on app.locals
+
 ## 0.1.1
 
 ### Patch Changes
