@@ -23,7 +23,7 @@ export interface User {
 
 declare module 'express-serve-static-core' {
   interface Application {
-    sparql?: StreamClient
+    sparql: StreamClient
   }
 
   export interface Request {
@@ -38,7 +38,7 @@ interface MiddlewareParams {
   codePath: string
   apiPath: string
   errorMappers?: IErrorMapper[]
-  sparql?: {
+  sparql: {
     endpointUrl: string
     storeUrl: string
     updateUrl: string
@@ -48,9 +48,7 @@ interface MiddlewareParams {
 }
 
 export async function hydraBox(app: Express, { loader, baseUri, codePath, apiPath, errorMappers = [], sparql }: MiddlewareParams): Promise<void> {
-  if (sparql) {
-    app.sparql = new StreamClient(sparql)
-  }
+  app.sparql = new StreamClient(sparql)
 
   app.use(logRequest)
   app.use(cors({
@@ -59,7 +57,7 @@ export async function hydraBox(app: Express, { loader, baseUri, codePath, apiPat
   app.use(middleware(
     await createApi({ baseUri, codePath, apiPath }),
     {
-      loader: loader ?? (sparql ? new SparqlQueryLoader(sparql) : undefined),
+      loader: loader ?? new SparqlQueryLoader(sparql),
       middleware: {
         resource: [
           removeHydraTypes,

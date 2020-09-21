@@ -23,6 +23,11 @@ describe('labyrinth', () => {
       apiPath,
       codePath,
       loader: loader(),
+      sparql: {
+        endpointUrl: '/sparql',
+        updateUrl: '/sparql',
+        storeUrl: '/sparql',
+      },
     })
 
     // when
@@ -48,6 +53,11 @@ describe('labyrinth', () => {
           types: new TermSet([ex.Authenticated, hydra.Resource]),
         }],
       }),
+      sparql: {
+        endpointUrl: '/sparql',
+        updateUrl: '/sparql',
+        storeUrl: '/sparql',
+      },
     })
 
     // when
@@ -73,6 +83,11 @@ describe('labyrinth', () => {
           types: new TermSet([ex.Protected]),
         }],
       }),
+      sparql: {
+        endpointUrl: '/sparql',
+        updateUrl: '/sparql',
+        storeUrl: '/sparql',
+      },
     })
 
     // when
@@ -95,6 +110,11 @@ describe('labyrinth', () => {
       apiPath,
       codePath,
       loader: loader(),
+      sparql: {
+        endpointUrl: '/sparql',
+        updateUrl: '/sparql',
+        storeUrl: '/sparql',
+      },
     })
 
     // when

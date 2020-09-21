@@ -48,7 +48,7 @@ export function hydraBox({ setup, user, query }: MiddlewareOptions = {}): Reques
     setup && setup(hydra)
     req.hydra = hydra
     req.user = user
-    req.app.locals.sparql = {
+    req.app.sparql = {
       store: sinon.createStubInstance(StreamStore) as any,
       query: {
         endpoint: sinon.createStubInstance(Endpoint),
