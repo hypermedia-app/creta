@@ -14,7 +14,8 @@ interface MiddlewareOptions {
   setup?: (hydra: HydraBox) => void
   user?: {
     id: NamedNode
-    permissions: string[]
+    permissions?: string[]
+    scope?: string[]
   }
   query?: AnyPointer
 }

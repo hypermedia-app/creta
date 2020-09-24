@@ -1,13 +1,42 @@
 import asyncMiddleware from 'middleware-async'
-import clownface from 'clownface'
+import clownface, { GraphPointer } from 'clownface'
+import { HydraBox } from 'hydra-box'
 import { Router } from 'express'
+import guard from 'express-jwt-permissions'
+import { NamedNode } from 'rdf-js'
 import $rdf from 'rdf-ext'
 import TermSet from '@rdfjs/term-set'
 import { auth, query } from './lib/namespace'
 import { loadLinkedResources } from './lib/query/eagerLinks'
-import guard from 'express-jwt-permissions'
 
 const permission = guard()
+
+const scope = guard({
+  permissionsProperty: 'scope',
+})
+
+function toStringArrays(permissionSets: string[][], listPtr: GraphPointer): string[][] {
+  const permissionList = listPtr.list()
+  if (!permissionList) {
+    return permissionSets
+  }
+
+  return [...permissionSets, [...permissionList].map(p => p.value)]
+}
+
+function getAuth(hydra: HydraBox, property: NamedNode) {
+  const api = clownface(hydra.api)
+
+  const operationRestrictions = hydra.operation
+    .out(property).toArray()
+    .reduce(toStringArrays, [])
+
+  const typeRestrictions = api.namedNode([...hydra.resource.types])
+    .out(property).toArray()
+    .reduce(toStringArrays, [])
+
+  return [...operationRestrictions, ...typeRestrictions]
+}
 
 export function protectedResource(...handlers: any[]) {
   const router = Router()
@@ -20,19 +49,19 @@ export function protectedResource(...handlers: any[]) {
       .includes('true')
     const operationRestricted = req.hydra.operation.out(auth.required).value === 'true'
     const authRequired = operationRestricted || typesRestricted
-    const permissions = req.hydra.operation
-      .out(auth.permissions).toArray()
-      .reduce<string[][]>((permissionSets, listPtr) => {
-      const permissionList = listPtr.list()
-      if (!permissionList) {
-        return permissionSets
-      }
 
-      return [...permissionSets, [...permissionList].map(p => p.value)]
-    }, [])
-
-    if (authRequired || permissions.length > 0) {
+    const permissions = getAuth(req.hydra, auth.permissions)
+    if (permissions.length > 0) {
       return permission.check(permissions)(req, res, next)
+    }
+
+    const scopes = getAuth(req.hydra, auth.scopes)
+    if (scopes.length > 0) {
+      return scope.check(scopes)(req, res, next)
+    }
+
+    if (authRequired) {
+      return scope.check([])(req, res, next)
     }
 
     next()
