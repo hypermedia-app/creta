@@ -38,6 +38,9 @@ interface MiddlewareParams {
   codePath: string
   apiPath: string
   errorMappers?: IErrorMapper[]
+  auth?: {
+    permissionProperty?: string
+  }
   sparql: {
     endpointUrl: string
     storeUrl: string
