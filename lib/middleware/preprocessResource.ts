@@ -11,15 +11,17 @@ export interface Enrichment {
 
 export function preprocessResource(basePath: string): RequestHandler {
   return asyncMiddleware(async (req, res, next) => {
-    const resourcePointer = clownface(req.hydra.resource)
+    if (req.hydra.resource) {
+      const resourcePointer = clownface(req.hydra.resource)
 
-    const enrichmentPromises = clownface(req.hydra.api)
-      .node(resourcePointer.out(rdf.type).terms)
-      .out(query.preprocess)
-      .map(pointer => loaders.load<Enrichment>(pointer, { basePath }))
+      const enrichmentPromises = clownface(req.hydra.api)
+        .node(resourcePointer.out(rdf.type).terms)
+        .out(query.preprocess)
+        .map(pointer => loaders.load<Enrichment>(pointer, { basePath }))
 
-    const enrichment = await Promise.all(enrichmentPromises)
-    await Promise.all(enrichment.map(enrich => enrich && enrich(req, resourcePointer)))
+      const enrichment = await Promise.all(enrichmentPromises)
+      await Promise.all(enrichment.map(enrich => enrich && enrich(req, resourcePointer)))
+    }
 
     next()
   })
