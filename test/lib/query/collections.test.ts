@@ -5,6 +5,7 @@ import cf from 'clownface'
 import $rdf from 'rdf-ext'
 import { hydra, rdf, schema } from '@tpluscode/rdf-ns-builders'
 import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
+import { CONSTRUCT, SELECT } from '@tpluscode/sparql-builder'
 import { getSparqlQuery } from '../../../lib/query/collection'
 import '../../support/sparql'
 import { ex } from '../../support/namespace'
@@ -16,18 +17,34 @@ RdfResource.factory.addMixin(...Object.values(Hydra))
 
 const basePath = path.resolve(__dirname, '../../')
 
-const expectedQuery = (patterns: string | SparqlTemplateResult) => sparql`CONSTRUCT { ?s ?p ?o }
-WHERE {
-  {
-    SELECT ?g {
+type ExpectedQuerySetup = SparqlTemplateResult | {
+  patterns: SparqlTemplateResult
+  limit: number
+  offset: number
+}
+
+const expectedQuery = (options: ExpectedQuerySetup) => {
+  const patterns = 'patterns' in options ? options.patterns : options
+  let select = SELECT`?g`
+    .WHERE`
       GRAPH ?g { 
         ${patterns}
       }
-    }
+    `
+
+  if ('limit' in options) {
+    select = select.LIMIT(options.limit).OFFSET(options.offset)
   }
-  
-  GRAPH ?g { ?s ?p ?o }
-}`
+
+  const query = CONSTRUCT`?s ?p ?o`
+    .WHERE`{
+      ${select}
+    }
+    
+    GRAPH ?g { ?s ?p ?o }`
+
+  return query.build()
+}
 
 describe('labyrinth/lib/query/collection', () => {
   describe('getSparqlQuery', () => {
@@ -191,6 +208,83 @@ describe('labyrinth/lib/query/collection', () => {
           query: cf({ dataset: $rdf.dataset() })
             .blankNode()
             .addOut(schema.title, 'Foo'),
+        })
+
+        // when
+        const result = query?.members.build()
+
+        // then
+        expect(result).to.be.a.query(expected)
+      })
+
+      it('applies LIMIT/OFFSET when template has pageIndex property', async () => {
+        // given
+        const expected = expectedQuery({
+          patterns: sparql`${ex.JohnDoe} ${schema.knows} ?member .`,
+          limit: 10,
+          offset: 30,
+        })
+        const query = await getSparqlQuery({
+          api: cf({ dataset: $rdf.dataset() }).blankNode(),
+          collection: cf({ dataset: $rdf.dataset() })
+            .blankNode()
+            .addOut(hydra.manages, manages => {
+              manages.addOut(hydra.property, schema.knows)
+              manages.addOut(hydra.subject, ex.JohnDoe)
+            }),
+          pageSize: 10,
+          basePath,
+          variables: new Hydra.IriTemplateMixin.Class(cf({ dataset: $rdf.dataset() }).blankNode(), {
+            mapping: [{
+              types: [hydra.IriTemplateMapping],
+              property: hydra.pageIndex,
+              variable: 'page',
+            }],
+          }),
+          query: cf({ dataset: $rdf.dataset() })
+            .blankNode()
+            .addOut(hydra.pageIndex, 4),
+        })
+
+        // when
+        const result = query?.members.build()
+
+        // then
+        expect(result).to.be.a.query(expected)
+      })
+
+      it('applies page size from query before the default', async () => {
+        // given
+        const expected = expectedQuery({
+          patterns: sparql`${ex.JohnDoe} ${schema.knows} ?member .`,
+          limit: 20,
+          offset: 60,
+        })
+        const query = await getSparqlQuery({
+          api: cf({ dataset: $rdf.dataset() }).blankNode(),
+          collection: cf({ dataset: $rdf.dataset() })
+            .blankNode()
+            .addOut(hydra.manages, manages => {
+              manages.addOut(hydra.property, schema.knows)
+              manages.addOut(hydra.subject, ex.JohnDoe)
+            }),
+          pageSize: 10,
+          basePath,
+          variables: new Hydra.IriTemplateMixin.Class(cf({ dataset: $rdf.dataset() }).blankNode(), {
+            mapping: [{
+              types: [hydra.IriTemplateMapping],
+              property: hydra.pageIndex,
+              variable: 'offset',
+            }, {
+              types: [hydra.IriTemplateMapping],
+              property: hydra.limit,
+              variable: 'limit',
+            }],
+          }),
+          query: cf({ dataset: $rdf.dataset() })
+            .blankNode()
+            .addOut(hydra.pageIndex, 4)
+            .addOut(hydra.limit, 20),
         })
 
         // when

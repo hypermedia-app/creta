@@ -158,7 +158,10 @@ export async function getSparqlQuery({ api, basePath, collection, pageSize, quer
 
   if (variables && variables.mapping.some(mapping => mapping.property.equals(hydra.pageIndex))) {
     const page = Number.parseInt(query.out(hydra.pageIndex).value || '1')
-    subselect = subselect.LIMIT(pageSize).OFFSET((page - 1) * pageSize)
+    const hydraLimit = query.out(hydra.limit).value
+    const limit = hydraLimit ? parseInt(hydraLimit) : pageSize
+
+    subselect = subselect.LIMIT(limit).OFFSET((page - 1) * limit)
     subselect = order.addClauses(subselect)
   }
 
