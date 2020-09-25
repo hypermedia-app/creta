@@ -1,5 +1,14 @@
 # @hydrofoil/labyrinth
 
+## 0.1.5
+
+### Patch Changes
+
+- 1581f54: Allow protecting resources using scopes and also protect on type level
+- 0540564: Controlling collection pages with template query params
+- 6ae2ed3: Page size should be configurable as default, per-collection type and collection itself
+- d360175: Collection should return empty when there is no manages block
+
 ## 0.1.4
 
 ### Patch Changes
