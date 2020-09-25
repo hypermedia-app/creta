@@ -10,7 +10,6 @@ import { getSparqlQuery } from './lib/query/collection'
 import { loadLinkedResources } from './lib/query/eagerLinks'
 import { protectedResource } from './resource'
 
-const pageSize = 12
 const emptyDataset = clownface({ dataset: $rdf.dataset() })
 
 function templateParamsForPage(query: AnyPointer, page: number) {
@@ -46,7 +45,15 @@ function addTemplateMappings(collection: GraphPointer, template: IriTemplate, re
   })
 }
 
-function addCollectionViews(collection: GraphPointer, total: number, template: IriTemplate, request: AnyPointer = emptyDataset): void {
+interface AddCollectionViewsParams {
+  collection: GraphPointer
+  total: number
+  template: IriTemplate
+  request?: AnyPointer
+  pageSize: number
+}
+
+function addCollectionViews({ collection, total, template, request = emptyDataset, pageSize }: AddCollectionViewsParams): void {
   if (!template.mapping.some(m => m.property.equals(hydra.pageIndex))) {
     return
   }
@@ -71,6 +78,7 @@ function addCollectionViews(collection: GraphPointer, total: number, template: I
 export const get = protectedResource(asyncMiddleware(async (req, res) => {
   const dataset = $rdf.dataset([...req.hydra.resource.dataset])
   const collection = clownface({ dataset }).namedNode(req.hydra.resource.term)
+  const types = clownface(req.hydra.api).namedNode([...req.hydra.resource.types])
 
   let request: AnyPointer | undefined
   if (req.dataset) {
@@ -78,8 +86,9 @@ export const get = protectedResource(asyncMiddleware(async (req, res) => {
   }
 
   const includeLinked = req.hydra.operation.out(query.include)
-
   const template = getTemplate(req)
+  const hydraLimit = collection.out(hydra.limit).value || types.out(hydra.limit).value
+  const pageSize = hydraLimit ? parseInt(hydraLimit) : req.app.labyrinth.collection.pageSize
 
   const pageQuery = await getSparqlQuery({
     api: clownface(req.hydra.api),
@@ -108,7 +117,13 @@ export const get = protectedResource(asyncMiddleware(async (req, res) => {
 
   if (template) {
     addTemplateMappings(collection, template, request)
-    addCollectionViews(collection, total, template, request)
+    addCollectionViews({
+      collection,
+      total,
+      template,
+      request,
+      pageSize,
+    })
   }
 
   res.setLink(req.hydra.resource.term.value, 'canonical')

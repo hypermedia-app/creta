@@ -24,6 +24,11 @@ export interface User {
 declare module 'express-serve-static-core' {
   interface Application {
     sparql: StreamClient
+    labyrinth: {
+      collection: {
+        pageSize: number
+      }
+    }
   }
 
   export interface Request {
@@ -48,10 +53,21 @@ interface MiddlewareParams {
     user?: string
     password?: string
   }
+  options?: {
+    collection?: {
+      pageSize?: number
+    }
+  }
 }
 
-export async function hydraBox(app: Express, { loader, baseUri, codePath, apiPath, errorMappers = [], sparql }: MiddlewareParams): Promise<void> {
+export async function hydraBox(app: Express, { loader, baseUri, codePath, apiPath, errorMappers = [], sparql, options }: MiddlewareParams): Promise<void> {
   app.sparql = new StreamClient(sparql)
+
+  app.labyrinth = {
+    collection: {
+      pageSize: options?.collection?.pageSize || 10,
+    },
+  }
 
   app.use(logRequest)
   app.use(cors({

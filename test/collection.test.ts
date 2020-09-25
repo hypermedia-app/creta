@@ -184,6 +184,81 @@ describe('labyrinth/collection', () => {
       expect(view.out(hydra.last).value).to.eq('?title=Titanic&page=84')
     })
 
+    it('passes pageSize to create query function', async () => {
+      // given
+      const app = express()
+      app.use(hydraBox({
+        setup: api => {
+          api.resource.term = ex.people
+        },
+      }))
+      app.use((req, res, next) => {
+        req.app.labyrinth.collection.pageSize = 25
+        next()
+      })
+      app.use(get)
+
+      // when
+      await request(app).get('/')
+
+      // then
+      expect(collectionQueryMock.getSparqlQuery).to.have.been.calledOnceWith(sinon.match({
+        pageSize: 25,
+      }))
+    })
+
+    it('passes collection-type-defined page size to create query function', async () => {
+      // given
+      const app = express()
+      app.use(hydraBox({
+        setup: hydraBox => {
+          hydraBox.resource.types.add(ex.Collection)
+          cf(hydraBox.api).namedNode(ex.Collection)
+            .addOut(hydra.limit, 15)
+        },
+      }))
+      app.use((req, res, next) => {
+        req.app.labyrinth.collection.pageSize = 25
+        next()
+      })
+      app.use(get)
+
+      // when
+      await request(app).get('/')
+
+      // then
+      expect(collectionQueryMock.getSparqlQuery).to.have.been.calledOnceWith(sinon.match({
+        pageSize: 15,
+      }))
+    })
+
+    it('passes collection-specific page size to create query function', async () => {
+      // given
+      const app = express()
+      app.use(hydraBox({
+        setup: hydraBox => {
+          hydraBox.resource.types.add(ex.Collection)
+          cf(hydraBox.resource)
+            .addOut(hydra.limit, 10)
+          cf(hydraBox.api).namedNode(ex.Collection)
+            .addOut(hydra.limit, 15)
+        },
+      }))
+      app.use((req, res, next) => {
+        req.app.labyrinth.collection.pageSize = 25
+        next()
+      })
+      app.use(get)
+
+      // when
+      await request(app).get('/')
+
+      // then
+      expect(collectionQueryMock.getSparqlQuery).to.have.been.calledOnceWith(sinon.match({
+        pageSize: 10,
+      }))
+    })
+
     it('returns empty collection when no query is returned', async function () {
       // given
       const app = express()
