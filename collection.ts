@@ -90,14 +90,16 @@ export const get = protectedResource(asyncMiddleware(async (req, res) => {
     basePath: req.hydra.api.codePath,
   })
 
-  const page = await pageQuery.members.execute(req.app.sparql.query)
   let total = 0
-  const totals = pageQuery.totals.execute(req.app.sparql.query)
-  for await (const result of await totals) {
-    total = Number.parseInt(result.count.value)
-    collection.addOut(hydra.totalItems, total)
+  if (pageQuery) {
+    const page = await pageQuery.members.execute(req.app.sparql.query)
+    const totals = pageQuery.totals.execute(req.app.sparql.query)
+    for await (const result of await totals) {
+      total = Number.parseInt(result.count.value)
+    }
+    await collection.dataset.import(page)
   }
-  await collection.dataset.import(page)
+  collection.addOut(hydra.totalItems, total)
 
   collection.namedNode(req.hydra.resource.term)
     .addOut(hydra.member, clownface({ dataset }).has(rdf.type, collection.out(hydra.manages).has(hydra.property, rdf.type).out(hydra.object)))

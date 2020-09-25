@@ -4,32 +4,37 @@ import express from 'express'
 import request from 'supertest'
 import $rdf from 'rdf-ext'
 import cf from 'clownface'
-import sinon, { SinonStubbedInstance } from 'sinon'
+import sinon, { SinonStub, SinonStubbedInstance } from 'sinon'
+import { hydra, rdf, schema } from '@tpluscode/rdf-ns-builders'
+import RdfResource from '@tpluscode/rdfine'
+import * as Hydra from '@rdfine/hydra'
+import { parsers } from '@rdfjs/formats-common'
+import toStream from 'string-to-stream'
 import { hydraBox } from './support/hydra-box'
 import { get } from '../collection'
 import { auth, query } from '../lib/namespace'
 import { ex } from './support/namespace'
 import * as collectionQuery from '../lib/query/collection'
 import * as ns from '../lib/namespace'
-import { hydra, rdf, schema } from '@tpluscode/rdf-ns-builders'
-import RdfResource from '@tpluscode/rdfine'
-import * as Hydra from '@rdfine/hydra'
-import { parsers } from '@rdfjs/formats-common'
-import toStream from 'string-to-stream'
 
 RdfResource.factory.addMixin(...Object.values(Hydra))
 
 describe('labyrinth/collection', () => {
   let collectionQueryMock: SinonStubbedInstance<typeof collectionQuery>
+  let membersQuery: SinonStub
+  let totalsQuery: SinonStub
 
   beforeEach(() => {
     collectionQueryMock = sinon.stub(collectionQuery)
+    membersQuery = sinon.stub().resolves($rdf.dataset().toStream())
+    totalsQuery = sinon.stub().resolves([])
+
     collectionQueryMock.getSparqlQuery.resolves({
       members: {
-        execute: sinon.stub().resolves($rdf.dataset().toStream()),
+        execute: membersQuery,
       },
       totals: {
-        execute: sinon.stub().resolves([]),
+        execute: totalsQuery,
       },
     } as any)
   })
@@ -78,7 +83,6 @@ describe('labyrinth/collection', () => {
       const app = express()
       app.use(hydraBox({
         setup: api => {
-          api.resource.term = ex.people
           api.operation.addOut(ns.hydraBox.variables, template => {
             template.addOut(rdf.type, hydra.IriTemplate)
             template.addOut(hydra.template, '/{?title}')
@@ -162,16 +166,9 @@ describe('labyrinth/collection', () => {
           .addOut(hydra.pageIndex, 50)
           .addOut(schema.title, 'Titanic'),
       }))
-      collectionQueryMock.getSparqlQuery.resolves({
-        members: {
-          execute: sinon.stub().resolves($rdf.dataset().toStream()),
-        },
-        totals: {
-          execute: sinon.stub().resolves([{
-            count: { value: 1000 },
-          }]),
-        },
-      } as any)
+      totalsQuery.resolves([{
+        count: { value: 1000 },
+      }])
       app.use(get)
 
       // when
@@ -185,6 +182,30 @@ describe('labyrinth/collection', () => {
       expect(view.out(hydra.previous).value).to.eq('?title=Titanic&page=49')
       expect(view.out(hydra.next).value).to.eq('?title=Titanic&page=51')
       expect(view.out(hydra.last).value).to.eq('?title=Titanic&page=84')
+    })
+
+    it('returns empty collection when no query is returned', async function () {
+      // given
+      const app = express()
+      collectionQueryMock.getSparqlQuery.resolves(null)
+      app.use(hydraBox({
+        setup: api => {
+          api.resource.term = ex.movies
+          cf(api.resource)
+            .addOut(rdf.type, ex.Collection)
+          cf(api.api)
+            .namedNode(ex.Collection)
+            .addOut(hydra.manages,
+              m => m.addOut(hydra.property, rdf.type).addOut(hydra.object, ex.Person))
+        },
+      }))
+      app.use(get)
+
+      // when
+      const response = await request(app).get('/movies').expect(200)
+
+      // then
+      expect(response.body).to.matchSnapshot(this)
     })
   })
 })
