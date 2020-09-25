@@ -1334,10 +1334,10 @@
   resolved "https://registry.yarnpkg.com/@sinonjs/text-encoding/-/text-encoding-0.7.1.tgz#8da5c6530915653f3a1f38fd5f101d8c3f8079c5"
   integrity sha512-+iTbntw2IZPb/anVDbypzfQa+ay64MW0Zo8aJ8gZPWMMK6/OubMVb6lUPMagqjOPnmtauXnFCACVl3O7ogjeqQ==
 
-"@tpluscode/eslint-config@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@tpluscode/eslint-config/-/eslint-config-0.1.0.tgz#c768e289229ae512e6b897ed5b1e6613717ca21f"
-  integrity sha512-y5CgQPRVpNLTRo+KmQ7IBD48W/W+xugwHdPzV8mZk7zAQMZTywsatkMfzRBHIXxWIu6G0uAsIyQmzw9zPy6GrA==
+"@tpluscode/eslint-config@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@tpluscode/eslint-config/-/eslint-config-0.1.1.tgz#5562e9753d4a4e9bd6ee4785baeaf9e6c7f42bfc"
+  integrity sha512-gv7CE+3iQ6YNoEofgzMKWUgOHxY7Kozq06M4ls0PkOScOmvCoHTFD2XvPtqmADmXezQsMcZyM6VsHEilgHoasw==
 
 "@tpluscode/rdf-ns-builders@^0.1.0":
   version "0.1.0"
@@ -1402,6 +1402,14 @@
   dependencies:
     "@types/connect" "*"
     "@types/node" "*"
+
+"@types/chai-snapshot-matcher@^1":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@types/chai-snapshot-matcher/-/chai-snapshot-matcher-1.0.0.tgz#a8045f8351aabd3c5165110eb5df7cb9724851f7"
+  integrity sha512-zBmWLCS5uopWaiXRtxdeYIa3DKXLy0hpTj2Z89WkECw7eh7BxD9NuWiEUMB6cImsRfgR5D1MfMtMkl8TrUWDrA==
+  dependencies:
+    "@types/chai" "*"
+    "@types/mocha" "*"
 
 "@types/chai@*", "@types/chai@^4.2.12":
   version "4.2.12"
@@ -1498,7 +1506,7 @@
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-2.0.3.tgz#c893b73721db73699943bfc3653b1deb7faa4a3a"
   integrity sha512-Jus9s4CDbqwocc5pOAnh8ShfrnMcPHuJYzVcSUU7lrh8Ni5HuIqX3oilL86p3dlTrk0LzHRCgA/GQ7uNCw6l2Q==
 
-"@types/mocha@^8.0.3":
+"@types/mocha@*", "@types/mocha@^8.0.3":
   version "8.0.3"
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-8.0.3.tgz#51b21b6acb6d1b923bbdc7725c38f9f455166402"
   integrity sha512-vyxR57nv8NfcU0GZu8EUXZLTbCMupIUwy95LJ6lllN+JRPG25CwMHoB1q5xKh8YKhQnHYRAn4yW2yuHbf/5xgg==
@@ -2119,6 +2127,11 @@ caseless@~0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
   integrity sha1-G2gcIf+EAzyCZUMJBolCDRhxUdw=
+
+chai-snapshot-matcher@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/chai-snapshot-matcher/-/chai-snapshot-matcher-1.0.6.tgz#c3e49d14563eadf0402897d228c2730fd33a7d8d"
+  integrity sha512-V1NFTiGB1neY5rzJcd4MNc4eapR1WHkgIEaOEMrVYI/qzvocjbmalUQajVES8U2T1p+LwczVLNDLnsrbzl8giw==
 
 chai@^4.2.0:
   version "4.2.0"

@@ -10,7 +10,7 @@ import '../../support/sparql'
 import { ex } from '../../support/namespace'
 import * as Hydra from '@rdfine/hydra'
 import RdfResource from '@tpluscode/rdfine'
-import { code, query } from '../../../lib/namespace'
+import * as ns from '../../../lib/namespace'
 
 RdfResource.factory.addMixin(...Object.values(Hydra))
 
@@ -35,7 +35,7 @@ describe('labyrinth/lib/query/collection', () => {
       it('filters by property/object manages block', async () => {
         // given
         const expected = expectedQuery(sparql`?member ${rdf.type} ${schema.Person}`)
-        const { members } = await getSparqlQuery({
+        const query = await getSparqlQuery({
           api: cf({ dataset: $rdf.dataset() }).blankNode(),
           collection: cf({ dataset: $rdf.dataset() })
             .blankNode()
@@ -49,7 +49,7 @@ describe('labyrinth/lib/query/collection', () => {
         })
 
         // when
-        const result = members.build()
+        const result = query?.members.build()
 
         // then
         expect(result).to.be.a.query(expected)
@@ -58,7 +58,7 @@ describe('labyrinth/lib/query/collection', () => {
       it('ignores incomplete manages blocks', async () => {
         // given
         const expected = expectedQuery(sparql`?member ${rdf.type} ${schema.Person}`)
-        const { members } = await getSparqlQuery({
+        const query = await getSparqlQuery({
           api: cf({ dataset: $rdf.dataset() }).blankNode(),
           collection: cf({ dataset: $rdf.dataset() })
             .blankNode()
@@ -75,16 +75,53 @@ describe('labyrinth/lib/query/collection', () => {
         })
 
         // when
-        const result = members.build()
+        const result = query?.members.build()
 
         // then
         expect(result).to.be.a.query(expected)
       })
 
+      it('return null if there are no manages blocks', async () => {
+        // given
+        const query = await getSparqlQuery({
+          api: cf({ dataset: $rdf.dataset() }).blankNode(),
+          collection: cf({ dataset: $rdf.dataset() }).blankNode(),
+          pageSize: 10,
+          basePath,
+          variables: null,
+        })
+
+        // then
+        expect(query).to.be.null
+      })
+
+      it('return null if there are no valid manages blocks', async () => {
+        // given
+        const query = await getSparqlQuery({
+          api: cf({ dataset: $rdf.dataset() }).blankNode(),
+          collection: cf({ dataset: $rdf.dataset() })
+            .blankNode()
+            .addOut(hydra.manages, manages => {
+              manages.addOut(hydra.property, ex.foo)
+            })
+            .addOut(hydra.manages, manages => {
+              manages.addOut(hydra.subject, ex.s)
+              manages.addOut(hydra.property, ex.p)
+              manages.addOut(hydra.object, ex.o)
+            }),
+          pageSize: 10,
+          basePath,
+          variables: null,
+        })
+
+        // then
+        expect(query).to.be.null
+      })
+
       it('filters by subject/object manages block', async () => {
         // given
         const expected = expectedQuery(sparql`${ex.JohnDoe} ?member ${ex.JaneDoe}`)
-        const { members } = await getSparqlQuery({
+        const query = await getSparqlQuery({
           api: cf({ dataset: $rdf.dataset() }).blankNode(),
           collection: cf({ dataset: $rdf.dataset() })
             .blankNode()
@@ -98,7 +135,7 @@ describe('labyrinth/lib/query/collection', () => {
         })
 
         // when
-        const result = members.build()
+        const result = query?.members.build()
 
         // then
         expect(result).to.be.a.query(expected)
@@ -107,7 +144,7 @@ describe('labyrinth/lib/query/collection', () => {
       it('filters by subject/property manages block', async () => {
         // given
         const expected = expectedQuery(sparql`${ex.JohnDoe} ${schema.knows} ?member`)
-        const { members } = await getSparqlQuery({
+        const query = await getSparqlQuery({
           api: cf({ dataset: $rdf.dataset() }).blankNode(),
           collection: cf({ dataset: $rdf.dataset() })
             .blankNode()
@@ -121,7 +158,7 @@ describe('labyrinth/lib/query/collection', () => {
         })
 
         // when
-        const result = members.build()
+        const result = query?.members.build()
 
         // then
         expect(result).to.be.a.query(expected)
@@ -129,10 +166,15 @@ describe('labyrinth/lib/query/collection', () => {
 
       it('filters by annotated criteria', async () => {
         // given
-        const expected = expectedQuery(sparql`?member ${schema.title} "Foo"`)
-        const { members } = await getSparqlQuery({
+        const expected = expectedQuery(sparql` ${ex.JohnDoe} ${schema.knows} ?member . ?member ${schema.title} "Foo"`)
+        const query = await getSparqlQuery({
           api: cf({ dataset: $rdf.dataset() }).blankNode(),
-          collection: cf({ dataset: $rdf.dataset() }).blankNode(),
+          collection: cf({ dataset: $rdf.dataset() })
+            .blankNode()
+            .addOut(hydra.manages, manages => {
+              manages.addOut(hydra.property, schema.knows)
+              manages.addOut(hydra.subject, ex.JohnDoe)
+            }),
           pageSize: 10,
           basePath,
           variables: new Hydra.IriTemplateMixin.Class(cf({ dataset: $rdf.dataset() }).blankNode(), {
@@ -140,9 +182,9 @@ describe('labyrinth/lib/query/collection', () => {
               types: [hydra.IriTemplateMapping],
               property: schema.title,
               variable: 'title',
-              [query.filter.value]: {
-                types: [code.EcmaScript],
-                [code.link.value]: $rdf.namedNode('file:test-api/filter#byTitle'),
+              [ns.query.filter.value]: {
+                types: [ns.code.EcmaScript],
+                [ns.code.link.value]: $rdf.namedNode('file:test-api/filter#byTitle'),
               },
             }],
           }),
@@ -152,7 +194,7 @@ describe('labyrinth/lib/query/collection', () => {
         })
 
         // when
-        const result = members.build()
+        const result = query?.members.build()
 
         // then
         expect(result).to.be.a.query(expected)

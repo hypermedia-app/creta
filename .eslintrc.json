@@ -4,6 +4,12 @@
     "project": "./tsconfig.json"
   },
   "rules": {
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": ["test/**"]}]
-  }
+    "no-undef": "off"
+  },
+  "overrides": [{
+    "files": ["*.ts"],
+    "rules": {
+      "no-unused-expressions": "off"
+    }
+  }]
 }

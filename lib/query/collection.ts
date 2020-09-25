@@ -66,6 +66,10 @@ function createManagesBlockPatterns(member: Variable) {
   }
 }
 
+function onlyValidManagesBlocks(manages: GraphPointer) {
+  return manages.out([hydra.subject, hydra.property, hydra.object]).values.length === 2
+}
+
 type SelectBuilder = ReturnType<typeof SELECT>
 
 function createOrdering(api: GraphPointer, collection: GraphPointer, subject: Variable): { patterns: SparqlTemplateResult; addClauses(q: SelectBuilder): SelectBuilder } {
@@ -120,14 +124,22 @@ interface CollectionQueryParams {
   basePath: string
 }
 
-interface SparqlQueries {
+export interface SparqlQueries {
   members: ReturnType<typeof CONSTRUCT>
   totals: ReturnType<typeof SELECT>
 }
 
-export async function getSparqlQuery({ api, basePath, collection, pageSize, query = cf({ dataset: $rdf.dataset() }), variables } : CollectionQueryParams): Promise<SparqlQueries> {
+export async function getSparqlQuery({ api, basePath, collection, pageSize, query = cf({ dataset: $rdf.dataset() }), variables } : CollectionQueryParams): Promise<SparqlQueries | null> {
   const subject = $rdf.variable('member')
-  const managesBlockPatterns = collection.out(hydra.manages).toArray().reduce(createManagesBlockPatterns(subject), sparql``)
+  const manages = collection
+    .out(hydra.manages)
+    .filter(onlyValidManagesBlocks)
+  if (!manages.values.length) {
+    warn(`Collection ${collection.value} has no valid manages block and will always return empty`)
+    return null
+  }
+
+  const managesBlockPatterns = manages.toArray().reduce(createManagesBlockPatterns(subject), sparql``)
   let filterPatters: Array<string | SparqlTemplateResult> = []
   if (variables) {
     filterPatters = await Promise.all(variables.mapping.map(createTemplateVariablePatterns(subject, query, basePath)))
