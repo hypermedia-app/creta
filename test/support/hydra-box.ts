@@ -59,6 +59,11 @@ export function hydraBox({ setup, user, query }: MiddlewareOptions = {}): Reques
         update: sinon.stub(),
       },
     }
+    req.app.labyrinth = {
+      collection: {
+        pageSize: 12,
+      },
+    }
     if (query) {
       req.dataset = async () => query.dataset
     }

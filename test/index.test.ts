@@ -1,4 +1,5 @@
 import { describe, it } from 'mocha'
+import { expect } from 'chai'
 import path from 'path'
 import express from 'express'
 import request from 'supertest'
@@ -124,5 +125,48 @@ describe('labyrinth', () => {
     await response
       .expect(400)
       .expect('content-type', /application\/problem\+json/)
+  })
+
+  it('sets default page size', async () => {
+    // given
+    const app = express()
+    await hydraBox(app, {
+      baseUri,
+      apiPath,
+      codePath,
+      loader: loader(),
+      sparql: {
+        endpointUrl: '/sparql',
+        updateUrl: '/sparql',
+        storeUrl: '/sparql',
+      },
+    })
+
+    // then
+    expect(app.labyrinth.collection.pageSize).to.eq(10)
+  })
+
+  it('sets overridden page size', async () => {
+    // given
+    const app = express()
+    await hydraBox(app, {
+      baseUri,
+      apiPath,
+      codePath,
+      loader: loader(),
+      sparql: {
+        endpointUrl: '/sparql',
+        updateUrl: '/sparql',
+        storeUrl: '/sparql',
+      },
+      options: {
+        collection: {
+          pageSize: 20,
+        },
+      },
+    })
+
+    // then
+    expect(app.labyrinth.collection.pageSize).to.eq(20)
   })
 })
