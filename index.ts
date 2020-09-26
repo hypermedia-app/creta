@@ -40,9 +40,6 @@ declare module 'express-serve-static-core' {
 type MiddlewareParams = ApiInit & {
   loader?: ResourceLoader
   errorMappers?: IErrorMapper[]
-  auth?: {
-    permissionProperty?: string
-  }
   sparql: ConstructorParameters<typeof StreamClient>[0] & {
     endpointUrl: string
   }

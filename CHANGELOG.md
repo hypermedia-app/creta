@@ -1,5 +1,12 @@
 # @hydrofoil/labyrinth
 
+## 0.1.6
+
+### Patch Changes
+
+- 86bf5ed: Make default API Documentation base URI configurable
+- SPARQL parameters should allow undefined store/graph URLs
+
 ## 0.1.5
 
 ### Patch Changes
