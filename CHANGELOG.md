@@ -1,5 +1,9 @@
 # @hydrofoil/labyrinth
 
+## 0.1.7
+
+- Improve authorization
+
 ## 0.1.6
 
 ### Patch Changes
