@@ -1,6 +1,7 @@
 import asyncMiddleware from 'middleware-async'
 import clownface, { GraphPointer } from 'clownface'
 import { HydraBox } from 'hydra-box'
+import error from 'http-errors'
 import { Router } from 'express'
 import guard from 'express-jwt-permissions'
 import { NamedNode } from 'rdf-js'
@@ -60,8 +61,8 @@ export function protectedResource(...handlers: any[]) {
       return scope.check(scopes)(req, res, next)
     }
 
-    if (authRequired) {
-      return scope.check([])(req, res, next)
+    if (authRequired && !req.user) {
+      return next(new error.Unauthorized())
     }
 
     next()
