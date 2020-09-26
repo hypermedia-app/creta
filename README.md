@@ -29,19 +29,27 @@ const baseUri = 'http://example.com/'
 async function main() {
   const app = express()
     
-  app.use(await hydraBox({
+  await hydraBox(app, {
     codePath,
     apiPath,
     baseUri,
+    defaultBase, // (optional) base URI to parse API Documentation
+    loader,      // (optional) hydra-box resource loader
     // SPARQL endpoint
     sparql: {
       endpointUrl, // Query
-      updateUrl,   // Update 
-      storeUrl,    // Graph Protocol,
+      updateUrl,   // (optional) Update 
+      storeUrl,    // (optional) Graph Protocol,
       user,        // (optional) endpoint user name
-      password,    // (optiona) endpoint password
-    }
-  }))
+      password     // (optional) endpoint password
+    },
+    options: {
+      collection: {
+        pageSize   // (optional) default page size of paged collections   
+      }  
+    },
+    errorMappers: [] // (optional) map errors into problem+json
+  })
   
   app.listen(8080)
 }
@@ -63,6 +71,7 @@ main()
   * Permission-based restrictions to operations
   * Restricting select properties or entire classes
 * Error handling using `Problem Details for HTTP APIs` ([RFC 7807](https://tools.ietf.org/html/rfc7807))
+  * See [PDMLab/http-problem-details-mapper](https://github.com/PDMLab/http-problem-details-mapper) for instructions
 
 ## Difference from hydra-box
 
