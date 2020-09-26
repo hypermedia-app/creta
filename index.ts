@@ -43,12 +43,8 @@ type MiddlewareParams = ApiInit & {
   auth?: {
     permissionProperty?: string
   }
-  sparql: {
+  sparql: ConstructorParameters<typeof StreamClient>[0] & {
     endpointUrl: string
-    storeUrl?: string
-    updateUrl?: string
-    user?: string
-    password?: string
   }
   options?: {
     collection?: {
