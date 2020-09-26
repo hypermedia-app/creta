@@ -44,7 +44,7 @@ describe('labyrinth/collection', () => {
   })
 
   describe('get', () => {
-    it('returns 403 when collection is restricted', async () => {
+    it('returns 401 when collection is restricted', async () => {
       // given
       const app = express()
       app.use(hydraBox({
@@ -58,7 +58,7 @@ describe('labyrinth/collection', () => {
       const response = request(app).get('/')
 
       // then
-      await response.expect(403)
+      await response.expect(401)
     })
 
     it('sets canonical link header', async () => {

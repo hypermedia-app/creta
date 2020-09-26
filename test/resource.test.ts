@@ -24,7 +24,7 @@ describe('laybrinth/resource', () => {
       expect(status).to.eq(200)
     })
 
-    it('return 403 when operation is restricted and no user authenticated', async () => {
+    it('return 401 when operation is restricted and no user authenticated', async () => {
       // given
       const app = express()
       app.use(hydraBox({
@@ -38,7 +38,7 @@ describe('laybrinth/resource', () => {
       const { status } = await request(app).get('/')
 
       // then
-      expect(status).to.eq(403)
+      expect(status).to.eq(401)
     })
 
     it('return 200 OK when operation is restricted and user is authenticated', async () => {
@@ -110,7 +110,7 @@ describe('laybrinth/resource', () => {
       expect(status).to.eq(200)
     })
 
-    it('return 403 when type is restricted and no user authenticated', async () => {
+    it('return 401 when type is restricted and no user authenticated', async () => {
       // given
       const app = express()
       app.use(hydraBox({
@@ -125,7 +125,7 @@ describe('laybrinth/resource', () => {
       const { status } = await request(app).get('/')
 
       // then
-      expect(status).to.eq(403)
+      expect(status).to.eq(401)
     })
 
     it('return 200 OK when type is restricted and user is authenticated', async () => {
