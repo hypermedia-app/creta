@@ -4,7 +4,7 @@ import { Express } from 'express'
 import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
 import StreamClient from 'sparql-http-client/StreamClient'
-import { createApi } from './lib'
+import { ApiInit, createApi } from './lib'
 import { NotFoundError } from './lib/error'
 import { logRequest, logRequestError } from './lib/logger'
 import { httpProblemMiddleware } from './lib/problemDetails'
@@ -37,19 +37,16 @@ declare module 'express-serve-static-core' {
   }
 }
 
-interface MiddlewareParams {
+type MiddlewareParams = ApiInit & {
   loader?: ResourceLoader
-  baseUri: string
-  codePath: string
-  apiPath: string
   errorMappers?: IErrorMapper[]
   auth?: {
     permissionProperty?: string
   }
   sparql: {
     endpointUrl: string
-    storeUrl: string
-    updateUrl: string
+    storeUrl?: string
+    updateUrl?: string
     user?: string
     password?: string
   }
@@ -60,7 +57,9 @@ interface MiddlewareParams {
   }
 }
 
-export async function hydraBox(app: Express, { loader, baseUri, codePath, apiPath, errorMappers = [], sparql, options }: MiddlewareParams): Promise<void> {
+export async function hydraBox(app: Express, middlewareInit: MiddlewareParams): Promise<void> {
+  const { loader, codePath, errorMappers = [], sparql, options } = middlewareInit
+
   app.sparql = new StreamClient(sparql)
 
   app.labyrinth = {
@@ -74,7 +73,7 @@ export async function hydraBox(app: Express, { loader, baseUri, codePath, apiPat
     exposedHeaders: ['link', 'location'],
   }))
   app.use(middleware(
-    await createApi({ baseUri, codePath, apiPath }),
+    await createApi(middlewareInit),
     {
       loader: loader ?? new SparqlQueryLoader(sparql),
       middleware: {

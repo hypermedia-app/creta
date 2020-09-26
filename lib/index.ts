@@ -3,7 +3,7 @@ import type Api from 'hydra-box/Api'
 import walk from '@fcostarodrigo/walk'
 import { log } from './logger'
 
-interface ApiInit {
+export interface ApiInit {
   baseUri: string
   codePath: string
   defaultBase?: string
