@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.1.9
+
+### Patch Changes
+
+- correctly set api documentation url
+
 ## 0.1.8
 
 ### Patch Changes

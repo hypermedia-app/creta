@@ -17,7 +17,7 @@ declare module 'hydra-box/Api' {
         codePath: string;
         graph: NamedNode;
         dataset: DatasetCore;
-        term: Term;
+        term: NamedNode;
         init(): void;
         fromFile(filePath: string, options?: Api.Options): Promise<this>;
         rebase(from: string, to: string): this;

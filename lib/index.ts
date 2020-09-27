@@ -13,10 +13,11 @@ export interface ApiInit {
 }
 
 export async function createApi({ apiPath, baseUri, codePath, defaultBase = 'urn:hydra-box:api', path = 'api' }: ApiInit): Promise<Api> {
+  const apiUrl = new URL(path, baseUri)
   const options: Api.Options = {
-    path,
+    path: apiUrl.pathname,
     codePath,
-    term: $rdf.namedNode(baseUri + path),
+    term: $rdf.namedNode(apiUrl.toString()),
   }
 
   let api: Api | undefined
