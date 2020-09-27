@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.1.8
+
+### Patch Changes
+
+- 091ad2c: Always use base url for api documentation URL
+
 ## 0.1.7
 
 - Improve authorization
