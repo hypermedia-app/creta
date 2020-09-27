@@ -33,6 +33,7 @@ async function main() {
     codePath,
     apiPath,
     baseUri,
+    path,        // (optional) ApiDocumentation URL path
     defaultBase, // (optional) base URI to parse API Documentation
     loader,      // (optional) hydra-box resource loader
     // SPARQL endpoint
