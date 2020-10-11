@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.1.10
+
+### Patch Changes
+
+- 84ef37b: Update rdfine
+
 ## 0.1.9
 
 ### Patch Changes
