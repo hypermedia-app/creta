@@ -16,6 +16,10 @@ interface CreatePattern {
 function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPointer, basePath: string) {
   return async (mapping: IriTemplateMapping): Promise<string | SparqlTemplateResult> => {
     const property = mapping.property
+    if (!property) {
+      log('Skipping mapping without property')
+      return ''
+    }
 
     if (hydra.pageIndex.equals(property.id)) {
       log('Skipping hydra:pageIndex property from query filters')
@@ -156,7 +160,7 @@ export async function getSparqlQuery({ api, basePath, collection, pageSize, quer
                 ${order.patterns}
               }`
 
-  if (variables && variables.mapping.some(mapping => mapping.property.equals(hydra.pageIndex))) {
+  if (variables && variables.mapping.some(mapping => mapping.property?.equals(hydra.pageIndex))) {
     const page = Number.parseInt(query.out(hydra.pageIndex).value || '1')
     const hydraLimit = query.out(hydra.limit).value
     const limit = hydraLimit ? parseInt(hydraLimit) : pageSize

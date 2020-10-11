@@ -39,8 +39,10 @@ function getTemplate(req: Request): IriTemplate | null {
 function addTemplateMappings(collection: GraphPointer, template: IriTemplate, request: AnyPointer = emptyDataset): void {
   collection.addOut(query.templateMappings, currMappings => {
     template.mapping.forEach(mapping => {
-      const property = mapping.property.id
-      currMappings.addOut(property, request.out(property))
+      if (mapping.property) {
+        const property = mapping.property.id
+        currMappings.addOut(property, request.out(property))
+      }
     })
   })
 }
@@ -54,7 +56,7 @@ interface AddCollectionViewsParams {
 }
 
 function addCollectionViews({ collection, total, template, request = emptyDataset, pageSize }: AddCollectionViewsParams): void {
-  if (!template.mapping.some(m => m.property.equals(hydra.pageIndex))) {
+  if (!template.mapping.some(m => m.property?.equals(hydra.pageIndex))) {
     return
   }
 
