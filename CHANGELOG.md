@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.1.11
+
+### Patch Changes
+
+- 5d6b2f1: Existing error mappers were not being replaced
+
 ## 0.1.10
 
 ### Patch Changes

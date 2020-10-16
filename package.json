@@ -1,6 +1,6 @@
 {
   "name": "@hydrofoil/labyrinth",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Build Hydra APIs on top of hydra-box",
   "scripts": {
     "lint": "eslint . --ext .ts --quiet --ignore-path .gitignore --ignore-path .eslintignore",
