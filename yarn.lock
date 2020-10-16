@@ -3610,10 +3610,10 @@ http-errors@~1.7.2:
     statuses ">= 1.5.0 < 2"
     toidentifier "1.0.0"
 
-http-problem-details-mapper@^0.1.4, http-problem-details-mapper@^0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/http-problem-details-mapper/-/http-problem-details-mapper-0.1.6.tgz#39dc3101330e71326357023b97108d432636f956"
-  integrity sha512-ILTTZE8GTAV+/7imDyYc0ZO/ROoUNAJ+QeoO0jH23lr6dgm8oOOCZQLzKu9ijABVpYwscbOBjV9s0B2AoSOnCA==
+http-problem-details-mapper@^0.1.4, http-problem-details-mapper@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/http-problem-details-mapper/-/http-problem-details-mapper-0.1.7.tgz#e119e28abfa0832c0249c48b1ce2f80a334fd318"
+  integrity sha512-M0rXE8hQxwLduUy+eqmZi2exbrTDxNHUrpaEbyMhYgn1arCnrqxOlIB7ovBkTyvT+e3WZw12RqbwtQDyfKjD+g==
 
 http-problem-details@^0.1.2, http-problem-details@^0.1.5:
   version "0.1.5"

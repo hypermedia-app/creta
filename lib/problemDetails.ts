@@ -4,7 +4,7 @@ import { NotFoundErrorMapper } from './error/NotFound'
 import { UnauthorizedErrorMapper } from './error/UnauthorizedError'
 import { ForbiddenErrorMapper } from './error/ForbiddenError'
 
-export const httpProblemMiddleware = (mappers: IErrorMapper[]) => {
+export const httpProblemMiddleware = (...mappers: IErrorMapper[]) => {
   const defaultRegistry = new MapperRegistry()
     .registerMapper(new NotFoundErrorMapper())
     .registerMapper(new ForbiddenErrorMapper())
@@ -12,7 +12,7 @@ export const httpProblemMiddleware = (mappers: IErrorMapper[]) => {
 
   const registry = mappers.reduce(
     (r, mapper) => {
-      return r.registerMapper(mapper)
+      return r.registerMapper(mapper, true)
     },
     defaultRegistry)
 

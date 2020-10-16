@@ -81,5 +81,5 @@ export async function hydraBox(app: Express, middlewareInit: MiddlewareParams): 
     next(new NotFoundError())
   })
   app.use(logRequestError)
-  app.use(httpProblemMiddleware(errorMappers))
+  app.use(httpProblemMiddleware(...errorMappers))
 }
