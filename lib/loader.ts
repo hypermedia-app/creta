@@ -1,4 +1,4 @@
-import { Term } from 'rdf-js'
+import { NamedNode, Term } from 'rdf-js'
 import $rdf from 'rdf-ext'
 import { PropertyResource, Resource, ResourceLoader } from 'hydra-box'
 import { CONSTRUCT, SELECT } from '@tpluscode/sparql-builder'
@@ -9,6 +9,13 @@ import TermSet from '@rdfjs/term-set'
 import { rdf } from '@tpluscode/rdf-ns-builders'
 
 const log = debug('hydra:store')
+
+function onlyNamedNodes(nodes: Set<NamedNode>, term: Term): Set<NamedNode> {
+  if (term.termType === 'NamedNode') {
+    return nodes.add(term)
+  }
+  return nodes
+}
 
 export class SparqlQueryLoader implements ResourceLoader {
   private readonly __client: ParsingClient
@@ -22,6 +29,10 @@ export class SparqlQueryLoader implements ResourceLoader {
   }
 
   async load(term: Term): Promise<Resource | null> {
+    if (term.termType !== 'NamedNode') {
+      return null
+    }
+
     const dataset = $rdf.dataset(await CONSTRUCT`?s ?p ?o`.WHERE`GRAPH ${term} { ?s ?p ?o }`.execute(this.__client.query))
 
     if (dataset.size === 0) {
@@ -30,21 +41,22 @@ export class SparqlQueryLoader implements ResourceLoader {
 
     const pointer = clownface({ dataset, term })
 
+    const types: Term[] = pointer.out(rdf.type).terms
     return {
       term,
       dataset,
-      types: new TermSet(pointer.out(rdf.type).terms),
+      types: types.reduce(onlyNamedNodes, new TermSet()),
     }
   }
 
-  async forClassOperation(term: Term): Promise<[Resource] | []> {
+  async forClassOperation(term: NamedNode): Promise<[Resource] | []> {
     log(`loading resource ${term.value}`)
     const resource = await this.load(term)
 
     return resource ? [resource] : []
   }
 
-  async forPropertyOperation(term: Term): Promise<PropertyResource[]> {
+  async forPropertyOperation(term: NamedNode): Promise<PropertyResource[]> {
     log(`loading resource ${term.value} by object usage`)
     const bindings = await SELECT`?g ?link`
       .WHERE`GRAPH ?g { ?g ?link ${term} }`
