@@ -1419,14 +1419,7 @@
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.2.12.tgz#6160ae454cd89dae05adc3bb97997f488b608201"
   integrity sha512-aN5IAC8QNtSUdQzxu7lGBgYAOuU1tmRU4c9dIq5OKGf/SBVjXo+ffM2wEjudAWbgpOhy60nLoAGH1xm8fpCKFQ==
 
-"@types/clownface@*":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@types/clownface/-/clownface-1.0.0.tgz#e73483c15477b7f1d8e238dcc3edc872516b93e1"
-  integrity sha512-mSb1tpiRYzIDRl3bubv0uVDxk0cb5Q80wT1ns7GbQ4sZ8QRNnyb/K4PnDEo2bKlBDFB1zgTa3/UQtRP32b5v0g==
-  dependencies:
-    "@types/rdf-js" "*"
-
-"@types/clownface@^1.0.3":
+"@types/clownface@*", "@types/clownface@^1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@types/clownface/-/clownface-1.0.3.tgz#8abe4c7e1b3226851a83af33d774f94eb915fdd2"
   integrity sha512-s2VLKhvwYJbzL/+r12fuv6gu8J/MVcuBk2K6CPsnRygcL5hTwahBPkYS4ROmthKB4+zP1f1oWYTZYAKnNs1ogw==
@@ -1561,17 +1554,10 @@
     "@types/rdf-dataset-indexed" "*"
     "@types/rdf-js" "*"
 
-"@types/rdf-js@*", "@types/rdf-js@^4.0.0":
+"@types/rdf-js@*", "@types/rdf-js@^2.0.11", "@types/rdf-js@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/rdf-js/-/rdf-js-4.0.0.tgz#96f7314b09b77ecd16fca7f358db90db8ac86d1b"
   integrity sha512-2uaR7ks0380MqzUWGOPOOk9yZIr/6MOaCcaj3ntKgd2PqNocgi8j5kSHIJTDe+5ABtTHqKMSE0v0UqrsT8ibgQ==
-  dependencies:
-    "@types/node" "*"
-
-"@types/rdf-js@^2.0.11":
-  version "2.0.12"
-  resolved "https://registry.yarnpkg.com/@types/rdf-js/-/rdf-js-2.0.12.tgz#d305a0b6fd105e33f58d5c1b3de33ff8edcb3210"
-  integrity sha512-NBzHFHp2vHOJkPlSqzsOrkEsD9grKn+PdFjZieIw59pc0FlRG6WEQAjQZvHzFxJlYzC6ZDCFyTA1wBvUnnzUQw==
   dependencies:
     "@types/node" "*"
 
