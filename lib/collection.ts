@@ -87,15 +87,15 @@ interface CollectionParams {
 }
 
 export async function collection({ hydraBox, pageSize, sparqlClient, query, ...rest }: CollectionParams): Promise<GraphPointer<NamedNode, DatasetExt>> {
+  const api = clownface(hydraBox.api)
   const collection = clownface({
     dataset: $rdf.dataset([...rest.collection.dataset]),
     term: rest.collection.term,
   })
-  const includeLinked = hydraBox.operation.out(ns.query.include)
   const template = getTemplate(hydraBox)
 
   const pageQuery = await getSparqlQuery({
-    api: clownface(hydra.api),
+    api,
     collection,
     query,
     variables: template,
@@ -119,6 +119,9 @@ export async function collection({ hydraBox, pageSize, sparqlClient, query, ...r
   collection.namedNode(collection.term)
     .addOut(hydra.member, memberAssertions)
 
+  const eagerLoadByCollection = api.node([hydraBox.operation.term, ...hydraBox.resource.types]).out(ns.query.include)
+  const eagerLoadByMembers = api.node(collection.out(hydra.member).out(rdf.type).terms).out(ns.query.include)
+  const includeLinked = [...eagerLoadByCollection.toArray(), ...eagerLoadByMembers.toArray()]
   collection.dataset.addAll(await loadLinkedResources(collection.out(hydra.member), includeLinked, sparqlClient))
 
   if (template) {
