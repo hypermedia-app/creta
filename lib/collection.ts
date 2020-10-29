@@ -114,7 +114,7 @@ export async function collection({ hydraBox, pageSize, sparqlClient, query, ...r
   }
   collection.addOut(hydra.totalItems, total)
 
-  const memberAssertions = collection
+  const memberAssertions = collection.any()
     .has(rdf.type, collection.out(hydra.manages).has(hydra.property, rdf.type).out(hydra.object))
   collection.namedNode(collection.term)
     .addOut(hydra.member, memberAssertions)
