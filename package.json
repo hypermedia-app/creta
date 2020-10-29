@@ -97,6 +97,9 @@
     "string-to-stream": "^3.0.1",
     "typescript": "^4.0.2"
   },
+  "resolutions": {
+    "@types/rdf-js": "^4.0.0"
+  },
   "mocha": {
     "watch-files": [
       "./**/*.ts"
