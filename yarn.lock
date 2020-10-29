@@ -3662,9 +3662,10 @@ husky@^4.2.5:
     slash "^3.0.0"
     which-pm-runs "^1.0.0"
 
-hydra-box@zazuko/hydra-box:
-  version "0.5.0"
-  resolved "https://codeload.github.com/zazuko/hydra-box/tar.gz/d02f1cc019549324bb2e79da56db6003cbf0a3bc"
+hydra-box@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/hydra-box/-/hydra-box-0.5.1.tgz#3bfe64c80679e99083af89832d0739a25022b9ee"
+  integrity sha512-w+Jt2LQlBUSO6wU5g+gKiUyqe5JnhTlYd8UFhKup9mdEXqE4B5IW1iI5FmekKSHh2teKvI4uhna2PhYGG7f4dA==
   dependencies:
     "@rdfjs/data-model" "^1.1.2"
     "@rdfjs/dataset" "^1.0.1"
@@ -3676,6 +3677,7 @@ hydra-box@zazuko/hydra-box:
     clownface "^0.12.1"
     debug "^4.1.1"
     express "^4.17.1"
+    http-errors "^1.8.0"
     middleware-async "^1.2.6"
     promise-the-world "^1.0.1"
     rdf-dataset-ext "^1.0.0"
