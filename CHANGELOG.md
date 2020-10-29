@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.1.12
+
+### Patch Changes
+
+- 2fca756: More ways to eager-load collection members
+
 ## 0.1.11
 
 ### Patch Changes
