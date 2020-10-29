@@ -1,10 +1,11 @@
-import { MultiPointer } from 'clownface'
+import { GraphPointer, MultiPointer } from 'clownface'
 import { NamedNode } from 'rdf-js'
 import { SparqlGraphQueryExecutable } from '@tpluscode/sparql-builder/lib'
 import { CONSTRUCT } from '@tpluscode/sparql-builder'
 import DatasetExt from 'rdf-ext/lib/Dataset'
 import $rdf from 'rdf-ext'
 import type StreamClient from 'sparql-http-client/StreamClient'
+import TermSet from '@rdfjs/term-set'
 
 function getLinkedResources(resource: MultiPointer, property: NamedNode): SparqlGraphQueryExecutable | null {
   const linked = resource.out(property)
@@ -22,11 +23,12 @@ function getLinkedResources(resource: MultiPointer, property: NamedNode): Sparql
   }, CONSTRUCT`?s ?p ?o`.WHERE`?s ?p ?o`)
 }
 
-export async function loadLinkedResources(resource: MultiPointer, links: MultiPointer, sparql: StreamClient): Promise<DatasetExt> {
+export async function loadLinkedResources(resource: MultiPointer, links: GraphPointer[], sparql: StreamClient): Promise<DatasetExt> {
   const dataset = $rdf.dataset()
 
-  await Promise.all((links.toArray().reduce((promises, property) => {
-    const { term } = property
+  const uniqueLinks = new TermSet(links.map(link => link.term))
+
+  await Promise.all(([...uniqueLinks].reduce((promises, term) => {
     if (term.termType === 'NamedNode') {
       promises.push((async () => {
         const query = getLinkedResources(resource, term)
