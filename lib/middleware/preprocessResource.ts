@@ -2,11 +2,12 @@ import { Request, RequestHandler } from 'express'
 import clownface, { GraphPointer } from 'clownface'
 import asyncMiddleware from 'middleware-async'
 import { rdf } from '@tpluscode/rdf-ns-builders'
+import { NamedNode } from 'rdf-js'
 import { query } from '../namespace'
 import { loaders } from '../rdfLoaders'
 
 export interface Enrichment {
-  (req: Request, pointer: GraphPointer): Promise<void>
+  (req: Request, pointer: GraphPointer<NamedNode>): Promise<void>
 }
 
 export function preprocessResource(basePath: string): RequestHandler {

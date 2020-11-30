@@ -6,7 +6,8 @@
     "lint": "eslint . --ext .ts --quiet --ignore-path .gitignore --ignore-path .eslintignore",
     "test": "c8 --all --reporter=lcov mocha --recursive --extension ts test",
     "build": "tsc",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "release": "changeset publish"
   },
   "files": [
     "*.js",
