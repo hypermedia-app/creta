@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.1.13
+
+### Patch Changes
+
+- d1044c9: Add full support for hydra-box middlewares
+
 ## 0.1.12
 
 ### Patch Changes
