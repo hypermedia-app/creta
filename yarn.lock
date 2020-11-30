@@ -3656,10 +3656,9 @@ husky@^4.2.5:
     slash "^3.0.0"
     which-pm-runs "^1.0.0"
 
-hydra-box@^0.5.1:
+hydra-box@zazuko/hydra-box#property-operations-responses:
   version "0.5.1"
-  resolved "https://registry.yarnpkg.com/hydra-box/-/hydra-box-0.5.1.tgz#3bfe64c80679e99083af89832d0739a25022b9ee"
-  integrity sha512-w+Jt2LQlBUSO6wU5g+gKiUyqe5JnhTlYd8UFhKup9mdEXqE4B5IW1iI5FmekKSHh2teKvI4uhna2PhYGG7f4dA==
+  resolved "https://codeload.github.com/zazuko/hydra-box/tar.gz/81227db954d5fedb85bf37a4e9f9bd157dc29916"
   dependencies:
     "@rdfjs/data-model" "^1.1.2"
     "@rdfjs/dataset" "^1.0.1"
