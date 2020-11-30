@@ -5,7 +5,7 @@ import { protectedResource } from './resource'
 import { collection } from './lib/collection'
 
 export const get = protectedResource(asyncMiddleware(async (req, res) => {
-  const types = clownface(req.hydra.api).namedNode([...req.hydra.resource.types])
+  const types = clownface(req.hydra.api).node([...req.hydra.resource.types])
   let request: AnyPointer | undefined
   if (req.dataset) {
     request = clownface({ dataset: await req.dataset() })
