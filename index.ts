@@ -1,4 +1,4 @@
-import { HydraBox, middleware, ResourceLoader } from 'hydra-box'
+import { HydraBox, middleware, ResourceLoader, Options } from 'hydra-box'
 import cors from 'cors'
 import { Express } from 'express'
 import RdfResource from '@tpluscode/rdfine'
@@ -43,6 +43,7 @@ type MiddlewareParams = ApiInit & {
   sparql: ConstructorParameters<typeof StreamClient>[0] & {
     endpointUrl: string
   }
+  middleware?: Options['middleware']
   options?: {
     collection?: {
       pageSize?: number
@@ -51,7 +52,12 @@ type MiddlewareParams = ApiInit & {
 }
 
 export async function hydraBox(app: Express, middlewareInit: MiddlewareParams): Promise<void> {
-  const { loader, codePath, errorMappers = [], sparql, options } = middlewareInit
+  const { loader, codePath, errorMappers = [], sparql, options, ...params } = middlewareInit
+
+  const resourceMiddleware = !(params.middleware?.resource) ? []
+    : Array.isArray(params.middleware.resource)
+      ? params.middleware.resource
+      : [params.middleware.resource]
 
   app.sparql = new StreamClient(sparql)
 
@@ -70,9 +76,11 @@ export async function hydraBox(app: Express, middlewareInit: MiddlewareParams): 
     {
       loader: loader ?? new SparqlQueryLoader(sparql),
       middleware: {
+        operations: params.middleware?.operations,
         resource: [
           removeHydraTypes,
           preprocessResource(codePath),
+          ...resourceMiddleware,
         ],
       },
     }))

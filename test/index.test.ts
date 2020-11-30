@@ -169,4 +169,94 @@ describe('labyrinth', () => {
     // then
     expect(app.labyrinth.collection.pageSize).to.eq(20)
   })
+
+  it('attaches operation middleware', async () => {
+    // given
+    const app = express()
+    await hydraBox(app, {
+      baseUri,
+      apiPath,
+      codePath,
+      loader: loader(),
+      sparql: {
+        endpointUrl: '/sparql',
+        updateUrl: '/sparql',
+        storeUrl: '/sparql',
+      },
+      middleware: {
+        operations: (req, res) => {
+          res.send('foo')
+        },
+      },
+    })
+
+    // when
+    const response = request(app).get('/')
+
+    // then
+    await response
+      .expect('foo')
+  })
+
+  it('attaches multiple operation middleware', async () => {
+    // given
+    const app = express()
+    await hydraBox(app, {
+      baseUri,
+      apiPath,
+      codePath,
+      loader: loader(),
+      sparql: {
+        endpointUrl: '/sparql',
+        updateUrl: '/sparql',
+        storeUrl: '/sparql',
+      },
+      middleware: {
+        operations: [(req, res, next) => {
+          res.locals.foo = 'bar'
+          next()
+        }, (req, res) => {
+          res.send(res.locals.foo)
+        }],
+      },
+    })
+
+    // when
+    const response = request(app).get('/')
+
+    // then
+    await response
+      .expect('bar')
+  })
+
+  it('attaches multiple resource middleware', async () => {
+    // given
+    const app = express()
+    await hydraBox(app, {
+      baseUri,
+      apiPath,
+      codePath,
+      loader: loader(),
+      sparql: {
+        endpointUrl: '/sparql',
+        updateUrl: '/sparql',
+        storeUrl: '/sparql',
+      },
+      middleware: {
+        resource: [(req, res, next) => {
+          res.locals.foo = 'bar'
+          next()
+        }, (req, res) => {
+          res.send(res.locals.foo)
+        }],
+      },
+    })
+
+    // when
+    const response = request(app).get('/')
+
+    // then
+    await response
+      .expect('bar')
+  })
 })
