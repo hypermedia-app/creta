@@ -50,6 +50,10 @@ async function main() {
       }  
     },
     errorMappers: [] // (optional) map errors into problem+json
+    middleware: {    // (optional) hydra-box middleware (arrays or function)
+      operations,    // runs before final operation is selected. modify `req.hydra.operations` here
+      resource,      // runs before operation is invoked. modify `req.hydra.resource` here
+    }
   })
   
   app.listen(8080)
