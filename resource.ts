@@ -32,7 +32,7 @@ function getAuth(hydra: HydraBox, property: NamedNode) {
     .out(property).toArray()
     .reduce(toStringArrays, [])
 
-  const typeRestrictions = api.namedNode([...hydra.resource.types])
+  const typeRestrictions = api.node([...hydra.resource.types])
     .out(property).toArray()
     .reduce(toStringArrays, [])
 

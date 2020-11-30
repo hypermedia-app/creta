@@ -1,6 +1,6 @@
 import { NamedNode, Term } from 'rdf-js'
 import $rdf from 'rdf-ext'
-import { PropertyResource, Resource, ResourceLoader } from 'hydra-box'
+import { PropertyResource, ObjectResource, ResourceLoader } from 'hydra-box'
 import { CONSTRUCT, SELECT } from '@tpluscode/sparql-builder'
 import debug from 'debug'
 import ParsingClient from 'sparql-http-client/ParsingClient'
@@ -28,7 +28,7 @@ export class SparqlQueryLoader implements ResourceLoader {
     })
   }
 
-  async load(term: Term): Promise<Resource | null> {
+  async load(term: Term): Promise<ObjectResource | null> {
     if (term.termType !== 'NamedNode') {
       return null
     }
@@ -49,7 +49,7 @@ export class SparqlQueryLoader implements ResourceLoader {
     }
   }
 
-  async forClassOperation(term: NamedNode): Promise<[Resource] | []> {
+  async forClassOperation(term: NamedNode): Promise<[ObjectResource] | []> {
     log(`loading resource ${term.value}`)
     const resource = await this.load(term)
 

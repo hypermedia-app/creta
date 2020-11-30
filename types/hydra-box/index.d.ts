@@ -18,9 +18,9 @@ declare module 'hydra-box' {
     }
 
     interface ObjectResource {
-      term: Term,
+      term: NamedNode,
       dataset: DatasetCore,
-      types: Set<Term>
+      types: Set<NamedNode>
     }
 
     interface PropertyResource extends ObjectResource {
