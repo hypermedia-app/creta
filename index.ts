@@ -10,8 +10,9 @@ import { logRequest, logRequestError } from './lib/logger'
 import { httpProblemMiddleware } from './lib/problemDetails'
 import { IErrorMapper } from 'http-problem-details-mapper'
 import { NamedNode } from 'rdf-js'
-import { removeHydraTypes, preprocessResource } from './lib/middleware'
+import { removeHydraOperations, preprocessResource } from './lib/middleware'
 import { SparqlQueryLoader } from './lib/loader'
+import { ensureArray } from './lib/array'
 
 export { SparqlQueryLoader } from './lib/loader'
 
@@ -54,11 +55,6 @@ type MiddlewareParams = ApiInit & {
 export async function hydraBox(app: Express, middlewareInit: MiddlewareParams): Promise<void> {
   const { loader, codePath, errorMappers = [], sparql, options, ...params } = middlewareInit
 
-  const resourceMiddleware = !(params.middleware?.resource) ? []
-    : Array.isArray(params.middleware.resource)
-      ? params.middleware.resource
-      : [params.middleware.resource]
-
   app.sparql = new StreamClient(sparql)
 
   app.labyrinth = {
@@ -76,11 +72,13 @@ export async function hydraBox(app: Express, middlewareInit: MiddlewareParams): 
     {
       loader: loader ?? new SparqlQueryLoader(sparql),
       middleware: {
-        operations: params.middleware?.operations,
+        operations: [
+          removeHydraOperations,
+          ...ensureArray(params.middleware?.operations),
+        ],
         resource: [
-          removeHydraTypes,
           preprocessResource(codePath),
-          ...resourceMiddleware,
+          ...ensureArray(params.middleware?.resource),
         ],
       },
     }))
