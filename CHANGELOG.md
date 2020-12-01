@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.1.14
+
+### Patch Changes
+
+- 7038c1c: Fix filtering of hydra Class operations
+
 ## 0.1.13
 
 ### Patch Changes
