@@ -34,12 +34,17 @@ declare module 'hydra-box' {
       forPropertyOperation(term: Term, req: Request): Promise<Array<PropertyResource>>
     }
 
+    interface PotentialOperation {
+      resource: ObjectResource | PropertyResource
+      operation: GraphPointer
+    }
+
     interface HydraBox {
       api: Api;
       term: NamedNode;
       resource: ObjectResource;
       operation: GraphPointer
-      operations: { resource: ObjectResource | PropertyResource; operation: GraphPointer }[]
+      operations: PotentialOperation[]
     }
   }
 
