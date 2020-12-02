@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.1.15
+
+### Patch Changes
+
+- 3c8390d: Non-hydra operations would be superfluously removed by middleware
+
 ## 0.1.14
 
 ### Patch Changes
