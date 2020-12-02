@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.1.15-next.0
+
+### Patch Changes
+
+- 879dbf4: Update rdfine to @next
+
 ## 0.1.14
 
 ### Patch Changes

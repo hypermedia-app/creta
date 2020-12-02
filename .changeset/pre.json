@@ -4,5 +4,7 @@
   "initialVersions": {
     "@hydrofoil/labyrinth": "0.1.14"
   },
-  "changesets": []
+  "changesets": [
+    "cool-taxis-decide"
+  ]
 }
