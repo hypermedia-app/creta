@@ -50,6 +50,40 @@ describe('labyrinth/lib/middleware/removeHydraOperations', () => {
     ])
   })
 
+  it('removes hydra:Resource operation if another exists (reverse order)', async () => {
+    // given
+    const app = express()
+    app.use(hydraBox({
+      setup: hydra => {
+        const api = clownface({ dataset: $rdf.dataset() })
+          .node(ex.HydraOperation)
+          .addIn(ns.hydra.supportedOperation, ns.hydra.Resource)
+          .node(ex.UserOperation)
+          .addIn(ns.hydra.supportedOperation, ex.Resource)
+
+        hydra.operations.push({
+          resource,
+          operation: api.node(ex.HydraOperation),
+        }, {
+          resource,
+          operation: api.node(ex.UserOperation),
+        })
+      },
+    }))
+    app.use(removeHydraOperations)
+    app.use((req, res) => {
+      res.send(req.hydra.operations.map(({ operation }) => operation.term.value))
+    })
+
+    // when
+    const response = request(app).get('/')
+
+    // then
+    await response.expect([
+      ex.UserOperation.value,
+    ])
+  })
+
   it('does not remove hydra:Resource operation if it is the only one', async () => {
     // given
     const app = express()

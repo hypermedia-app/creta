@@ -26,7 +26,7 @@ export const removeHydraOperations: RequestHandler = (req, res, next) => {
   for (const [term, operations] of defaultOperations) {
     if (userOperations.has(term)) {
       for (const operation of operations) {
-        req.hydra.operations.splice(req.hydra.operations.indexOf(operation))
+        req.hydra.operations.splice(req.hydra.operations.indexOf(operation), 1)
       }
     }
   }
