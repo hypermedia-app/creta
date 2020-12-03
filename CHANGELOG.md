@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.1.17
+
+### Patch Changes
+
+- c556e45: Add log to the operation filter middleware
+
 ## 0.1.16
 
 ### Patch Changes
