@@ -198,6 +198,36 @@ describe('labyrinth', () => {
       .expect('foo')
   })
 
+  it('attaches error middleware', async () => {
+    // given
+    let captured: Error | undefined
+    const app = express()
+    app.use((req, res, next) => next(new Error()))
+    await hydraBox(app, {
+      baseUri,
+      apiPath,
+      codePath,
+      loader: loader(),
+      sparql: {
+        endpointUrl: '/sparql',
+        updateUrl: '/sparql',
+        storeUrl: '/sparql',
+      },
+      middleware: {
+        error: (error, req, res, next) => {
+          captured = error
+          next(error)
+        },
+      },
+    })
+
+    // when
+    await request(app).get('/')
+
+    // then
+    expect(captured).to.be.ok
+  })
+
   it('attaches multiple operation middleware', async () => {
     // given
     const app = express()
