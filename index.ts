@@ -1,6 +1,6 @@
 import { HydraBox, middleware, ResourceLoader, Options } from 'hydra-box'
 import cors from 'cors'
-import { Express } from 'express'
+import { Express, ErrorRequestHandler } from 'express'
 import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
 import StreamClient from 'sparql-http-client/StreamClient'
@@ -44,7 +44,7 @@ type MiddlewareParams = ApiInit & {
   sparql: ConstructorParameters<typeof StreamClient>[0] & {
     endpointUrl: string
   }
-  middleware?: Options['middleware']
+  middleware?: Options['middleware'] & { error?: ErrorRequestHandler | ErrorRequestHandler[] }
   options?: {
     collection?: {
       pageSize?: number
@@ -87,5 +87,8 @@ export async function hydraBox(app: Express, middlewareInit: MiddlewareParams): 
     next(new NotFoundError())
   })
   app.use(logRequestError)
+  if (params.middleware?.error) {
+    app.use(params.middleware.error)
+  }
   app.use(httpProblemMiddleware(...errorMappers))
 }
