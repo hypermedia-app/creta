@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.1.18
+
+### Patch Changes
+
+- 1547037: Add error middleware extension point
+
 ## 0.1.17
 
 ### Patch Changes
