@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.2.0
+
+### Minor Changes
+
+- fa1d02a: Handle errors explicitly using a new module
+
 ## 0.1.18
 
 ### Patch Changes
