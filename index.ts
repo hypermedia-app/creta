@@ -1,14 +1,12 @@
 import { HydraBox, middleware, ResourceLoader, Options } from 'hydra-box'
 import cors from 'cors'
-import { Express, ErrorRequestHandler } from 'express'
+import { Express } from 'express'
 import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
 import StreamClient from 'sparql-http-client/StreamClient'
 import { ApiInit, createApi } from './lib'
 import { NotFoundError } from './lib/error'
 import { logRequest, logRequestError } from './lib/logger'
-import { httpProblemMiddleware } from './lib/problemDetails'
-import { IErrorMapper } from 'http-problem-details-mapper'
 import { NamedNode } from 'rdf-js'
 import { removeHydraOperations, preprocessResource } from './lib/middleware'
 import { SparqlQueryLoader } from './lib/loader'
@@ -40,11 +38,10 @@ declare module 'express-serve-static-core' {
 
 type MiddlewareParams = ApiInit & {
   loader?: ResourceLoader
-  errorMappers?: IErrorMapper[]
   sparql: ConstructorParameters<typeof StreamClient>[0] & {
     endpointUrl: string
   }
-  middleware?: Options['middleware'] & { error?: ErrorRequestHandler | ErrorRequestHandler[] }
+  middleware?: Options['middleware']
   options?: {
     collection?: {
       pageSize?: number
@@ -53,7 +50,7 @@ type MiddlewareParams = ApiInit & {
 }
 
 export async function hydraBox(app: Express, middlewareInit: MiddlewareParams): Promise<void> {
-  const { loader, codePath, errorMappers = [], sparql, options, ...params } = middlewareInit
+  const { loader, codePath, sparql, options, ...params } = middlewareInit
 
   app.sparql = new StreamClient(sparql)
 
@@ -87,8 +84,4 @@ export async function hydraBox(app: Express, middlewareInit: MiddlewareParams): 
     next(new NotFoundError())
   })
   app.use(logRequestError)
-  if (params.middleware?.error) {
-    app.use(params.middleware.error)
-  }
-  app.use(httpProblemMiddleware(...errorMappers))
 }

@@ -25,7 +25,8 @@
   "files": [
     "index.ts",
     "collection.ts",
-    "resource.ts"
+    "resource.ts",
+    "errors.ts"
   ],
   "include": [
     "types.ts",
