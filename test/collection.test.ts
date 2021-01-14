@@ -236,9 +236,9 @@ describe('labyrinth/collection', () => {
       // given
       const app = express()
       app.use(hydraBox({
-        setup: hydraBox => {
-          hydraBox.resource.types.add(ex.Collection)
-          cf(hydraBox.resource)
+        setup: async hydraBox => {
+          hydraBox.resource.types.add(ex.Collection);
+          (await hydraBox.resource.pointer())
             .addOut(hydra.limit, 10)
           cf(hydraBox.api).namedNode(ex.Collection)
             .addOut(hydra.limit, 15)
@@ -264,9 +264,9 @@ describe('labyrinth/collection', () => {
       const app = express()
       collectionQueryMock.getSparqlQuery.resolves(null)
       app.use(hydraBox({
-        setup: api => {
-          api.resource.term = ex.movies
-          cf(api.resource)
+        setup: async api => {
+          api.resource.term = ex.movies;
+          (await api.resource.pointer())
             .addOut(rdf.type, ex.Collection)
           cf(api.api)
             .namedNode(ex.Collection)

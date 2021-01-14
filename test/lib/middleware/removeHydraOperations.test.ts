@@ -11,7 +11,17 @@ import clownface from 'clownface'
 
 describe('labyrinth/lib/middleware/removeHydraOperations', () => {
   const resource: ObjectResource = {
-    dataset: $rdf.dataset(),
+    prefetchDataset: $rdf.dataset(),
+    dataset: async () => $rdf.dataset(),
+    async pointer() {
+      return clownface({
+        dataset: await this.dataset(),
+        term: this.term,
+      })
+    },
+    quadStream() {
+      return $rdf.dataset().toStream()
+    },
     term: ex.resource,
     types: new Set(),
   }

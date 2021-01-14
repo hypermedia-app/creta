@@ -1,7 +1,7 @@
 declare module 'hydra-box' {
   import {Request, RequestHandler, Router} from 'express';
   import Api = require('hydra-box/Api');
-  import {DatasetCore, Term, NamedNode} from 'rdf-js';
+  import {DatasetCore, Term, NamedNode, Stream} from 'rdf-js';
   import {GraphPointer} from 'clownface';
 
   function middleware(api: Api, options: hydraBox.Options): Router
@@ -19,7 +19,10 @@ declare module 'hydra-box' {
 
     interface ObjectResource {
       term: NamedNode,
-      dataset: DatasetCore,
+      prefetchDataset: DatasetCore
+      pointer(): Promise<GraphPointer<NamedNode>>
+      dataset(): Promise<DatasetCore>
+      quadStream(): Stream
       types: Set<NamedNode>
     }
 

@@ -9,9 +9,10 @@ import setLink from 'set-link'
 import StreamStore from 'sparql-http-client/StreamStore'
 import Endpoint from 'sparql-http-client/Endpoint'
 import { NamedNode } from 'rdf-js'
+import clownface from 'clownface'
 
 interface MiddlewareOptions {
-  setup?: (hydra: HydraBox) => void
+  setup?: (hydra: HydraBox) => Promise<void> | void
   user?: {
     id: NamedNode
     permissions?: string[]
@@ -21,12 +22,24 @@ interface MiddlewareOptions {
 }
 
 export function hydraBox({ setup, user, query }: MiddlewareOptions = {}): RequestHandler {
+  const dataset = $rdf.dataset()
+
   const hydra: HydraBox = {
     operation: cf({ dataset: $rdf.dataset() }).blankNode(),
     operations: [],
     term: $rdf.namedNode('request'),
     resource: {
-      dataset: $rdf.dataset(),
+      prefetchDataset: $rdf.dataset(),
+      quadStream() {
+        return dataset.toStream()
+      },
+      async pointer() {
+        return clownface({
+          term: this.term,
+          dataset,
+        })
+      },
+      dataset: async () => dataset,
       term: $rdf.namedNode('resource'),
       types: new TermSet(),
     },
@@ -47,7 +60,7 @@ export function hydraBox({ setup, user, query }: MiddlewareOptions = {}): Reques
     await rdfHandler.attach(req, res)
     setLink.attach(res)
 
-    setup && setup(hydra)
+    setup && await setup(hydra)
     req.hydra = hydra
     req.user = user
     req.app.sparql = {

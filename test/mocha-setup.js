@@ -8,4 +8,7 @@ require('chai-snapshot-matcher')
 
 const chai = require('chai')
 const sinonChai = require('sinon-chai')
+const chaiQuantifiers = require('chai-quantifiers')
+
 chai.use(sinonChai)
+chai.use(chaiQuantifiers)

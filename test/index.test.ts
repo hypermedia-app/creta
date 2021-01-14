@@ -9,6 +9,7 @@ import { hydra } from '@tpluscode/rdf-ns-builders'
 import { hydraBox } from '../index'
 import { ex } from './support/namespace'
 import { loader } from './support/hydra-box'
+import clownface from 'clownface'
 
 describe('labyrinth', () => {
   const baseUri = ex().value
@@ -47,7 +48,17 @@ describe('labyrinth', () => {
       codePath,
       loader: loader({
         classResource: [{
-          dataset: $rdf.dataset(),
+          prefetchDataset: $rdf.dataset(),
+          dataset: async () => $rdf.dataset(),
+          async pointer() {
+            return clownface({
+              dataset: await this.dataset(),
+              term: this.term,
+            })
+          },
+          quadStream() {
+            return $rdf.dataset().toStream()
+          },
           term: ex(),
           types: new TermSet([ex.Authenticated, hydra.Resource]),
         }],
@@ -76,7 +87,17 @@ describe('labyrinth', () => {
       codePath,
       loader: loader({
         classResource: [{
-          dataset: $rdf.dataset(),
+          prefetchDataset: $rdf.dataset(),
+          dataset: async () => $rdf.dataset(),
+          async pointer() {
+            return clownface({
+              dataset: await this.dataset(),
+              term: this.term,
+            })
+          },
+          quadStream() {
+            return $rdf.dataset().toStream()
+          },
           term: ex(),
           types: new TermSet([ex.Protected]),
         }],
