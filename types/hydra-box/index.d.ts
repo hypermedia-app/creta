@@ -20,7 +20,6 @@ declare module 'hydra-box' {
     interface ObjectResource {
       term: NamedNode,
       prefetchDataset: DatasetCore
-      pointer(): Promise<GraphPointer<NamedNode>>
       dataset(): Promise<DatasetCore>
       quadStream(): Stream
       types: Set<NamedNode>
@@ -45,7 +44,7 @@ declare module 'hydra-box' {
     interface HydraBox {
       api: Api;
       term: NamedNode;
-      resource: ObjectResource;
+      resource: ObjectResource & { clownface(): Promise<GraphPointer<NamedNode>> }
       operation: GraphPointer
       operations: PotentialOperation[]
     }

@@ -13,12 +13,6 @@ describe('labyrinth/lib/middleware/removeHydraOperations', () => {
   const resource: ObjectResource = {
     prefetchDataset: $rdf.dataset(),
     dataset: async () => $rdf.dataset(),
-    async pointer() {
-      return clownface({
-        dataset: await this.dataset(),
-        term: this.term,
-      })
-    },
     quadStream() {
       return $rdf.dataset().toStream()
     },

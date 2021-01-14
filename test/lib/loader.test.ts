@@ -147,20 +147,6 @@ describe('SparqlQueryLoader', function () {
       const dataset = await $rdf.dataset().import(resource!.quadStream())
       expect(dataset).to.have.property('size', 4)
     })
-
-    it('returns pointer getter to term node in dataset', async () => {
-      // given
-      const term = ex.Howard
-
-      // when
-      const [resource] = await loader.forClassOperation(term)
-
-      // then
-      const dataset = await resource!.dataset()
-      const pointer = await resource!.pointer()
-      expect(pointer.dataset).to.eq(dataset)
-      expect(pointer.term).to.deep.eq(ex.Howard)
-    })
   })
 
   describe('.forPropertyOperation', () => {
@@ -220,20 +206,6 @@ describe('SparqlQueryLoader', function () {
       const leonard = clownface({ dataset })
         .has(schema.spouse, term)
       expect(leonard.out(schema.name).value).to.equal('Leonard Hofstadter')
-    })
-
-    it('returns pointer getter to term node in dataset', async () => {
-      // given
-      const term = ex.Penny
-
-      // when
-      const [resource] = await loader.forPropertyOperation(term)
-
-      // then
-      const dataset = await resource.dataset()
-      const pointer = await resource.pointer()
-      expect(pointer.dataset).to.eq(dataset)
-      expect(pointer.term).to.deep.eq(ex.Leonard)
     })
   })
 })

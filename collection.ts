@@ -11,7 +11,7 @@ export const get = protectedResource(asyncMiddleware(async (req, res) => {
     request = clownface({ dataset: await req.dataset() })
   }
 
-  const collection = await req.hydra.resource.pointer()
+  const collection = await req.hydra.resource.clownface()
   const hydraLimit = collection.out(hydra.limit).value || types.out(hydra.limit).value
   const pageSize = hydraLimit ? parseInt(hydraLimit) : req.app.labyrinth.collection.pageSize
 

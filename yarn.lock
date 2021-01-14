@@ -3738,9 +3738,9 @@ husky@^4.2.5:
     slash "^3.0.0"
     which-pm-runs "^1.0.0"
 
-hydra-box@zazuko/hydra-box:
+hydra-box@zazuko/hydra-box#clownface-getter:
   version "0.6.0"
-  resolved "https://codeload.github.com/zazuko/hydra-box/tar.gz/26684dd8c2c885dbf3b0a3841730932784f4eaa7"
+  resolved "https://codeload.github.com/zazuko/hydra-box/tar.gz/9b99a61df05250d2b38c6db04ccad8b91183e364"
   dependencies:
     "@rdfjs/data-model" "^1.1.2"
     "@rdfjs/dataset" "^1.0.1"

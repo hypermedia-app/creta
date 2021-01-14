@@ -28,7 +28,7 @@ describe('labyrinth/lib/middleware/preprocessResource', () => {
     const app = express()
     app.use(hydraBox({
       setup: async hydra => {
-        (await hydra.resource.pointer())
+        (await hydra.resource.clownface())
           .addOut(ns.rdf.type, [ex.Person])
         cf(hydra.api)
           .addOut(ns.hydra.supportedClass, ex.Person, clas => {

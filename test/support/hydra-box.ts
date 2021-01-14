@@ -33,7 +33,7 @@ export function hydraBox({ setup, user, query }: MiddlewareOptions = {}): Reques
       quadStream() {
         return dataset.toStream()
       },
-      async pointer() {
+      async clownface() {
         return clownface({
           term: this.term,
           dataset,

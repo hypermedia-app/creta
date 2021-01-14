@@ -238,7 +238,7 @@ describe('labyrinth/collection', () => {
       app.use(hydraBox({
         setup: async hydraBox => {
           hydraBox.resource.types.add(ex.Collection);
-          (await hydraBox.resource.pointer())
+          (await hydraBox.resource.clownface())
             .addOut(hydra.limit, 10)
           cf(hydraBox.api).namedNode(ex.Collection)
             .addOut(hydra.limit, 15)
@@ -266,7 +266,7 @@ describe('labyrinth/collection', () => {
       app.use(hydraBox({
         setup: async api => {
           api.resource.term = ex.movies;
-          (await api.resource.pointer())
+          (await api.resource.clownface())
             .addOut(rdf.type, ex.Collection)
           cf(api.api)
             .namedNode(ex.Collection)

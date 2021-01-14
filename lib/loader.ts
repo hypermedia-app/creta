@@ -10,7 +10,6 @@ import TermMap from '@rdfjs/term-map'
 import TermSet from '@rdfjs/term-set'
 import { rdf } from '@tpluscode/rdf-ns-builders'
 import { PassThrough } from 'stream'
-import clownface from 'clownface'
 
 const log = debug('hydra:store')
 
@@ -106,7 +105,7 @@ export class SparqlQueryLoader implements ResourceLoader {
     return [...resources.values()]
   }
 
-  private __createDatasetGetters(term: NamedNode): Pick<ObjectResource, 'dataset' | 'quadStream' | 'pointer'> {
+  private __createDatasetGetters(term: NamedNode): Pick<ObjectResource, 'dataset' | 'quadStream'> {
     const fullDataset = () => {
       return CONSTRUCT`?s ?p ?o`.FROM(term).WHERE`?s ?p ?o`.execute(this.__streamClient.query)
     }
@@ -125,12 +124,6 @@ export class SparqlQueryLoader implements ResourceLoader {
           .catch(err => forward.emit('error', err))
 
         return forward
-      },
-      async pointer() {
-        return clownface({
-          term,
-          dataset: await this.dataset(),
-        })
       },
     }
   }
