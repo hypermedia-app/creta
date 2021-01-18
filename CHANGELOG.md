@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.3.0
+
+### Minor Changes
+
+- 46df97a: Update hydra-box improves operation finding performance
+
 ## 0.2.0
 
 ### Minor Changes
