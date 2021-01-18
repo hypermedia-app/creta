@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express'
-import { HydraBox, PropertyResource, ObjectResource, ResourceLoader } from 'hydra-box'
-import cf, { AnyPointer } from 'clownface'
+import { HydraBox, PropertyResource, ObjectResource as Resource, ResourceLoader } from 'hydra-box'
+import clownface, { AnyPointer } from 'clownface'
 import $rdf from 'rdf-ext'
 import TermSet from '@rdfjs/term-set'
 import rdfHandler from '@rdfjs/express-handler'
@@ -11,7 +11,7 @@ import Endpoint from 'sparql-http-client/Endpoint'
 import { NamedNode } from 'rdf-js'
 
 interface MiddlewareOptions {
-  setup?: (hydra: HydraBox) => void
+  setup?: (hydra: HydraBox) => Promise<void> | void
   user?: {
     id: NamedNode
     permissions?: string[]
@@ -21,12 +21,24 @@ interface MiddlewareOptions {
 }
 
 export function hydraBox({ setup, user, query }: MiddlewareOptions = {}): RequestHandler {
+  const dataset = $rdf.dataset()
+
   const hydra: HydraBox = {
-    operation: cf({ dataset: $rdf.dataset() }).blankNode(),
+    operation: clownface({ dataset: $rdf.dataset() }).blankNode(),
     operations: [],
     term: $rdf.namedNode('request'),
     resource: {
-      dataset: $rdf.dataset(),
+      prefetchDataset: $rdf.dataset(),
+      quadStream() {
+        return dataset.toStream()
+      },
+      async clownface() {
+        return clownface({
+          term: this.term,
+          dataset,
+        })
+      },
+      dataset: async () => dataset,
       term: $rdf.namedNode('resource'),
       types: new TermSet(),
     },
@@ -47,7 +59,7 @@ export function hydraBox({ setup, user, query }: MiddlewareOptions = {}): Reques
     await rdfHandler.attach(req, res)
     setLink.attach(res)
 
-    setup && setup(hydra)
+    setup && await setup(hydra)
     req.hydra = hydra
     req.user = user
     req.app.sparql = {
@@ -73,7 +85,7 @@ export function hydraBox({ setup, user, query }: MiddlewareOptions = {}): Reques
 }
 
 interface LoaderStubOptions {
-  classResource?: ObjectResource[]
+  classResource?: Resource[]
   propertyResource?: PropertyResource[]
 }
 

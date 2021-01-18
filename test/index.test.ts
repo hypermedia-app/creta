@@ -47,7 +47,11 @@ describe('labyrinth', () => {
       codePath,
       loader: loader({
         classResource: [{
-          dataset: $rdf.dataset(),
+          prefetchDataset: $rdf.dataset(),
+          dataset: async () => $rdf.dataset(),
+          quadStream() {
+            return $rdf.dataset().toStream()
+          },
           term: ex(),
           types: new TermSet([ex.Authenticated, hydra.Resource]),
         }],
@@ -76,7 +80,11 @@ describe('labyrinth', () => {
       codePath,
       loader: loader({
         classResource: [{
-          dataset: $rdf.dataset(),
+          prefetchDataset: $rdf.dataset(),
+          dataset: async () => $rdf.dataset(),
+          quadStream() {
+            return $rdf.dataset().toStream()
+          },
           term: ex(),
           types: new TermSet([ex.Protected]),
         }],
