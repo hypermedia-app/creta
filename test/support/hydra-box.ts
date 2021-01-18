@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express'
-import { HydraBox, PropertyResource, ObjectResource, ResourceLoader } from 'hydra-box'
-import cf, { AnyPointer } from 'clownface'
+import { HydraBox, PropertyResource, ObjectResource as Resource, ResourceLoader } from 'hydra-box'
+import clownface, { AnyPointer } from 'clownface'
 import $rdf from 'rdf-ext'
 import TermSet from '@rdfjs/term-set'
 import rdfHandler from '@rdfjs/express-handler'
@@ -9,7 +9,6 @@ import setLink from 'set-link'
 import StreamStore from 'sparql-http-client/StreamStore'
 import Endpoint from 'sparql-http-client/Endpoint'
 import { NamedNode } from 'rdf-js'
-import clownface from 'clownface'
 
 interface MiddlewareOptions {
   setup?: (hydra: HydraBox) => Promise<void> | void
@@ -25,7 +24,7 @@ export function hydraBox({ setup, user, query }: MiddlewareOptions = {}): Reques
   const dataset = $rdf.dataset()
 
   const hydra: HydraBox = {
-    operation: cf({ dataset: $rdf.dataset() }).blankNode(),
+    operation: clownface({ dataset: $rdf.dataset() }).blankNode(),
     operations: [],
     term: $rdf.namedNode('request'),
     resource: {
@@ -86,7 +85,7 @@ export function hydraBox({ setup, user, query }: MiddlewareOptions = {}): Reques
 }
 
 interface LoaderStubOptions {
-  classResource?: ObjectResource[]
+  classResource?: Resource[]
   propertyResource?: PropertyResource[]
 }
 

@@ -1,6 +1,6 @@
 import { NamedNode, Term } from 'rdf-js'
 import $rdf from 'rdf-ext'
-import { PropertyResource, ObjectResource, ResourceLoader } from 'hydra-box'
+import { PropertyResource, ObjectResource as Resource, ResourceLoader } from 'hydra-box'
 import { CONSTRUCT, SELECT } from '@tpluscode/sparql-builder'
 import debug from 'debug'
 import ParsingClient from 'sparql-http-client/ParsingClient'
@@ -37,7 +37,7 @@ export class SparqlQueryLoader implements ResourceLoader {
     })
   }
 
-  async load(term: Term): Promise<ObjectResource | null> {
+  async load(term: Term): Promise<Resource | null> {
     if (term.termType !== 'NamedNode') {
       return null
     }
@@ -61,7 +61,7 @@ export class SparqlQueryLoader implements ResourceLoader {
     }
   }
 
-  async forClassOperation(term: NamedNode): Promise<[ObjectResource] | []> {
+  async forClassOperation(term: NamedNode): Promise<[Resource] | []> {
     log(`loading resource ${term.value}`)
     const resource = await this.load(term)
 
@@ -79,7 +79,7 @@ export class SparqlQueryLoader implements ResourceLoader {
       .execute(this.__client.query)
 
     const resources = bindings.reduce((set, { parent, link, type }) => {
-      if (parent.termType !== 'NamedNode') {
+      if (parent.termType !== 'NamedNode' || link.termType !== 'NamedNode') {
         return set
       }
 
@@ -92,9 +92,7 @@ export class SparqlQueryLoader implements ResourceLoader {
         ...this.__createDatasetGetters(parent),
       }
 
-      if (link.termType === 'NamedNode') {
-        resource.prefetchDataset.add($rdf.quad(parent, link, term))
-      }
+      resource.prefetchDataset.add($rdf.quad(parent, link, term))
       if (type.termType === 'NamedNode') {
         resource.types.add(type)
       }
@@ -105,7 +103,7 @@ export class SparqlQueryLoader implements ResourceLoader {
     return [...resources.values()]
   }
 
-  private __createDatasetGetters(term: NamedNode): Pick<ObjectResource, 'dataset' | 'quadStream'> {
+  private __createDatasetGetters(term: NamedNode): Pick<Resource, 'dataset' | 'quadStream'> {
     const fullDataset = () => {
       return CONSTRUCT`?s ?p ?o`.FROM(term).WHERE`?s ?p ?o`.execute(this.__streamClient.query)
     }

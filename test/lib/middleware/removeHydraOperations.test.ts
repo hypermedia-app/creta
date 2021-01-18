@@ -3,14 +3,14 @@ import express from 'express'
 import $rdf from 'rdf-ext'
 import * as ns from '@tpluscode/rdf-ns-builders'
 import request from 'supertest'
-import { ObjectResource } from 'hydra-box'
+import { ObjectResource as Resource } from 'hydra-box'
 import { hydraBox } from '../../support/hydra-box'
 import { removeHydraOperations } from '../../../lib/middleware'
 import { ex } from '../../support/namespace'
 import clownface from 'clownface'
 
 describe('labyrinth/lib/middleware/removeHydraOperations', () => {
-  const resource: ObjectResource = {
+  const resource: Resource = {
     prefetchDataset: $rdf.dataset(),
     dataset: async () => $rdf.dataset(),
     quadStream() {
