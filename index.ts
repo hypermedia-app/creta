@@ -1,4 +1,5 @@
-import { HydraBox, middleware, ResourceLoader, Options } from 'hydra-box'
+import { HydraBox, middleware, ResourceLoader } from 'hydra-box'
+import { HydraBoxMiddleware } from 'hydra-box/middleware'
 import cors from 'cors'
 import { Express } from 'express'
 import RdfResource from '@tpluscode/rdfine'
@@ -41,7 +42,7 @@ type MiddlewareParams = ApiInit & {
   sparql: ConstructorParameters<typeof StreamClient>[0] & {
     endpointUrl: string
   }
-  middleware?: Options['middleware']
+  middleware?: HydraBoxMiddleware
   options?: {
     collection?: {
       pageSize?: number
