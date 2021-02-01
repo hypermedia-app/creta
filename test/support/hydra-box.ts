@@ -62,17 +62,17 @@ export function hydraBox({ setup, user, query }: MiddlewareOptions = {}): Reques
     setup && await setup(hydra)
     req.hydra = hydra
     req.user = user
-    req.app.sparql = {
-      store: sinon.createStubInstance(StreamStore) as any,
-      query: {
-        endpoint: sinon.createStubInstance(Endpoint),
-        ask: sinon.stub().resolves(true),
-        construct: sinon.stub().resolves($rdf.dataset().toStream()),
-        select: sinon.stub().resolves([]),
-        update: sinon.stub(),
+    req.labyrinth = {
+      sparql: {
+        store: sinon.createStubInstance(StreamStore) as any,
+        query: {
+          endpoint: sinon.createStubInstance(Endpoint),
+          ask: sinon.stub().resolves(true),
+          construct: sinon.stub().resolves($rdf.dataset().toStream()),
+          select: sinon.stub().resolves([]),
+          update: sinon.stub(),
+        },
       },
-    }
-    req.app.labyrinth = {
       collection: {
         pageSize: 12,
       },
