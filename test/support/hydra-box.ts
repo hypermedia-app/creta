@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import { HydraBox, PropertyResource, ObjectResource as Resource, ResourceLoader } from 'hydra-box'
+import { HydraBox, PropertyResource, Resource, ResourceLoader } from 'hydra-box'
 import clownface, { AnyPointer } from 'clownface'
 import $rdf from 'rdf-ext'
 import TermSet from '@rdfjs/term-set'

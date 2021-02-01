@@ -1,6 +1,6 @@
 import { NamedNode, Term } from 'rdf-js'
 import $rdf from 'rdf-ext'
-import { PropertyResource, ObjectResource as Resource, ResourceLoader } from 'hydra-box'
+import { PropertyResource, Resource, ResourceLoader } from 'hydra-box'
 import { CONSTRUCT, SELECT } from '@tpluscode/sparql-builder'
 import debug from 'debug'
 import ParsingClient from 'sparql-http-client/ParsingClient'
