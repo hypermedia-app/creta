@@ -193,7 +193,7 @@ describe('labyrinth/collection', () => {
         },
       }))
       app.use((req, res, next) => {
-        req.app.labyrinth.collection.pageSize = 25
+        req.labyrinth.collection.pageSize = 25
         next()
       })
       app.use(get)
@@ -218,7 +218,7 @@ describe('labyrinth/collection', () => {
         },
       }))
       app.use((req, res, next) => {
-        req.app.labyrinth.collection.pageSize = 25
+        req.labyrinth.collection.pageSize = 25
         next()
       })
       app.use(get)
@@ -245,7 +245,7 @@ describe('labyrinth/collection', () => {
         },
       }))
       app.use((req, res, next) => {
-        req.app.labyrinth.collection.pageSize = 25
+        req.labyrinth.collection.pageSize = 25
         next()
       })
       app.use(get)

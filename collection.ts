@@ -13,13 +13,13 @@ export const get = protectedResource(asyncMiddleware(async (req, res) => {
 
   const collection = await req.hydra.resource.clownface()
   const hydraLimit = collection.out(hydra.limit).value || types.out(hydra.limit).value
-  const pageSize = hydraLimit ? parseInt(hydraLimit) : req.app.labyrinth.collection.pageSize
+  const pageSize = hydraLimit ? parseInt(hydraLimit) : req.labyrinth.collection.pageSize
 
   const { dataset } = await lib.collection({
     hydraBox: req.hydra,
     collection,
     query: request,
-    sparqlClient: req.app.sparql,
+    sparqlClient: req.labyrinth.sparql,
     pageSize,
   })
 

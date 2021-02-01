@@ -18,7 +18,7 @@ describe('labyrinth', () => {
   it('returns 404 when no operation is found', async () => {
     // given
     const app = express()
-    await hydraBox(app, {
+    app.use(await hydraBox({
       baseUri,
       apiPath,
       codePath,
@@ -28,7 +28,7 @@ describe('labyrinth', () => {
         updateUrl: '/sparql',
         storeUrl: '/sparql',
       },
-    })
+    }))
 
     // when
     const response = request(app).get('/')
@@ -41,7 +41,7 @@ describe('labyrinth', () => {
   it('returns 401 when handler returns UnauthorizedError', async () => {
     // given
     const app = express()
-    await hydraBox(app, {
+    app.use(await hydraBox({
       baseUri,
       apiPath,
       codePath,
@@ -61,7 +61,7 @@ describe('labyrinth', () => {
         updateUrl: '/sparql',
         storeUrl: '/sparql',
       },
-    })
+    }))
 
     // when
     const response = request(app).get('/').set('host', 'example.com')
@@ -74,7 +74,7 @@ describe('labyrinth', () => {
   it('returns 403 when handler returns ForbiddenError', async () => {
     // given
     const app = express()
-    await hydraBox(app, {
+    app.use(await hydraBox({
       baseUri,
       apiPath,
       codePath,
@@ -94,7 +94,7 @@ describe('labyrinth', () => {
         updateUrl: '/sparql',
         storeUrl: '/sparql',
       },
-    })
+    }))
 
     // when
     const response = request(app).get('/').set('host', 'example.com')
@@ -107,30 +107,57 @@ describe('labyrinth', () => {
   it('sets default page size', async () => {
     // given
     const app = express()
-    await hydraBox(app, {
+    app.use(await hydraBox({
       baseUri,
       apiPath,
       codePath,
-      loader: loader(),
+      loader: loader({
+        classResource: [{
+          prefetchDataset: $rdf.dataset(),
+          dataset: async () => $rdf.dataset(),
+          quadStream() {
+            return $rdf.dataset().toStream()
+          },
+          term: ex(),
+          types: new TermSet([ex.Config]),
+        }],
+      }),
       sparql: {
         endpointUrl: '/sparql',
         updateUrl: '/sparql',
         storeUrl: '/sparql',
       },
-    })
+    }))
+
+    // when
+    const response = request(app).get('/').set('host', 'example.com')
 
     // then
-    expect(app.labyrinth.collection.pageSize).to.eq(10)
+    await response.expect((res) => {
+      expect(res.body).to.deep.include({
+        collection: { pageSize: 10 },
+      })
+    })
   })
 
   it('sets overridden page size', async () => {
     // given
     const app = express()
-    await hydraBox(app, {
+    app.use(await hydraBox({
       baseUri,
       apiPath,
       codePath,
-      loader: loader(),
+      loader: loader({
+        classResource: [{
+          prefetchDataset: $rdf.dataset(),
+          dataset: async () => $rdf.dataset(),
+          quadStream() {
+            return $rdf.dataset().toStream()
+          },
+          term: ex(),
+          types: new TermSet([ex.Config]),
+        }],
+      }),
       sparql: {
         endpointUrl: '/sparql',
         updateUrl: '/sparql',
@@ -141,16 +168,23 @@ describe('labyrinth', () => {
           pageSize: 20,
         },
       },
-    })
+    }))
+
+    // when
+    const response = request(app).get('/').set('host', 'example.com')
 
     // then
-    expect(app.labyrinth.collection.pageSize).to.eq(20)
+    await response.expect((res) => {
+      expect(res.body).to.deep.include({
+        collection: { pageSize: 20 },
+      })
+    })
   })
 
   it('attaches operation middleware', async () => {
     // given
     const app = express()
-    await hydraBox(app, {
+    app.use(await hydraBox({
       baseUri,
       apiPath,
       codePath,
@@ -165,7 +199,7 @@ describe('labyrinth', () => {
           res.send('foo')
         },
       },
-    })
+    }))
 
     // when
     const response = request(app).get('/')
@@ -178,7 +212,7 @@ describe('labyrinth', () => {
   it('attaches multiple operation middleware', async () => {
     // given
     const app = express()
-    await hydraBox(app, {
+    app.use(await hydraBox({
       baseUri,
       apiPath,
       codePath,
@@ -196,7 +230,7 @@ describe('labyrinth', () => {
           res.send(res.locals.foo)
         }],
       },
-    })
+    }))
 
     // when
     const response = request(app).get('/')
@@ -209,7 +243,7 @@ describe('labyrinth', () => {
   it('attaches multiple resource middleware', async () => {
     // given
     const app = express()
-    await hydraBox(app, {
+    app.use(await hydraBox({
       baseUri,
       apiPath,
       codePath,
@@ -227,7 +261,7 @@ describe('labyrinth', () => {
           res.send(res.locals.foo)
         }],
       },
-    })
+    }))
 
     // when
     const response = request(app).get('/')

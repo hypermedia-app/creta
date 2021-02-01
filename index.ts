@@ -1,7 +1,7 @@
 import { HydraBox, middleware, ResourceLoader } from 'hydra-box'
 import { HydraBoxMiddleware } from 'hydra-box/middleware'
 import cors from 'cors'
-import { Express } from 'express'
+import { Router } from 'express'
 import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
 import StreamClient from 'sparql-http-client/StreamClient'
@@ -22,18 +22,15 @@ export interface User {
 }
 
 declare module 'express-serve-static-core' {
-  interface Application {
-    sparql: StreamClient
+  export interface Request {
+    user?: User
+    hydra: HydraBox
     labyrinth: {
+      sparql: StreamClient
       collection: {
         pageSize: number
       }
     }
-  }
-
-  export interface Request {
-    user?: User
-    hydra: HydraBox
   }
 }
 
@@ -50,16 +47,21 @@ type MiddlewareParams = ApiInit & {
   }
 }
 
-export async function hydraBox(app: Express, middlewareInit: MiddlewareParams): Promise<void> {
+export async function hydraBox(middlewareInit: MiddlewareParams): Promise<Router> {
   const { loader, codePath, sparql, options, ...params } = middlewareInit
 
-  app.sparql = new StreamClient(sparql)
+  const app = Router()
 
-  app.labyrinth = {
+  const labyrinth = {
+    sparql: new StreamClient(sparql),
     collection: {
       pageSize: options?.collection?.pageSize || 10,
     },
   }
+  app.use((req, res, next) => {
+    req.labyrinth = labyrinth
+    next()
+  })
 
   app.use(logRequest)
   app.use(cors({
@@ -85,4 +87,6 @@ export async function hydraBox(app: Express, middlewareInit: MiddlewareParams): 
     next(new NotFoundError())
   })
   app.use(logRequestError)
+
+  return app
 }
