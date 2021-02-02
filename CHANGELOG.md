@@ -1,5 +1,12 @@
 # @hydrofoil/labyrinth
 
+## 0.4.0
+
+### Minor Changes
+
+- f313671: Use internal router instead of attaching to main express app
+- cd5ddeb: Use typings package for hydra-box
+
 ## 0.3.0
 
 ### Minor Changes
