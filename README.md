@@ -29,7 +29,7 @@ const baseUri = 'http://example.com/'
 async function main() {
   const app = express()
     
-  await hydraBox(app, {
+  app.use(await hydraBox({
     codePath,
     apiPath,
     baseUri,
@@ -54,7 +54,7 @@ async function main() {
       operations,    // runs before final operation is selected. modify `req.hydra.operations` here
       resource,      // runs before operation is invoked. modify `req.hydra.resource` here
     }
-  })
+  }))
   
   app.listen(8080)
 }
