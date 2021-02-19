@@ -1,7 +1,6 @@
 import * as hb from 'hydra-box'
 import type Api from 'hydra-box/Api'
 import walk from '@fcostarodrigo/walk'
-import $rdf from 'rdf-ext'
 import { log } from './logger'
 
 export interface ApiInit {
@@ -12,12 +11,10 @@ export interface ApiInit {
   path?: string
 }
 
-export async function createApi({ apiPath, baseUri, codePath, defaultBase = 'urn:hydra-box:api', path = 'api' }: ApiInit): Promise<Api> {
-  const apiUrl = new URL(path, baseUri)
+export async function createApi({ apiPath, baseUri, codePath, defaultBase = 'urn:hydra-box:api', path = '/api' }: ApiInit): Promise<Api> {
   const options: Api.ApiInit = {
-    path: apiUrl.pathname,
+    path,
     codePath,
-    term: $rdf.namedNode(apiUrl.toString()),
   }
 
   let api: Api | undefined
