@@ -15,7 +15,6 @@ describe('lib', () => {
     })
 
     // then
-    expect(api.term.value).to.equal('http://example.com/api')
     expect(api.path).to.equal('/api')
   })
 
@@ -25,11 +24,10 @@ describe('lib', () => {
       apiPath,
       baseUri: 'http://example.com/',
       codePath: 'lib',
-      path: 'doc',
+      path: '/doc',
     })
 
     // then
-    expect(api.term.value).to.equal('http://example.com/doc')
     expect(api.path).to.equal('/doc')
   })
 })
