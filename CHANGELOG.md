@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.4.1
+
+### Patch Changes
+
+- 2776e2f: API path was incorrect when routing in sub-path
+
 ## 0.4.0
 
 ### Minor Changes
