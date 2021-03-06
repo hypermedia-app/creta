@@ -5,7 +5,7 @@ import { Router } from 'express'
 import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
 import StreamClient from 'sparql-http-client/StreamClient'
-import { ApiInit, createApi } from './lib'
+import { fromStore } from './lib/Api'
 import { NotFoundError } from './lib/error'
 import { logRequest, logRequestError } from './lib/logger'
 import { NamedNode } from 'rdf-js'
@@ -34,7 +34,8 @@ declare module 'express-serve-static-core' {
   }
 }
 
-type MiddlewareParams = ApiInit & {
+type MiddlewareParams = {
+  codePath: string
   loader?: ResourceLoader
   sparql: ConstructorParameters<typeof StreamClient>[0] & {
     endpointUrl: string
@@ -51,9 +52,10 @@ export async function hydraBox(middlewareInit: MiddlewareParams): Promise<Router
   const { loader, codePath, sparql, options, ...params } = middlewareInit
 
   const app = Router()
+  const client = new StreamClient(sparql)
 
   const labyrinth = {
-    sparql: new StreamClient(sparql),
+    sparql: client,
     collection: {
       pageSize: options?.collection?.pageSize || 10,
     },
@@ -68,7 +70,10 @@ export async function hydraBox(middlewareInit: MiddlewareParams): Promise<Router
     exposedHeaders: ['link', 'location'],
   }))
   app.use(middleware(
-    await createApi(middlewareInit),
+    fromStore({
+      sparql: client,
+      codePath,
+    }),
     {
       loader: loader ?? new SparqlQueryLoader(sparql),
       middleware: {
