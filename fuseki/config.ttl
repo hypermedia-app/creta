@@ -1,4 +1,3 @@
-@prefix :        <#> .
 @prefix fuseki:  <http://jena.apache.org/fuseki#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
@@ -8,10 +7,10 @@
 
 [] rdf:type fuseki:Server ;
   fuseki:services (
-                    <#labyrinth>
+                    _:labyrinth
                   ) .
 
-<#labyrinth> rdf:type fuseki:Service ;
+_:labyrinth rdf:type fuseki:Service ;
   rdfs:label                        "Aggregate root repositories" ;
   fuseki:name                       "labyrinth" ;# http://host:port/labyrinth
   fuseki:serviceQuery               "sparql" ;   # SPARQL query service

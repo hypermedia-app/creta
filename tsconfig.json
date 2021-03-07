@@ -22,15 +22,8 @@
       "types"
     ]
   },
-  "files": [
-    "index.ts",
-    "collection.ts",
-    "resource.ts",
-    "errors.ts"
-  ],
   "include": [
-    "types.ts",
     "types",
-    "test"
+    "packages"
   ]
 }

@@ -11,4 +11,4 @@ services:
       - ENABLE_UPDATE=true
       - ENABLE_UPLOAD=true
     volumes:
-      - ./test/fuseki/config.ttl:/data/fuseki/config/config.ttl
+      - ./fuseki/config.ttl:/data/fuseki/config/config.ttl

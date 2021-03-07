@@ -1,60 +1,20 @@
 {
-  "name": "@hydrofoil/labyrinth",
-  "version": "0.4.1",
-  "description": "Build Hydra APIs on top of hydra-box",
+  "name": "@hydrofoil/hydra",
+  "private": true,
   "scripts": {
     "lint": "eslint . --ext .ts --quiet --ignore-path .gitignore --ignore-path .eslintignore",
-    "test": "c8 --all --reporter=lcov mocha --recursive --extension ts test",
-    "build": "tsc",
-    "prepack": "npm run build",
+    "test": "c8 --all --reporter=lcov mocha --recursive --extension ts packages",
     "release": "changeset publish"
   },
-  "files": [
-    "*.js",
-    "*.d.ts",
-    "lib/**/*.js",
-    "lib/**/*.d.ts"
-  ],
-  "peerDependencies": {
-    "hydra-box": "^0.6.1"
-  },
   "dependencies": {
-    "@fcostarodrigo/walk": "^5.0.0",
-    "@rdfine/hydra": "^0.6",
-    "@rdfjs/data-model": "^1.2",
-    "@rdfjs/namespace": "^1.1.0",
-    "@rdfjs/term-map": "^1.0.0",
-    "@rdfjs/term-set": "^1.0.1",
-    "@tpluscode/rdf-ns-builders": "^0.4.0",
-    "@tpluscode/rdf-string": "^0.2.18",
-    "@tpluscode/rdfine": "^0.5.15",
-    "@tpluscode/sparql-builder": "^0.3.9",
-    "@types/hydra-box": "^0.6.0",
-    "clownface": "^1.1.0",
-    "cors": "^2.8.5",
-    "debug": "^4.1.1",
-    "express": "^4.17.1",
-    "express-http-problem-details": "^0.2.1",
-    "express-jwt-permissions": "^1.3.3",
-    "http-errors": "^1.8.0",
-    "http-problem-details": "^0.1.5",
-    "http-problem-details-mapper": "^0.1.7",
-    "middleware-async": "^1.2.7",
-    "once": "^1.4.0",
-    "rdf-ext": "^1.3.0",
-    "rdf-loader-code": "^0.3.1",
-    "rdf-loaders-registry": "^0.2.0",
-    "sparql-http-client": "^2.2.2"
-  },
-  "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
     "@babel/register": "^7.11.5",
     "@changesets/cli": "^2.10.2",
-    "@rdfjs/express-handler": "^1",
-    "@rdfjs/formats-common": "^2.1.0",
     "@tpluscode/eslint-config": "^0.1.1",
+    "@typescript-eslint/eslint-plugin": "^4.0.1",
+    "@typescript-eslint/parser": "^4.0.1",
     "@types/chai": "^4.2.12",
     "@types/chai-snapshot-matcher": "^1",
     "@types/chai-quantifiers": "^1.0.0",
@@ -81,13 +41,7 @@
     "@types/sparqljs": "^3.0.1",
     "@types/supertest": "^2.0.10",
     "@types/wait-on": "^5.2.0",
-    "@typescript-eslint/eslint-plugin": "^4.0.1",
-    "@typescript-eslint/parser": "^4.0.1",
     "c8": "^7.3.0",
-    "chai": "^4.2.0",
-    "chai-snapshot-matcher": "^1.0.6",
-    "chai-quantifiers": "^1.0.13",
-    "docker-compose": "^0.23.6",
     "eslint": "^7.8.1",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.22.0",
@@ -95,19 +49,13 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "husky": "^4.2.5",
-    "hydra-box": "zazuko/hydra-box#subpath-api-link",
     "lint-staged": "^10.3.0",
-    "mocha": "^8.1.3",
-    "set-link": "^1.0.0",
-    "sinon": "^9.0.3",
-    "sinon-chai": "^3.5.0",
-    "sparqljs": "^3.1.1",
     "standard": "^14.3.4",
-    "string-to-stream": "^3.0.1",
-    "supertest": "^4.0.2",
-    "typescript": "^4.0.2",
-    "wait-on": "^5.2.1"
+    "typescript": "^4.0.2"
   },
+  "workspaces": [
+    "packages/*"
+  ],
   "resolutions": {
     "@types/rdf-js": "^4.0.0"
   },
@@ -116,7 +64,7 @@
       "./**/*.ts"
     ],
     "require": [
-      "test/mocha-setup.js"
+      "mocha-setup.js"
     ]
   },
   "husky": {
@@ -128,8 +76,5 @@
     "*.{js,ts}": [
       "eslint --fix --quiet"
     ]
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }
