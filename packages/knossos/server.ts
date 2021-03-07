@@ -4,6 +4,7 @@ import StreamClient from 'sparql-http-client/StreamClient'
 import debug from 'debug'
 import createApi from './lib/api'
 import { ResourcePerGraphStore } from './lib/store'
+import { resource } from 'express-rdf-request'
 
 const app = express()
 
@@ -15,6 +16,7 @@ async function main() {
     updateUrl: 'http://localhost:3030/labyrinth',
   }
 
+  app.use(resource)
   app.use(await hydraBox({
     codePath: './demo',
     sparql,

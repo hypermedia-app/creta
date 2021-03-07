@@ -1,11 +1,13 @@
 import type { Api } from 'hydra-box/Api'
+import { loadLinkedResources } from '@hydrofoil/labyrinth/lib/query/eagerLinks'
+import { query } from '@hydrofoil/labyrinth/lib/namespace'
+import StreamClient from 'sparql-http-client/StreamClient'
 import $rdf from 'rdf-ext'
 import { Debugger } from 'debug'
 import { DatasetCore, NamedNode, Term } from 'rdf-js'
-import clownface from 'clownface'
-import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { ApiFactory } from '../../labyrinth'
 import { ResourceStore } from './store'
+import { createApiDocumentation, createClassesCollection } from './apiDocumentation'
 
 interface ApiFromStore {
   path?: string
@@ -19,7 +21,9 @@ function assertTerm(term: Term | undefined): asserts term {
   }
 }
 
-const createApi: (arg: ApiFromStore) => ApiFactory = ({ path = '/api', store, log }) => async ({ codePath }) => {
+const createApi: (arg: ApiFromStore) => ApiFactory = ({ path = '/api', store, log }) => async ({ sparql, codePath }) => {
+  const client = new StreamClient(sparql)
+
   return new (class implements Api {
     initialized = false
     path = path
@@ -44,13 +48,13 @@ const createApi: (arg: ApiFromStore) => ApiFactory = ({ path = '/api', store, lo
       if (!apiExists) {
         log('API Documentation resource does not exist. Creating...')
 
-        const ptr = clownface({ dataset: $rdf.dataset(), term: this.term })
-          .addOut(rdf.type, hydra.ApiDocumentation)
-
-        await store.save(ptr)
+        await store.save(createApiDocumentation(this.term))
+        await store.save(createClassesCollection(this.term))
       }
 
       const api = await store.load(this.term)
+
+      api.dataset.addAll([...await loadLinkedResources(api, api.out(query.include).toArray(), client)])
 
       this.dataset = api.dataset
       this.initialized = true

@@ -1,5 +1,5 @@
 import clownface, { AnyPointer, GraphPointer, MultiPointer } from 'clownface'
-import { IriTemplate, IriTemplateMixin } from '@rdfine/hydra'
+import { fromPointer, IriTemplate } from '@rdfine/hydra/lib/IriTemplate'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import $rdf from 'rdf-ext'
 import { NamedNode } from 'rdf-js'
@@ -72,7 +72,7 @@ function addTemplateMappings(collection: GraphPointer, template: IriTemplate, re
 function getTemplate(hydra: HydraBox): IriTemplate | null {
   const templateVariables = hydra.operation.out(ns.hydraBox.variables) as MultiPointer<ResourceIdentifier>
   if (templateVariables.term) {
-    return new IriTemplateMixin.Class(templateVariables.toArray()[0])
+    return fromPointer(templateVariables.toArray()[0])
   }
 
   return null
@@ -86,8 +86,16 @@ interface CollectionParams {
   sparqlClient: StreamClient
 }
 
+function assertApiTerm(api: AnyPointer): asserts api is GraphPointer<NamedNode> {
+  if (api.term?.termType !== 'NamedNode') {
+    throw new Error('ApiDocumentation was not initialised')
+  }
+}
+
 export async function collection({ hydraBox, pageSize, sparqlClient, query, ...rest }: CollectionParams): Promise<GraphPointer<NamedNode, DatasetExt>> {
   const api = clownface(hydraBox.api)
+  assertApiTerm(api)
+
   const collection = clownface({
     dataset: $rdf.dataset([...rest.collection.dataset]),
     term: rest.collection.term,

@@ -4,11 +4,12 @@ import { StreamClient } from 'sparql-http-client/StreamClient'
 import { ASK, CONSTRUCT, INSERT } from '@tpluscode/sparql-builder'
 import $rdf from 'rdf-ext'
 import { sparql } from '@tpluscode/rdf-string'
+import DatasetExt from 'rdf-ext/lib/Dataset'
 
 export interface ResourceStore {
   exists(term: Term): Promise<boolean>
 
-  load(term: Term): Promise<GraphPointer<NamedNode>>
+  load(term: Term): Promise<GraphPointer<NamedNode, DatasetExt>>
 
   save(resource: GraphPointer<NamedNode>): Promise<void>
 }
@@ -29,7 +30,7 @@ export class ResourcePerGraphStore implements ResourceStore {
     return ASK`?s ?p ?o`.FROM(term).execute(this.client.query)
   }
 
-  async load(term: Term): Promise<GraphPointer<NamedNode>> {
+  async load(term: Term): Promise<GraphPointer<NamedNode, DatasetExt>> {
     assertNamedNode(term)
 
     const dataset = await $rdf.dataset().import(await CONSTRUCT`?s ?p ?o`
