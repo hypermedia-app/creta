@@ -1,4 +1,4 @@
-import { rdf } from '@tpluscode/rdf-ns-builders'
+import {rdf, sh} from '@tpluscode/rdf-ns-builders'
 import { shaclMiddleware } from 'hydra-box-middleware-shacl'
 
 export const shaclValidate = shaclMiddleware({
@@ -8,7 +8,9 @@ export const shaclValidate = shaclMiddleware({
     const shapes = await Promise.all(loaded)
 
     for (const shape of shapes) {
-      req.shacl.shapesGraph.addAll(shape.dataset)
+      if (shape.has(rdf.type, sh.NodeShape).terms.length) {
+        req.shacl.shapesGraph.addAll(shape.dataset)
+      }
     }
 
     next()

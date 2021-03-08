@@ -1,0 +1,18 @@
+@prefix knossos: <https://hypermedia.app/knossos#> .
+@prefix code: <https://code.described.at/> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+
+</api/UsersCollection>
+  a hydra:Class ;
+  knossos:createWithPUT true ;
+  hydra:supportedOperation
+    [
+      hydra:method "POST" ;
+      hydra:title "Register" ;
+      code:implementedBy
+        [
+          a code:EcmaScript ;
+          code:link <node:@hydrofoil/knossos/collection#post> ;
+        ] ;
+    ] ;
+.

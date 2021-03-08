@@ -1,0 +1,47 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix bio: <http://purl.org/vocab/bio/0.1/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix code: <https://code.described.at/> .
+@prefix schema: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+
+</api/User>
+  a hydra:Class, sh:NodeShape ;
+  hydra:supportedOperation
+    [
+      a schema:ReplaceAction ;
+      hydra:method "PUT" ;
+      hydra:title "Update User" ;
+      code:implementedBy
+        [
+          a code:EcmaScript ;
+          code:link <node:@hydrofoil/knossos/resource#put>
+        ] ;
+    ] ;
+  sh:property
+    [
+      sh:path foaf:email ;
+      sh:name "Email" ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:order 10 ;
+    ],
+    [
+      sh:path foaf:nick ;
+      sh:maxCount 1 ;
+      sh:order 20 ;
+    ],
+    [
+      sh:path foaf:img ;
+      sh:nodeKind sh:IRI ;
+      sh:maxCount 1 ;
+      sh:order 30 ;
+    ],
+    [
+      sh:path bio:biography ;
+      dash:singleLine false ;
+      sh:maxCount 1 ;
+      sh:order 40 ;
+    ] ;
+.

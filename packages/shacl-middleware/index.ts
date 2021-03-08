@@ -3,7 +3,6 @@ import asyncMiddleware from 'middleware-async'
 import $rdf from 'rdf-ext'
 import DatasetExt from 'rdf-ext/lib/Dataset'
 import { NamedNode } from 'rdf-js'
-import { hydra, rdf, sh } from '@tpluscode/rdf-ns-builders'
 import SHACLValidator from 'rdf-validate-shacl'
 import clownface, { GraphPointer } from 'clownface'
 import { ProblemDocument } from 'http-problem-details'
@@ -24,10 +23,10 @@ declare module 'express-serve-static-core' {
 export const shaclMiddleware = ({ loadShapes }: ShaclMiddlewareOptions): Router => {
   const router = Router()
 
-  router.use(asyncMiddleware(async (req, res, next) => {
+  router.use(asyncMiddleware(async function initShaclGraphs(req, res, next) {
     let dataGraph: GraphPointer<NamedNode>
     if (!req.dataset) {
-      dataGraph = clownface({ dataset: $rdf.dataset() }).node(req.hydra.term)
+      dataGraph = clownface({dataset: $rdf.dataset()}).node(req.hydra.term)
     } else {
       dataGraph = await req.resource()
     }
@@ -41,7 +40,8 @@ export const shaclMiddleware = ({ loadShapes }: ShaclMiddlewareOptions): Router 
 
   router.use(asyncMiddleware(loadShapes))
 
-  router.use(asyncMiddleware(async (req, res, next) => {
+  // TODO: Load data from linked instances to be able to validate their type
+  router.use(asyncMiddleware(async function validateShapes(req, res, next) {
     if (req.shacl.shapesGraph.size === 0) {
       return next()
     }
@@ -70,22 +70,9 @@ export const shaclMiddleware = ({ loadShapes }: ShaclMiddlewareOptions): Router 
   return router
 }
 
-export const shaclMiddleware = ({ loadResource, loadResourcesTypes }: ShaclMiddlewareOptions) => asyncMiddleware(async (req, res, next) => {
+/*
+export const shaclMiddleware = ({ loadResourcesTypes }: ShaclMiddlewareOptions) => asyncMiddleware(async (req, res, next) => {
   const shapes = $rdf.dataset()
-  await Promise.all(req.hydra.operation.out(hydra.expects).map(async (expects) => {
-    if (expects.term.termType !== 'NamedNode') return
-
-    const pointer = await loadResource(expects.term)
-    if (pointer?.has(rdf.type, [sh.NodeShape]).values.length) {
-      await shapes.addAll([...pointer.dataset])
-
-      if (pointer.out([sh.targetClass, sh.targetNode, sh.targetObjectsOf, sh.targetSubjectsOf]).values.length === 0) {
-        shapes.add($rdf.quad(pointer.term, sh.targetNode, resource.term))
-      }
-
-      resource.addOut(rdf.type, pointer.out(sh.targetClass))
-    }
-  }))
 
   // Load data from linked instances to be able to validate their type
   const classProperties = clownface({ dataset: shapes })
@@ -97,3 +84,4 @@ export const shaclMiddleware = ({ loadResource, loadResourcesTypes }: ShaclMiddl
 
   const dataset = $rdf.dataset([...resource.dataset, ...linkedInstancesQuads])
 })
+*/

@@ -1,11 +1,12 @@
 import clownface, { GraphPointer } from 'clownface'
 import { NamedNode } from 'rdf-js'
 import $rdf from 'rdf-ext'
-import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
+import { hydra, rdf, sh } from '@tpluscode/rdf-ns-builders'
 import { code, query } from '@hydrofoil/labyrinth/lib/namespace'
 import { fromPointer as initCollection } from '@rdfine/hydra/lib/Collection'
+import {knossos} from "./namespace";
 
-export function createApiDocumentation(term: NamedNode): GraphPointer<NamedNode> {
+export function ApiDocumentation(term: NamedNode): GraphPointer<NamedNode> {
   const graph = clownface({ dataset: $rdf.dataset() })
 
   graph.node(hydra.Resource)
@@ -45,7 +46,7 @@ export function createApiDocumentation(term: NamedNode): GraphPointer<NamedNode>
     .addOut(query.include, hydra.supportedClass)
 }
 
-export function createClassesCollection(apiDocumentation: NamedNode):GraphPointer<NamedNode> {
+export function ClassesCollection(apiDocumentation: NamedNode): GraphPointer<NamedNode> {
   const pointer = clownface({ dataset: $rdf.dataset() })
     .namedNode(`${apiDocumentation.value}/classes`)
 
@@ -57,4 +58,11 @@ export function createClassesCollection(apiDocumentation: NamedNode):GraphPointe
   })
 
   return pointer
+}
+
+export function HydraClass(): GraphPointer<NamedNode> {
+  return clownface({ dataset: $rdf.dataset() })
+    .namedNode(hydra.Class)
+    .addOut(rdf.type, sh.NodeShape)
+    .addOut(knossos.createWithPUT, true)
 }

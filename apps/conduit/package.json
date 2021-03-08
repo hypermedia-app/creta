@@ -1,0 +1,12 @@
+{
+  "name": "@hydrofoil/conduit",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "start": "DEBUG=knossos*,SPARQL npx ts-node ../../packages/knossos/server.ts",
+    "bootstrap": "sh bootstrap.sh http://localhost:8888"
+  },
+  "dependencies": {
+    "@hydrofoil/knossos": "0.0.0"
+  }
+}

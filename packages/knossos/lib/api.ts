@@ -7,7 +7,7 @@ import { Debugger } from 'debug'
 import { DatasetCore, NamedNode, Term } from 'rdf-js'
 import { ApiFactory } from '../../labyrinth'
 import { ResourceStore } from './store'
-import { createApiDocumentation, createClassesCollection } from './apiDocumentation'
+import * as apiDocResources from './apiDocumentation'
 
 interface ApiFromStore {
   path?: string
@@ -48,8 +48,9 @@ const createApi: (arg: ApiFromStore) => ApiFactory = ({ path = '/api', store, lo
       if (!apiExists) {
         log('API Documentation resource does not exist. Creating...')
 
-        await store.save(createApiDocumentation(this.term))
-        await store.save(createClassesCollection(this.term))
+        await store.save(apiDocResources.ApiDocumentation(this.term))
+        await store.save(apiDocResources.ClassesCollection(this.term))
+        await store.save(apiDocResources.HydraClass())
       }
 
       const api = await store.load(this.term)
