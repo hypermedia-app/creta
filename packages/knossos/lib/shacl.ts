@@ -1,4 +1,4 @@
-import {rdf, sh} from '@tpluscode/rdf-ns-builders'
+import { rdf, sh } from '@tpluscode/rdf-ns-builders'
 import { shaclMiddleware } from 'hydra-box-middleware-shacl'
 
 export const shaclValidate = shaclMiddleware({

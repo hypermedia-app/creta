@@ -1,3 +1,4 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix dash: <http://datashapes.org/dash#> .
 @prefix bio: <http://purl.org/vocab/bio/0.1/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
@@ -7,7 +8,7 @@
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 
 </api/User>
-  a hydra:Class, sh:NodeShape ;
+  a hydra:Class, sh:NodeShape, rdfs:Class, hydra:Resource ;
   hydra:supportedOperation
     [
       a schema:ReplaceAction ;
@@ -29,6 +30,7 @@
     ],
     [
       sh:path foaf:nick ;
+      sh:minCount 1 ;
       sh:maxCount 1 ;
       sh:order 20 ;
     ],

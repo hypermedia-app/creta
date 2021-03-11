@@ -5,7 +5,6 @@ import { Router } from 'express'
 import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
 import StreamClient from 'sparql-http-client/StreamClient'
-import { NotFoundError } from './lib/error'
 import { logRequest, logRequestError } from './lib/logger'
 import { NamedNode } from 'rdf-js'
 import { removeHydraOperations, preprocessResource } from './lib/middleware'
@@ -77,6 +76,7 @@ export async function hydraBox(middlewareInit: MiddlewareParams): Promise<Router
   app.use(middleware(
     await loadApi(middlewareInit),
     {
+      baseIriFromRequest: true,
       loader: loader ?? new SparqlQueryLoader(sparql),
       middleware: {
         operations: [
@@ -90,9 +90,6 @@ export async function hydraBox(middlewareInit: MiddlewareParams): Promise<Router
       },
     }))
 
-  app.use(function (req, res, next) {
-    next(new NotFoundError())
-  })
   app.use(logRequestError)
 
   return app

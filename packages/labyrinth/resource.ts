@@ -43,6 +43,10 @@ export function protectedResource(...handlers: any[]) {
   const router = Router()
 
   router.use((req, res, next) => {
+    if (!req.hydra.resource) {
+      return next()
+    }
+
     const typesRestricted = clownface(req.hydra.api)
       .node([...req.hydra.resource.types])
       .out(auth.required)

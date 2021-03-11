@@ -3,9 +3,11 @@ import { hydraBox } from '@hydrofoil/labyrinth'
 import StreamClient from 'sparql-http-client/StreamClient'
 import { resource } from 'express-rdf-request'
 import debug from 'debug'
+import cors from 'cors'
 import createApi from './lib/api'
 import { ResourcePerGraphStore } from './lib/store'
-import { put as createResource } from './resource'
+import { PUT as createResource } from './resource'
+import { problemJson } from '../labyrinth/errors'
 
 const app = express()
 
@@ -13,16 +15,20 @@ async function main() {
   const log = debug('knossos')
 
   const sparql = {
-    endpointUrl: 'http://localhost:3030/labyrinth',
-    updateUrl: 'http://localhost:3030/labyrinth',
+    endpointUrl: process.env.SPARQL_QUERY_ENDPOINT!,
+    updateUrl: process.env.SPARQL_UPDATE_ENDPOINT!,
   }
 
   const store = new ResourcePerGraphStore(new StreamClient(sparql))
+
+  app.enable('trust proxy')
+  app.use(cors())
 
   app.use(resource)
   app.use((req, res, next) => {
     req.knossos = {
       store,
+      log,
     }
     next()
   })
@@ -35,6 +41,7 @@ async function main() {
     }),
   }))
   app.put('/*', createResource)
+  app.use(problemJson({ captureNotFound: true }))
 
   app.listen(8888, () => log('API started'))
 }

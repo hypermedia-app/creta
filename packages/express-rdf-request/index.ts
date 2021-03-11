@@ -2,7 +2,6 @@ import express from 'express'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
 import { NamedNode, Quad } from 'rdf-js'
 import $rdf from 'rdf-ext'
-import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 
 declare module 'express-serve-static-core' {
   export interface Request {
@@ -37,17 +36,7 @@ export function resource(req: express.Request, res: express.Response, next: expr
       dataset.add($rdf.quad(subject, predicate, object, graph))
     }
 
-    const pointer = clownface({ dataset }).namedNode(req.hydra.term)
-
-    if (req.hydra.operation) {
-      const expectedTypes = req.hydra.operation
-        .out(hydra.expects)
-        .has(rdf.type, hydra.Class)
-
-      pointer.addOut(rdf.type, expectedTypes)
-    }
-
-    return pointer
+    return clownface({ dataset }).namedNode(req.hydra.term)
   }
 
   res.resource = (pointer: AnyPointer) => res.dataset(pointer.dataset)

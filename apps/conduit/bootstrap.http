@@ -1,0 +1,26 @@
+### Create User class
+
+PUT {{base}}/api/User
+Content-Type: text/turtle
+
+< ./resources/api/User.ttl
+
+### Create User Collection class
+
+PUT {{base}}/api/UsersCollection
+Content-Type: text/turtle
+
+< ./resources/api/UsersCollection.ttl
+
+###
+
+PUT {{base}}/users
+Content-Type: text/turtle
+
+< ./resources/users.ttl
+
+### Register user john
+POST {{base}}/users
+Content-Type: text/turtle
+
+< ./resources/users/john.ttl

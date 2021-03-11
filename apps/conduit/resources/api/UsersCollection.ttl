@@ -1,3 +1,4 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix knossos: <https://hypermedia.app/knossos#> .
 @prefix code: <https://code.described.at/> .
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
@@ -12,7 +13,17 @@
       code:implementedBy
         [
           a code:EcmaScript ;
-          code:link <node:@hydrofoil/knossos/collection#post> ;
+          code:link <node:@hydrofoil/knossos/collection#POST> ;
         ] ;
     ] ;
+  knossos:memberTemplate [
+    a hydra:IriTemplate ;
+    hydra:template "/user/{name}" ;
+    hydra:mapping
+      [
+        hydra:variable "name" ;
+        hydra:property foaf:nick ;
+        hydra:require true ;
+      ];
+  ] ;
 .

@@ -12,6 +12,8 @@ export interface ResourceStore {
   load(term: Term): Promise<GraphPointer<NamedNode, DatasetExt>>
 
   save(resource: GraphPointer<NamedNode>): Promise<void>
+
+  delete(term: Term): Promise<void>
 }
 
 function assertNamedNode(term: Term): asserts term is NamedNode {
@@ -45,6 +47,11 @@ export class ResourcePerGraphStore implements ResourceStore {
     const insert = INSERT.DATA`GRAPH ${resource.term} { ${resource.dataset} }`
     const query = sparql`DROP SILENT GRAPH ${resource.term}; ${insert}`
 
+    return this.client.query.update(query.toString())
+  }
+
+  async delete(term: Term): Promise<void> {
+    const query = sparql`DROP SILENT GRAPH ${term}`
     return this.client.query.update(query.toString())
   }
 }
