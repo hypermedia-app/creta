@@ -1211,7 +1211,7 @@
   dependencies:
     "@rdfjs/data-model" "^1.1.1"
 
-"@rdfjs/express-handler@^1", "@rdfjs/express-handler@^1.2.0":
+"@rdfjs/express-handler@^1", "@rdfjs/express-handler@^1.2.0", "@rdfjs/express-handler@^1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@rdfjs/express-handler/-/express-handler-1.2.1.tgz#e0182697d87cf211fc75d10534c4c3812296d266"
   integrity sha512-prJN6H7l7qjVa5j4iBBD1M54yfykvO1DEwXcNSuiuUfJHkDBWlTEyPkx7HUKv6jB53JA/Lfa89fcDqTgI2K1Ng==
@@ -1618,6 +1618,14 @@
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/@types/rdf-loaders-registry/-/rdf-loaders-registry-0.2.0.tgz#3e8a8fb44502571a9b4f08eec6864eb17a752e1a"
   integrity sha512-tuyNTAFAMYtGG/M06hV39IPnJTmTj6cHZSYHr3ltPeZqUj/C/nyUaKoR3TDWaFXftZYm/wsnr6rl3fpm+1keNA==
+  dependencies:
+    "@types/clownface" "*"
+    "@types/rdf-js" "*"
+
+"@types/rdf-validate-shacl@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@types/rdf-validate-shacl/-/rdf-validate-shacl-0.2.0.tgz#7b699d713d9895f7cc949a68d586789310ed37cc"
+  integrity sha512-uzCKiQ1G7uXhpLDA5TcNWLHEAN69ZsNoXK1PgDm5vdDqB42SOEALbXv8Lp8xgh0mLjE0hw50ZPy1D1E0c1c1ng==
   dependencies:
     "@types/clownface" "*"
     "@types/rdf-js" "*"
@@ -2243,7 +2251,7 @@ chai-snapshot-matcher@^1.0.6:
   resolved "https://registry.yarnpkg.com/chai-snapshot-matcher/-/chai-snapshot-matcher-1.0.7.tgz#35ace64a4538ab1ead750d7f96c4f698cb4c04a5"
   integrity sha512-GxsHN8wi29T4xKjh37RmFvuTtn4SrMXflFbfjZnbT87ESR797srg3fT8woWVchQSfvwhJXR5TUEaCnPITbuPYw==
 
-chai@^4.2.0:
+chai@^4.2.0, chai@^4.3.3:
   version "4.3.3"
   resolved "https://registry.yarnpkg.com/chai/-/chai-4.3.3.tgz#f2b2ad9736999d07a7ff95cf1e7086c43a76f72d"
   integrity sha512-MPSLOZwxxnA0DhLE84klnGPojWFK5KuhP7/j5dTsxpr2S3XlkqJP5WbyYl1gCTWvG2Z5N+HD4F472WsbEZL6Pw==
@@ -3834,7 +3842,7 @@ husky@^4.2.5:
     slash "^3.0.0"
     which-pm-runs "^1.0.0"
 
-hydra-box@^0.6.2, hydra-box@zazuko/hydra-box#base-api-class:
+hydra-box@^0.6, hydra-box@^0.6.2, hydra-box@zazuko/hydra-box#base-api-class:
   version "0.6.2"
   resolved "https://codeload.github.com/zazuko/hydra-box/tar.gz/ac6bb43feaff4de8518b4c1f77ce9d20d7daf04e"
   dependencies:
@@ -4643,6 +4651,37 @@ mocha@^8.1.3:
   version "8.3.1"
   resolved "https://registry.yarnpkg.com/mocha/-/mocha-8.3.1.tgz#b9eda6da1eb8cb8d29860a9c2205de5b8a076560"
   integrity sha512-5SBMxANWqOv5bw3Hx+HVgaWlcWcFEQDUdaUAr1AUU+qwtx6cowhn7gEDT/DwQP7uYxnvShdUOVLbTYAHOEGfDQ==
+  dependencies:
+    "@ungap/promise-all-settled" "1.1.2"
+    ansi-colors "4.1.1"
+    browser-stdout "1.3.1"
+    chokidar "3.5.1"
+    debug "4.3.1"
+    diff "5.0.0"
+    escape-string-regexp "4.0.0"
+    find-up "5.0.0"
+    glob "7.1.6"
+    growl "1.10.5"
+    he "1.2.0"
+    js-yaml "4.0.0"
+    log-symbols "4.0.0"
+    minimatch "3.0.4"
+    ms "2.1.3"
+    nanoid "3.1.20"
+    serialize-javascript "5.0.1"
+    strip-json-comments "3.1.1"
+    supports-color "8.1.1"
+    which "2.0.2"
+    wide-align "1.1.3"
+    workerpool "6.1.0"
+    yargs "16.2.0"
+    yargs-parser "20.2.4"
+    yargs-unparser "2.0.0"
+
+mocha@^8.3.1:
+  version "8.3.2"
+  resolved "https://registry.yarnpkg.com/mocha/-/mocha-8.3.2.tgz#53406f195fa86fbdebe71f8b1c6fb23221d69fcc"
+  integrity sha512-UdmISwr/5w+uXLPKspgoV7/RXZwKRTiTjJ2/AC5ZiEztIoOYdfKb19+9jNmEInzx5pBsCyJQzarAxqIGBNYJhg==
   dependencies:
     "@ungap/promise-all-settled" "1.1.2"
     ansi-colors "4.1.1"
@@ -5871,7 +5910,7 @@ sinon-chai@^3.5.0:
   resolved "https://registry.yarnpkg.com/sinon-chai/-/sinon-chai-3.5.0.tgz#c9a78304b0e15befe57ef68e8a85a00553f5c60e"
   integrity sha512-IifbusYiQBpUxxFJkR3wTU68xzBN0+bxCScEaKMjBvAQERg6FnTTc1F17rseLb1tjmkJ23730AXpFI0c47FgAg==
 
-sinon@^9.0.3:
+sinon@^9.0.3, sinon@^9.2.4:
   version "9.2.4"
   resolved "https://registry.yarnpkg.com/sinon/-/sinon-9.2.4.tgz#e55af4d3b174a4443a8762fa8421c2976683752b"
   integrity sha512-zljcULZQsJxVra28qIAL6ow1Z9tpattkCTEJR4RBP3TGc00FcttsP5pK284Nas5WjMZU5Yzy3kAIp3B3KRf5Yg==
@@ -5967,7 +6006,7 @@ sparql-http-client@^2.2.2, sparql-http-client@^2.2.3:
     separate-stream "^1.0.0"
     universal-url "^2.0.0"
 
-sparqljs@^3.1.1:
+sparqljs@^3.1.1, sparqljs@^3.4.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/sparqljs/-/sparqljs-3.4.1.tgz#1da48bd1b7d71507108417a7fc111e8949c1ce23"
   integrity sha512-JKcKPFdpPLiNnZU4i3f2MUk3LBIh0pCd1mWIP1Zi+Te7umurJLDBYCygsRNPK9Pz8ZI5n66StiQRxzSPYqdxjQ==

@@ -24,7 +24,7 @@ async function main() {
   app.enable('trust proxy')
   app.use(cors())
 
-  app.use(resource)
+  app.use(resource(req => req.hydra.term))
   app.use((req, res, next) => {
     req.knossos = {
       store,

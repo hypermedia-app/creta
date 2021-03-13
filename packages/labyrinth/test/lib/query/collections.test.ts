@@ -12,6 +12,7 @@ import { ex } from '../../support/namespace'
 import * as Hydra from '@rdfine/hydra'
 import RdfResource from '@tpluscode/rdfine'
 import * as ns from '../../../lib/namespace'
+import { fromPointer } from '@rdfine/hydra/lib/IriTemplate'
 
 RdfResource.factory.addMixin(...Object.values(Hydra))
 
@@ -194,7 +195,7 @@ describe('labyrinth/lib/query/collection', () => {
             }),
           pageSize: 10,
           basePath,
-          variables: new Hydra.IriTemplateMixin.Class(cf({ dataset: $rdf.dataset() }).blankNode(), {
+          variables: fromPointer(cf({ dataset: $rdf.dataset() }).blankNode(), {
             mapping: [{
               types: [hydra.IriTemplateMapping],
               property: schema.title,
@@ -234,7 +235,7 @@ describe('labyrinth/lib/query/collection', () => {
             }),
           pageSize: 10,
           basePath,
-          variables: new Hydra.IriTemplateMixin.Class(cf({ dataset: $rdf.dataset() }).blankNode(), {
+          variables: fromPointer(cf({ dataset: $rdf.dataset() }).blankNode(), {
             mapping: [{
               types: [hydra.IriTemplateMapping],
               property: hydra.pageIndex,
@@ -270,7 +271,7 @@ describe('labyrinth/lib/query/collection', () => {
             }),
           pageSize: 10,
           basePath,
-          variables: new Hydra.IriTemplateMixin.Class(cf({ dataset: $rdf.dataset() }).blankNode(), {
+          variables: fromPointer(cf({ dataset: $rdf.dataset() }).blankNode(), {
             mapping: [{
               types: [hydra.IriTemplateMapping],
               property: hydra.pageIndex,

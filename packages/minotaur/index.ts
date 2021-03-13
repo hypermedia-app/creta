@@ -1,8 +1,8 @@
-import * as api from "hydra-box/Api";
-import Api from "hydra-box/Api";
-import walk from "@fcostarodrigo/walk";
-import {log} from "../labyrinth/lib/logger";
-import hb from "hydra-box";
+import * as api from 'hydra-box/Api'
+import Api from 'hydra-box/Api'
+import walk from '@fcostarodrigo/walk'
+import { log } from '../labyrinth/lib/logger'
+import hb from 'hydra-box'
 
 interface ApiFromFilesystem {
   baseUri: string
@@ -12,7 +12,7 @@ interface ApiFromFilesystem {
   path?: string
 }
 
-export async function fromFilesystem({ apiPath, baseUri, codePath, defaultBase = 'urn:hydra-box:api', path = '/api' }: ApiFromFilesystem): Promise<api.Api> {
+export async function fromFilesystem({ apiPath, baseUri, codePath, defaultBase = 'urn:hydra-box:api', path = '/api' }: ApiFromFilesystem): Promise<Api> {
   const options: api.ApiInit = {
     path,
     codePath,

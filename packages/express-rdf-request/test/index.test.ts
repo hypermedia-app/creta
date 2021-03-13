@@ -7,7 +7,7 @@ import clownface from 'clownface'
 import { turtle } from '@tpluscode/rdf-string'
 import { rdfs } from '@tpluscode/rdf-ns-builders'
 import { appMock } from '@cube-creator/testing/middleware'
-import { cc } from '@cube-creator/testing/lib/namespace'
+import { ex } from 'testing/namespace'
 import { resource } from '..'
 
 describe('middleware/resource', () => {
@@ -41,7 +41,7 @@ describe('middleware/resource', () => {
     const res = await request(app)
       .post('/')
       .set('content-type', 'text/turtle')
-      .send(turtle`<> a ${cc.CubeProject} ; ${rdfs.label} "Test project" .`.toString())
+      .send(turtle`<> a ${ex.Project} ; ${rdfs.label} "Test project" .`.toString())
 
     // then
     expect(res.text).to.matchSnapshot(this)
@@ -65,7 +65,7 @@ describe('middleware/resource', () => {
       .post('/foo/bar')
       .set('host', 'example.com')
       .set('content-type', 'text/turtle')
-      .send(turtle`<http://example.com/foo/bar> a ${cc.CubeProject} ; ${rdfs.label} "Test project" .`.toString())
+      .send(turtle`<http://example.com/foo/bar> a ${ex.Project} ; ${rdfs.label} "Test project" .`.toString())
 
     // then
     expect(res.text).to.matchSnapshot(this)

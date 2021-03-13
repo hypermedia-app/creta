@@ -1,4 +1,4 @@
-import { RequestHandler, Router } from 'express'
+import { Request, RequestHandler, Router } from 'express'
 import asyncMiddleware from 'middleware-async'
 import $rdf from 'rdf-ext'
 import DatasetExt from 'rdf-ext/lib/Dataset'
@@ -12,29 +12,34 @@ import { sparql } from '@tpluscode/rdf-string'
 
 interface ShaclMiddlewareOptions {
   loadShapes: RequestHandler
+  getTerm: (req: Request) => NamedNode
 }
 
 declare module 'express-serve-static-core' {
   interface Request {
     shacl: {
+      term: NamedNode
       dataGraph: GraphPointer
       shapesGraph: DatasetExt
     }
   }
 }
 
-export const shaclMiddleware = ({ loadShapes }: ShaclMiddlewareOptions): Router => {
+export const shaclMiddleware = ({ loadShapes, getTerm }: ShaclMiddlewareOptions): Router => {
   const router = Router()
 
   router.use(asyncMiddleware(async function initShaclGraphs(req, res, next) {
+    const term = getTerm(req)
+
     let dataGraph: GraphPointer<NamedNode>
     if (!req.dataset) {
-      dataGraph = clownface({ dataset: $rdf.dataset() }).node(req.hydra.term)
+      dataGraph = clownface({ dataset: $rdf.dataset() }).node(term)
     } else {
       dataGraph = await req.resource()
     }
 
     req.shacl = {
+      term,
       dataGraph,
       shapesGraph: $rdf.dataset(),
     }
@@ -53,7 +58,7 @@ export const shaclMiddleware = ({ loadShapes }: ShaclMiddlewareOptions): Router 
 
     if (classProperties.length) {
       const typeQuery = classProperties.reduce((query, path, index) => {
-        const pattern = sparql`${req.hydra.term} ${path.term} ?linked . ?linked a ?type`
+        const pattern = sparql`${req.shacl.term} ${path.term} ?linked . ?linked a ?type`
 
         if (index === 0) {
           return query.WHERE`{ ${pattern} }`

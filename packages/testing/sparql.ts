@@ -1,11 +1,18 @@
-/* eslint-disable prefer-rest-params */
 import { Assertion, AssertionError } from 'chai'
 import { Parser, SparqlQuery } from 'sparqljs'
 import { SparqlTemplateResult } from '@tpluscode/rdf-string'
 
 const sparqlParser = new Parser()
 
-// eslint-disable-next-line no-undef
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Chai {
+    interface TypeComparison {
+      query(expected: string | SparqlTemplateResult): void
+    }
+  }
+}
+
 Assertion.addMethod('query', function (this: Chai.AssertionStatic, expected: string | SparqlTemplateResult) {
   let expectedQuery: SparqlQuery
   let actualQuery: SparqlQuery

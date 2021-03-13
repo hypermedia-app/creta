@@ -11,16 +11,12 @@ import { ex } from './support/namespace'
 import { loader } from './support/hydra-box'
 
 describe('labyrinth', () => {
-  const baseUri = ex().value
-  const apiPath = path.resolve(__dirname, 'test-api')
   const codePath = path.resolve(__dirname, '..')
 
   it('returns 404 when no operation is found', async () => {
     // given
     const app = express()
     app.use(await hydraBox({
-      baseUri,
-      apiPath,
       codePath,
       loader: loader(),
       sparql: {
@@ -42,8 +38,6 @@ describe('labyrinth', () => {
     // given
     const app = express()
     app.use(await hydraBox({
-      baseUri,
-      apiPath,
       codePath,
       loader: loader({
         classResource: [{
@@ -75,8 +69,6 @@ describe('labyrinth', () => {
     // given
     const app = express()
     app.use(await hydraBox({
-      baseUri,
-      apiPath,
       codePath,
       loader: loader({
         classResource: [{
@@ -108,8 +100,6 @@ describe('labyrinth', () => {
     // given
     const app = express()
     app.use(await hydraBox({
-      baseUri,
-      apiPath,
       codePath,
       loader: loader({
         classResource: [{
@@ -144,8 +134,6 @@ describe('labyrinth', () => {
     // given
     const app = express()
     app.use(await hydraBox({
-      baseUri,
-      apiPath,
       codePath,
       loader: loader({
         classResource: [{
@@ -185,8 +173,6 @@ describe('labyrinth', () => {
     // given
     const app = express()
     app.use(await hydraBox({
-      baseUri,
-      apiPath,
       codePath,
       loader: loader(),
       sparql: {
@@ -213,8 +199,6 @@ describe('labyrinth', () => {
     // given
     const app = express()
     app.use(await hydraBox({
-      baseUri,
-      apiPath,
       codePath,
       loader: loader(),
       sparql: {
@@ -244,8 +228,6 @@ describe('labyrinth', () => {
     // given
     const app = express()
     app.use(await hydraBox({
-      baseUri,
-      apiPath,
       codePath,
       loader: loader(),
       sparql: {

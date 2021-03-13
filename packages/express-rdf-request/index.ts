@@ -1,6 +1,6 @@
 import express from 'express'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
-import { NamedNode, Quad } from 'rdf-js'
+import { NamedNode } from 'rdf-js'
 import $rdf from 'rdf-ext'
 
 declare module 'express-serve-static-core' {
@@ -20,23 +20,28 @@ declare module 'rdf-js' {
 
 const emptyNamedNode = $rdf.namedNode('')
 
-export function resource(req: express.Request, res: express.Response, next: express.NextFunction) {
+export const resource = (getTerm: (req: express.Request) => NamedNode) => (req: express.Request, res: express.Response, next: express.NextFunction): void => {
   req.resource = async () => {
+    const term = getTerm(req)
+    if (!term) {
+      throw new Error('Could not determine request term.')
+    }
+
     const dataset = $rdf.dataset()
 
     if (!req.dataset) {
-      return clownface({ dataset }).node(req.hydra.term)
+      return clownface({ dataset }).node(term)
     }
 
     for (const quad of await req.dataset()) {
       const { predicate, graph } = quad
-      const subject = quad.subject.equals(emptyNamedNode) ? req.hydra.term : quad.subject
-      const object = quad.object.equals(emptyNamedNode) ? req.hydra.term : quad.object
+      const subject = quad.subject.equals(emptyNamedNode) ? term : quad.subject
+      const object = quad.object.equals(emptyNamedNode) ? term : quad.object
 
       dataset.add($rdf.quad(subject, predicate, object, graph))
     }
 
-    return clownface({ dataset }).namedNode(req.hydra.term)
+    return clownface({ dataset }).namedNode(term)
   }
 
   res.resource = (pointer: AnyPointer) => res.dataset(pointer.dataset)
