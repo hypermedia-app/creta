@@ -1531,10 +1531,10 @@
   resolved "https://registry.yarnpkg.com/@types/http-errors/-/http-errors-1.8.0.tgz#682477dbbbd07cd032731cb3b0e7eaee3d026b69"
   integrity sha512-2aoSC4UUbHDj2uCsCxcG/vRMXey/m17bC7UwitVm5hn22nI8O8Y9iDpA76Orc+DWkQ4zZrOKEshCqR/jSuXAHA==
 
-"@types/hydra-box@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@types/hydra-box/-/hydra-box-0.6.0.tgz#dfde8e7f73445a32fce3a51e0953ac60d2d530ef"
-  integrity sha512-F97oI+GKTdybVpPK6N/Xy5S0PHEDvh2zLTM6DXYVokBHvIfM9Rjns35wMopl9pL7w9dDT0qIWge+Df9sNlpo4g==
+"@types/hydra-box@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@types/hydra-box/-/hydra-box-0.6.1.tgz#37effb0dbe87d14ef13fbed80a68a5c7d36d9da4"
+  integrity sha512-VwMQKZjS603mwPsdXQHDePIgT1qLcFdiabnRGDD2pwKI/t0PTnUFDWQDCeQubaEnjokm7gBTW2iC0/oz06YSUw==
   dependencies:
     "@types/absolute-url" "*"
     "@types/clownface" "*"
