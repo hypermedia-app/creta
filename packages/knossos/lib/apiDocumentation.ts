@@ -2,7 +2,7 @@ import clownface, { GraphPointer } from 'clownface'
 import { NamedNode } from 'rdf-js'
 import $rdf from 'rdf-ext'
 import { hydra, rdf, rdfs, sh } from '@tpluscode/rdf-ns-builders'
-import { code } from '@hydrofoil/labyrinth/lib/namespace'
+import { auth, code } from '@hydrofoil/labyrinth/lib/namespace'
 import { fromPointer as initCollection } from '@rdfine/hydra/lib/Collection'
 import { knossos } from './namespace'
 
@@ -65,6 +65,8 @@ export function HydraClass(): GraphPointer<NamedNode> {
     .addOut(hydra.supportedOperation, operation => {
       operation
         .addOut(hydra.method, 'PUT')
+        .addOut(auth.required, true)
+        .addOut(auth.permissions, 'admins')
         .addOut(code.implementedBy, implementation => {
           implementation
             .addOut(rdf.type, code.EcmaScript)
@@ -74,6 +76,8 @@ export function HydraClass(): GraphPointer<NamedNode> {
     .addOut(hydra.supportedOperation, operation => {
       operation
         .addOut(hydra.method, 'DELETE')
+        .addOut(auth.required, true)
+        .addOut(auth.permissions, 'admins')
         .addOut(code.implementedBy, implementation => {
           implementation
             .addOut(rdf.type, code.EcmaScript)

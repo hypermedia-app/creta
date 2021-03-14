@@ -6,8 +6,9 @@ import debug from 'debug'
 import cors from 'cors'
 import createApi from './lib/api'
 import { ResourcePerGraphStore } from './lib/store'
-import { PUT as createResource } from './resource'
+import { create } from './resource'
 import { problemJson } from '../labyrinth/errors'
+import { authentication } from './lib/authentication'
 
 const app = express()
 
@@ -24,6 +25,7 @@ async function main() {
   app.enable('trust proxy')
   app.use(cors())
 
+  app.use(await authentication())
   app.use(resource(req => req.hydra.term))
   app.use((req, res, next) => {
     req.knossos = {
@@ -40,7 +42,7 @@ async function main() {
       log,
     }),
   }))
-  app.put('/*', createResource)
+  app.put('/*', create)
   app.use(problemJson({ captureNotFound: true }))
 
   app.listen(8888, () => log('API started'))

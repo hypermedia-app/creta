@@ -4,7 +4,7 @@ services:
     type: node:custom
     build:
       - npm i -g nodemon
-    command: nodemon -w packages -w apps --verbose --ext ts,ttl,js,trig --exec node --inspect=0.0.0.0:47671 -r ts-node/register --inspect packages/knossos/server.ts
+    command: nodemon -w packages -w apps --verbose --ignore .http --ext ts,ttl,js,trig --exec node --inspect=0.0.0.0:47671 -r ts-node/register --inspect packages/knossos/server.ts
     port: 8888
     ssl: true
     overrides:
@@ -14,6 +14,9 @@ services:
       environment:
         TS_NODE_TRANSPILE_ONLY: "true"
         DEBUG: knossos*,hydra*,hydra-box*,labyrinth*
+        AUTH_JWKS_URI: http://auth/keys
+        AUTH_ISSUER: https://auth.labyrinth.lndo.site
+        AUTH_AUDIENCE: conduit
         SPARQL_QUERY_ENDPOINT: http://store:3030/labyrinth
         SPARQL_UPDATE_ENDPOINT: http://store:3030/labyrinth
       depends_on:
@@ -39,9 +42,26 @@ services:
         interval: 5s
         timeout: 3s
         retries: 3
+  auth:
+    type: compose
+    scanner: false
+    ssl: true
+    services:
+      image: ghcr.io/dexidp/dex
+      command: dex serve /app/apps/auth/dex.yaml
+  ldap:
+    type: compose
+    scanner: false
+    services:
+      image: osixia/openldap
+      command: /container/tool/run --copy-service
+      volumes:
+        - ./apps/auth/ldap.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/config-ldap.ldif
 
 proxy:
   store:
     - db.labyrinth.lndo.site:3030
   conduit:
     - conduit.knossos.lndo.site:8888
+  auth:
+    - auth.labyrinth.lndo.site
