@@ -3842,9 +3842,9 @@ husky@^4.2.5:
     slash "^3.0.0"
     which-pm-runs "^1.0.0"
 
-hydra-box@^0.6, hydra-box@^0.6.2, hydra-box@zazuko/hydra-box#base-api-class:
+hydra-box@^0.6, hydra-box@^0.6.2, hydra-box@zazuko/hydra-box#master:
   version "0.6.2"
-  resolved "https://codeload.github.com/zazuko/hydra-box/tar.gz/ac6bb43feaff4de8518b4c1f77ce9d20d7daf04e"
+  resolved "https://codeload.github.com/zazuko/hydra-box/tar.gz/4baff9f07cbd1c2776e8412b0a97589aae3f508b"
   dependencies:
     "@rdfjs/data-model" "^1.1.2"
     "@rdfjs/dataset" "^1.0.1"

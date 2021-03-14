@@ -1,5 +1,5 @@
 import { rdf, sh } from '@tpluscode/rdf-ns-builders'
-import { shaclMiddleware } from 'hydra-box-middleware-shacl'
+import { shaclMiddleware } from 'express-middleware-shacl'
 
 export const shaclValidate = shaclMiddleware({
   async loadShapes(req, res, next) {
@@ -15,4 +15,5 @@ export const shaclValidate = shaclMiddleware({
 
     next()
   },
+  getTerm: req => req.hydra.term,
 })
