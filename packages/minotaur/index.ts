@@ -2,7 +2,6 @@ import * as api from 'hydra-box/Api'
 import Api from 'hydra-box/Api'
 import walk from '@fcostarodrigo/walk'
 import { log } from '../labyrinth/lib/logger'
-import hb from 'hydra-box'
 
 interface ApiFromFilesystem {
   baseUri: string
@@ -28,7 +27,7 @@ export async function fromFilesystem({ apiPath, baseUri, codePath, defaultBase =
     if (api) {
       api = await api.fromFile(file)
     } else {
-      api = await hb.Api.fromFile(file, options)
+      api = await Api.fromFile(file, options)
     }
   }
 

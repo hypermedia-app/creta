@@ -1,15 +1,16 @@
-import { protectedResource } from '@hydrofoil/labyrinth/resource'
 import asyncMiddleware from 'middleware-async'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
+import { StreamClient } from 'sparql-http-client/StreamClient'
 import error from 'http-errors'
 import httpStatus from 'http-status'
 import { Debugger } from 'debug'
 import { ResourceStore } from './lib/store'
 import { shaclValidate } from './lib/shacl'
 import { knossos } from './lib/namespace'
-import guard from 'express-jwt-permissions'
-import { auth } from '@hydrofoil/labyrinth/lib/namespace'
+import { Router } from 'express'
+import { check } from '../hydra-box-middleware-wac'
+import { acl } from '../labyrinth/lib/namespace'
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -50,40 +51,30 @@ const ensureNotExists = asyncMiddleware(async (req, res, next) => {
 
   next()
 })
-const checkPermissions = asyncMiddleware(async (req, res, next) => {
+
+const checkPermissions = (client: StreamClient) => asyncMiddleware(async (req, res, next) => {
   req.knossos.log('Checking type restrictions')
-  const scope = guard({
-    permissionsProperty: 'groups',
+
+  const types = (await req.resource()).out(rdf.type).terms
+  const hasAccess = await check({
+    types,
+    accessMode: [acl.Control, acl.Create],
+    client,
   })
 
-  const api = clownface(req.hydra.api)
-  const types = (await req.resource()).out(rdf.type)
-
-  req.knossos.log(types.values)
-  const groups = api.node(types)
-    .out(hydra.supportedOperation)
-    .has(hydra.method, 'PUT')
-    .out(auth.permissions)
-    .values
-
-  if (groups.length) {
-    if (!req.user) {
-      return next(new error.Unauthorized())
-    }
-
-    req.knossos.log('Require groups %o', groups)
-    return scope.check(groups)(req, res, next)
+  if (!hasAccess) {
+    return next(new error.Unauthorized())
   }
 
   req.knossos.log('Resource types unrestricted')
   next()
 })
 
-export const create = protectedResource(ensureNotExists, checkPermissions, shaclValidate, saveResource)
+export const create = (client: StreamClient) => Router().use(ensureNotExists, checkPermissions(client), shaclValidate, saveResource)
 
-export const PUT = protectedResource(shaclValidate, saveResource)
+export const PUT = Router().use(shaclValidate, saveResource)
 
-export const DELETE = protectedResource(asyncMiddleware(async (req, res) => {
+export const DELETE = Router().use(asyncMiddleware(async (req, res) => {
   await req.knossos.store.delete(req.hydra.resource.term)
 
   return res.sendStatus(httpStatus.NO_CONTENT)

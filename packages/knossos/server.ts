@@ -4,6 +4,7 @@ import StreamClient from 'sparql-http-client/StreamClient'
 import { resource } from 'express-rdf-request'
 import debug from 'debug'
 import cors from 'cors'
+import * as webAccessControl from 'hydra-box-middleware-wac'
 import createApi from './lib/api'
 import { ResourcePerGraphStore } from './lib/store'
 import { create } from './resource'
@@ -20,7 +21,8 @@ async function main() {
     updateUrl: process.env.SPARQL_UPDATE_ENDPOINT!,
   }
 
-  const store = new ResourcePerGraphStore(new StreamClient(sparql))
+  const client = new StreamClient(sparql)
+  const store = new ResourcePerGraphStore(client)
 
   app.enable('trust proxy')
   app.use(cors())
@@ -41,8 +43,11 @@ async function main() {
       store,
       log,
     }),
+    middleware: {
+      resource: webAccessControl.middleware(client),
+    },
   }))
-  app.put('/*', create)
+  app.put('/*', create(client))
   app.use(problemJson({ captureNotFound: true }))
 
   app.listen(8888, () => log('API started'))

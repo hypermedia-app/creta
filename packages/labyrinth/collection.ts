@@ -1,10 +1,9 @@
 import asyncMiddleware from 'middleware-async'
 import clownface, { AnyPointer } from 'clownface'
 import { hydra } from '@tpluscode/rdf-ns-builders'
-import { protectedResource } from './resource'
 import * as lib from './lib/collection'
 
-export const get = protectedResource(asyncMiddleware(async (req, res) => {
+export const get = asyncMiddleware(async (req, res) => {
   const types = clownface(req.hydra.api).node([...req.hydra.resource.types])
   let request: AnyPointer | undefined
   if (req.dataset) {
@@ -25,4 +24,4 @@ export const get = protectedResource(asyncMiddleware(async (req, res) => {
 
   res.setLink(req.hydra.resource.term.value, 'canonical')
   return res.dataset(dataset)
-}))
+})

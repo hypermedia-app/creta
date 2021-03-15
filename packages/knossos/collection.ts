@@ -1,4 +1,4 @@
-import { protectedResource } from '@hydrofoil/labyrinth/resource'
+import { Router } from 'express'
 import asyncMiddleware from 'middleware-async'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import error from 'http-errors'
@@ -28,7 +28,7 @@ function rename(member: GraphPointer, id: NamedNode): GraphPointer<NamedNode> {
   return member.node(id)
 }
 
-export const POST = protectedResource(shaclValidate, asyncMiddleware(async (req, res, next) => {
+export const POST = Router().use(shaclValidate).use(asyncMiddleware(async (req, res, next) => {
   const api = clownface(req.hydra.api)
   const collection = await req.hydra.resource.clownface()
   const types = collection.out(hydra.manages).has(hydra.property, rdf.type).out(hydra.object)

@@ -9,6 +9,7 @@ import { ResourceStore } from './store'
 import * as apiDocResources from './apiDocumentation'
 import { CONSTRUCT } from '@tpluscode/sparql-builder'
 import { hydra } from '@tpluscode/rdf-ns-builders'
+import namespace from '@rdfjs/namespace'
 
 interface ApiFromStore {
   path?: string
@@ -41,17 +42,23 @@ const createApi: (arg: ApiFromStore) => ApiFactory = ({ path = '/api', store, lo
         // return
       }
 
-      const apiBase = this.term.value.replace(new RegExp(`${path}$`), '/')
+      const root = namespace(this.term.value.replace(new RegExp(`${path}$`), '/'))
       log?.('Initializing API %s', this.term.value)
 
       const apiExists = await store.exists(this.term)
       if (!apiExists) {
         log?.('API Documentation resource does not exist. Creating...')
 
-        await store.save(apiDocResources.ApiDocumentation(this.term, apiBase))
-        await store.save(apiDocResources.Entrypoint(apiBase))
-        await store.save(apiDocResources.ClassesCollection(this.term))
-        await store.save(apiDocResources.HydraClass())
+        const namespaces = { api: namespace(this.term.value + '/'), root }
+
+        await Promise.all([
+          store.save(apiDocResources.ApiDocumentation(namespaces)),
+          store.save(apiDocResources.Entrypoint(namespaces)),
+          store.save(apiDocResources.ClassesCollection(namespaces)),
+          store.save(apiDocResources.HydraClass()),
+          store.save(apiDocResources.SystemUser(namespaces)),
+          ...[...apiDocResources.SystemAuthorizations(namespaces)].map(store.save.bind(store)),
+        ])
       }
 
       const api = await store.load(this.term)

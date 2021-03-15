@@ -1,18 +1,25 @@
 import clownface, { GraphPointer } from 'clownface'
 import { NamedNode } from 'rdf-js'
 import $rdf from 'rdf-ext'
-import { hydra, rdf, rdfs, sh } from '@tpluscode/rdf-ns-builders'
-import { auth, code } from '@hydrofoil/labyrinth/lib/namespace'
+import { foaf, hydra, rdf, rdfs, sh } from '@tpluscode/rdf-ns-builders'
+import { acl, auth, code } from '@hydrofoil/labyrinth/lib/namespace'
 import { fromPointer as initCollection } from '@rdfine/hydra/lib/Collection'
+import { NamespaceBuilder } from '@rdfjs/namespace'
 import { knossos } from './namespace'
 
-export function ApiDocumentation(term: NamedNode, entrypoint: string): GraphPointer<NamedNode> {
+interface Namespaces {
+  api: NamespaceBuilder
+  root: NamespaceBuilder
+}
+
+export function ApiDocumentation({ api, root }: Namespaces): GraphPointer<NamedNode> {
   const graph = clownface({ dataset: $rdf.dataset() })
 
   graph.node(hydra.Resource)
     .addOut(hydra.supportedOperation, operation => {
       operation
         .addOut(hydra.method, 'GET')
+        .addOut(auth.access, acl.Read)
         .addOut(code.implementedBy, implementation => {
           implementation
             .addOut(rdf.type, code.EcmaScript)
@@ -24,6 +31,7 @@ export function ApiDocumentation(term: NamedNode, entrypoint: string): GraphPoin
     .addOut(hydra.supportedOperation, operation => {
       operation
         .addOut(hydra.method, 'GET')
+        .addOut(auth.access, acl.Read)
         .addOut(code.implementedBy, implementation => {
           implementation
             .addOut(rdf.type, code.EcmaScript)
@@ -31,20 +39,20 @@ export function ApiDocumentation(term: NamedNode, entrypoint: string): GraphPoin
         })
     })
 
-  return graph.node(term)
+  return graph.node(api())
     .addOut(rdf.type, hydra.ApiDocumentation)
-    .addOut(hydra.entrypoint, graph.namedNode(entrypoint))
+    .addOut(hydra.entrypoint, graph.namedNode(root()))
 }
 
-export function Entrypoint(term: string): GraphPointer<NamedNode> {
+export function Entrypoint({ api }: Namespaces): GraphPointer<NamedNode> {
   return clownface({ dataset: $rdf.dataset() })
-    .namedNode(term)
+    .namedNode(api())
     .addOut(rdf.type, hydra.Resource)
 }
 
-export function ClassesCollection(apiDocumentation: NamedNode): GraphPointer<NamedNode> {
+export function ClassesCollection({ api }: Namespaces): GraphPointer<NamedNode> {
   const pointer = clownface({ dataset: $rdf.dataset() })
-    .namedNode(`${apiDocumentation.value}/classes`)
+    .namedNode(api.classes)
 
   initCollection(pointer, {
     manages: [{
@@ -65,8 +73,7 @@ export function HydraClass(): GraphPointer<NamedNode> {
     .addOut(hydra.supportedOperation, operation => {
       operation
         .addOut(hydra.method, 'PUT')
-        .addOut(auth.required, true)
-        .addOut(auth.permissions, 'admins')
+        .addOut(auth.access, acl.Write)
         .addOut(code.implementedBy, implementation => {
           implementation
             .addOut(rdf.type, code.EcmaScript)
@@ -76,12 +83,26 @@ export function HydraClass(): GraphPointer<NamedNode> {
     .addOut(hydra.supportedOperation, operation => {
       operation
         .addOut(hydra.method, 'DELETE')
-        .addOut(auth.required, true)
-        .addOut(auth.permissions, 'admins')
+        .addOut(auth.access, acl.Delete)
         .addOut(code.implementedBy, implementation => {
           implementation
             .addOut(rdf.type, code.EcmaScript)
             .addOut(code.link, graph.namedNode('node:@hydrofoil/knossos/resource#DELETE'))
         })
     })
+}
+
+export function SystemUser({ root }: Namespaces): GraphPointer<NamedNode> {
+  return clownface({ dataset: $rdf.dataset() })
+    .namedNode(root('user/SYSTEM'))
+    .addOut(rdf.type, foaf.Agent)
+}
+
+export function * SystemAuthorizations({ api, root }: Namespaces): Generator<GraphPointer<NamedNode>> {
+  yield clownface({ dataset: $rdf.dataset() })
+    .namedNode(api('authorization/system-controls-all'))
+    .addOut(rdf.type, acl.Authorization)
+    .addOut(acl.accessToClass, hydra.Resource)
+    .addOut(acl.mode, acl.Control)
+    .addOut(acl.agent, root('user/SYSTEM'))
 }

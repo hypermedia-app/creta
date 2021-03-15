@@ -23,6 +23,7 @@
     "http-errors": "^1.8.0",
     "http-status": "^1.5.0",
     "hydra-box": "zazuko/hydra-box#master",
+    "hydra-box-middleware-wac": "0.0.0",
     "express-middleware-shacl": "^0.0.0",
     "rdf-ext": "^1.3.1",
     "sparql-http-client": "^2.2.3",
