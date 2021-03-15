@@ -52,11 +52,12 @@ const createApi: (arg: ApiFromStore) => ApiFactory = ({ path = '/api', store, lo
         const namespaces = { api: namespace(this.term.value + '/'), root }
 
         await Promise.all([
-          store.save(apiDocResources.ApiDocumentation(namespaces)),
+          store.save(apiDocResources.ApiDocumentation(this.term, namespaces)),
           store.save(apiDocResources.Entrypoint(namespaces)),
           store.save(apiDocResources.ClassesCollection(namespaces)),
           store.save(apiDocResources.HydraClass()),
           store.save(apiDocResources.SystemUser(namespaces)),
+          ...[...apiDocResources.AclResources(namespaces)].map(store.save.bind(store)),
           ...[...apiDocResources.SystemAuthorizations(namespaces)].map(store.save.bind(store)),
         ])
       }

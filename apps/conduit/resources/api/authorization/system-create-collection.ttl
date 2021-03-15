@@ -1,0 +1,10 @@
+prefix hydra: <http://www.w3.org/ns/hydra/core#>
+prefix foaf: <http://xmlns.com/foaf/0.1/>
+prefix acl: <http://www.w3.org/ns/auth/acl#>
+prefix knossos: <https://hypermedia.app/knossos#>
+
+<> a acl:Authorization ;
+   acl:agentClass knossos:SystemAccount ;
+   acl:accessTo hydra:Collection ;
+   acl:mode acl:Create ;
+.

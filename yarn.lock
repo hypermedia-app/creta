@@ -1183,6 +1183,17 @@
     "@tpluscode/rdfine" "^0.5.17"
     es6-url-template "^3.0.2"
 
+"@rdfine/owl@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@rdfine/owl/-/owl-0.4.3.tgz#350b292a938a82811d6def16a4142e169a8e2de7"
+  integrity sha512-NsuyU/Qi1zYwiDEjLQP3RvoXbxE3YdrE/gAQZHO/Qre0ElXM1NPxgXzHget04TuppG1plWB2zmQJL98RwZ15TA==
+  dependencies:
+    "@rdf-esm/data-model" "^0.5.3"
+    "@rdfine/rdf" "^0.5.3"
+    "@rdfine/rdfs" "^0.6.3"
+    "@tpluscode/rdf-ns-builders" "^0.4"
+    "@tpluscode/rdfine" "^0.5.17"
+
 "@rdfine/rdf@^0.5.3":
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/@rdfine/rdf/-/rdf-0.5.3.tgz#c684f9ff36a89e9fce500d63395092f3245961ef"
@@ -1199,6 +1210,18 @@
   dependencies:
     "@rdf-esm/data-model" "^0.5.3"
     "@rdfine/rdf" "^0.5.3"
+    "@tpluscode/rdf-ns-builders" "^0.4"
+    "@tpluscode/rdfine" "^0.5.17"
+
+"@rdfine/shacl@^0.7.5":
+  version "0.7.5"
+  resolved "https://registry.yarnpkg.com/@rdfine/shacl/-/shacl-0.7.5.tgz#81a8b3ccd4a9b389f4b3a1b718225968363c2502"
+  integrity sha512-i5jJa75tdhyomgHfvqR38hNkbLaHXbd4ArRDhmKBgOUZvbElZoc9oULpwDo/XMbw9U14h7uOQyR2w4ewM1l7Wg==
+  dependencies:
+    "@rdf-esm/data-model" "^0.5.3"
+    "@rdfine/owl" "^0.4.3"
+    "@rdfine/rdf" "^0.5.3"
+    "@rdfine/rdfs" "^0.6.3"
     "@tpluscode/rdf-ns-builders" "^0.4"
     "@tpluscode/rdfine" "^0.5.17"
 
@@ -1573,6 +1596,13 @@
   version "8.0.3"
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-8.0.3.tgz#51b21b6acb6d1b923bbdc7725c38f9f455166402"
   integrity sha512-vyxR57nv8NfcU0GZu8EUXZLTbCMupIUwy95LJ6lllN+JRPG25CwMHoB1q5xKh8YKhQnHYRAn4yW2yuHbf/5xgg==
+
+"@types/nanoid@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@types/nanoid/-/nanoid-2.1.0.tgz#41edfda78986e9127d0dc14de982de766f994020"
+  integrity sha512-xdkn/oRTA0GSNPLIKZgHWqDTWZsVrieKomxJBOQUK9YDD+zfSgmwD5t4WJYra5S7XyhTw7tfvwznW+pFexaepQ==
+  dependencies:
+    "@types/node" "*"
 
 "@types/node-fetch@^2.5.8":
   version "2.5.8"
@@ -4932,6 +4962,11 @@ nanoid@3.1.20:
   version "3.1.20"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.20.tgz#badc263c6b1dcf14b71efaa85f6ab4c1d6cfc788"
   integrity sha512-a1cQNyczgKbLX9jwbS/+d7W8fX/RfgYR7lVWwWOGIPNgK2m0MWvrGF6/m4kk6U3QcFMnZf3RIhL0v2Jgh/0Uxw==
+
+nanoid@^3.1.22:
+  version "3.1.22"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.22.tgz#b35f8fb7d151990a8aebd5aa5015c03cf726f844"
+  integrity sha512-/2ZUaJX2ANuLtTvqTlgqBQNJoQO398KyJgZloL0PZkC0dpysjncRUPsFe3DUPzz/y3h+u7C46np8RMuvF3jsSQ==
 
 natural-compare@^1.4.0:
   version "1.4.0"

@@ -1,0 +1,5 @@
+PUT {{base}}/api/authorization/resource-read-all
+Content-Type: text/turtle
+Authorization: System {{system-token}}
+
+< ../resources/api/authorization/resource-read-all.ttl

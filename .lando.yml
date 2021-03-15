@@ -4,7 +4,7 @@ services:
     type: node:custom
     build:
       - npm i -g nodemon
-    command: nodemon -w packages -w apps --verbose --ignore .http --ext ts,ttl,js,trig --exec node --inspect=0.0.0.0:47671 -r ts-node/register --inspect packages/knossos/server.ts
+    command: nodemon -w packages -w apps --verbose --ignore **/*.http --ignore **/*.ttl --ignore **/*.env.json --ext ts,js --exec node --inspect=0.0.0.0:47671 -r ts-node/register --inspect packages/knossos/server.ts
     port: 8888
     ssl: true
     overrides:

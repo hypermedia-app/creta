@@ -8,7 +8,7 @@ import { NamedNode } from 'rdf-js'
 import { fromPointer } from '@rdfine/hydra/lib/IriTemplate'
 import type { ResourceIdentifier } from '@tpluscode/rdfine'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
-import { shaclValidate } from './lib/shacl'
+import { shaclValidate } from './lib/middleware/shacl'
 import { knossos } from './lib/namespace'
 
 function checkMemberTemplate(ptr: AnyPointer): ptr is GraphPointer<ResourceIdentifier> {
@@ -46,12 +46,17 @@ export const POST = Router().use(shaclValidate).use(asyncMiddleware(async (req, 
   }
 
   let member = await req.resource()
-  const memberId = new URL(fromPointer(memberTemplateS).expand(member), req.absoluteUrl()).toString()
+  const memberId = $rdf.namedNode(new URL(fromPointer(memberTemplateS).expand(member), req.absoluteUrl()).toString())
 
-  req.knossos.log(`Creating resource ${memberId}`)
-  member = rename(member, $rdf.namedNode(memberId)).addOut(rdf.type, types)
+  if (await req.knossos.store.exists(memberId)) {
+    return next(new error.Conflict())
+  }
+
+  req.knossos.log(`Creating resource ${memberId.value}`)
+  member = rename(member, memberId).addOut(rdf.type, types)
   await req.knossos.store.save(member)
 
   res.status(httpStatus.CREATED)
+  res.setHeader('Location', memberId.value)
   return res.dataset(member.dataset)
 }))

@@ -5,3 +5,4 @@ node_modules
 !types/**/*.d.ts
 coverage/
 .idea/
+*.private.env.json
