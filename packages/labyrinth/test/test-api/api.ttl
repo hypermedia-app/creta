@@ -1,6 +1,6 @@
 @base          <http://example.com/> .
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
-@prefix auth:  <http://hypermedia.app/auth#> .
+@prefix auth:  <https://hypermedia.app/auth#> .
 @prefix code:  <https://code.described.at/> .
 
 <api> a                    hydra:ApiDocumentation ;

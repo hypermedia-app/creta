@@ -1,0 +1,6 @@
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+
+<api>
+  a hydra:ApiDocumentation ;
+  hydra:entrypoint <> ;
+.

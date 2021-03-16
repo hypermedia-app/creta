@@ -1,0 +1,18 @@
+@prefix code: <https://code.described.at/> .
+@prefix acl: <http://www.w3.org/ns/auth/acl#> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+@prefix auth: <https://hypermedia.app/auth#> .
+
+hydra:Resource
+  a hydra:Class ;
+  hydra:supportedOperation
+    [
+      hydra:method "GET" ;
+      auth:access acl:Read ;
+      code:implementedBy
+        [
+          a code:EcmaScript ;
+          code:link <node:@hydrofoil/labyrinth/resource#get> ;
+        ]
+    ]
+.

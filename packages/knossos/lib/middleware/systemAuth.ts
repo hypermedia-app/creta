@@ -40,7 +40,7 @@ export const systemAuth = ({ log, client }: SystemAuth): express.RequestHandler 
         }
 
         if (!result) {
-          return next(new error.Forbidden('Invalid system token'))
+          return next(new error.InternalServerError('System account not found'))
         }
 
         systemAccountId = result.account as any

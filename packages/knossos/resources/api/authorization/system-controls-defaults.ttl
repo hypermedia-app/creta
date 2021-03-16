@@ -1,0 +1,10 @@
+@prefix knossos: <https://hypermedia.app/knossos#> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+@prefix acl: <http://www.w3.org/ns/auth/acl#> .
+
+<>
+  a acl:Authorization ;
+  acl:accessToClass hydra:Class, hydra:Resource, acl:Authorization ;
+  acl:mode acl:Control ;
+  acl:agentClass knossos:SystemAccount ;
+.

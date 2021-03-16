@@ -2,7 +2,7 @@ import express from 'express'
 import { hydraBox } from '@hydrofoil/labyrinth'
 import StreamClient from 'sparql-http-client/StreamClient'
 import { resource } from 'express-rdf-request'
-import debug from 'debug'
+import { Debugger } from 'debug'
 import cors from 'cors'
 import * as webAccessControl from 'hydra-box-middleware-wac'
 import createApi from './lib/api'
@@ -15,12 +15,20 @@ import ParsingClient from 'sparql-http-client/ParsingClient'
 
 const app = express()
 
-async function main() {
-  const log = debug('knossos')
+interface Options {
+  name: string
+  log: Debugger
+  endpointUrl: string
+  updateUrl: string | undefined
+  port: number
+  codePath: string
+  path: string
+}
 
+export async function serve({ log, endpointUrl, updateUrl, port, name, codePath, path }: Options) {
   const sparql = {
-    endpointUrl: process.env.SPARQL_QUERY_ENDPOINT!,
-    updateUrl: process.env.SPARQL_UPDATE_ENDPOINT!,
+    endpointUrl,
+    updateUrl: updateUrl || endpointUrl,
   }
 
   const client = new StreamClient(sparql)
@@ -41,9 +49,10 @@ async function main() {
     next()
   })
   app.use(await hydraBox({
-    codePath: '.',
+    codePath,
     sparql,
     loadApi: createApi({
+      path,
       store,
       log,
     }),
@@ -54,7 +63,5 @@ async function main() {
   app.put('/*', create(client))
   app.use(problemJson({ captureNotFound: true }))
 
-  app.listen(8888, () => log('API started'))
+  app.listen(port, () => log(`${name} started`))
 }
-
-main().catch(debug('knossos').extend('error'))

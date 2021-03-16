@@ -6,13 +6,11 @@ import ApiBase from 'hydra-box/Api'
 import { NamedNode, Term } from 'rdf-js'
 import { ApiFactory } from '@hydrofoil/labyrinth'
 import { ResourceStore } from './store'
-import * as apiDocResources from './apiDocumentation'
 import { CONSTRUCT } from '@tpluscode/sparql-builder'
 import { hydra } from '@tpluscode/rdf-ns-builders'
-import namespace from '@rdfjs/namespace'
 
 interface ApiFromStore {
-  path?: string
+  path: string
   store: ResourceStore
   log?: Debugger
 }
@@ -27,7 +25,7 @@ function assertTerm(term: Term | undefined): asserts term is NamedNode {
   }
 }
 
-const createApi: (arg: ApiFromStore) => ApiFactory = ({ path = '/api', store, log }) => async ({ sparql, codePath }) => {
+const createApi: (arg: ApiFromStore) => ApiFactory = ({ path, store, log }) => async ({ sparql, codePath }) => {
   const client = new StreamClient(sparql)
 
   return new (class extends ApiBase implements Api {
@@ -39,27 +37,14 @@ const createApi: (arg: ApiFromStore) => ApiFactory = ({ path = '/api', store, lo
       assertTerm(this.term)
 
       if (this.initialized) {
-        // return
+        return
       }
 
-      const root = namespace(this.term.value.replace(new RegExp(`${path}$`), '/'))
       log?.('Initializing API %s', this.term.value)
 
       const apiExists = await store.exists(this.term)
       if (!apiExists) {
-        log?.('API Documentation resource does not exist. Creating...')
-
-        const namespaces = { api: namespace(this.term.value + '/'), root }
-
-        await Promise.all([
-          store.save(apiDocResources.ApiDocumentation(this.term, namespaces)),
-          store.save(apiDocResources.Entrypoint(namespaces)),
-          store.save(apiDocResources.ClassesCollection(namespaces)),
-          store.save(apiDocResources.HydraClass()),
-          store.save(apiDocResources.SystemUser(namespaces)),
-          ...[...apiDocResources.AclResources(namespaces)].map(store.save.bind(store)),
-          ...[...apiDocResources.SystemAuthorizations(namespaces)].map(store.save.bind(store)),
-        ])
+        throw new Error(`ApiDocumentation <${this.term.value}> resource not found`)
       }
 
       const api = await store.load(this.term)
