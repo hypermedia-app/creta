@@ -5,10 +5,9 @@ import path from 'path'
 import * as fs from 'fs'
 import $rdf from 'rdf-ext'
 import { parsers } from '@rdfjs/formats-common'
-import { expand, prefixes } from '@zazuko/rdf-vocabularies'
+import { expand } from '@zazuko/rdf-vocabularies'
 import { Debugger } from 'debug'
 import clownface from 'clownface'
-import { acl } from '@hydrofoil/labyrinth/lib/namespace'
 import { ResourcePerGraphStore } from './store'
 
 type Options = StreamClientOptions & {
@@ -19,8 +18,6 @@ type Options = StreamClientOptions & {
 }
 
 const globp = promisify(glob)
-
-prefixes.acl = acl().value
 
 export async function bootstrap({ log, api, patterns, overwrite, ...options }: Options): Promise<void> {
   const store = new ResourcePerGraphStore(new StreamClient(options))

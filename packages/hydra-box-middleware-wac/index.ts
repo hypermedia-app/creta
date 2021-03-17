@@ -1,11 +1,11 @@
 import asyncMiddleware from 'middleware-async'
 import { ASK } from '@tpluscode/sparql-builder'
-import { acl, auth } from '@hydrofoil/labyrinth/lib/namespace'
+import { auth } from '@hydrofoil/labyrinth/lib/namespace'
 import error from 'http-errors'
 import { NamedNode, Term } from 'rdf-js'
 import type { StreamClient } from 'sparql-http-client/StreamClient'
 import type * as express from 'express'
-import { foaf } from '@tpluscode/rdf-ns-builders'
+import { acl, foaf } from '@tpluscode/rdf-ns-builders'
 
 interface Check {
   accessMode: Term[] | Term

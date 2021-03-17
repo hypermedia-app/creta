@@ -1,6 +1,6 @@
 import asyncMiddleware from 'middleware-async'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
-import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
+import { acl, hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { StreamClient } from 'sparql-http-client/StreamClient'
 import error from 'http-errors'
 import httpStatus from 'http-status'
@@ -10,7 +10,6 @@ import { shaclValidate } from './lib/middleware/shacl'
 import { knossos } from './lib/namespace'
 import { Router } from 'express'
 import { check } from '../hydra-box-middleware-wac'
-import { acl } from '../labyrinth/lib/namespace'
 
 declare module 'express-serve-static-core' {
   interface Request {
