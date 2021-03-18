@@ -40,7 +40,7 @@ const createJwtHandler = (jwksUri: string, client: StreamClient) => {
     // based on the kid in the header and
     // the signing keys provided by the JWKS endpoint.
     secret: jwksRsa.expressJwtSecret({
-      cache: false,
+      cache: true,
       rateLimit: true,
       jwksRequestsPerMinute: 5,
       jwksUri,
