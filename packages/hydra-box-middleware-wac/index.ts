@@ -26,10 +26,11 @@ function directAuthorization({ agent, accessMode, term }: Omit<ResourceCheck, 'c
   const agentClass = agent
     ? [...agent.out(rdf.type).terms, acl.AuthenticatedAgent]
     : []
+  const agentTerm = agent?.term.termType === 'NamedNode' ? agent.term : null
 
   return ASK`
     VALUES ?mode { ${acl.Control} ${accessMode} }
-    VALUES ?agent { ${agent?.term || '<>'} }
+    VALUES ?agent { ${agentTerm || '<>'} }
     VALUES ?agentClass { ${foaf.Agent} ${agentClass} }
     
     ${term} a ?type .
@@ -60,6 +61,10 @@ function directAuthorization({ agent, accessMode, term }: Omit<ResourceCheck, 'c
                      ${acl.mode} ?mode ;
                      ${acl.agent} ?agent ;
                      ${acl.accessToClass} ?type ;
+    }
+    union
+    {
+      ${term} ${acl.owner} ?agent .
     }`
 }
 
@@ -68,10 +73,12 @@ function typeAuthorization({ agent, accessMode, types }: Omit<TypeCheck, 'client
     ? [...agent.out(rdf.type).terms, acl.AuthenticatedAgent]
     : []
 
+  const agentTerm = agent?.term.termType === 'NamedNode' ? agent.term : null
+
   return ASK`
     VALUES ?mode { ${acl.Control} ${accessMode} }
     VALUES ?type { ${types} }
-    VALUES ?agent { ${agent?.term || '<>'} }
+    VALUES ?agent { ${agentTerm || '<>'} }
     VALUES ?agentClass { ${foaf.Agent} ${agentClass} }
     
     {
@@ -97,21 +104,44 @@ export async function check({ client, ...check }: ResourceCheck | TypeCheck): Pr
     hasAccess = await typeAuthorization(check).execute(client.query)
   }
 
-  return hasAccess ? null : new error.Unauthorized()
+  return hasAccess ? null : new error.Forbidden()
 }
 
 export const middleware = (client: StreamClient): express.RequestHandler => asyncMiddleware(async (req, res, next) => {
-  const accessMode = req.hydra.operation?.out(auth.access).term
+  if (!req.hydra.resource) {
+    return next()
+  }
 
-  const error = accessMode && await check({
+  let accessMode = req.hydra.operation?.out(auth.access).term
+
+  if (!accessMode) {
+    switch (req.method.toUpperCase()) {
+      case 'GET':
+        accessMode = acl.Read
+        break
+      case 'POST':
+      case 'PUT':
+        accessMode = acl.Write
+        break
+      case 'DELETE':
+        accessMode = acl.Delete
+        break
+    }
+  }
+
+  if (!accessMode) {
+    return next(new error.InternalServerError('Could not determine ACL mode for operation'))
+  }
+
+  const result = await check({
     term: req.hydra.term,
     accessMode,
     client,
     agent: req.user?.pointer,
   })
 
-  if (error) {
-    return next(error)
+  if (result) {
+    return next(result)
   }
 
   return next()
