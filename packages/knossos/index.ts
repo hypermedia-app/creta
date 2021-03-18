@@ -11,13 +11,12 @@ Program.command('serve <endpoint>')
   .option('--codePath <codePath>', 'Code path for hydra-box', '.')
   .option('--updateUrl <updateUrl>', 'SPARQL Update Endpoint URL')
   .option('-n, --name <name>', 'App name', 'knossos')
+  .option('--user <user>', 'SPARQL username')
+  .option('--password <password>', 'SPARQL password')
   .option('--authModule <authModule>', 'Authentication module', 'Must default-export an express handler factory. Can be lazy.')
   .action(async (endpointUrl, options) => {
     const {
-      updateUrl,
       name,
-      port,
-      codePath,
       api,
       authModule,
     } = options
@@ -37,13 +36,10 @@ Program.command('serve <endpoint>')
     }
 
     return serve({
-      name,
+      ...options,
       path: api,
-      port,
       log,
       endpointUrl,
-      updateUrl,
-      codePath,
       middleware: {
         authentication: authentication?.default,
       },

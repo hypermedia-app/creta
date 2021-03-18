@@ -5,7 +5,6 @@ import { ASK, CONSTRUCT, INSERT } from '@tpluscode/sparql-builder'
 import $rdf from 'rdf-ext'
 import { sparql } from '@tpluscode/rdf-string'
 import DatasetExt from 'rdf-ext/lib/Dataset'
-import { rdf, rdfs } from '@tpluscode/rdf-ns-builders'
 
 export interface ResourceStore {
   exists(term: Term): Promise<boolean>
@@ -45,8 +44,6 @@ export class ResourcePerGraphStore implements ResourceStore {
   }
 
   async save(resource: GraphPointer<NamedNode>): Promise<void> {
-    resource.addOut(rdf.type, rdfs.Resource)
-
     const insert = INSERT.DATA`GRAPH ${resource.term} { ${resource.dataset} }`
     const query = sparql`DROP SILENT GRAPH ${resource.term}; ${insert}`
 

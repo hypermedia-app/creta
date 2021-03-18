@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "init": "node -r ts-node/register ../../packages/knossos init --api https://conduit.knossos.lndo.site --endpoint http://db.labyrinth.lndo.site/labyrinth --overwrite"
+    "init": "node -r ts-node/register ../../packages/knossos init --api https://conduit.knossos.lndo.site --endpoint http://minos:password@db.labyrinth.lndo.site/repositories/labyrinth --overwrite"
   },
   "dependencies": {
     "@hydrofoil/knossos": "0.0.0",

@@ -21,15 +21,19 @@ interface Options {
   port: number
   codePath: string
   path: string
+  user?: string
+  password?: string
   middleware?: {
     authentication?(arg: { client: StreamClient }): express.RequestHandler | Promise<express.RequestHandler>
   }
 }
 
-export async function serve({ log, endpointUrl, updateUrl, port, name, codePath, path, middleware }: Options) {
+export async function serve({ log, endpointUrl, updateUrl, port, name, codePath, path, middleware, user, password }: Options) {
   const sparql = {
     endpointUrl,
     updateUrl: updateUrl || endpointUrl,
+    user,
+    password,
   }
 
   const client = new StreamClient(sparql)
