@@ -33,12 +33,13 @@ function canBeCreatedWithPut(api: AnyPointer, resource: GraphPointer) {
   return anyClassAllowsPut && noClassForbidsPut
 }
 
-const saveResource = ({ locationHeader }: { locationHeader: boolean }) => asyncMiddleware(async (req, res) => {
+const saveResource = ({ create }: { create: boolean }) => asyncMiddleware(async (req, res) => {
   const resource = await req.resource()
 
   await save({ resource, req })
 
-  if (locationHeader) {
+  if (create) {
+    res.status(httpStatus.CREATED)
     res.setHeader('Location', resource.value)
   }
 
@@ -76,9 +77,9 @@ const checkPermissions = (client: StreamClient) => asyncMiddleware(async (req, r
   next()
 })
 
-export const create = (client: StreamClient) => Router().use(ensureNotExists, checkPermissions(client), shaclValidate, saveResource({ locationHeader: true }))
+export const create = (client: StreamClient) => Router().use(ensureNotExists, checkPermissions(client), shaclValidate, saveResource({ create: true }))
 
-export const PUT = Router().use(shaclValidate, saveResource({ locationHeader: false }))
+export const PUT = Router().use(shaclValidate, saveResource({ create: false }))
 
 export const DELETE = Router().use(asyncMiddleware(async (req, res) => {
   await req.knossos.store.delete(req.hydra.resource.term)
