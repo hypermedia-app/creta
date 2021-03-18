@@ -5,6 +5,6 @@ prefix knossos: <https://hypermedia.app/knossos#>
 
 <> a acl:Authorization ;
    acl:agentClass knossos:SystemAccount ;
-   acl:accessTo hydra:Collection ;
+   acl:accessToClass hydra:Collection ;
    acl:mode acl:Create ;
 .

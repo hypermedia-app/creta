@@ -2,6 +2,7 @@ import express from 'express'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
 import { NamedNode } from 'rdf-js'
 import $rdf from 'rdf-ext'
+import { rdf, rdfs } from '@tpluscode/rdf-ns-builders'
 
 declare module 'express-serve-static-core' {
   export interface Request {
@@ -41,7 +42,7 @@ export const resource = (getTerm: (req: express.Request) => NamedNode) => (req: 
       dataset.add($rdf.quad(subject, predicate, object, graph))
     }
 
-    return clownface({ dataset }).namedNode(term)
+    return clownface({ dataset }).namedNode(term).addOut(rdf.type, rdfs.Resource)
   }
 
   res.resource = (pointer: AnyPointer) => res.dataset(pointer.dataset)

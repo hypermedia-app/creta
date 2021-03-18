@@ -4,7 +4,7 @@ services:
     type: node:custom
     build:
       - npm i -g nodemon
-    command: nodemon -w packages -w apps --verbose --ignore **/*.http --ignore **/*.ttl --ignore **/*.env.json --ext ts,js --exec node --inspect=0.0.0.0:47671 -r ts-node/register --inspect packages/knossos/index.ts serve http://store:3030/labyrinth
+    command: nodemon -w packages -w apps --ignore **/*.http --ignore **/*.ttl --ignore **/*.env.json --ext ts,js --exec node --inspect=0.0.0.0:47671 -r ts-node/register --inspect packages/knossos/index.ts serve http://store:3030/labyrinth --name conduit --authModule ./apps/conduit/middleware/authenticate
     port: 8888
     ssl: true
     overrides:
@@ -13,7 +13,7 @@ services:
         - '47671:47671'
       environment:
         TS_NODE_TRANSPILE_ONLY: "true"
-        DEBUG: knossos*,hydra*,hydra-box*,labyrinth*
+        DEBUG: conduit*,hydra*,hydra-box*,labyrinth*,SPARQL
         AUTH_JWKS_URI: http://auth/keys
         AUTH_ISSUER: https://auth.labyrinth.lndo.site
         AUTH_AUDIENCE: conduit

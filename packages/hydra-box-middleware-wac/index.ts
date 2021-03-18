@@ -5,12 +5,13 @@ import error from 'http-errors'
 import { NamedNode, Term } from 'rdf-js'
 import type { StreamClient } from 'sparql-http-client/StreamClient'
 import type * as express from 'express'
-import { acl, foaf } from '@tpluscode/rdf-ns-builders'
+import { acl, foaf, rdf } from '@tpluscode/rdf-ns-builders'
+import type { GraphPointer } from 'clownface'
 
 interface Check {
   accessMode: Term[] | Term
   client: StreamClient
-  agent?: Term
+  agent?: GraphPointer
 }
 
 interface ResourceCheck extends Check {
@@ -22,14 +23,18 @@ interface TypeCheck extends Check {
 }
 
 function directAuthorization({ agent, accessMode, term }: Omit<ResourceCheck, 'client'>) {
+  const agentClass = agent
+    ? [...agent.out(rdf.type).terms, acl.AuthenticatedAgent]
+    : []
+
   return ASK`
     VALUES ?mode { ${acl.Control} ${accessMode} }
-    VALUES ?agent { ${agent || '<>'} }
+    VALUES ?agent { ${agent?.term || '<>'} }
+    VALUES ?agentClass { ${foaf.Agent} ${agentClass} }
     
     ${term} a ?type .
     
     {
-      ?agent a ?agentClass .
       ?authorization a ${acl.Authorization} ;
                      ${acl.mode} ?mode ;
                      ${acl.agentClass} ?agentClass ;
@@ -46,14 +51,6 @@ function directAuthorization({ agent, accessMode, term }: Omit<ResourceCheck, 'c
     {
       ?authorization a ${acl.Authorization} ;
                      ${acl.mode} ?mode ;
-                     ${acl.agentClass} ${foaf.Agent} ;
-                     ${acl.accessTo} ${term} ;
-    }
-    union
-    {
-      ?agent a ?agentClass .
-      ?authorization a ${acl.Authorization} ;
-                     ${acl.mode} ?mode ;
                      ${acl.agentClass} ?agentClass ;
                      ${acl.accessToClass} ?type ;
     }
@@ -62,25 +59,22 @@ function directAuthorization({ agent, accessMode, term }: Omit<ResourceCheck, 'c
       ?authorization a ${acl.Authorization} ;
                      ${acl.mode} ?mode ;
                      ${acl.agent} ?agent ;
-                     ${acl.accessToClass} ?type ;
-    }
-    union
-    {
-      ?authorization a ${acl.Authorization} ;
-                     ${acl.mode} ?mode ;
-                     ${acl.agentClass} ${foaf.Agent} ;
                      ${acl.accessToClass} ?type ;
     }`
 }
 
 function typeAuthorization({ agent, accessMode, types }: Omit<TypeCheck, 'client'>) {
+  const agentClass = agent
+    ? [...agent.out(rdf.type).terms, acl.AuthenticatedAgent]
+    : []
+
   return ASK`
     VALUES ?mode { ${acl.Control} ${accessMode} }
     VALUES ?type { ${types} }
-    VALUES ?agent { ${agent || '<>'} }
+    VALUES ?agent { ${agent?.term || '<>'} }
+    VALUES ?agentClass { ${foaf.Agent} ${agentClass} }
     
     {
-      ?agent a ?agentClass .
       ?authorization a ${acl.Authorization} ;
                      ${acl.mode} ?mode ;
                      ${acl.agentClass} ?agentClass ;
@@ -92,18 +86,11 @@ function typeAuthorization({ agent, accessMode, types }: Omit<TypeCheck, 'client
                      ${acl.mode} ?mode ;
                      ${acl.agent} ?agent ;
                      ${acl.accessToClass} ?type ;
-    }
-    union
-    {
-      ?authorization a ${acl.Authorization} ;
-                     ${acl.mode} ?mode ;
-                     ${acl.agentClass} ${foaf.Agent} ;
-                     ${acl.accessToClass} ?type ;
     }`
 }
 
 export async function check({ client, ...check }: ResourceCheck | TypeCheck): Promise<Error | null> {
-  let hasAccess = false
+  let hasAccess
   if ('term' in check) {
     hasAccess = await directAuthorization(check).execute(client.query)
   } else {
@@ -120,7 +107,7 @@ export const middleware = (client: StreamClient): express.RequestHandler => asyn
     term: req.hydra.term,
     accessMode,
     client,
-    agent: req.user?.id,
+    agent: req.user?.pointer,
   })
 
   if (error) {

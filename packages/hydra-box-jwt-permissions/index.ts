@@ -4,7 +4,7 @@ import clownface, { GraphPointer } from 'clownface'
 import error from 'http-errors'
 import type { HydraBox } from 'hydra-box'
 import { NamedNode } from 'rdf-js'
-import { auth } from '../namespace'
+import { auth } from '@hydrofoil/labyrinth/lib/namespace'
 
 const permission = guard()
 

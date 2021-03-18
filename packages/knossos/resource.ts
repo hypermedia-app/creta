@@ -9,7 +9,7 @@ import { ResourceStore } from './lib/store'
 import { shaclValidate } from './lib/middleware/shacl'
 import { knossos } from './lib/namespace'
 import { Router } from 'express'
-import { check } from '../hydra-box-middleware-wac'
+import { check } from 'hydra-box-middleware-wac'
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -61,9 +61,9 @@ const checkPermissions = (client: StreamClient) => asyncMiddleware(async (req, r
   const types = (await req.resource()).out(rdf.type).terms
   const error = await check({
     types,
-    accessMode: [acl.Control, acl.Create],
+    accessMode: acl.Control,
     client,
-    agent: req.user?.id,
+    agent: req.user?.pointer,
   })
 
   if (error) {

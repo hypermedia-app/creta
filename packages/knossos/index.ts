@@ -1,5 +1,7 @@
+#!/usr/bin/env node
 import Program from 'commander'
 import debug from 'debug'
+import importCwd from 'import-cwd'
 import { serve } from './server'
 import { bootstrap } from './lib/bootstrap'
 
@@ -9,17 +11,27 @@ Program.command('serve <endpoint>')
   .option('--codePath <codePath>', 'Code path for hydra-box', '.')
   .option('--updateUrl <updateUrl>', 'SPARQL Update Endpoint URL')
   .option('-n, --name <name>', 'App name', 'knossos')
-  .action((endpointUrl, options) => {
+  .option('--authModule <authModule>', 'Authentication module', 'Must default-export an express handler factory. Can be lazy.')
+  .action(async (endpointUrl, options) => {
     const {
       updateUrl,
       name,
       port,
       codePath,
       api,
+      authModule,
     } = options
     const log = debug(name)
 
-    log('%O', options)
+    log('Settings %O', options)
+
+    let authentication: any
+    if (authModule) {
+      authentication = importCwd.silent(authModule)
+      if (!authentication) {
+        log(`Module ${authModule} not found relative to ${process.cwd()}`)
+      }
+    }
 
     return serve({
       name,
@@ -29,6 +41,9 @@ Program.command('serve <endpoint>')
       endpointUrl,
       updateUrl,
       codePath,
+      middleware: {
+        authentication: authentication?.default,
+      },
     }).catch(log.extend('error'))
   })
 

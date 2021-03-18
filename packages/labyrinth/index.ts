@@ -6,7 +6,7 @@ import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
 import StreamClient from 'sparql-http-client/StreamClient'
 import { logRequest, logRequestError } from './lib/logger'
-import { NamedNode } from 'rdf-js'
+import { GraphPointer } from 'clownface'
 import { removeHydraOperations, preprocessResource } from './lib/middleware'
 import { SparqlQueryLoader } from './lib/loader'
 import { ensureArray } from './lib/array'
@@ -17,7 +17,7 @@ export { SparqlQueryLoader } from './lib/loader'
 RdfResource.factory.addMixin(...Object.values(Hydra))
 
 export interface User {
-  id?: NamedNode
+  pointer?: GraphPointer
 }
 
 declare module 'express-serve-static-core' {

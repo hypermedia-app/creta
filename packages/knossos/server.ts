@@ -9,9 +9,7 @@ import createApi from './lib/api'
 import { ResourcePerGraphStore } from './lib/store'
 import { create } from './resource'
 import { problemJson } from '../labyrinth/errors'
-import { authentication } from './lib/middleware/authentication'
 import { systemAuth } from './lib/middleware/systemAuth'
-import ParsingClient from 'sparql-http-client/ParsingClient'
 
 const app = express()
 
@@ -23,23 +21,27 @@ interface Options {
   port: number
   codePath: string
   path: string
+  middleware?: {
+    authentication?(): express.RequestHandler | Promise<express.RequestHandler>
+  }
 }
 
-export async function serve({ log, endpointUrl, updateUrl, port, name, codePath, path }: Options) {
+export async function serve({ log, endpointUrl, updateUrl, port, name, codePath, path, middleware }: Options) {
   const sparql = {
     endpointUrl,
     updateUrl: updateUrl || endpointUrl,
   }
 
   const client = new StreamClient(sparql)
-  const parsingClient = new ParsingClient(sparql)
   const store = new ResourcePerGraphStore(client)
 
   app.enable('trust proxy')
   app.use(cors())
 
-  app.use(await authentication())
-  app.use(systemAuth({ log, client: parsingClient }))
+  if (middleware?.authentication) {
+    app.use(await middleware.authentication())
+  }
+  app.use(systemAuth({ log, name }))
   app.use(resource(req => req.hydra.term))
   app.use((req, res, next) => {
     req.knossos = {
