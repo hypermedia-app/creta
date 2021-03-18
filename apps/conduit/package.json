@@ -2,6 +2,9 @@
   "name": "@hydrofoil/conduit",
   "private": true,
   "version": "0.0.0",
+  "scripts": {
+    "init": "knossos init --api https://conduit.knossos.lndo.site --endpoint http://db.labyrinth.lndo.site/labyrinth --overwrite"
+  },
   "dependencies": {
     "@hydrofoil/knossos": "0.0.0",
     "@tpluscode/rdf-ns-builders": "^0.4",

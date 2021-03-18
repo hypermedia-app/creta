@@ -5,7 +5,7 @@
     "knossos": "index.js"
   },
   "scripts": {
-    "prepack": "tsc"
+    "prepublish": "tsc"
   },
   "dependencies": {
     "@hydrofoil/labyrinth": "^0.4.1",
