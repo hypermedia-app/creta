@@ -10,13 +10,16 @@ import { shaclValidate } from './lib/middleware/shacl'
 import { knossos } from './lib/namespace'
 import { Router } from 'express'
 import { check } from 'hydra-box-middleware-wac'
+import { save } from './lib/resource'
+
+export interface Knossos {
+  store: ResourceStore
+  log: Debugger
+}
 
 declare module 'express-serve-static-core' {
   interface Request {
-    knossos: {
-      store: ResourceStore
-      log: Debugger
-    }
+    knossos: Knossos
   }
 }
 
@@ -33,14 +36,13 @@ function canBeCreatedWithPut(api: AnyPointer, resource: GraphPointer) {
 const saveResource = ({ locationHeader }: { locationHeader: boolean }) => asyncMiddleware(async (req, res) => {
   const resource = await req.resource()
 
-  await req.knossos.store.save(resource)
+  await save({ resource, req })
 
-  const updated = await req.knossos.store.load(resource.term)
   if (locationHeader) {
-    res.setHeader('Location', updated.value)
+    res.setHeader('Location', resource.value)
   }
 
-  return res.resource(updated)
+  return res.resource(resource)
 })
 
 const ensureNotExists = asyncMiddleware(async (req, res, next) => {

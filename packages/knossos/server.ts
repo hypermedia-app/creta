@@ -22,7 +22,7 @@ interface Options {
   codePath: string
   path: string
   middleware?: {
-    authentication?(): express.RequestHandler | Promise<express.RequestHandler>
+    authentication?(arg: { client: StreamClient }): express.RequestHandler | Promise<express.RequestHandler>
   }
 }
 
@@ -39,7 +39,7 @@ export async function serve({ log, endpointUrl, updateUrl, port, name, codePath,
   app.use(cors())
 
   if (middleware?.authentication) {
-    app.use(await middleware.authentication())
+    app.use(await middleware.authentication({ client }))
   }
   app.use(systemAuth({ log, name }))
   app.use(resource(req => req.hydra.term))

@@ -1,3 +1,5 @@
+@prefix acl: <http://www.w3.org/ns/auth/acl#> .
+@prefix auth: <https://hypermedia.app/auth#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix knossos: <https://hypermedia.app/knossos#> .
 @prefix code: <https://code.described.at/> .
@@ -8,6 +10,7 @@
   knossos:createWithPUT true ;
   hydra:supportedOperation
     [
+      auth:access acl:Create ;
       hydra:method "POST" ;
       hydra:title "Register" ;
       code:implementedBy

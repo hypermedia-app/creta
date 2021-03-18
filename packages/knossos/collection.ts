@@ -10,6 +10,7 @@ import type { ResourceIdentifier } from '@tpluscode/rdfine'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
 import { shaclValidate } from './lib/middleware/shacl'
 import { knossos } from './lib/namespace'
+import { save } from './lib/resource'
 
 function checkMemberTemplate(ptr: AnyPointer): ptr is GraphPointer<ResourceIdentifier> {
   return ptr.term?.termType === 'NamedNode' || ptr.term?.termType === 'BlankNode'
@@ -54,7 +55,8 @@ export const POST = Router().use(shaclValidate).use(asyncMiddleware(async (req, 
 
   req.knossos.log(`Creating resource ${memberId.value}`)
   member = rename(member, memberId).addOut(rdf.type, types)
-  await req.knossos.store.save(member)
+
+  await save({ resource: member, req })
 
   res.status(httpStatus.CREATED)
   res.setHeader('Location', memberId.value)

@@ -23,7 +23,10 @@ Program.command('serve <endpoint>')
     } = options
     const log = debug(name)
 
-    log('Settings %O', options)
+    log('Settings %O', {
+      ...options,
+      workingDir: process.cwd(),
+    })
 
     let authentication: any
     if (authModule) {
