@@ -29,8 +29,8 @@ const saveResource = ({ create }: { create: boolean }) => asyncMiddleware(async 
   if (create) {
     res.event({
       types: [as.Create],
-      summary: `Created resource ${req.hydra.resource.term}`,
-      object: req.hydra.resource.term,
+      summary: `Created resource ${resource.value}`,
+      object: resource.term,
     })
 
     res.status(httpStatus.CREATED)
@@ -38,8 +38,8 @@ const saveResource = ({ create }: { create: boolean }) => asyncMiddleware(async 
   } else {
     res.event({
       types: [as.Update],
-      summary: `Updated resource ${req.hydra.resource.term}`,
-      object: req.hydra.resource.term,
+      summary: `Updated resource ${resource.value}`,
+      object: resource.term,
     })
   }
 

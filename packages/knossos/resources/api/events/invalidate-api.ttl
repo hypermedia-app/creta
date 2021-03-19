@@ -14,7 +14,7 @@
      ] ,
      [
        rdf:predicate rdf:type ;
-       rdf:object as:Created ;
+       rdf:object as:Create ;
      ] ;
    events:objectSpec
      [
