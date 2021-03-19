@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "main": "index.js",
   "dependencies": {
-    "@hydrofoil/labyrinth": "^0.4.1",
+    "@hydrofoil/namespaces": "^0.0.0",
     "@tpluscode/rdf-ns-builders": "^0.4.1",
     "@tpluscode/sparql-builder": "^0.3.11",
     "http-errors": "^1.8.0",

@@ -1,6 +1,7 @@
 import asyncMiddleware from 'middleware-async'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
-import { acl, as, hydra, rdf } from '@tpluscode/rdf-ns-builders'
+import { acl, hydra, rdf } from '@tpluscode/rdf-ns-builders'
+import { as } from '@hydrofoil/express-events'
 import { StreamClient } from 'sparql-http-client/StreamClient'
 import error from 'http-errors'
 import httpStatus from 'http-status'

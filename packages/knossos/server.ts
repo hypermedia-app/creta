@@ -5,12 +5,12 @@ import { resource } from 'express-rdf-request'
 import { Debugger } from 'debug'
 import cors from 'cors'
 import * as webAccessControl from 'hydra-box-middleware-wac'
+import * as events from '@hydrofoil/express-events'
 import createApi from './lib/api'
 import { ResourcePerGraphStore, ResourceStore } from './lib/store'
 import { create } from './resource'
 import { problemJson } from '../labyrinth/errors'
 import { systemAuth } from './lib/middleware/systemAuth'
-import * as events from './lib/events'
 
 export interface Knossos {
   store: ResourceStore

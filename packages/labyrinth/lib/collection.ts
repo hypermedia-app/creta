@@ -9,7 +9,7 @@ import { HydraBox } from 'hydra-box'
 import DatasetExt from 'rdf-ext/lib/Dataset'
 import { getSparqlQuery } from './query/collection'
 import { loadLinkedResources } from './query/eagerLinks'
-import * as ns from './namespace'
+import * as ns from '@hydrofoil/namespaces'
 
 const emptyDataset = clownface({ dataset: $rdf.dataset() })
 

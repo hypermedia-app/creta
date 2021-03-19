@@ -1,20 +1,20 @@
 import { Activity } from '@rdfine/as'
 import type { Initializer } from '@tpluscode/rdfine/RdfResource'
-import express from 'express'
+import type express from 'express'
 import { fromPointer } from '@rdfine/as/lib/Activity'
 import clownface, { GraphPointer } from 'clownface'
 import $rdf from 'rdf-ext'
 import { nanoid } from 'nanoid'
 import { NamedNode } from 'rdf-js'
 import { DESCRIBE } from '@tpluscode/sparql-builder'
-import { StreamClient } from 'sparql-http-client/StreamClient'
-import { events } from './namespace'
-import { code } from '@hydrofoil/labyrinth/lib/namespace'
+import type { StreamClient } from 'sparql-http-client/StreamClient'
+import { code } from '@hydrofoil/namespaces'
 import { rdf, rdfs } from '@tpluscode/rdf-ns-builders'
 import { sparql } from '@tpluscode/rdf-string'
 import namespace from '@rdfjs/namespace'
 
-const as = namespace('https://www.w3.org/ns/activitystreams#')
+export const as = namespace('https://www.w3.org/ns/activitystreams#')
+export const ns = namespace('https://hypermedia.app/events#')
 
 interface HandlerParams {
   event: Activity
@@ -78,12 +78,12 @@ async function runHandlers(event: Activity, client: StreamClient, req: express.R
       
       ${event.object ? sparql`${event.object.id} a ?type .` : sparql`VALUES ?type { ${rdfs.Resource} }`}
     
-      ?handler a ${events.EventHandler} ;
-               ${events.eventSpec} [
+      ?handler a ${ns.EventHandler} ;
+               ${ns.eventSpec} [
                   ${rdf.predicate} ${rdf.type} ;
                   ${rdf.object} ?activity ;
                ] ;
-               ${events.objectSpec} [
+               ${ns.objectSpec} [
                   ${rdf.predicate} ${rdf.type} ;
                   ${rdf.object} ?type ;
                ] ;

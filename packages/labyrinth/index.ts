@@ -11,6 +11,13 @@ import { removeHydraOperations, preprocessResource } from './lib/middleware'
 import { SparqlQueryLoader } from './lib/loader'
 import { ensureArray } from './lib/array'
 import type { Api } from 'hydra-box/Api'
+import LoaderRegistry from 'rdf-loaders-registry'
+
+declare module 'hydra-box/Api' {
+  interface Api {
+    loaderRegistry: LoaderRegistry
+  }
+}
 
 export { SparqlQueryLoader } from './lib/loader'
 

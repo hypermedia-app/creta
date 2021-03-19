@@ -6,7 +6,7 @@ import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
 import { IriTemplate, IriTemplateMapping } from '@rdfine/hydra'
 import { Term, Variable } from 'rdf-js'
 import { Api } from 'hydra-box/Api'
-import { query } from '../namespace'
+import { query } from '@hydrofoil/namespaces'
 import { log, warn } from '../logger'
 
 interface CreatePattern {

@@ -1,6 +1,6 @@
 import asyncMiddleware from 'middleware-async'
 import { ASK } from '@tpluscode/sparql-builder'
-import { auth } from '@hydrofoil/labyrinth/lib/namespace'
+import { auth } from '@hydrofoil/namespaces'
 import error from 'http-errors'
 import { NamedNode, Term } from 'rdf-js'
 import type { StreamClient } from 'sparql-http-client/StreamClient'

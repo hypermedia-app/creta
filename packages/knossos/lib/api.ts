@@ -8,7 +8,7 @@ import { ApiFactory } from '@hydrofoil/labyrinth'
 import { ResourceStore } from './store'
 import { CONSTRUCT } from '@tpluscode/sparql-builder'
 import { hydra } from '@tpluscode/rdf-ns-builders'
-import { Handler } from './events'
+import { Handler } from '@hydrofoil/express-events'
 
 interface ApiFromStore {
   path: string
