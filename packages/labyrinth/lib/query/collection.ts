@@ -5,7 +5,7 @@ import cf, { AnyPointer, GraphPointer } from 'clownface'
 import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
 import { IriTemplate, IriTemplateMapping } from '@rdfine/hydra'
 import { Term, Variable } from 'rdf-js'
-import { loaders } from '../rdfLoaders'
+import { Api } from 'hydra-box/Api'
 import { query } from '../namespace'
 import { log, warn } from '../logger'
 
@@ -13,7 +13,7 @@ interface CreatePattern {
   (options: { subject: Variable; predicate: Term; object: AnyPointer }): string | SparqlTemplateResult
 }
 
-function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPointer, basePath: string) {
+function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPointer, api: Api) {
   return async (mapping: IriTemplateMapping): Promise<string | SparqlTemplateResult> => {
     const property = mapping.property
     if (!property) {
@@ -36,7 +36,7 @@ function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPoin
       return ''
     }
 
-    const createPattern = await loaders.load<CreatePattern>(queryFilters.toArray()[0], { basePath })
+    const createPattern = await api.loaderRegistry.load<CreatePattern>(queryFilters.toArray()[0], { basePath: api.codePath })
     if (!createPattern) {
       warn('Failed to load pattern function')
       return ''
@@ -76,7 +76,7 @@ function onlyValidManagesBlocks(manages: GraphPointer) {
 
 type SelectBuilder = ReturnType<typeof SELECT>
 
-function createOrdering(api: GraphPointer, collection: GraphPointer, subject: Variable): { patterns: SparqlTemplateResult; addClauses(q: SelectBuilder): SelectBuilder } {
+function createOrdering(api: AnyPointer, collection: GraphPointer, subject: Variable): { patterns: SparqlTemplateResult; addClauses(q: SelectBuilder): SelectBuilder } {
   const orders = api.node(collection.out(rdf.type) as any).out(query.order).toArray()
   if (!orders.length) {
     return {
@@ -120,12 +120,11 @@ function createOrdering(api: GraphPointer, collection: GraphPointer, subject: Va
 }
 
 interface CollectionQueryParams {
-  api: GraphPointer
+  api: Api
   collection: GraphPointer
   query?: AnyPointer
   variables: IriTemplate | null
   pageSize: number
-  basePath: string
 }
 
 export interface SparqlQueries {
@@ -133,7 +132,7 @@ export interface SparqlQueries {
   totals: ReturnType<typeof SELECT>
 }
 
-export async function getSparqlQuery({ api, basePath, collection, pageSize, query = cf({ dataset: $rdf.dataset() }), variables } : CollectionQueryParams): Promise<SparqlQueries | null> {
+export async function getSparqlQuery({ api, collection, pageSize, query = cf({ dataset: $rdf.dataset() }), variables } : CollectionQueryParams): Promise<SparqlQueries | null> {
   const subject = $rdf.variable('member')
   const manages = collection
     .out(hydra.manages)
@@ -146,10 +145,10 @@ export async function getSparqlQuery({ api, basePath, collection, pageSize, quer
   const managesBlockPatterns = manages.toArray().reduce(createManagesBlockPatterns(subject), sparql``)
   let filterPatters: Array<string | SparqlTemplateResult> = []
   if (variables) {
-    filterPatters = await Promise.all(variables.mapping.map(createTemplateVariablePatterns(subject, query, basePath)))
+    filterPatters = await Promise.all(variables.mapping.map(createTemplateVariablePatterns(subject, query, api)))
   }
 
-  const order = createOrdering(api, collection, subject)
+  const order = createOrdering(cf(api), collection, subject)
 
   const memberPatterns = sparql`${managesBlockPatterns}\n${filterPatters}`
 

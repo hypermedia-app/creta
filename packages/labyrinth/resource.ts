@@ -12,7 +12,7 @@ export const get = asyncMiddleware(async (req, res) => {
   })
 
   let dataset = $rdf.dataset([...await req.hydra.resource.dataset()])
-  if (!req.user || !req.user.id) {
+  if (!req.user || !req.user.pointer) {
     const restrictedProperties = new TermSet([...types.out(query.restrict).terms])
     dataset = dataset.filter(quad => !restrictedProperties.has(quad.predicate))
   }

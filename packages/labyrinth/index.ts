@@ -54,7 +54,7 @@ export interface ApiFactory {
 }
 
 export async function hydraBox(middlewareInit: MiddlewareParams): Promise<Router> {
-  const { loader, codePath, sparql, options, loadApi, ...params } = middlewareInit
+  const { loader, sparql, options, loadApi, ...params } = middlewareInit
 
   const app = Router()
 
@@ -84,7 +84,7 @@ export async function hydraBox(middlewareInit: MiddlewareParams): Promise<Router
           ...ensureArray(params.middleware?.operations),
         ],
         resource: [
-          preprocessResource(codePath),
+          preprocessResource(),
           ...ensureArray(params.middleware?.resource),
         ],
       },

@@ -103,12 +103,11 @@ export async function collection({ hydraBox, pageSize, sparqlClient, query, ...r
   const template = getTemplate(hydraBox)
 
   const pageQuery = await getSparqlQuery({
-    api,
+    api: hydraBox.api,
     collection,
     query,
     variables: template,
     pageSize,
-    basePath: hydraBox.api.codePath,
   })
 
   let total = 0

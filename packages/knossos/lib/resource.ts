@@ -1,5 +1,4 @@
 import { rdf } from '@tpluscode/rdf-ns-builders'
-import { loaders } from '@hydrofoil/labyrinth/lib/rdfLoaders'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
 import { User } from '@hydrofoil/labyrinth'
 import express from 'express'
@@ -31,7 +30,7 @@ export async function save({ resource, req }: Save): Promise<void> {
   const guards = await Promise.all(api
     .node(resource.out(rdf.type))
     .out(knossos.beforeSave)
-    .map(pointer => loaders.load<BeforeSave>(pointer, { basePath: req.hydra.api.codePath })))
+    .map(pointer => req.hydra.api.loaderRegistry.load<BeforeSave>(pointer, { basePath: req.hydra.api.codePath })))
 
   for (const guard of guards) {
     if (guard) {

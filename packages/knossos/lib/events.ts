@@ -11,7 +11,6 @@ import { StreamClient } from 'sparql-http-client/StreamClient'
 import { events } from './namespace'
 import { code } from '@hydrofoil/labyrinth/lib/namespace'
 import { rdf, rdfs } from '@tpluscode/rdf-ns-builders'
-import { loaders } from '@hydrofoil/labyrinth/lib/rdfLoaders'
 import { sparql } from '@tpluscode/rdf-string'
 import namespace from '@rdfjs/namespace'
 
@@ -94,7 +93,7 @@ async function runHandlers(event: Activity, client: StreamClient, req: express.R
 
   const handlers = await Promise.all(clownface({ dataset })
     .has(code.link)
-    .map(pointer => loaders.load<Handler>(pointer, { basePath: req.hydra.api.codePath })))
+    .map(pointer => req.hydra.api.loaderRegistry.load<Handler>(pointer, { basePath: req.hydra.api.codePath })))
 
   for (const handler of handlers) {
     if (handler) {
