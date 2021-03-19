@@ -40,7 +40,7 @@ export async function bootstrap({ log, api, patterns, overwrite, ...options }: O
       } else {
         const resourcePath = path.relative(cwd, file)
           .replace(/\..+$/, '')
-          .replace(/\/index$/, '')
+          .replace(/\/?index$/, '')
 
         url = `${api}/${resourcePath}`
       }
