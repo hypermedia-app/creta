@@ -1,0 +1,27 @@
+@prefix code: <https://code.described.at/> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+@prefix as: <https://www.w3.org/ns/activitystreams#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix events: <https://hypermedia.app/events#> .
+
+<> a events:EventHandler ;
+   events:eventSpec
+     [
+       rdf:predicate rdf:type ;
+       rdf:object as:Update ;
+     ] ,
+     [
+       rdf:predicate rdf:type ;
+       rdf:object as:Created ;
+     ] ;
+   events:objectSpec
+     [
+       rdf:predicate rdf:type ;
+       rdf:object hydra:Class ;
+     ] ;
+   code:implementedBy
+     [
+       a code:EcmaScript ;
+       code:link <node:@labyrinth/knossos/lib/api#invalidate> ;
+     ]
+.

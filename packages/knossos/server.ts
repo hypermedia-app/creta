@@ -6,10 +6,22 @@ import { Debugger } from 'debug'
 import cors from 'cors'
 import * as webAccessControl from 'hydra-box-middleware-wac'
 import createApi from './lib/api'
-import { ResourcePerGraphStore } from './lib/store'
+import { ResourcePerGraphStore, ResourceStore } from './lib/store'
 import { create } from './resource'
 import { problemJson } from '../labyrinth/errors'
 import { systemAuth } from './lib/middleware/systemAuth'
+import * as events from './lib/events'
+
+export interface Knossos {
+  store: ResourceStore
+  log: Debugger
+}
+
+declare module 'express-serve-static-core' {
+  interface Request {
+    knossos: Knossos
+  }
+}
 
 const app = express()
 
@@ -54,6 +66,7 @@ export async function serve({ log, endpointUrl, updateUrl, port, name, codePath,
     }
     next()
   })
+  app.use(events.attach)
   app.use(await hydraBox({
     codePath,
     sparql,

@@ -1171,7 +1171,17 @@
   resolved "https://registry.yarnpkg.com/@rdf-esm/to-ntriples/-/to-ntriples-0.5.0.tgz#4a2c294e6d740509571e3b0efde8277c4824b928"
   integrity sha512-VIcqRv68V/s0NS6bFy58CcsHwV0UCM/DHhAc1MYLB/yue1nyhKsX4uyu/SB5gbbY2r4BIH4G6O+arxf59KzgwQ==
 
-"@rdfine/hydra@^0.6":
+"@rdfine/as@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@rdfine/as/-/as-0.1.0.tgz#3e1f791147882e8407e02b77d030962ea5fe2673"
+  integrity sha512-UqfdWdil0zkDttTi0K8/MPFESIyUy5hIq2/223AeusVrJzZa6JRzAJGsM8b2uhi6Z/jSwKxvRHnCe7tNtxa67g==
+  dependencies:
+    "@rdf-esm/data-model" "^0.5.3"
+    "@rdfine/rdf" "^0.5.3"
+    "@tpluscode/rdf-ns-builders" "^0.4"
+    "@tpluscode/rdfine" "^0.5.17"
+
+"@rdfine/hydra@^0.6", "@rdfine/hydra@^0.6.4":
   version "0.6.4"
   resolved "https://registry.yarnpkg.com/@rdfine/hydra/-/hydra-0.6.4.tgz#99f27a05e6f82ba3693092ee58b0c166e9049023"
   integrity sha512-DlwbGzCVH8/HySM7JdmdBL/YMl/Cfq1v8KCKb9M04AkXJ1EZ+RxNXKxJthSvEAU6FxpiylHkotFRWI+xZg7jfQ==

@@ -4,7 +4,7 @@ import clownface, { AnyPointer, GraphPointer } from 'clownface'
 import { User } from '@hydrofoil/labyrinth'
 import express from 'express'
 import { NamedNode } from 'rdf-js'
-import { Knossos } from '../resource'
+import { Knossos } from '../server'
 import { knossos } from './namespace'
 
 interface BeforeSaveParams {

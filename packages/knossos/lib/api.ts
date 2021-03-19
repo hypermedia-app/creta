@@ -8,6 +8,7 @@ import { ApiFactory } from '@hydrofoil/labyrinth'
 import { ResourceStore } from './store'
 import { CONSTRUCT } from '@tpluscode/sparql-builder'
 import { hydra } from '@tpluscode/rdf-ns-builders'
+import { Handler } from './events'
 
 interface ApiFromStore {
   path: string
@@ -23,6 +24,11 @@ function assertTerm(term: Term | undefined): asserts term is NamedNode {
   if (term.termType !== 'NamedNode') {
     throw new Error('API Documentation term must be a named node')
   }
+}
+
+export const invalidate: Handler = ({ req }) => {
+  req.knossos.log('ApiDocumentation will be reloaded on next request')
+  req.hydra.api.initialized = false
 }
 
 const createApi: (arg: ApiFromStore) => ApiFactory = ({ path, store, log }) => async ({ sparql, codePath }) => {
