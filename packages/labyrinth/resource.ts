@@ -2,7 +2,7 @@ import asyncMiddleware from 'middleware-async'
 import clownface from 'clownface'
 import $rdf from 'rdf-ext'
 import TermSet from '@rdfjs/term-set'
-import { query } from './lib/namespace'
+import { query } from '@hydrofoil/namespaces'
 import { loadLinkedResources } from './lib/query/eagerLinks'
 
 export const get = asyncMiddleware(async (req, res) => {

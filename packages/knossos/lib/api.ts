@@ -57,10 +57,8 @@ const createApi: (arg: ApiFromStore) => ApiFactory = ({ path, store, log }) => a
 
       const resources = await CONSTRUCT`?s ?p ?o. ${this.term} ${hydra.supportedClass} ?c`
         .WHERE`
-          GRAPH ?c {
-            ?c a ${hydra.Class} .
-            ?s ?p ?o .
-          }
+          ?c a ${hydra.Class} .
+          ?c ?p ?o .
         `.execute(client.query)
       await api.dataset.import(resources)
 

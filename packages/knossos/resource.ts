@@ -1,5 +1,8 @@
 import asyncMiddleware from 'middleware-async'
-import clownface, { AnyPointer, GraphPointer } from 'clownface'
+import clownface from 'clownface'
+import TermSet from '@rdfjs/term-set'
+import { Debugger } from 'debug'
+import { created, updated } from '@hydrofoil/express-events/activity'
 import { acl, hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { as } from '@hydrofoil/express-events'
 import { StreamClient } from 'sparql-http-client/StreamClient'
@@ -11,14 +14,24 @@ import { Router } from 'express'
 import { check } from 'hydra-box-middleware-wac'
 import { save } from './lib/resource'
 
-function canBeCreatedWithPut(api: AnyPointer, resource: GraphPointer) {
+function canBeCreatedWithPut(api: clownface.AnyPointer, resource: clownface.GraphPointer, log: Debugger) {
   const types = resource.out(rdf.type)
   const classes = api.has(hydra.supportedClass, types).out(hydra.supportedClass)
 
-  const anyClassAllowsPut = classes.has(knossos.createWithPUT, true).terms.length > 0
-  const noClassForbidsPut = classes.has(knossos.createWithPUT, false).terms.length === 0
+  const classesAllowingPut = new TermSet(classes.has(knossos.createWithPUT, true).terms)
+  const classesForbiddingPut = new TermSet(classes.has(knossos.createWithPUT, false).terms)
 
-  return anyClassAllowsPut && noClassForbidsPut
+  if (classesAllowingPut.size === 0) {
+    log('None of classes %O permit creating resources with PUT', [...new TermSet(classes.terms)])
+    return false
+  }
+
+  if (classesForbiddingPut.size > 0) {
+    log('Classes %O forbid creating resources with PUT', [...classesForbiddingPut])
+    return false
+  }
+
+  return true
 }
 
 const saveResource = ({ create }: { create: boolean }) => asyncMiddleware(async (req, res) => {
@@ -27,20 +40,12 @@ const saveResource = ({ create }: { create: boolean }) => asyncMiddleware(async 
   await save({ resource, req })
 
   if (create) {
-    res.event({
-      types: [as.Create],
-      summary: `Created resource ${resource.value}`,
-      object: resource.term,
-    })
+    res.event(created(resource.term))
 
     res.status(httpStatus.CREATED)
     res.setHeader('Location', resource.value)
   } else {
-    res.event({
-      types: [as.Update],
-      summary: `Updated resource ${resource.value}`,
-      object: resource.term,
-    })
+    res.event(updated(resource.term))
   }
 
   return res.resource(resource)
@@ -51,7 +56,11 @@ const ensureNotExists = asyncMiddleware(async (req, res, next) => {
   const resource = await req.resource()
   const exists = await req.knossos.store.exists(resource.term)
 
-  if (exists || !canBeCreatedWithPut(api, resource)) {
+  if (exists) {
+    return next(new error.Conflict())
+  }
+
+  if (!canBeCreatedWithPut(api, resource, req.knossos.log)) {
     return next(new error.MethodNotAllowed())
   }
 

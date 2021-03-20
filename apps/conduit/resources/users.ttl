@@ -2,7 +2,7 @@
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 
 </users>
-  a </api/UsersCollection>, hydra:Collection ;
+  a </api/UsersCollection> ;
   hydra:manages
     [
       hydra:property rdf:type ;

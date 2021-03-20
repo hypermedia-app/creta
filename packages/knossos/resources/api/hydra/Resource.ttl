@@ -1,9 +1,10 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix code: <https://code.described.at/> .
 @prefix acl: <http://www.w3.org/ns/auth/acl#> .
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 @prefix auth: <https://hypermedia.app/auth#> .
 
-hydra:Resource
+<> rdfs:subClassOf hydra:Resource ;
   a hydra:Class ;
   hydra:supportedOperation
     [

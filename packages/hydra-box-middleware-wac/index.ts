@@ -5,7 +5,7 @@ import error from 'http-errors'
 import { NamedNode, Term } from 'rdf-js'
 import type { StreamClient } from 'sparql-http-client/StreamClient'
 import type * as express from 'express'
-import { acl, foaf, rdf } from '@tpluscode/rdf-ns-builders'
+import { acl, foaf, rdf, rdfs } from '@tpluscode/rdf-ns-builders'
 import type { GraphPointer } from 'clownface'
 
 interface Check {
@@ -77,7 +77,7 @@ function typeAuthorization({ agent, accessMode, types }: Omit<TypeCheck, 'client
 
   return ASK`
     VALUES ?mode { ${acl.Control} ${accessMode} }
-    VALUES ?type { ${types} }
+    VALUES ?type { ${rdfs.Resource} ${types} }
     VALUES ?agent { ${agentTerm || '<>'} }
     VALUES ?agentClass { ${foaf.Agent} ${agentClass} }
     

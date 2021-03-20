@@ -5,7 +5,7 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
 
-vcard:Group
+<> rdfs:subClassOf vcard:Group ;
   a sh:NodeShape, rdfs:Class, hydra:Class ;
   sh:property
     [

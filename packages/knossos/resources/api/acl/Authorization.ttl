@@ -8,7 +8,7 @@
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 @prefix acl: <http://www.w3.org/ns/auth/acl#> .
 
-acl:Authorization
+<> rdfs:subClassOf acl:Authorization ;
   a hydra:Class, sh:NodeShape, rdfs:Class ;
   knossos:createWithPUT true ;
   hydra:supportedOperation
@@ -22,10 +22,6 @@ acl:Authorization
         ]
     ] ;
   sh:property
-    [
-      sh:path rdf:type ;
-      sh:hasValue acl:Authorization ;
-    ],
     [
       sh:path acl:mode ;
       sh:in (

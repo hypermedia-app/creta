@@ -12,7 +12,8 @@
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 
 </api/User>
-  a hydra:Class, sh:NodeShape, rdfs:Class, hydra:Resource ;
+  a </api/hydra/Class>, sh:NodeShape, rdfs:Class ;
+  rdfs:subClassOf rdfs:Resource, hydra:Resource ;
   hydra:supportedOperation
     [
       a schema:ReplaceAction ;
@@ -60,13 +61,5 @@
     [
       a code:EcmaScript ;
       code:link <file:lib/resource#guardReadOnlyPredicates> ;
-    ] ,
-    [
-      a code:EcmaScript ;
-      code:link <file:lib/resource#setUID> ;
-    ] ,
-    [
-      a code:EcmaScript ;
-      code:link <file:lib/resource#setOwner> ;
     ] ;
 .

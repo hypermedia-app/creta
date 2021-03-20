@@ -27,7 +27,7 @@ const setUser = (client: StreamClient): express.RequestHandler => async (req, re
       .toArray()[0]
 
     req.user.pointer = foundUser || clownface({ dataset: $rdf.dataset() })
-      .blankNode()
+      .namedNode(`urn:user:${req.user.sub}`)
       .addOut(vcard.hasUID, req.user.sub)
   }
 

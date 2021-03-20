@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import asyncMiddleware from 'middleware-async'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
-import { as } from '@hydrofoil/express-events'
+import { created } from '@hydrofoil/express-events/activity'
 import error from 'http-errors'
 import httpStatus from 'http-status'
 import $rdf from 'rdf-ext'
@@ -59,12 +59,9 @@ export const POST = Router().use(shaclValidate).use(asyncMiddleware(async (req, 
 
   await save({ resource: member, req })
 
-  res.event({
-    types: [as.Create],
-    summary: `Created resource ${member.value}`,
-    object: member.term,
+  res.event(created(member, {
     context: req.hydra.resource.term,
-  })
+  }))
 
   res.status(httpStatus.CREATED)
   res.setHeader('Location', memberId.value)

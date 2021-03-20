@@ -22,18 +22,17 @@ interface HandlerParams {
 }
 
 export interface Handler {
-  (arg: HandlerParams): Promise<Activity[]> | Activity[] | void
+  (arg: HandlerParams): Promise<Activity[]> | Activity[] | void | Promise<void>
 }
 
 declare module 'express-serve-static-core' {
   interface Response {
-    event(ev: Initializer<Activity>): void
+    event(...ev: Initializer<Activity>[]): void
   }
 }
 
 const consume = (req: express.Request, events: Activity[]) => {
   return () => {
-    req.knossos.log('Handling events')
     for (const event of events) {
       event.published = new Date()
 
@@ -49,15 +48,17 @@ const consume = (req: express.Request, events: Activity[]) => {
 export const attach: express.RequestHandler = (req, res, next) => {
   const events: Activity[] = []
 
-  res.event = function emit(init) {
-    const pointer = clownface({ dataset: $rdf.dataset() })
-      .namedNode(`${req.hydra.api.term?.value}/activity/${nanoid()}`)
+  res.event = function emit(...events) {
+    for (const init of events) {
+      const pointer = clownface({ dataset: $rdf.dataset() })
+        .namedNode(`${req.hydra.api.term?.value}/activity/${nanoid()}`)
 
-    const activity = fromPointer(pointer, {
-      ...init,
-      actor: req.user?.pointer,
-    })
-    events.push(activity)
+      const activity = fromPointer(pointer, {
+        ...init,
+        actor: req.user?.pointer,
+      })
+      events.push(activity)
+    }
   }
 
   res.once('finish', consume(req, events))
@@ -93,11 +94,19 @@ async function runHandlers(event: Activity, client: StreamClient, req: express.R
 
   const handlers = await Promise.all(clownface({ dataset })
     .has(code.link)
-    .map(pointer => req.hydra.api.loaderRegistry.load<Handler>(pointer, { basePath: req.hydra.api.codePath })))
+    .map(handler => {
+      const impl = req.hydra.api.loaderRegistry.load<Handler>(handler, { basePath: req.hydra.api.codePath }) as any as Handler | null
 
-  for (const handler of handlers) {
-    if (handler) {
-      handler({ event, req })
+      return { handler, impl }
+    }))
+
+  req.knossos.log('Handling event %s. Found %s handler(s)', event.id.value, handlers.length)
+  for (const { handler, impl } of handlers) {
+    if (impl) {
+      req.knossos.log('Running handler %s', impl.name)
+      await impl({ event, req })
+    } else {
+      req.knossos.log('Failed to load implementation of handler %s', handler.value)
     }
   }
 }

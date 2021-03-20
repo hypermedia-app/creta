@@ -1,8 +1,8 @@
 prefix hydra: <http://www.w3.org/ns/hydra/core#>
 prefix acl: <http://www.w3.org/ns/auth/acl#>
 
-<> a acl:Authorization ;
+<> a </api/acl/Authorization> ;
    acl:agentClass acl:AuthenticatedAgent ;
-   acl:accessToClass </api/UsersCollection> ;
+   acl:accessTo </users> ;
    acl:mode acl:Create, acl:Write ;
 .

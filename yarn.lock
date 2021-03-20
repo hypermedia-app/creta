@@ -1549,16 +1549,17 @@
   resolved "https://registry.yarnpkg.com/@types/http-errors/-/http-errors-1.8.0.tgz#682477dbbbd07cd032731cb3b0e7eaee3d026b69"
   integrity sha512-2aoSC4UUbHDj2uCsCxcG/vRMXey/m17bC7UwitVm5hn22nI8O8Y9iDpA76Orc+DWkQ4zZrOKEshCqR/jSuXAHA==
 
-"@types/hydra-box@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@types/hydra-box/-/hydra-box-0.6.1.tgz#37effb0dbe87d14ef13fbed80a68a5c7d36d9da4"
-  integrity sha512-VwMQKZjS603mwPsdXQHDePIgT1qLcFdiabnRGDD2pwKI/t0PTnUFDWQDCeQubaEnjokm7gBTW2iC0/oz06YSUw==
+"@types/hydra-box@^0.6.2":
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/@types/hydra-box/-/hydra-box-0.6.2.tgz#48c32633e7a1e684983f193685549823f6b2b7bf"
+  integrity sha512-+EtcDYgeJ54lepvsT3O05ve72So2YjCTOwRi3S48ay3s/w8pmkrIyujo8C6b8hbW/ho/NpLHO/cuTRU3Sd9CCA==
   dependencies:
     "@types/absolute-url" "*"
     "@types/clownface" "*"
     "@types/express" "*"
     "@types/rdf-ext" "*"
     "@types/rdf-js" "*"
+    "@types/rdf-loaders-registry" "*"
     "@types/rdfjs__express-handler" "*"
     "@types/set-link" "*"
 
@@ -1673,9 +1674,9 @@
     "@types/rdf-loaders-registry" "*"
 
 "@types/rdf-loaders-registry@*", "@types/rdf-loaders-registry@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@types/rdf-loaders-registry/-/rdf-loaders-registry-0.2.0.tgz#3e8a8fb44502571a9b4f08eec6864eb17a752e1a"
-  integrity sha512-tuyNTAFAMYtGG/M06hV39IPnJTmTj6cHZSYHr3ltPeZqUj/C/nyUaKoR3TDWaFXftZYm/wsnr6rl3fpm+1keNA==
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@types/rdf-loaders-registry/-/rdf-loaders-registry-0.2.1.tgz#f4306370b39c4e73bd9a0f990e075a103edfa1bb"
+  integrity sha512-hNIPUwnFRsb1JQXIfEvpEPze6+WiKexDhtS0O5zDoCWk9Q3AzmOMV2ak5AQmB8Q+bde+11eX7gVEl6Ng4mauNQ==
   dependencies:
     "@types/clownface" "*"
     "@types/rdf-js" "*"
