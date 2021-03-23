@@ -13,7 +13,7 @@
 
 </api/User>
   a </api/hydra/Class>, sh:NodeShape, rdfs:Class ;
-  rdfs:subClassOf rdfs:Resource, hydra:Resource ;
+  rdfs:subClassOf rdfs:Resource, </api/hydra/Resource> ;
   hydra:supportedOperation
     [
       a schema:ReplaceAction ;

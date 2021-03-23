@@ -63,7 +63,9 @@ export const POST = Router().use(shaclValidate).use(asyncMiddleware(async (req, 
     context: req.hydra.resource.term,
   }))
 
+  await res.event.handleImmediate()
+
   res.status(httpStatus.CREATED)
   res.setHeader('Location', memberId.value)
-  return res.dataset(member.dataset)
+  return res.resource(await req.knossos.store.load(member.term))
 }))

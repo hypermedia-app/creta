@@ -42,7 +42,7 @@ export class SparqlQueryLoader implements ResourceLoader {
       return null
     }
 
-    const results = await SELECT`?type`.WHERE`GRAPH ${term} { ${term} ${rdf.type} ?type }`.execute(this.__client.query)
+    const results = await SELECT`?type`.WHERE`${term} ${rdf.type} ?type`.execute(this.__client.query)
 
     if (results.length === 0) {
       return null

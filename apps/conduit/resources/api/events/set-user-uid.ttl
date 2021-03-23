@@ -6,6 +6,7 @@
 
 <> a </api/events/EventHandler> ;
    rdfs:comment "Sets User vcard:UID" ;
+   events:immediate true ;
    events:eventSpec
      [
        rdf:predicate rdf:type ;

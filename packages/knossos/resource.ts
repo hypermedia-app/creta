@@ -48,7 +48,9 @@ const saveResource = ({ create }: { create: boolean }) => asyncMiddleware(async 
     res.event(updated(resource.term))
   }
 
-  return res.resource(resource)
+  await res.event.handleImmediate()
+
+  return res.resource(await req.knossos.store.load(resource.term))
 })
 
 const ensureNotExists = asyncMiddleware(async (req, res, next) => {
