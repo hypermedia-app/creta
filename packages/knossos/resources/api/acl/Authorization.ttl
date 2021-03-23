@@ -24,6 +24,7 @@
   sh:property
     [
       sh:path acl:mode ;
+      sh:minCount 1 ;
       sh:in (
               acl:Read acl:Write acl:Control acl:Delete acl:Create
             ) ;
