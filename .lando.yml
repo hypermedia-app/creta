@@ -58,6 +58,11 @@ services:
       volumes:
         - ./apps/auth/ldap.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/config-ldap.ldif
 
+tooling:
+  agtool:
+    service: store
+    cmd: agtool
+
 proxy:
   store:
     - db.labyrinth.lndo.site:10035
