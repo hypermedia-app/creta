@@ -19,6 +19,7 @@
     "@tpluscode/rdf-string": "^0.2.22",
     "@tpluscode/sparql-builder": "^0.3.11",
     "@zazuko/rdf-vocabularies": "*",
+    "camouflage-rewrite": "^1.2.0",
     "clownface": "^1.2.0",
     "commander": "^7.1.0",
     "cors": "^2.8.5",
@@ -38,6 +39,7 @@
     "sparql-http-client": "^2.2.3"
   },
   "devDependencies": {
+    "@types/camouflage-rewrite": "^1.2.0",
     "@types/glob": "^7.1.3",
     "@types/nanoid": "^2.1.0",
     "@types/node-fetch": "^2.5.8",

@@ -6,6 +6,7 @@ import { Debugger } from 'debug'
 import cors from 'cors'
 import * as webAccessControl from 'hydra-box-middleware-wac'
 import * as events from '@hydrofoil/express-events'
+import camo from 'camouflage-rewrite'
 import createApi from './lib/api'
 import { ResourcePerGraphStore, ResourceStore } from './lib/store'
 import { create } from './resource'
@@ -33,6 +34,7 @@ interface Options {
   port: number
   codePath: string
   path: string
+  resourceBase?: string
   user?: string
   password?: string
   middleware?: {
@@ -40,7 +42,7 @@ interface Options {
   }
 }
 
-export async function serve({ log, endpointUrl, updateUrl, port, name, codePath, path, middleware, user, password }: Options) {
+export async function serve({ log, endpointUrl, updateUrl, port, name, codePath, path, middleware, user, password, resourceBase }: Options) {
   const sparql = {
     endpointUrl,
     updateUrl: updateUrl || endpointUrl,
@@ -54,6 +56,13 @@ export async function serve({ log, endpointUrl, updateUrl, port, name, codePath,
   app.enable('trust proxy')
   app.use(cors())
 
+  if (resourceBase) {
+    app.use(camo({
+      rewriteContent: true,
+      rewriteHeaders: true,
+      url: resourceBase,
+    }))
+  }
   if (middleware?.authentication) {
     app.use(await middleware.authentication({ client }))
   }

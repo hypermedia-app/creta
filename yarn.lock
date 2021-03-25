@@ -1441,6 +1441,13 @@
     "@types/connect" "*"
     "@types/node" "*"
 
+"@types/camouflage-rewrite@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@types/camouflage-rewrite/-/camouflage-rewrite-1.2.0.tgz#0413506d606865655425f75b1712fbb72302b0f0"
+  integrity sha512-sqcBk0FCFdyQsP3l2YwLLxlKgF4GNphi90EL6w8Fu5g7dyLZj8x/t44ERe05VJvRWm5bMqUAsMF4Vm8rqQNflg==
+  dependencies:
+    "@types/express" "*"
+
 "@types/chai-quantifiers@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/chai-quantifiers/-/chai-quantifiers-1.0.0.tgz#b32bf551e0c8f93ed48711d363bb727991c09040"
@@ -1903,7 +1910,7 @@
     readable-stream "^3.6.0"
     string-to-stream "^3.0.1"
 
-absolute-url@^1.2.2:
+absolute-url@^1.2.1, absolute-url@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/absolute-url/-/absolute-url-1.2.2.tgz#b92859eaf75a46fd84fc3dab5ce243516a4e24fc"
   integrity sha1-uShZ6vdaRv2E/D2rXOJDUWpOJPw=
@@ -2302,6 +2309,15 @@ camelcase@^6.0.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-6.2.0.tgz#924af881c9d525ac9d87f40d964e5cea982a1809"
   integrity sha512-c7wVvbw3f37nuobQNtgsgG9POC9qMbNuMQmTCqZv23b6MIz0fcYpBiOlv9gEN/hdLdnZTDQhg6e9Dq5M1vKvfg==
+
+camouflage-rewrite@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/camouflage-rewrite/-/camouflage-rewrite-1.2.0.tgz#011603994978b88cdd51147fd4b7ad068169016c"
+  integrity sha512-3ll6Z03tn/LHisp1cWryw/+uIWaMFHL3xJkTsgVLL4SBXJ0kW2H0+BYhPM72zI/M4RWqphRLoz96EREdjX/uYQ==
+  dependencies:
+    absolute-url "^1.2.1"
+    hijackresponse "^2.0.0"
+    string-replace-stream "0.0.2"
 
 caniuse-lite@^1.0.30001125:
   version "1.0.30001125"
@@ -3861,6 +3877,11 @@ he@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
+
+hijackresponse@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/hijackresponse/-/hijackresponse-2.0.1.tgz#45f5e0c9b87d73bad858f66021bec377c736b8b3"
+  integrity sha1-RfXgybh9c7rYWPZgIb7Dd8c2uLM=
 
 hosted-git-info@^2.1.4:
   version "2.8.8"
@@ -5796,7 +5817,7 @@ readable-error@^1.0.0:
     string_decoder "^1.1.1"
     util-deprecate "^1.0.1"
 
-readable-stream@^2.2.2, readable-stream@^2.3.3, readable-stream@^2.3.5:
+readable-stream@^2.2.2, readable-stream@^2.3.3, readable-stream@^2.3.5, readable-stream@~2.3.6:
   version "2.3.7"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.7.tgz#1eca1cf711aef814c04f62252a36a62f6cb23b57"
   integrity sha512-Ebho8K4jIbHAxnuxi7o42OrZgF/ZTNcsZj6nRKyUmkhLFq8CHItp/fy6hQZuZmP/n3yZ9VBUbp4zz/mX8hmYPw==
@@ -6359,6 +6380,13 @@ string-argv@0.3.1:
   resolved "https://registry.yarnpkg.com/string-argv/-/string-argv-0.3.1.tgz#95e2fbec0427ae19184935f816d74aaa4c5c19da"
   integrity sha512-a1uQGz7IyVy9YwhqjZIZu1c8JO8dNIe20xBmSS6qu9kv++k3JGzCVmprbNN5Kn+BgzD5E7YYwg1CcjuJMRNsvg==
 
+string-replace-stream@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/string-replace-stream/-/string-replace-stream-0.0.2.tgz#eb75d4ec565d8dd4ca871797c92cc7643358a5bb"
+  integrity sha1-63XU7FZdjdTKhxeXySzHZDNYpbs=
+  dependencies:
+    through2 "^2.0.0"
+
 string-to-stream@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/string-to-stream/-/string-to-stream-3.0.1.tgz#480e6fb4d5476d31cb2221f75307a5dcb6638a42"
@@ -6573,6 +6601,14 @@ text-table@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
+
+through2@^2.0.0:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/through2/-/through2-2.0.5.tgz#01c1e39eb31d07cb7d03a96a70823260b23132cd"
+  integrity sha512-/mrRod8xqpA+IHSLyGCQ2s8SPHiCDEeQJSep1jqLYeEUClOFG2Qsh+4FU6G9VeqpZnGW/Su8LQGc4YKni5rYSQ==
+  dependencies:
+    readable-stream "~2.3.6"
+    xtend "~4.0.1"
 
 through2@^3.0.1:
   version "3.0.2"
@@ -7006,7 +7042,7 @@ xmldom@0.1.19:
   resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.1.19.tgz#631fc07776efd84118bf25171b37ed4d075a0abc"
   integrity sha1-Yx/Ad3bv2EEYvyUXGzftTQdaCrw=
 
-xtend@^4.0.1:
+xtend@^4.0.1, xtend@~4.0.1:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==

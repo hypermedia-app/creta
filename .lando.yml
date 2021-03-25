@@ -30,7 +30,7 @@ services:
     run:
       - agtool create-db http://minos:password@127.0.0.1:10035/repositories/labyrinth
     services:
-      image: franzinc/agraph:v7.0.0
+      image: franzinc/agraph
       command: /entrypoint.sh
       shm_size: 1g
       environment:

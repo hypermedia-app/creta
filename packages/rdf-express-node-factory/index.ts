@@ -20,7 +20,7 @@ export default function (factory: DataFactory = $rdf): express.RequestHandler {
       namedNode<Iri extends string = string>(value: Iri): NamedNode<Iri> {
         const uri = new URL(path.join(req.baseUrl, value), baseIri)
 
-        return $rdf.namedNode<any>(uri.toString())
+        return factory.namedNode<any>(uri.toString())
       },
     }
 
