@@ -2,6 +2,7 @@ import { HydraBox, middleware, ResourceLoader } from 'hydra-box'
 import { HydraBoxMiddleware } from 'hydra-box/middleware'
 import cors from 'cors'
 import { Router } from 'express'
+import rdfFactory from 'rdf-express-node-factory'
 import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
 import StreamClient from 'sparql-http-client/StreamClient'
@@ -24,6 +25,7 @@ declare module 'express-serve-static-core' {
   export interface Request {
     user?: User
     hydra: HydraBox
+    loadCode<T extends any = unknown>(node: GraphPointer, options?: Record<any, any>): T | Promise<T> | null
     labyrinth: {
       sparql: StreamClient
       collection: {
@@ -64,8 +66,13 @@ export async function hydraBox(middlewareInit: MiddlewareParams): Promise<Router
       pageSize: options?.collection?.pageSize || 10,
     },
   }
+  app.use(rdfFactory())
   app.use((req, res, next) => {
     req.labyrinth = labyrinth
+    req.loadCode = (node, options) => req.hydra.api.loaderRegistry.load<any>(node, {
+      basePath: req.hydra.api.codePath,
+      ...(options || {}),
+    })
     next()
   })
 

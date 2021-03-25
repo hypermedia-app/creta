@@ -4,6 +4,7 @@ import TermSet from '@rdfjs/term-set'
 import type { Handler } from '@hydrofoil/express-events'
 import { GraphPointer } from 'clownface'
 import $rdf from 'rdf-ext'
+import error from 'http-errors'
 
 export const guardReadOnlyPredicates: BeforeSave = function ({ after, before, api }): void {
   if (!before.dataset.size) return
@@ -17,7 +18,7 @@ export const guardReadOnlyPredicates: BeforeSave = function ({ after, before, ap
     const beforeTerms = new TermSet(before.out(prop).terms)
     const afterTerms = [...new TermSet(after.out(prop).terms)]
     if (afterTerms.some(term => !beforeTerms.has(term))) {
-      throw new Error(`Cannot modify property ${prop.value}`)
+      throw new error.BadRequest(`Cannot modify property ${prop.value}`)
     }
   }
 }
@@ -46,6 +47,7 @@ export const setUID: Handler = async function ({ req, event }) {
   const resource = await req.knossos.store.load(event.object.id)
   resource.addOut(vcard.hasUID, req.user.pointer.out(vcard.hasUID))
     .addOut(owl.sameAs, userUrn(req.user.pointer))
+    .addOut(rdf.type, req.rdf.namedNode('/api/RegisteredUser'))
   await req.knossos.store.save(resource)
 }
 

@@ -1,3 +1,4 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix auth: <https://hypermedia.app/auth#> .
 @prefix acl: <http://www.w3.org/ns/auth/acl#> .
 @prefix knossos: <https://hypermedia.app/knossos#> .
@@ -50,13 +51,7 @@
       dash:singleLine false ;
       sh:maxCount 1 ;
       sh:order 40 ;
-    ],
-    [
-      sh:path vcard:hasUID ;
-      dash:hidden true ;
-      dash:readOnly true ;
-      sh:maxCount 1 ;
-    ] ;
+    ]  ;
   knossos:beforeSave
     [
       a code:EcmaScript ;

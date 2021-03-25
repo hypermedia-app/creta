@@ -6,7 +6,7 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 
-<> rdfs:subClassOf hydra:Class ;
+<> rdfs:subClassOf hydra:Class, </api/hydra/Resource> ;
   a sh:NodeShape, rdfs:Class, hydra:Class ;
   knossos:createWithPUT true ;
   hydra:supportedOperation

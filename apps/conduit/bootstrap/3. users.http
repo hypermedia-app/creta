@@ -6,6 +6,14 @@ Authorization: System {{system-token}}
 
 < ../resources/api/User.ttl
 
+### Create RegisteredUser class
+
+PUT {{base}}/api/RegisteredUser
+Content-Type: text/turtle
+Authorization: System {{system-token}}
+
+< ../resources/api/RegisteredUser.ttl
+
 ### Create User Collection class
 
 PUT {{base}}/api/UsersCollection

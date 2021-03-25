@@ -17,7 +17,7 @@ export function preprocessResource(): RequestHandler {
       const enrichmentPromises = clownface(req.hydra.api)
         .node(resourcePointer.out(rdf.type).terms)
         .out(query.preprocess)
-        .map(pointer => req.hydra.api.loaderRegistry.load<Enrichment>(pointer, { basePath: req.hydra.api.codePath }))
+        .map(pointer => req.loadCode<Enrichment>(pointer))
 
       const enrichment = await Promise.all(enrichmentPromises)
       await Promise.all(enrichment.map(enrich => enrich && enrich(req, resourcePointer)))

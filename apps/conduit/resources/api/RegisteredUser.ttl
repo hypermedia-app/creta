@@ -1,0 +1,36 @@
+@prefix acl: <http://www.w3.org/ns/auth/acl#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+</api/RegisteredUser>
+  a </api/hydra/Class>, sh:NodeShape, rdfs:Class ;
+  rdfs:subClassOf rdfs:Resource, </api/hydra/Resource> ;
+  sh:property
+    [
+      sh:path rdf:type ;
+      sh:hasValue </api/RegisteredUser> ;
+    ] ,
+    [
+      sh:path owl:sameAs ;
+      dash:hidden true ;
+      dash:readOnly true ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+    ] ,
+    [
+      sh:path acl:owner ;
+      dash:hidden true ;
+      dash:readOnly true ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+    ],
+    [
+      sh:path vcard:hasUID ;
+      dash:hidden true ;
+      dash:readOnly true ;
+      sh:maxCount 1 ;
+    ];
+.

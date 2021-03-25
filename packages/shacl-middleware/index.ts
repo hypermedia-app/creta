@@ -1,4 +1,4 @@
-import { Request, RequestHandler, Router } from 'express'
+import { Request, Router } from 'express'
 import asyncMiddleware from 'middleware-async'
 import $rdf from 'rdf-ext'
 import DatasetExt from 'rdf-ext/lib/Dataset'
@@ -11,7 +11,7 @@ import { CONSTRUCT } from '@tpluscode/sparql-builder'
 import { sparql } from '@tpluscode/rdf-string'
 
 interface ShaclMiddlewareOptions {
-  loadShapes: RequestHandler
+  loadShapes(req: Request): Promise<GraphPointer[]>
   getTerm: (req: Request) => NamedNode
 }
 
@@ -46,7 +46,16 @@ export const shaclMiddleware = ({ loadShapes, getTerm }: ShaclMiddlewareOptions)
     next()
   }))
 
-  router.use(asyncMiddleware(loadShapes))
+  router.use(asyncMiddleware(async (req, res, next) => {
+    const shapes = await loadShapes(req)
+
+    for (const shape of shapes) {
+      shape.addOut(sh.targetNode, req.shacl.term)
+      req.shacl.shapesGraph.addAll([...shape.dataset])
+    }
+
+    next()
+  }))
 
   // Load data from linked instances to be able to validate their type
   router.use(asyncMiddleware(async function loadResourceTypes(req, res, next) {

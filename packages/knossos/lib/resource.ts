@@ -30,7 +30,7 @@ export async function save({ resource, req }: Save): Promise<void> {
   const guards = await Promise.all(api
     .node(resource.out(rdf.type))
     .out(knossos.beforeSave)
-    .map(pointer => req.hydra.api.loaderRegistry.load<BeforeSave>(pointer, { basePath: req.hydra.api.codePath })))
+    .map(pointer => req.loadCode<BeforeSave>(pointer)))
 
   for (const guard of guards) {
     if (guard) {

@@ -73,8 +73,11 @@ async function loadHandlers(req: express.Request, event: Activity) {
     .reduce((promises, handler) => {
       const implementedBy = handler.out(code.implementedBy)
       if (hasOneImplementation(implementedBy)) {
-        const impl = req.hydra.api.loaderRegistry.load<Handler>(implementedBy, { basePath: req.hydra.api.codePath }) as any
-        const promise = Promise.resolve({ handler, impl })
+        const impl = req.loadCode<Handler>(implementedBy)
+        if (!impl) {
+          return promises
+        }
+        const promise = Promise.resolve().then(() => impl).then(impl => ({ handler, impl }))
         return [
           ...promises,
           promise,
@@ -83,10 +86,10 @@ async function loadHandlers(req: express.Request, event: Activity) {
 
       req.knossos.log('No unique handler implementation found for handler %s', handler.value)
       return promises
-    }, [] as Array<Promise<{ handler: GraphPointer; impl: Handler | null }>>))
+    }, [] as Array<Promise<{ handler: GraphPointer; impl: Handler }>>))
 }
 
-async function runHandler(handler: GraphPointer, impl: Handler | null, event: Activity, req: express.Request) {
+async function runHandler(handler: GraphPointer, impl: Handler, event: Activity, req: express.Request) {
   if (!impl) {
     req.knossos.log('Failed to load implementation of handler %s', handler.value)
     return
@@ -98,7 +101,7 @@ async function runHandler(handler: GraphPointer, impl: Handler | null, event: Ac
 
 interface PendingEvent {
   activity: Activity
-  handlers: Promise<Array<{ handler: GraphPointer; impl: Handler | null }>>
+  handlers: Promise<Array<{ handler: GraphPointer; impl: Handler }>>
 }
 
 export const attach: express.RequestHandler = (req, res, next) => {
