@@ -2,6 +2,7 @@
   "name": "@hydrofoil/hydra",
   "private": true,
   "scripts": {
+    "postinstall": "npx yarn-deduplicate",
     "lint": "eslint . --ext .ts --quiet --ignore-path .gitignore --ignore-path .eslintignore",
     "test": "c8 --all --reporter=lcov mocha --recursive --extension ts packages",
     "release": "changeset publish"

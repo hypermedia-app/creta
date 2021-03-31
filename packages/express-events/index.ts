@@ -8,11 +8,10 @@ import { nanoid } from 'nanoid'
 import { NamedNode } from 'rdf-js'
 import { DESCRIBE } from '@tpluscode/sparql-builder'
 import { code } from '@hydrofoil/namespaces'
-import { rdf, rdfs } from '@tpluscode/rdf-ns-builders'
+import { as, rdf, rdfs } from '@tpluscode/rdf-ns-builders'
 import { sparql } from '@tpluscode/rdf-string'
 import namespace from '@rdfjs/namespace'
 
-export const as = namespace('https://www.w3.org/ns/activitystreams#')
 export const ns = namespace('https://hypermedia.app/events#')
 
 interface HandlerParams {
