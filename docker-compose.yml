@@ -1,9 +1,0 @@
-version: "3"
-
-services:
-  restcli:
-    image: restcli/restcli
-    network_mode: "host"
-    volumes:
-      - ./:/data
-      - ./apps/conduit/http-client.env.json:/app/http-client.env.json
