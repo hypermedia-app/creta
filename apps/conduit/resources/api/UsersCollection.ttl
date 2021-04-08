@@ -1,3 +1,5 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix acl: <http://www.w3.org/ns/auth/acl#> .
 @prefix auth: <https://hypermedia.app/auth#> .
@@ -7,7 +9,7 @@
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 
 </api/UsersCollection>
-  a </api/hydra/Class> ;
+  a </api/hydra/Class>, rdfs:Class, sh:NodeShape ;
   rdfs:subClassOf </api/hydra/Collection> ;
   knossos:createWithPUT true ;
   hydra:supportedOperation
@@ -21,14 +23,38 @@
           code:link <node:@hydrofoil/knossos/collection#POST> ;
         ] ;
     ] ;
-  knossos:memberTemplate [
-    a hydra:IriTemplate ;
-    hydra:template "/user/{name}" ;
-    hydra:mapping
-      [
-        hydra:variable "name" ;
-        hydra:property foaf:nick ;
-        hydra:require true ;
-      ];
-  ] ;
+  knossos:memberTemplate
+    [
+      a hydra:IriTemplate ;
+      hydra:template "/user/{name}" ;
+      hydra:mapping
+        [
+          hydra:variable "name" ;
+          hydra:property foaf:nick ;
+          hydra:require true ;
+        ] ;
+    ] ;
+  sh:property
+    [
+      sh:message "Missing manages block" ;
+      sh:path hydra:manages ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:BlankNode ;
+      sh:node
+        [
+          sh:property
+            [
+              sh:path hydra:property ;
+              sh:hasValue rdf:type ;
+              sh:minCount 1 ;
+              sh:nodeKind sh:IRI ;
+            ],
+            [
+              sh:path hydra:object ;
+              sh:hasValue </api/User> ;
+              sh:minCount 1 ;
+              sh:nodeKind sh:IRI ;
+            ]
+        ]
+    ] ;
 .

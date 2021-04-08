@@ -9,9 +9,11 @@ import { DESCRIBE } from '@tpluscode/sparql-builder'
 import { vcard } from '@tpluscode/rdf-ns-builders'
 import type { StreamClient } from 'sparql-http-client/StreamClient'
 
-declare module '@hydrofoil/labyrinth' {
-  interface User {
-    sub?: string
+declare module 'express-serve-static-core' {
+  interface Request {
+    user: {
+      sub?: string
+    }
   }
 }
 
@@ -24,9 +26,9 @@ const setUser = (client: StreamClient): express.RequestHandler => async (req, re
 
     const foundUser = clownface({ dataset })
       .has(vcard.hasUID, req.user.sub)
-      .toArray()[0]
+      .toArray()[0] as any
 
-    req.user.pointer = foundUser || clownface({ dataset: $rdf.dataset() })
+    req.agent = foundUser || clownface({ dataset: $rdf.dataset() })
       .namedNode(`urn:user:${req.user.sub}`)
       .addOut(vcard.hasUID, req.user.sub)
   }

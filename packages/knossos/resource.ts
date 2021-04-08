@@ -3,18 +3,19 @@ import clownface from 'clownface'
 import TermSet from '@rdfjs/term-set'
 import { Debugger } from 'debug'
 import { created, updated } from '@hydrofoil/express-events/activity'
-import { acl, hydra, rdf } from '@tpluscode/rdf-ns-builders'
-import { as } from '@hydrofoil/express-events'
+import { as, acl, hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { StreamClient } from 'sparql-http-client/StreamClient'
 import error from 'http-errors'
 import httpStatus from 'http-status'
 import { shaclValidate } from './lib/middleware/shacl'
 import { knossos } from './lib/namespace'
 import { Router } from 'express'
-import { check } from 'hydra-box-middleware-wac'
+import { check } from 'rdf-web-access-control'
 import { save } from './lib/resource'
+import httpError from 'http-errors'
 
 function canBeCreatedWithPut(api: clownface.AnyPointer, resource: clownface.GraphPointer, log: Debugger) {
+  log('canBeCreatedWithPut')
   const types = resource.out(rdf.type)
   const classes = api.has(hydra.supportedClass, types).out(hydra.supportedClass)
 
@@ -59,13 +60,16 @@ const ensureNotExists = asyncMiddleware(async (req, res, next) => {
   const exists = await req.knossos.store.exists(resource.term)
 
   if (exists) {
+    req.knossos.log('exists')
     return next(new error.Conflict())
   }
 
   if (!canBeCreatedWithPut(api, resource, req.knossos.log)) {
+    req.knossos.log('cannot')
     return next(new error.MethodNotAllowed())
   }
 
+  req.knossos.log('Ok')
   next()
 })
 
@@ -77,11 +81,11 @@ const checkPermissions = (client: StreamClient) => asyncMiddleware(async (req, r
     types,
     accessMode: acl.Control,
     client,
-    agent: req.user?.pointer,
+    agent: req.agent,
   })
 
-  if (error) {
-    return next(error)
+  if (!error) {
+    return next(new httpError.Forbidden())
   }
 
   req.knossos.log('Resource types unrestricted')

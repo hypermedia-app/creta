@@ -1,9 +1,0 @@
-{
-  "name": "rdf-express-node-factory",
-  "version": "0.0.0",
-  "main": "index.js",
-  "dependencies": {
-    "absolute-url": "^1.2.2",
-    "rdf-ext": "^1.3.1"
-  }
-}

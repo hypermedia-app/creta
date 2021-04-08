@@ -1,6 +1,5 @@
 import { rdf } from '@tpluscode/rdf-ns-builders'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
-import { User } from '@hydrofoil/labyrinth'
 import express from 'express'
 import { NamedNode } from 'rdf-js'
 import { Knossos } from '../server'
@@ -11,7 +10,7 @@ interface BeforeSaveParams {
   before: GraphPointer
   api: AnyPointer
   knossos: Knossos
-  user: User | undefined
+  agent: GraphPointer | undefined
 }
 
 export interface BeforeSave {
@@ -40,7 +39,7 @@ export async function save({ resource, req }: Save): Promise<void> {
         after: resource,
         before,
         knossos: req.knossos,
-        user: req.user,
+        agent: req.agent,
       })
     }
   }

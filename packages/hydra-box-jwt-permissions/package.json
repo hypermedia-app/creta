@@ -4,6 +4,7 @@
   "main": "index.js",
   "dependencies": {
     "@hydrofoil/labyrinth": "^0.4.1",
+    "@hydrofoil/namespaces": "^0.0.0",
     "clownface": "^1.2.0",
     "express-jwt-permissions": "^1.3.3",
     "http-errors": "^1.8.0",

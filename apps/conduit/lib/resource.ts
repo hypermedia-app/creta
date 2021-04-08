@@ -38,15 +38,15 @@ export const setUID: Handler = async function ({ req, event }) {
     req.knossos.log('Could not set User UID. No Activity#object')
     return
   }
-  if (!req.user?.pointer) {
+  if (!req.agent) {
     req.knossos.log('Could not set User UID. No authenticated user')
     return
   }
 
   req.knossos.log('Setting UID of <%s>', event.object.id.value)
   const resource = await req.knossos.store.load(event.object.id)
-  resource.addOut(vcard.hasUID, req.user.pointer.out(vcard.hasUID))
-    .addOut(owl.sameAs, userUrn(req.user.pointer))
+  resource.addOut(vcard.hasUID, req.agent.out(vcard.hasUID))
+    .addOut(owl.sameAs, userUrn(req.agent))
     .addOut(rdf.type, req.rdf.namedNode('/api/RegisteredUser'))
   await req.knossos.store.save(resource)
 }
@@ -56,13 +56,13 @@ export const setOwner: Handler = async function ({ event, req }) {
     req.knossos.log('Could not set owner of resource. No Activity#object')
     return
   }
-  if (!req.user?.pointer) {
+  if (!req.agent) {
     req.knossos.log('Could not set owner of resource. No authenticated user')
     return
   }
 
-  req.knossos.log('Setting <%s> as owner of <%s>', req.user.pointer.value, event.object.id.value)
+  req.knossos.log('Setting <%s> as owner of <%s>', req.agent.value, event.object.id.value)
   const resource = await req.knossos.store.load(event.object.id)
-  resource.addOut(acl.owner, req.user.pointer)
+  resource.addOut(acl.owner, req.agent)
   await req.knossos.store.save(resource)
 }

@@ -1,3 +1,4 @@
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
 @prefix acl: <http://www.w3.org/ns/auth/acl#> .
 @prefix dash: <http://datashapes.org/dash#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .

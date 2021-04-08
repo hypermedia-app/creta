@@ -1,5 +1,4 @@
 import { Activity } from '@rdfine/as'
-import type { Initializer } from '@tpluscode/rdfine/RdfResource'
 import type express from 'express'
 import { fromPointer } from '@rdfine/as/lib/Activity'
 import clownface, { GraphPointer, MultiPointer } from 'clownface'
@@ -24,7 +23,7 @@ export interface Handler {
 }
 
 interface Events {
-  (...ev: Array<Initializer<Activity>>): void
+  (...ev: Array<import('@tpluscode/rdfine/RdfResource').Initializer<Activity>>): void
   handleImmediate(): Promise<void>
 }
 
@@ -114,7 +113,7 @@ export const attach: express.RequestHandler = (req, res, next) => {
 
       const activity = fromPointer(pointer, {
         ...init,
-        actor: req.user?.pointer,
+        actor: req.agent,
       })
       pendingEvents.push({
         activity,

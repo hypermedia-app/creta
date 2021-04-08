@@ -4,7 +4,7 @@ import StreamClient from 'sparql-http-client/StreamClient'
 import { resource } from 'express-rdf-request'
 import { Debugger } from 'debug'
 import cors from 'cors'
-import * as webAccessControl from 'hydra-box-middleware-wac'
+import webAccessControl from 'hydra-box-web-access-control'
 import * as events from '@hydrofoil/express-events'
 import camo from 'camouflage-rewrite'
 import createApi from './lib/api'
@@ -67,7 +67,9 @@ export async function serve({ log, endpointUrl, updateUrl, port, name, codePath,
     app.use(await middleware.authentication({ client }))
   }
   app.use(systemAuth({ log, name }))
-  app.use(resource(req => req.hydra.term))
+  app.use(resource({
+    getTerm: req => req.hydra.term,
+  }))
   app.use((req, res, next) => {
     req.knossos = {
       store,
@@ -85,7 +87,7 @@ export async function serve({ log, endpointUrl, updateUrl, port, name, codePath,
       log,
     }),
     middleware: {
-      resource: webAccessControl.middleware(client),
+      resource: webAccessControl({ client }),
     },
   }))
   app.put('/*', create(client))

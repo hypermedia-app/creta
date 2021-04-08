@@ -28,13 +28,11 @@ export const systemAuth = ({ log, name }: SystemAuth): express.RequestHandler =>
         return next(new error.Forbidden('Invalid system token'))
       }
 
-      req.user = {
-        pointer: clownface({ dataset: $rdf.dataset() })
-          .namedNode(`${knossos.System.value}:${name}`)
-          .addOut(rdf.type, knossos.SystemAccount),
-      }
+      req.agent = clownface({ dataset: $rdf.dataset() })
+        .namedNode(`${knossos.System.value}:${name}`)
+        .addOut(rdf.type, knossos.SystemAccount)
 
-      log('Authenticated system user %s', req.user.pointer?.value)
+      log('Authenticated system user %s', req.agent.value)
     }
 
     next()

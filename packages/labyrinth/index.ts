@@ -17,13 +17,8 @@ export { SparqlQueryLoader } from './lib/loader'
 
 RdfResource.factory.addMixin(...Object.values(Hydra))
 
-export interface User {
-  pointer?: GraphPointer
-}
-
 declare module 'express-serve-static-core' {
   export interface Request {
-    user?: User
     hydra: HydraBox
     loadCode<T extends any = unknown>(node: GraphPointer, options?: Record<any, any>): T | Promise<T> | null
     labyrinth: {
