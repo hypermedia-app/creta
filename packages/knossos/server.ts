@@ -5,7 +5,7 @@ import { resource } from 'express-rdf-request'
 import { Debugger } from 'debug'
 import cors from 'cors'
 import webAccessControl from 'hydra-box-web-access-control'
-import * as events from '@hydrofoil/express-events'
+import { knossosEvents } from '@hydrofoil/express-events'
 import camo from 'camouflage-rewrite'
 import { problemJson } from '../labyrinth/errors'
 import createApi from './lib/api'
@@ -77,7 +77,7 @@ export async function serve({ log, endpointUrl, updateUrl, port, name, codePath,
     }
     next()
   })
-  app.use(events.attach)
+  app.use(knossosEvents())
   app.use(await hydraBox({
     codePath,
     sparql,

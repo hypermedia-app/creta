@@ -1,5 +1,5 @@
 ---
-"@hydrofoil/express-events": minor
+"@hydrofoil/knossos-events": minor
 ---
 
 First version
