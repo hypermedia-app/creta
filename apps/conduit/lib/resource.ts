@@ -1,7 +1,7 @@
 import { acl, dash, owl, rdf, sh, vcard } from '@tpluscode/rdf-ns-builders'
 import { BeforeSave } from '@hydrofoil/knossos/lib/resource'
 import TermSet from '@rdfjs/term-set'
-import type { Handler } from '@hydrofoil/express-events'
+import type { Handler } from '@hydrofoil/knossos-events'
 import { GraphPointer } from 'clownface'
 import $rdf from 'rdf-ext'
 import error from 'http-errors'

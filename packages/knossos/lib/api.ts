@@ -7,7 +7,7 @@ import ApiBase from 'hydra-box/Api'
 import { ApiFactory } from '@hydrofoil/labyrinth'
 import { CONSTRUCT } from '@tpluscode/sparql-builder'
 import { hydra } from '@tpluscode/rdf-ns-builders'
-import { Handler } from '@hydrofoil/express-events'
+import { Handler } from '@hydrofoil/knossos-events'
 import { ResourceStore } from './store'
 
 interface ApiFromStore {
