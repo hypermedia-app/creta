@@ -4,7 +4,7 @@
   "scripts": {
     "postinstall": "npx yarn-deduplicate",
     "lint": "eslint . --ext .ts --quiet --ignore-path .gitignore --ignore-path .eslintignore",
-    "test": "c8 --all --reporter=lcov mocha --recursive --extension ts packages",
+    "test": "c8 --all --reporter=lcov mocha --recursive packages/**/*.test.ts",
     "release": "changeset publish"
   },
   "dependencies": {
