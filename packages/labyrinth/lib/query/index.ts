@@ -1,5 +1,5 @@
-import { GraphPointer } from 'clownface'
 import { Term, Variable } from 'rdf-js'
+import { GraphPointer } from 'clownface'
 
 export interface Pattern {
   subject: Variable

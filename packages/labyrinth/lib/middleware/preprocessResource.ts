@@ -1,8 +1,8 @@
+import { NamedNode } from 'rdf-js'
 import { Request, RequestHandler } from 'express'
 import clownface, { GraphPointer } from 'clownface'
 import asyncMiddleware from 'middleware-async'
 import { rdf } from '@tpluscode/rdf-ns-builders'
-import { NamedNode } from 'rdf-js'
 import { query } from '@hydrofoil/namespaces'
 
 export interface Enrichment {

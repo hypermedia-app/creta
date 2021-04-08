@@ -6,7 +6,6 @@
   },
   "dependencies": {
     "@fcostarodrigo/walk": "^5.0.0",
-    "@hydrofoil/labyrinth": "^0.4.1",
     "hydra-box": "^0.6"
   }
 }

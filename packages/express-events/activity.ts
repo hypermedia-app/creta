@@ -1,6 +1,6 @@
+import { NamedNode } from 'rdf-js'
 import type { Initializer } from '@tpluscode/rdfine/RdfResource'
 import { Create, Delete, Update } from '@rdfine/as'
-import { NamedNode } from 'rdf-js'
 import { GraphPointer } from 'clownface'
 import { as } from '@tpluscode/rdf-ns-builders'
 

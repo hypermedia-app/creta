@@ -1,3 +1,4 @@
+import { NamedNode } from 'rdf-js'
 import { RequestHandler } from 'express'
 import { HydraBox, PropertyResource, Resource, ResourceLoader } from 'hydra-box'
 import clownface, { AnyPointer } from 'clownface'
@@ -8,7 +9,6 @@ import sinon from 'sinon'
 import setLink from 'set-link'
 import StreamStore from 'sparql-http-client/StreamStore'
 import Endpoint from 'sparql-http-client/Endpoint'
-import { NamedNode } from 'rdf-js'
 
 interface MiddlewareOptions {
   setup?: (hydra: HydraBox) => Promise<void> | void

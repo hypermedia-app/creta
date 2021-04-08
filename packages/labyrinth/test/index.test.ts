@@ -1,6 +1,6 @@
+import path from 'path'
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import path from 'path'
 import express from 'express'
 import request from 'supertest'
 import $rdf from 'rdf-ext'

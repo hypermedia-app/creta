@@ -1,4 +1,5 @@
 import { NamedNode, Term } from 'rdf-js'
+import { PassThrough } from 'stream'
 import $rdf from 'rdf-ext'
 import { PropertyResource, Resource, ResourceLoader } from 'hydra-box'
 import { CONSTRUCT, SELECT } from '@tpluscode/sparql-builder'
@@ -9,7 +10,6 @@ import once from 'once'
 import TermMap from '@rdfjs/term-map'
 import TermSet from '@rdfjs/term-set'
 import { rdf } from '@tpluscode/rdf-ns-builders'
-import { PassThrough } from 'stream'
 
 const log = debug('hydra:store')
 

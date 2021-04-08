@@ -1,7 +1,7 @@
+import { NamedNode } from 'rdf-js'
 import { rdf } from '@tpluscode/rdf-ns-builders'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
 import express from 'express'
-import { NamedNode } from 'rdf-js'
 import { Knossos } from '../server'
 import { knossos } from './namespace'
 

@@ -4,9 +4,9 @@ import express from 'express'
 import request from 'supertest'
 import clownface from 'clownface'
 import { namedNode } from '@rdfjs/data-model'
-import { hydraBox } from './support/hydra-box'
 import { get } from '../resource'
 import { auth } from '../lib/namespace'
+import { hydraBox } from './support/hydra-box'
 import { ex } from './support/namespace'
 
 describe('laybrinth/resource', () => {

@@ -1,6 +1,6 @@
+import { Term } from 'rdf-js'
 import { RequestHandler } from 'express'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
-import { Term } from 'rdf-js'
 import TermMap from '@rdfjs/term-map'
 import { PotentialOperation } from 'hydra-box'
 import { log } from '../logger'

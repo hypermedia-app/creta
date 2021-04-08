@@ -1,15 +1,15 @@
+import { NamedNode } from 'rdf-js'
 import clownface, { AnyPointer, GraphPointer, MultiPointer } from 'clownface'
 import { fromPointer, IriTemplate } from '@rdfine/hydra/lib/IriTemplate'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import $rdf from 'rdf-ext'
-import { NamedNode } from 'rdf-js'
 import StreamClient from 'sparql-http-client/StreamClient'
 import { ResourceIdentifier } from '@tpluscode/rdfine'
 import { HydraBox } from 'hydra-box'
 import DatasetExt from 'rdf-ext/lib/Dataset'
+import * as ns from '@hydrofoil/namespaces'
 import { getSparqlQuery } from './query/collection'
 import { loadLinkedResources } from './query/eagerLinks'
-import * as ns from '@hydrofoil/namespaces'
 
 const emptyDataset = clownface({ dataset: $rdf.dataset() })
 

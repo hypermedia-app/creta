@@ -10,12 +10,12 @@ import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
 import { parsers } from '@rdfjs/formats-common'
 import toStream from 'string-to-stream'
-import { hydraBox } from './support/hydra-box'
 import { get } from '../collection'
 import { auth, query } from '../lib/namespace'
-import { ex } from './support/namespace'
 import * as collectionQuery from '../lib/query/collection'
 import * as ns from '../lib/namespace'
+import { ex } from './support/namespace'
+import { hydraBox } from './support/hydra-box'
 
 RdfResource.factory.addMixin(...Object.values(Hydra))
 

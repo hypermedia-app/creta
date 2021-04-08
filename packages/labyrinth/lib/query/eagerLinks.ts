@@ -1,5 +1,5 @@
-import { GraphPointer, MultiPointer } from 'clownface'
 import { NamedNode } from 'rdf-js'
+import { GraphPointer, MultiPointer } from 'clownface'
 import { SparqlGraphQueryExecutable } from '@tpluscode/sparql-builder/lib'
 import { CONSTRUCT } from '@tpluscode/sparql-builder'
 import DatasetExt from 'rdf-ext/lib/Dataset'

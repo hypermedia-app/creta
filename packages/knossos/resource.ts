@@ -7,12 +7,12 @@ import { as, acl, hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { StreamClient } from 'sparql-http-client/StreamClient'
 import error from 'http-errors'
 import httpStatus from 'http-status'
-import { shaclValidate } from './lib/middleware/shacl'
-import { knossos } from './lib/namespace'
 import { Router } from 'express'
 import { check } from 'rdf-web-access-control'
-import { save } from './lib/resource'
 import httpError from 'http-errors'
+import { shaclValidate } from './lib/middleware/shacl'
+import { knossos } from './lib/namespace'
+import { save } from './lib/resource'
 
 function canBeCreatedWithPut(api: clownface.AnyPointer, resource: clownface.GraphPointer, log: Debugger) {
   log('canBeCreatedWithPut')

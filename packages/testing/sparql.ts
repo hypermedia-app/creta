@@ -1,6 +1,6 @@
 import { Assertion, AssertionError } from 'chai'
 import { Parser, SparqlQuery } from 'sparqljs'
-import { SparqlTemplateResult } from '@tpluscode/rdf-string'
+import type { SparqlTemplateResult } from '@tpluscode/rdf-string'
 
 const sparqlParser = new Parser()
 

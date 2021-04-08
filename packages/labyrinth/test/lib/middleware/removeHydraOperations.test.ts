@@ -4,10 +4,10 @@ import $rdf from 'rdf-ext'
 import * as ns from '@tpluscode/rdf-ns-builders'
 import request from 'supertest'
 import { Resource } from 'hydra-box'
+import clownface from 'clownface'
 import { hydraBox } from '../../support/hydra-box'
 import { removeHydraOperations } from '../../../lib/middleware'
 import { ex } from '../../support/namespace'
-import clownface from 'clownface'
 
 describe('labyrinth/lib/middleware/removeHydraOperations', () => {
   const resource: Resource = {

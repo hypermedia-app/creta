@@ -7,10 +7,10 @@ import cors from 'cors'
 import webAccessControl from 'hydra-box-web-access-control'
 import * as events from '@hydrofoil/express-events'
 import camo from 'camouflage-rewrite'
+import { problemJson } from '../labyrinth/errors'
 import createApi from './lib/api'
 import { ResourcePerGraphStore, ResourceStore } from './lib/store'
 import { create } from './resource'
-import { problemJson } from '../labyrinth/errors'
 import { systemAuth } from './lib/middleware/systemAuth'
 
 export interface Knossos {
