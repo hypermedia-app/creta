@@ -31,7 +31,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: '13'
+          node-version: '14'
       - run: yarn
       - run: yarn build
 
@@ -41,6 +41,6 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: '13'
+          node-version: '14'
       - run: yarn
       - run: yarn lint
