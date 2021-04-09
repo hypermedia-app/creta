@@ -28,7 +28,7 @@ services:
     ports:
       - 10000-10035:10000-10035
     run:
-      - agtool create-db http://minos:password@127.0.0.1:10035/repositories/labyrinth
+      - agtool repos create http://minos:password@127.0.0.1:10035/repositories/labyrinth
     services:
       image: franzinc/agraph
       command: /entrypoint.sh
