@@ -1,4 +1,4 @@
-exports["labyrinth/collection get returns empty collection when no query is returned"] = [
+exports["@hydrofoil/labyrinth/collection get returns empty collection when no query is returned"] = [
 	{
 		"@id": "http://example.com/movies",
 		"@type": "http://example.com/Collection"

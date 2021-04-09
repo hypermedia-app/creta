@@ -4,6 +4,8 @@ require('@babel/register')({
   extensions: ['.js', '.jsx', '.ts', '.tsx'],
 })
 
+require('chai-snapshot-matcher')
+
 const chai = require('chai')
 const sinonChai = require('sinon-chai')
 const chaiQuantifiers = require('chai-quantifiers')

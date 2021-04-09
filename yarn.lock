@@ -2315,6 +2315,14 @@ chai-quantifiers@^1.0.13:
   resolved "https://registry.yarnpkg.com/chai-quantifiers/-/chai-quantifiers-1.0.13.tgz#ead7786630909e15a2ced666fcc4c8e79d1b8157"
   integrity sha512-LvVLrMJ1zOIdWxNelEI59mx/Gc5a5AwKuiBN7PEsfVrJ+ft7UrzPxu/wRT+hdHKFSuCPHN0TfU5owrr4QZpzrg==
 
+chai-snapshot-matcher@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/chai-snapshot-matcher/-/chai-snapshot-matcher-2.0.2.tgz#8156cbb352dbc9646775f43d4239096eb8a11dba"
+  integrity sha512-Mr/FWOC/pxXyseP+OFSt6Z7bVDnOROJ676yQ4X8JEm2GTd99c+/Qc1JNvMID3hQkpf6McSYfnCYH9hd2V4jb1w==
+  dependencies:
+    chai "^4.2.0"
+    lodash "^4.17.20"
+
 chai@^4.2.0, chai@^4.3.3, chai@^4.3.4:
   version "4.3.4"
   resolved "https://registry.yarnpkg.com/chai/-/chai-4.3.4.tgz#b55e655b31e1eac7099be4c08c21964fce2e6c49"
@@ -5613,7 +5621,7 @@ rdf-ext@^1.3.0, rdf-ext@^1.3.1:
     rdf-dataset-indexed "^0.4.0"
     rdf-normalize "^1.0.0"
 
-rdf-loader-code@^0.3.0:
+rdf-loader-code@^0.3.0, rdf-loader-code@^0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/rdf-loader-code/-/rdf-loader-code-0.3.2.tgz#94e5ef5396b1280b03cebe872a2d6945f21527d2"
   integrity sha512-VPuE4fGBGLS+clNrG95sqJJDQm+zpw+qCko4/csxMAu07b/Vtz9n1Z82XAwHEa+Bscv9eGFB8laldl3QC2gVhA==

@@ -1,4 +1,3 @@
-import path from 'path'
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import cf from 'clownface'
@@ -8,15 +7,16 @@ import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
 import { CONSTRUCT, SELECT } from '@tpluscode/sparql-builder'
 import * as Hydra from '@rdfine/hydra'
 import RdfResource from '@tpluscode/rdfine'
-import { getSparqlQuery } from '../../../lib/query/collection'
-import '../../support/sparql'
-import { ex } from '../../support/namespace'
-import * as ns from '../../../lib/namespace'
+import * as ns from '@hydrofoil/namespaces'
 import { fromPointer } from '@rdfine/hydra/lib/IriTemplate'
+import { ex } from '@labyrinth/testing/namespace'
+import '@labyrinth/testing/sparql'
+import { api } from '@labyrinth/testing/hydra-box'
+import { getSparqlQuery } from '../../../lib/query/collection'
+import { byTitle } from '../../test-api/filter'
+import { ToSparqlPatterns } from '../../../lib/query'
 
 RdfResource.factory.addMixin(...Object.values(Hydra))
-
-const basePath = path.resolve(__dirname, '../../')
 
 type ExpectedQuerySetup = SparqlTemplateResult | {
   patterns: SparqlTemplateResult
@@ -47,14 +47,14 @@ const expectedQuery = (options: ExpectedQuerySetup) => {
   return query.build()
 }
 
-describe('labyrinth/lib/query/collection', () => {
+describe('@hydrofoil/labyrinth/lib/query/collection', () => {
   describe('getSparqlQuery', () => {
     describe('members', () => {
       it('filters by property/object manages block', async () => {
         // given
         const expected = expectedQuery(sparql`?member ${rdf.type} ${schema.Person}`)
         const query = await getSparqlQuery({
-          api: cf({ dataset: $rdf.dataset() }).blankNode(),
+          api: api(),
           collection: cf({ dataset: $rdf.dataset() })
             .blankNode()
             .addOut(hydra.manages, manages => {
@@ -62,7 +62,6 @@ describe('labyrinth/lib/query/collection', () => {
               manages.addOut(hydra.object, schema.Person)
             }),
           pageSize: 10,
-          basePath,
           variables: null,
         })
 
@@ -77,7 +76,7 @@ describe('labyrinth/lib/query/collection', () => {
         // given
         const expected = expectedQuery(sparql`?member ${rdf.type} ${schema.Person}`)
         const query = await getSparqlQuery({
-          api: cf({ dataset: $rdf.dataset() }).blankNode(),
+          api: api(),
           collection: cf({ dataset: $rdf.dataset() })
             .blankNode()
             .addOut(hydra.manages, manages => {
@@ -88,7 +87,6 @@ describe('labyrinth/lib/query/collection', () => {
               manages.addOut(hydra.property, ex.foo)
             }),
           pageSize: 10,
-          basePath,
           variables: null,
         })
 
@@ -102,10 +100,9 @@ describe('labyrinth/lib/query/collection', () => {
       it('return null if there are no manages blocks', async () => {
         // given
         const query = await getSparqlQuery({
-          api: cf({ dataset: $rdf.dataset() }).blankNode(),
+          api: api(),
           collection: cf({ dataset: $rdf.dataset() }).blankNode(),
           pageSize: 10,
-          basePath,
           variables: null,
         })
 
@@ -116,7 +113,7 @@ describe('labyrinth/lib/query/collection', () => {
       it('return null if there are no valid manages blocks', async () => {
         // given
         const query = await getSparqlQuery({
-          api: cf({ dataset: $rdf.dataset() }).blankNode(),
+          api: api(),
           collection: cf({ dataset: $rdf.dataset() })
             .blankNode()
             .addOut(hydra.manages, manages => {
@@ -128,7 +125,6 @@ describe('labyrinth/lib/query/collection', () => {
               manages.addOut(hydra.object, ex.o)
             }),
           pageSize: 10,
-          basePath,
           variables: null,
         })
 
@@ -140,7 +136,7 @@ describe('labyrinth/lib/query/collection', () => {
         // given
         const expected = expectedQuery(sparql`${ex.JohnDoe} ?member ${ex.JaneDoe}`)
         const query = await getSparqlQuery({
-          api: cf({ dataset: $rdf.dataset() }).blankNode(),
+          api: api(),
           collection: cf({ dataset: $rdf.dataset() })
             .blankNode()
             .addOut(hydra.manages, manages => {
@@ -148,7 +144,6 @@ describe('labyrinth/lib/query/collection', () => {
               manages.addOut(hydra.object, ex.JaneDoe)
             }),
           pageSize: 10,
-          basePath,
           variables: null,
         })
 
@@ -163,7 +158,7 @@ describe('labyrinth/lib/query/collection', () => {
         // given
         const expected = expectedQuery(sparql`${ex.JohnDoe} ${schema.knows} ?member`)
         const query = await getSparqlQuery({
-          api: cf({ dataset: $rdf.dataset() }).blankNode(),
+          api: api(),
           collection: cf({ dataset: $rdf.dataset() })
             .blankNode()
             .addOut(hydra.manages, manages => {
@@ -171,7 +166,6 @@ describe('labyrinth/lib/query/collection', () => {
               manages.addOut(hydra.subject, ex.JohnDoe)
             }),
           pageSize: 10,
-          basePath,
           variables: null,
         })
 
@@ -186,7 +180,9 @@ describe('labyrinth/lib/query/collection', () => {
         // given
         const expected = expectedQuery(sparql` ${ex.JohnDoe} ${schema.knows} ?member . ?member ${schema.title} "Foo"`)
         const query = await getSparqlQuery({
-          api: cf({ dataset: $rdf.dataset() }).blankNode(),
+          api: api<ToSparqlPatterns>({
+            code: byTitle,
+          }),
           collection: cf({ dataset: $rdf.dataset() })
             .blankNode()
             .addOut(hydra.manages, manages => {
@@ -194,16 +190,12 @@ describe('labyrinth/lib/query/collection', () => {
               manages.addOut(hydra.subject, ex.JohnDoe)
             }),
           pageSize: 10,
-          basePath,
           variables: fromPointer(cf({ dataset: $rdf.dataset() }).blankNode(), {
             mapping: [{
               types: [hydra.IriTemplateMapping],
               property: schema.title,
               variable: 'title',
-              [ns.query.filter.value]: {
-                types: [ns.code.EcmaScript],
-                [ns.code.link.value]: $rdf.namedNode('file:test-api/filter#byTitle'),
-              },
+              [ns.query.filter.value]: {},
             }],
           }),
           query: cf({ dataset: $rdf.dataset() })
@@ -226,7 +218,7 @@ describe('labyrinth/lib/query/collection', () => {
           offset: 30,
         })
         const query = await getSparqlQuery({
-          api: cf({ dataset: $rdf.dataset() }).blankNode(),
+          api: api(),
           collection: cf({ dataset: $rdf.dataset() })
             .blankNode()
             .addOut(hydra.manages, manages => {
@@ -234,7 +226,6 @@ describe('labyrinth/lib/query/collection', () => {
               manages.addOut(hydra.subject, ex.JohnDoe)
             }),
           pageSize: 10,
-          basePath,
           variables: fromPointer(cf({ dataset: $rdf.dataset() }).blankNode(), {
             mapping: [{
               types: [hydra.IriTemplateMapping],
@@ -262,7 +253,7 @@ describe('labyrinth/lib/query/collection', () => {
           offset: 60,
         })
         const query = await getSparqlQuery({
-          api: cf({ dataset: $rdf.dataset() }).blankNode(),
+          api: api(),
           collection: cf({ dataset: $rdf.dataset() })
             .blankNode()
             .addOut(hydra.manages, manages => {
@@ -270,7 +261,6 @@ describe('labyrinth/lib/query/collection', () => {
               manages.addOut(hydra.subject, ex.JohnDoe)
             }),
           pageSize: 10,
-          basePath,
           variables: fromPointer(cf({ dataset: $rdf.dataset() }).blankNode(), {
             mapping: [{
               types: [hydra.IriTemplateMapping],

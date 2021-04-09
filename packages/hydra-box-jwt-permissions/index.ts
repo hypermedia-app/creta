@@ -4,7 +4,10 @@ import guard from 'express-jwt-permissions'
 import clownface, { GraphPointer } from 'clownface'
 import error from 'http-errors'
 import type { HydraBox } from 'hydra-box'
-import { auth } from '@hydrofoil/namespaces'
+import namespace from '@rdfjs/namespace'
+
+type AuthTerms = 'required' | 'scopes' | 'permissions' | 'access'
+export const auth = namespace<AuthTerms>('https://hypermedia.app/auth#')
 
 const permission = guard()
 

@@ -9,6 +9,10 @@ import sinon from 'sinon'
 import setLink from 'set-link'
 import StreamStore from 'sparql-http-client/StreamStore'
 import Endpoint from 'sparql-http-client/Endpoint'
+import { Api } from 'hydra-box/Api'
+import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
+import { namedNode } from './nodeFactory'
+import { ex } from './namespace'
 
 interface MiddlewareOptions {
   setup?: (hydra: HydraBox) => Promise<void> | void
@@ -20,7 +24,47 @@ interface MiddlewareOptions {
   query?: AnyPointer
 }
 
-export function hydraBox({ setup, user, query }: MiddlewareOptions = {}): RequestHandler {
+interface ApiSetup<T> {
+  code?: T
+}
+
+export const api = <Code = RequestHandler>({ code }: ApiSetup<Code> = {}): Api => {
+  const load = sinon.stub()
+  if (code) {
+    load.resolves(code)
+  }
+
+  return {
+    codePath: '',
+    dataset: $rdf.dataset(),
+    graph: $rdf.namedNode('api-graph'),
+    init: sinon.stub(),
+    initialized: true,
+    path: '/api',
+    term: $rdf.namedNode('api'),
+    loaderRegistry: {
+      load,
+    } as any,
+  }
+}
+
+export function apiFactory<Code>(opts?: ApiSetup<Code>): () => Promise<Api> {
+  return async () => {
+    const copy = api(opts)
+
+    clownface(copy)
+      .addOut(hydra.supportedClass, ex.Config, Config => {
+        Config.addOut(rdf.type, hydra.Class)
+          .addOut(hydra.supportedOperation, op => {
+            op.addOut(hydra.method, 'GET')
+          })
+      })
+
+    return copy
+  }
+}
+
+export function hydraBox({ setup, query }: MiddlewareOptions = {}): RequestHandler {
   const dataset = $rdf.dataset()
 
   const hydra: HydraBox = {
@@ -42,17 +86,7 @@ export function hydraBox({ setup, user, query }: MiddlewareOptions = {}): Reques
       term: $rdf.namedNode('resource'),
       types: new TermSet(),
     },
-    api: {
-      codePath: '',
-      dataset: $rdf.dataset(),
-      graph: $rdf.namedNode('api-graph'),
-      fromFile: sinon.stub(),
-      init: sinon.stub(),
-      initialized: true,
-      path: '',
-      rebase: sinon.stub(),
-      term: $rdf.namedNode('api'),
-    },
+    api: api(),
   }
 
   return async (req, res, next) => {
@@ -61,7 +95,7 @@ export function hydraBox({ setup, user, query }: MiddlewareOptions = {}): Reques
 
     setup && await setup(hydra)
     req.hydra = hydra
-    req.user = user
+    req.agent = namedNode('agent')
     req.labyrinth = {
       sparql: {
         store: sinon.createStubInstance(StreamStore) as any,

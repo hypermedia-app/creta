@@ -10,16 +10,16 @@ import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
 import { parsers } from '@rdfjs/formats-common'
 import toStream from 'string-to-stream'
+import { hydraBox } from '@labyrinth/testing/hydra-box'
+import * as ns from '@hydrofoil/namespaces'
+import { ex } from '@labyrinth/testing/namespace'
+import { query } from '@hydrofoil/namespaces'
 import { get } from '../collection'
-import { auth, query } from '../lib/namespace'
 import * as collectionQuery from '../lib/query/collection'
-import * as ns from '../lib/namespace'
-import { ex } from './support/namespace'
-import { hydraBox } from './support/hydra-box'
 
 RdfResource.factory.addMixin(...Object.values(Hydra))
 
-describe('labyrinth/collection', () => {
+describe('@hydrofoil/labyrinth/collection', () => {
   let collectionQueryMock: SinonStubbedInstance<typeof collectionQuery>
   let membersQuery: SinonStub
   let totalsQuery: SinonStub
@@ -44,23 +44,6 @@ describe('labyrinth/collection', () => {
   })
 
   describe('get', () => {
-    it('returns 401 when collection is restricted', async () => {
-      // given
-      const app = express()
-      app.use(hydraBox({
-        setup: hydra => {
-          hydra.operation.addOut(auth.required, true)
-        },
-      }))
-      app.use(get)
-
-      // when
-      const response = request(app).get('/')
-
-      // then
-      await response.expect(401)
-    })
-
     it('sets canonical link header', async () => {
       // given
       const app = express()

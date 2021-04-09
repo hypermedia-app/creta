@@ -1,4 +1,4 @@
-import { Term, Variable } from 'rdf-js'
+import { Variable } from 'rdf-js'
 import { CONSTRUCT, SELECT } from '@tpluscode/sparql-builder'
 import { hydra, ldp, rdf } from '@tpluscode/rdf-ns-builders'
 import $rdf from 'rdf-ext'
@@ -8,10 +8,7 @@ import { IriTemplate, IriTemplateMapping } from '@rdfine/hydra'
 import { Api } from 'hydra-box/Api'
 import { query } from '@hydrofoil/namespaces'
 import { log, warn } from '../logger'
-
-interface CreatePattern {
-  (options: { subject: Variable; predicate: Term; object: AnyPointer }): string | SparqlTemplateResult
-}
+import { ToSparqlPatterns } from './index'
 
 function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPointer, api: Api) {
   return async (mapping: IriTemplateMapping): Promise<string | SparqlTemplateResult> => {
@@ -36,7 +33,7 @@ function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPoin
       return ''
     }
 
-    const createPattern = await api.loaderRegistry.load<CreatePattern>(queryFilters.toArray()[0], { basePath: api.codePath })
+    const createPattern = await api.loaderRegistry.load<ToSparqlPatterns>(queryFilters.toArray()[0], { basePath: api.codePath })
     if (!createPattern) {
       warn('Failed to load pattern function')
       return ''

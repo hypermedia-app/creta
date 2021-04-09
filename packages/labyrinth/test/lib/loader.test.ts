@@ -1,32 +1,26 @@
 import { describe, it, before } from 'mocha'
 import { expect } from 'chai'
-import * as compose from 'docker-compose'
 import { INSERT } from '@tpluscode/sparql-builder'
 import StreamClient from 'sparql-http-client/StreamClient'
 import { foaf, hydra, rdf, schema } from '@tpluscode/rdf-ns-builders'
 import $rdf from 'rdf-ext'
-import waitOn from 'wait-on'
 import { PropertyResource } from 'hydra-box'
 import clownface from 'clownface'
-import { ex } from '../support/namespace'
+import { ex } from '@labyrinth/testing/namespace'
 import { SparqlQueryLoader } from '../../lib/loader'
 
-describe('SparqlQueryLoader', function () {
+describe('@hydrofoil/labbyrinth/lib/loader/SparqlQueryLoader', function () {
   this.timeout(200000)
 
   const endpoint = {
-    endpointUrl: 'http://localhost:3030/labyrinth/query',
-    updateUrl: 'http://localhost:3030/labyrinth/update',
-    user: 'admin',
+    endpointUrl: 'http://db.labyrinth.lndo.site/repositories/labyrinth',
+    updateUrl: 'http://db.labyrinth.lndo.site/repositories/labyrinth',
+    user: 'minos',
     password: 'password',
   }
   const loader = new SparqlQueryLoader(endpoint)
 
   before(async () => {
-    await compose.upAll()
-    await waitOn({
-      resources: ['http://localhost:3030'],
-    })
     await INSERT.DATA`
       graph ${ex.Howard} {
         ${ex.Howard} 

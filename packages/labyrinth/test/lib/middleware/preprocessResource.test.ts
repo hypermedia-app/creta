@@ -1,23 +1,18 @@
-import { describe, it, beforeEach, before } from 'mocha'
+import { describe, it, beforeEach } from 'mocha'
 import { expect } from 'chai'
 import express from 'express'
 import cf from 'clownface'
-import * as sinon from 'sinon'
+import sinon from 'sinon'
 import * as ns from '@tpluscode/rdf-ns-builders'
 import { literal } from '@rdfjs/data-model'
 import request from 'supertest'
-import { hydraBox } from '../../support/hydra-box'
-import { ex } from '../../support/namespace'
-import { query } from '../../../lib/namespace'
+import { hydraBox } from '@labyrinth/testing/hydra-box'
+import { ex } from '@labyrinth/testing/namespace'
+import { query } from '@hydrofoil/namespaces'
 import { preprocessResource } from '../../../lib/middleware/preprocessResource'
-import { loaders } from '../../../lib/rdfLoaders'
 
 describe('labyrinth/lib/middleware/preprocessResource', () => {
   let enrichmentSpy: sinon.SinonSpy
-
-  before(() => {
-    loaders.registerLiteralLoader(ex.TestEnrichment, () => enrichmentSpy)
-  })
 
   beforeEach(() => {
     enrichmentSpy = sinon.spy()
@@ -36,7 +31,11 @@ describe('labyrinth/lib/middleware/preprocessResource', () => {
           })
       },
     }))
-    app.use(preprocessResource(__dirname))
+    app.use((req, res, next) => {
+      req.loadCode = sinon.stub().resolves(enrichmentSpy)
+      next()
+    })
+    app.use(preprocessResource())
 
     // when
     await request(app).get('/')
