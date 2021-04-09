@@ -11,6 +11,14 @@ jobs:
         with:
           node-version: '14'
       - run: yarn
+      - name: setup-docker
+        uses: docker-practice/actions-setup-docker@1.0.4
+        with:
+          docker_version: 20.10.3
+      - name: Install lando
+        run: sh .ci/install-lando.sh
+      - name: Start lando
+        run: sh .ci/start-lando.sh
       - run: yarn test
       - name: Codecov
         uses: codecov/codecov-action@v1.0.5
