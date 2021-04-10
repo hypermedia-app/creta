@@ -19,7 +19,7 @@ export interface Handler {
   (arg: HandlerParams): Promise<Activity[]> | Activity[] | void | Promise<void>
 }
 
-interface Events {
+export interface Events {
   (...ev: Array<import('@tpluscode/rdfine/RdfResource').Initializer<Activity>>): void
   handleImmediate(): Promise<void>
 }

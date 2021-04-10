@@ -5,7 +5,8 @@
     "postinstall": "npx yarn-deduplicate",
     "lint": "eslint . --ext .ts --quiet --ignore-path .gitignore --ignore-path .eslintignore",
     "test": "c8 --all --reporter=lcov mocha --recursive packages/**/*.test.ts",
-    "release": "changeset publish"
+    "release": "changeset publish",
+    "docs": "docsify serve ./docs"
   },
   "dependencies": {
     "@babel/core": "^7.11.6",
@@ -45,6 +46,7 @@
     "c8": "^7.3.0",
     "chai-quantifiers": "^1.0.13",
     "chai-snapshot-matcher": "^2.0.2",
+    "docsify-cli": "^4.4.3",
     "eslint": "^7.8.1",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.22.0",

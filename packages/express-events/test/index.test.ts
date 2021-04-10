@@ -17,8 +17,7 @@ describe('@hydrofoil/express-events', () => {
   beforeEach(() => {
     app = express()
 
-    knossos = {} as any
-    app.use(knossosMock(knossos))
+    knossos = knossosMock(app)
     app.use(knossosEvents({
       path: '__event',
     }))

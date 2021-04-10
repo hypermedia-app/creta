@@ -1,20 +1,28 @@
 import express from 'express'
 import sinon from 'sinon'
 import type { Knossos } from '@hydrofoil/knossos/server'
-import debug from 'debug'
+import debug, { Debugger } from 'debug'
 
-export function knossosMock(knossos: Knossos): express.RequestHandler {
-  return (req, res, next) => {
-    knossos.store = {
-      save: sinon.spy(),
-      load: sinon.spy(),
-      exists: sinon.spy(),
-      delete: sinon.spy(),
-    }
-    knossos.log = debug('test')
+export interface KnossosMock {
+  log: Debugger
+  store: sinon.SinonStubbedInstance<Knossos['store']>
+}
 
-    req.knossos = knossos
-
-    next()
+export const knossosMock = (app: express.IRouter): KnossosMock => {
+  const knossos: any = {
+    store: {
+      save: sinon.stub(),
+      load: sinon.stub(),
+      exists: sinon.stub(),
+      delete: sinon.stub(),
+    },
+    log: debug('test'),
   }
+
+  app.use((req, res, next) => {
+    req.knossos = knossos
+    next()
+  })
+
+  return knossos
 }
