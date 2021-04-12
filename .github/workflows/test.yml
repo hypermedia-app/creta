@@ -33,7 +33,7 @@ jobs:
         with:
           node-version: '14'
       - run: yarn
-      - run: yarn build
+      - run: yarn tsc --noEmit
 
   lint:
     runs-on: ubuntu-latest
