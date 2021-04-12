@@ -3,10 +3,12 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "init": "node -r ts-node/register ../../packages/knossos init --api https://conduit.knossos.lndo.site --endpoint http://minos:password@db.labyrinth.lndo.site/repositories/labyrinth --overwrite"
+    "resources": "knossos-dev init",
+    "bootstrap": "talos-dev put --vocabs --acl --resources --api https://conduit.knossos.lndo.site --endpoint http://minos:password@db.labyrinth.lndo.site/repositories/labyrinth"
   },
   "dependencies": {
     "@hydrofoil/knossos": "0.0.0",
+    "@hydrofoil/talos": "0.0.0",
     "@rdfjs/term-set": "^1.0.1",
     "@tpluscode/rdf-ns-builders": "^0.4",
     "@tpluscode/sparql-builder": "^0.3.11",

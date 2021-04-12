@@ -15,6 +15,7 @@
 </api/User>
   a </api/hydra/Class>, sh:NodeShape, rdfs:Class ;
   rdfs:subClassOf rdfs:Resource, </api/hydra/Resource> ;
+  hydra:apiDocumentation </api> ;
   hydra:supportedOperation
     [
       a schema:ReplaceAction ;

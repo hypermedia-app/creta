@@ -1,9 +1,8 @@
-#!/usr/bin/env node
 import Program from 'commander'
 import debug from 'debug'
 import importCwd from 'import-cwd'
 import { serve } from './server'
-import { bootstrap } from './lib/bootstrap'
+import { copyResources } from './lib/init'
 
 Program.command('serve <endpoint>')
   .option('-p, --port <port>', 'Port', value => parseInt(value), 8888)
@@ -46,28 +45,6 @@ Program.command('serve <endpoint>')
     }).catch(log.extend('error'))
   })
 
-Program.command('init [patterns...]')
-  .requiredOption('--endpoint <endpoint>')
-  .option('-u, --user <user>')
-  .option('--overwrite')
-  .option('-p, --password <password>')
-  .requiredOption('--api <api>')
-  .action((patterns, { api, endpoint, user, password, overwrite }) => {
-    const log = debug('knossos')
-    log.enabled = true
-
-    log(`Bootstrapping resources for api ${api}`)
-
-    return bootstrap({
-      log,
-      api,
-      patterns: patterns.length ? patterns : ['**/*.ttl'],
-      endpointUrl: endpoint,
-      updateUrl: endpoint,
-      user,
-      password,
-      overwrite,
-    }).then(() => log('Done!'))
-  })
+Program.command('init').action(copyResources)
 
 Program.parse(process.argv)

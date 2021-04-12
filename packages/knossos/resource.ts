@@ -15,7 +15,6 @@ import { knossos } from './lib/namespace'
 import { save } from './lib/resource'
 
 function canBeCreatedWithPut(api: clownface.AnyPointer, resource: clownface.GraphPointer, log: Debugger) {
-  log('canBeCreatedWithPut')
   const types = resource.out(rdf.type)
   const classes = api.has(hydra.supportedClass, types).out(hydra.supportedClass)
 
@@ -65,7 +64,6 @@ const ensureNotExists = asyncMiddleware(async (req, res, next) => {
   }
 
   if (!canBeCreatedWithPut(api, resource, req.knossos.log)) {
-    req.knossos.log('cannot')
     return next(new error.MethodNotAllowed())
   }
 

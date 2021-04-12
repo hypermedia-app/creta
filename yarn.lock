@@ -1252,6 +1252,24 @@
     rdf-transform-triple-to-quad "^1.0.2"
     readable-stream "^3.6.0"
 
+"@rdfjs/fetch-lite@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@rdfjs/fetch-lite/-/fetch-lite-2.1.0.tgz#36205713cdd72304b1eda91de1e7d147fad3a3f7"
+  integrity sha512-7P2+QBjSJ/oeN2CRySIrG0IHat7UDqf7KfpZ9IP/MhWN3AneTpuURlOVAKcP/tedsSdlf2ihnzO38C6uAd7ppQ==
+  dependencies:
+    isstream "^0.1.2"
+    nodeify-fetch "^2.2.1"
+    readable-stream "^3.3.0"
+
+"@rdfjs/fetch@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@rdfjs/fetch/-/fetch-2.1.0.tgz#d10b18b02cf2b7789bd950a721431e7944d4581b"
+  integrity sha512-1bhXqGfbQQKHrmuZOmUUQmCpDNQC25fksYoGXUvlQ80kWuk8r/PdcdUmzApCp7HSyHFUjmgH89Pkym/9WXyDkQ==
+  dependencies:
+    "@rdfjs/dataset" "^1.0.1"
+    "@rdfjs/fetch-lite" "^2.1.0"
+    "@rdfjs/formats-common" "^2.0.1"
+
 "@rdfjs/formats-common@^2.0.0", "@rdfjs/formats-common@^2.0.1", "@rdfjs/formats-common@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@rdfjs/formats-common/-/formats-common-2.1.0.tgz#5521684bb8757a49f0b057e2175a2a929e98ddd3"
@@ -1542,6 +1560,13 @@
   resolved "https://registry.yarnpkg.com/@types/fcostarodrigo__walk/-/fcostarodrigo__walk-5.0.0.tgz#22a03a491bbe7bb2403eb213b7683e941878b705"
   integrity sha512-4TKqehthSDoCdlLmqKI+e4mOicXaxMWnDd+ZvVI7DiAlCnX9roCVT7AlFzbMClivdvWPpPeHitjgvd3A58Ky/g==
 
+"@types/fs-extra@^9.0.10":
+  version "9.0.10"
+  resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-9.0.10.tgz#8023a72e3d06cf54929ea47ec7634e47f33f4046"
+  integrity sha512-O9T2LLkRDiTlalOBdjEkcnT0MRdT2+wglCl7pJUJ3mkWkR8hX4K+5bg2raQNJcLv4V8zGuTXe7Ud3wSqkTyuyQ==
+  dependencies:
+    "@types/node" "*"
+
 "@types/glob@^7.1.3":
   version "7.1.3"
   resolved "https://registry.yarnpkg.com/@types/glob/-/glob-7.1.3.tgz#e6ba80f36b7daad2c685acd9266382e68985c183"
@@ -1695,6 +1720,22 @@
     "@types/express" "*"
     "@types/rdf-js" "*"
     "@types/rdfjs__formats-common" "*"
+
+"@types/rdfjs__fetch-lite@*":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@types/rdfjs__fetch-lite/-/rdfjs__fetch-lite-2.0.2.tgz#d129b6fa8f5120db9d7fb72a6e8ac5f7f7457f02"
+  integrity sha512-rtLBHX9FidyLLKTJXBx5krJ+iBLuDS3R7Biqmpy02Nibc227vpErdDTJ4gn14jncsua2d2xckgz3G6ShP8foBw==
+  dependencies:
+    "@types/rdf-js" "*"
+    "@types/rdfjs__formats-common" "*"
+
+"@types/rdfjs__fetch@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@types/rdfjs__fetch/-/rdfjs__fetch-2.0.2.tgz#d04557d38cb232d4cc433f0c865aab77e0804e9c"
+  integrity sha512-HNjGH7ameGnPmu8xAlHXUxZ+EYHzRjNYyl30QxLbHXiQtMDEMGcgzIuFXVLTz5xgXQ7ZtZVZPK6HX/KcFttuNA==
+  dependencies:
+    "@types/rdf-js" "*"
+    "@types/rdfjs__fetch-lite" "*"
 
 "@types/rdfjs__formats-common@*", "@types/rdfjs__formats-common@^2.0.1":
   version "2.0.1"
@@ -2100,6 +2141,11 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
   integrity sha1-x57Zf380y48robyXkLzDZkdLS3k=
+
+at-least-node@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/at-least-node/-/at-least-node-1.0.0.tgz#602cd4b46e844ad4effc92a8011a3c46e0238dc2"
+  integrity sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==
 
 aws-sign2@~0.7.0:
   version "0.7.0"
@@ -2556,10 +2602,10 @@ commander@^5.0.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-5.1.0.tgz#46abbd1652f8e059bddaef99bbdcb2ad9cf179ae"
   integrity sha512-P0CysNDQ7rtVw4QIQtm+MRxV66vKFSvlsQvGYXZWR3qFU0jlMKHZZZgw8e+8DSah4UDKMqnknRDQz+xuQXQ/Zg==
 
-commander@^6.0.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-6.1.0.tgz#f8d722b78103141006b66f4c7ba1e97315ba75bc"
-  integrity sha512-wl7PNrYWd2y5mp1OK/LhTlv8Ff4kQJQRXXAvF+uU/TPNiVJUxZLRYGj/B0y/lPGAVcSbJqH2Za/cvHmrPMC8mA==
+commander@^6.0.0, commander@^6.1.0:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-6.2.1.tgz#0792eb682dfbc325999bb2b84fddddba110ac73c"
+  integrity sha512-U7VdrJFnJgo4xjrHpTzu0yrHPGImdsmD95ZlgYSEajAn2JKzDhDTPG9kBTefmObL2w/ngeZnilk+OV9CG3d7UA==
 
 commander@^7.1.0:
   version "7.1.0"
@@ -3854,6 +3900,16 @@ fs-extra@^8.1.0:
     jsonfile "^4.0.0"
     universalify "^0.1.0"
 
+fs-extra@^9.1.0:
+  version "9.1.0"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-9.1.0.tgz#5954460c764a8da2094ba3554bf839e6b9a7c86d"
+  integrity sha512-hcg3ZmepS30/7BSFqRvoo3DOMQu7IjqxO5nCDt+zM9XWjb33Wg7ziNT+Qvqbuc3+gWpzO02JubVyk2G4Zvo1OQ==
+  dependencies:
+    at-least-node "^1.0.0"
+    graceful-fs "^4.2.0"
+    jsonfile "^6.0.1"
+    universalify "^2.0.0"
+
 fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
@@ -4692,6 +4748,15 @@ jsonfile@^4.0.0:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
+jsonfile@^6.0.1:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/jsonfile/-/jsonfile-6.1.0.tgz#bc55b2634793c679ec6403094eb13698a6ec0aae"
+  integrity sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==
+  dependencies:
+    universalify "^2.0.0"
+  optionalDependencies:
+    graceful-fs "^4.1.6"
+
 jsonld@^1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/jsonld/-/jsonld-1.8.1.tgz#55ea541b22b8af5a5d6a5e32328e3f2678148882"
@@ -5382,7 +5447,7 @@ node-releases@^1.1.61:
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.61.tgz#707b0fca9ce4e11783612ba4a2fcba09047af16e"
   integrity sha512-DD5vebQLg8jLCOzwupn954fbIiZht05DAZs0k2u8NStSe6h9XdsuIQL8hSRKYiU8WUQRznmSDrKGbv3ObOmC7g==
 
-nodeify-fetch@^2.2.0:
+nodeify-fetch@^2.2.0, nodeify-fetch@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/nodeify-fetch/-/nodeify-fetch-2.2.1.tgz#5e3bc3c673b0c01cfaaef01672257fb23c8d6aa9"
   integrity sha512-NAvl/0QTipKEgf9Jo179TXJ02hQ3bM0BMcn6S5aBeL51MUX46GuQW430tHWERoMpC7YLk1oBXToMyX9yDxowqQ==
@@ -7295,6 +7360,11 @@ universalify@^0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-0.1.2.tgz#b646f69be3942dabcecc9d6639c80dc105efaa66"
   integrity sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==
+
+universalify@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/universalify/-/universalify-2.0.0.tgz#75a4984efedc4b08975c5aeb73f530d02df25717"
+  integrity sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==
 
 unpipe@1.0.0, unpipe@~1.0.0:
   version "1.0.0"

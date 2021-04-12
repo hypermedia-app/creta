@@ -26,5 +26,6 @@
     "apps",
     "types",
     "packages"
-  ]
+  ],
+  "exclude": ["packages/*/bin/*.ts"]
 }

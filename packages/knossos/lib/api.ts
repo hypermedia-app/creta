@@ -8,6 +8,10 @@ import { ApiFactory } from '@hydrofoil/labyrinth'
 import { CONSTRUCT } from '@tpluscode/sparql-builder'
 import { hydra } from '@tpluscode/rdf-ns-builders'
 import { Handler } from '@hydrofoil/knossos-events'
+import clownface, { GraphPointer } from 'clownface'
+import DatasetExt from 'rdf-ext/lib/Dataset'
+import express from 'express'
+import httpStatus from 'http-status'
 import { ResourceStore } from './store'
 
 interface ApiFromStore {
@@ -31,6 +35,11 @@ export const invalidate: Handler = ({ req }) => {
   req.hydra.api.initialized = false
 }
 
+export const DELETE: express.RequestHandler = (req, res) => {
+  req.hydra.api.initialized = false
+  res.send(httpStatus.NO_CONTENT)
+}
+
 const createApi: (arg: ApiFromStore) => ApiFactory = ({ path, store, log }) => async ({ sparql, codePath }) => {
   const client = new StreamClient(sparql)
 
@@ -48,16 +57,20 @@ const createApi: (arg: ApiFromStore) => ApiFactory = ({ path, store, log }) => a
 
       log?.('Initializing API %s', this.term.value)
 
+      let api: GraphPointer<NamedNode, DatasetExt>
+
       const apiExists = await store.exists(this.term)
       if (!apiExists) {
-        throw new Error(`ApiDocumentation <${this.term.value}> resource not found`)
+        api = clownface({ dataset: $rdf.dataset(), term: this.term })
+      } else {
+        api = await store.load(this.term)
       }
-
-      const api = await store.load(this.term)
 
       const resources = await CONSTRUCT`?s ?p ?o . ?c ?cp ?co. ${this.term} ${hydra.supportedClass} ?c`
         .WHERE`
-          ?c a ${hydra.Class} ; ?cp ?co .
+          ?c a ${hydra.Class} ;
+             ${hydra.apiDocumentation} ${this.term} ; 
+             ?cp ?co .
           ?c (<>|!<>)+ ?s .
           ?s ?p ?o .
         `.execute(client.query)
