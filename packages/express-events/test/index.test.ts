@@ -157,6 +157,38 @@ describe('@hydrofoil/express-events', () => {
           immediateCalled: 1,
         })
       })
+
+      it('does not prevent multiple handlers, some of which are not immediate', async () => {
+        // given
+        const otherHandler = sinon.spy()
+        const loadHandlers = sinon.stub(lib, 'loadHandlers')
+        loadHandlers.resolves([{
+          handler: blankNode().addOut(ns.immediate, true),
+          impl: sinon.spy(),
+        }, {
+          handler: blankNode(),
+          impl: otherHandler,
+        }])
+
+        app.use('/my/app', Router().get('*', async (req, res) => {
+          res.event({
+            types: [as.Create],
+          })
+
+          res.event.handleImmediate()
+          await res.event.handleImmediate()
+
+          res.end()
+        }))
+
+        // when
+        await request(app)
+          .get('/my/app/foo')
+          .set('host', 'example.com')
+
+        // then
+        expect(otherHandler).to.have.been.called
+      })
     })
   })
 })
