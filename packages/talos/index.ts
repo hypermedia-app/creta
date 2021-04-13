@@ -4,19 +4,17 @@ import debug from 'debug'
 import fetch from 'node-fetch'
 import { bootstrap } from './lib/bootstrap'
 import { insertVocabs } from './lib/insertVocabs'
-import { insertSystemAcl } from './lib/systemAcl'
 
 Program.command('put')
   .requiredOption('--api <api>')
   .requiredOption('--endpoint <endpoint>')
   .option('--vocabs', 'Insert required vocabularies to store')
-  .option('--acl', 'Insert system account ACL')
   .option('--resources', 'Insert resources')
   .option('--token <token>', 'System authentication token')
   .option('-u, --user <user>')
   .option('-p, --password <password>')
   .option('-d, --dir <dir>', 'Directory with resource to bootstrap', './resources')
-  .action(async ({ api, endpoint, user, password, dir, vocabs, acl, resources, token }) => {
+  .action(async ({ api, endpoint, user, password, dir, vocabs, resources, token }) => {
     const log = debug('talos')
     log.enabled = true
 
@@ -30,17 +28,6 @@ Program.command('put')
         user,
         password,
       }).then(() => log('Inserted vocabularies'))
-    }
-
-    if (acl) {
-      inserted = true
-      await insertSystemAcl({
-        api,
-        endpointUrl: endpoint,
-        updateUrl: endpoint,
-        user,
-        password,
-      }).then(() => log('Inserted system account acl:Authorization'))
     }
 
     if (resources) {
