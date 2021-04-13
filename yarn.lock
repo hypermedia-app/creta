@@ -1252,24 +1252,6 @@
     rdf-transform-triple-to-quad "^1.0.2"
     readable-stream "^3.6.0"
 
-"@rdfjs/fetch-lite@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@rdfjs/fetch-lite/-/fetch-lite-2.1.0.tgz#36205713cdd72304b1eda91de1e7d147fad3a3f7"
-  integrity sha512-7P2+QBjSJ/oeN2CRySIrG0IHat7UDqf7KfpZ9IP/MhWN3AneTpuURlOVAKcP/tedsSdlf2ihnzO38C6uAd7ppQ==
-  dependencies:
-    isstream "^0.1.2"
-    nodeify-fetch "^2.2.1"
-    readable-stream "^3.3.0"
-
-"@rdfjs/fetch@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@rdfjs/fetch/-/fetch-2.1.0.tgz#d10b18b02cf2b7789bd950a721431e7944d4581b"
-  integrity sha512-1bhXqGfbQQKHrmuZOmUUQmCpDNQC25fksYoGXUvlQ80kWuk8r/PdcdUmzApCp7HSyHFUjmgH89Pkym/9WXyDkQ==
-  dependencies:
-    "@rdfjs/dataset" "^1.0.1"
-    "@rdfjs/fetch-lite" "^2.1.0"
-    "@rdfjs/formats-common" "^2.0.1"
-
 "@rdfjs/formats-common@^2.0.0", "@rdfjs/formats-common@^2.0.1", "@rdfjs/formats-common@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@rdfjs/formats-common/-/formats-common-2.1.0.tgz#5521684bb8757a49f0b057e2175a2a929e98ddd3"
@@ -1620,9 +1602,9 @@
   integrity sha512-Jus9s4CDbqwocc5pOAnh8ShfrnMcPHuJYzVcSUU7lrh8Ni5HuIqX3oilL86p3dlTrk0LzHRCgA/GQ7uNCw6l2Q==
 
 "@types/minimatch@*":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
-  integrity sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA==
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.4.tgz#f0ec25dbf2f0e4b18647313ac031134ca5b24b21"
+  integrity sha512-1z8k4wzFnNjVK/tlxvrWuK5WMt6mydWWP7+zvH5eFep4oj+UkrfiJTRtjCeBXNpwaA/FYqqtb4/QS4ianFpIRA==
 
 "@types/mocha@*", "@types/mocha@^8.0.3":
   version "8.0.3"
@@ -1645,9 +1627,9 @@
     form-data "^3.0.0"
 
 "@types/node@*":
-  version "14.6.4"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.6.4.tgz#a145cc0bb14ef9c4777361b7bbafa5cf8e3acb5a"
-  integrity sha512-Wk7nG1JSaMfMpoMJDKUsWYugliB2Vy55pdjLpmLixeyMi7HizW2I/9QoxsPCkXl3dO+ZOVqPumKaDUv5zJu2uQ==
+  version "14.14.37"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.37.tgz#a3dd8da4eb84a996c36e331df98d82abd76b516e"
+  integrity sha512-XYmBiy+ohOR4Lh5jE379fV2IU+6Jn4g5qASinhitfyO71b/sCo6MKsMLF5tc7Zf2CE8hViVQyYSobJNke8OvUw==
 
 "@types/node@^12.7.1":
   version "12.12.58"
@@ -1721,23 +1703,7 @@
     "@types/rdf-js" "*"
     "@types/rdfjs__formats-common" "*"
 
-"@types/rdfjs__fetch-lite@*":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@types/rdfjs__fetch-lite/-/rdfjs__fetch-lite-2.0.2.tgz#d129b6fa8f5120db9d7fb72a6e8ac5f7f7457f02"
-  integrity sha512-rtLBHX9FidyLLKTJXBx5krJ+iBLuDS3R7Biqmpy02Nibc227vpErdDTJ4gn14jncsua2d2xckgz3G6ShP8foBw==
-  dependencies:
-    "@types/rdf-js" "*"
-    "@types/rdfjs__formats-common" "*"
-
-"@types/rdfjs__fetch@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@types/rdfjs__fetch/-/rdfjs__fetch-2.0.2.tgz#d04557d38cb232d4cc433f0c865aab77e0804e9c"
-  integrity sha512-HNjGH7ameGnPmu8xAlHXUxZ+EYHzRjNYyl30QxLbHXiQtMDEMGcgzIuFXVLTz5xgXQ7ZtZVZPK6HX/KcFttuNA==
-  dependencies:
-    "@types/rdf-js" "*"
-    "@types/rdfjs__fetch-lite" "*"
-
-"@types/rdfjs__formats-common@*", "@types/rdfjs__formats-common@^2.0.1":
+"@types/rdfjs__formats-common@*":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@types/rdfjs__formats-common/-/rdfjs__formats-common-2.0.1.tgz#7d3226a6c2a3440f9f040e4bee502d7525b9a0b4"
   integrity sha512-Gnh6t8dmdbchz1Ka7PiRIpTm61LU+RJfk5Ketog4K8cUFj5HE+Wmu6PuOvArp00QpQuLsD1PWth/+Ht9tGu2Zw==
@@ -5447,7 +5413,7 @@ node-releases@^1.1.61:
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.61.tgz#707b0fca9ce4e11783612ba4a2fcba09047af16e"
   integrity sha512-DD5vebQLg8jLCOzwupn954fbIiZht05DAZs0k2u8NStSe6h9XdsuIQL8hSRKYiU8WUQRznmSDrKGbv3ObOmC7g==
 
-nodeify-fetch@^2.2.0, nodeify-fetch@^2.2.1:
+nodeify-fetch@^2.2.0:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/nodeify-fetch/-/nodeify-fetch-2.2.1.tgz#5e3bc3c673b0c01cfaaef01672257fb23c8d6aa9"
   integrity sha512-NAvl/0QTipKEgf9Jo179TXJ02hQ3bM0BMcn6S5aBeL51MUX46GuQW430tHWERoMpC7YLk1oBXToMyX9yDxowqQ==
