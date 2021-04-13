@@ -1,4 +1,2 @@
-* Getting started
-  * [Intro](crete.md "@hydrofoil/crete | Intro")
-  * [Packages](packages.md "@hydrofoil/crete | Packages")
+* [Getting started](getting-started.md "Creta | Getting started")
 * Knossos
