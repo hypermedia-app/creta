@@ -8,6 +8,7 @@ import asyncMiddleware from 'middleware-async'
 import { DESCRIBE } from '@tpluscode/sparql-builder'
 import { vcard } from '@tpluscode/rdf-ns-builders'
 import type { StreamClient } from 'sparql-http-client/StreamClient'
+import { Authentication } from '@hydrofoil/knossos/server'
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -58,7 +59,7 @@ const createJwtHandler = (jwksUri: string, client: StreamClient) => {
   return Router().use(authorize).use(asyncMiddleware(setUser(client)))
 }
 
-export default async function authentication({ client }: { client: StreamClient }): Promise<express.RequestHandler> {
+const authentication: Authentication = async ({ client }: { client: StreamClient }): Promise<express.RequestHandler> => {
   if (process.env.AUTH_JWKS_URI) {
     return createJwtHandler(process.env.AUTH_JWKS_URI, client)
   }
@@ -72,3 +73,5 @@ export default async function authentication({ client }: { client: StreamClient 
 
   throw new Error('Failed to initialize authentication middleware')
 }
+
+export default authentication

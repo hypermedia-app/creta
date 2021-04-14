@@ -26,6 +26,10 @@ declare module 'express-serve-static-core' {
 
 const app = express()
 
+export interface Authentication {
+  (arg: { client: StreamClient }): express.RequestHandler | Promise<express.RequestHandler>
+}
+
 interface Options {
   name: string
   log: Debugger
@@ -38,7 +42,7 @@ interface Options {
   user?: string
   password?: string
   middleware?: {
-    authentication?(arg: { client: StreamClient }): express.RequestHandler | Promise<express.RequestHandler>
+    authentication?: Authentication
   }
 }
 

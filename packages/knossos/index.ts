@@ -7,12 +7,13 @@ import { copyResources } from './lib/init'
 Program.command('serve <endpoint>')
   .option('-p, --port <port>', 'Port', value => parseInt(value), 8888)
   .option('--api <api>', 'Api Documentation path', '/api')
+  .option('--base')
   .option('--codePath <codePath>', 'Code path for hydra-box', '.')
   .option('--updateUrl <updateUrl>', 'SPARQL Update Endpoint URL')
   .option('-n, --name <name>', 'App name', 'knossos')
   .option('--user <user>', 'SPARQL username')
   .option('--password <password>', 'SPARQL password')
-  .option('--authModule <authModule>', 'Authentication module', 'Must default-export an express handler factory. Can be lazy.')
+  .option('--authModule <authModule>', 'Authentication module. Must default-export an express handler factory. Can be lazy.')
   .action(async (endpointUrl, options) => {
     const {
       name,

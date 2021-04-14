@@ -1,2 +1,4 @@
-* [Getting started](getting-started.md "Creta | Getting started")
-* Knossos
+* [Getting started](getting-started.md "Getting started | Creta")
+* [Knossos](knossos/cli.md "Knossos | Creta")
+  * [Security](knossos/auth.md "Security | Knossos | Creta")
+  * [Resource URLs](knossos/resource-url.md "Resource URLs | Knossos | Creta")

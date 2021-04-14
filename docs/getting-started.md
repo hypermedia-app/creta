@@ -26,12 +26,35 @@ The directory tree directly translates to resource identifiers so that any path 
 
 ## Initializing an API
 
-With resources ready in the repository, it's time to write them into the store. For that, run
+With resources ready in the repository, it's time to write them into the store. For that, run the command below.
 
-```
-yarn talos put --vocabs --acl --resources \
+```bash
+yarn talos put --vocabs --resources \
   --api https://example.com \
   --endpoint http://database.app/sparql \
   --user admin
   --password password
 ```
+
+The `--vocabs --resources` flags instruct `talos` to write into the database the required vocabularies (useful for inferencing) and all the resources created in the previous step.
+
+The rest are SPARQL endpoint details, and the API's base URL.
+
+## Running the application
+
+To simply run, no additional code is strictly required. All it takes is running knossos pointed at the database SPARQL endpoint.
+
+```bash
+yarn knossos serve http://database.app/sparql \
+  --user minos \
+  --password password \
+  --name conduit
+```
+
+The `--name` flag is informational. Notably, becomes a prefix for all logged messages.
+
+> [!NOTE]
+> Running like this does not include any authentication layer, which means it has to be provided on a per-app basis. Read more in the [knossos/Security](knossos/auth.md) page
+
+> [!TIP]
+> Note that the command does not require any base URL parameter for the actual API's resources. It will be automatically derived from the request context, such as proxy headers, while the actual express process does not need that information up-front and simply serves HTTP on localhost. More on [knossos/Resource URLs](./knossos/resource-url.md)
