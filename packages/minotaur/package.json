@@ -7,5 +7,12 @@
   "dependencies": {
     "@fcostarodrigo/walk": "^5.0.0",
     "hydra-box": "^0.6"
+  },
+  "devDependencies": {
+    "@rdfjs/namespace": "^1.1.0",
+    "@tpluscode/rdf-ns-builders": "^0.4.2",
+    "chai": "^4.3.4",
+    "clownface": "^1.2.0",
+    "mocha": "^8.3.2"
   }
 }

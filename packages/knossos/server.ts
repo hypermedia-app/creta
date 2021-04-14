@@ -90,8 +90,8 @@ export async function serve({ log, endpointUrl, updateUrl, port, name, codePath,
   app.use(await hydraBox({
     codePath,
     sparql,
+    path,
     loadApi: createApi({
-      path,
       store,
       log,
     }),

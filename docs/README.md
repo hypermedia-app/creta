@@ -13,9 +13,15 @@ Creta is a set of projects which aim to make it very simple to build low-code, [
 [dc]: https://tdan.com/the-data-centric-revolution-data-centric-vs-data-driven/20288
 [hydra]: http://www.hydra-cg.com/spec/latest/core/
 
-The project consists of multiple components, which can be combined according to specific needs:
+## Why
+
+APIs built with Creta (Knossos), are different from any other because they really follow the Hypermedia constraint of REST by providing all information to the clients at runtime.
+
+The data-centric approach means that every aspect of the API's behaviour is controlled directly using... the API itself. Create data models? Add access control to allow clients to make requests? Create new resources? All of those actions can be done with little more than `curl`.
 
 ## Core packages
+
+The project consists of multiple components, which can be combined according to specific needs:
 
 ### @hydrofoil/labyrinth
 

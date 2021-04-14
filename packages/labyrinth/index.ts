@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @hydrofoil/labyrinth
+ */
+
 import { HydraBox, middleware, ResourceLoader } from 'hydra-box'
 import { HydraBoxMiddleware } from 'hydra-box/middleware'
 import cors from 'cors'
@@ -35,6 +40,7 @@ type MiddlewareParams = {
   loadApi: ApiFactory
   codePath: string
   loader?: ResourceLoader
+  path: string
   sparql: ConstructorParameters<typeof StreamClient>[0] & {
     endpointUrl: string
   }
@@ -46,8 +52,14 @@ type MiddlewareParams = {
   }
 }
 
+type ApiFactoryOptions = Omit<MiddlewareParams, 'loadApi'>
+
+/**
+ * Callable interface which gets called on application start to initialize the instance
+ * of `hydra:ApiDocumentation`
+ */
 export interface ApiFactory {
-  (params: Omit<MiddlewareParams, 'loadApi'>): Promise<Api>
+  (params: ApiFactoryOptions): Promise<Api>
 }
 
 export async function hydraBox(middlewareInit: MiddlewareParams): Promise<Router> {

@@ -15,7 +15,6 @@ import httpStatus from 'http-status'
 import { ResourceStore } from './store'
 
 interface ApiFromStore {
-  path: string
   store: ResourceStore
   log?: Debugger
 }
@@ -40,7 +39,7 @@ export const DELETE: express.RequestHandler = (req, res) => {
   res.send(httpStatus.NO_CONTENT)
 }
 
-const createApi: (arg: ApiFromStore) => ApiFactory = ({ path, store, log }) => async ({ sparql, codePath }) => {
+const createApi: (arg: ApiFromStore) => ApiFactory = ({ store, log }) => async ({ path = '/api', sparql, codePath }) => {
   const client = new StreamClient(sparql)
 
   return new (class extends ApiBase implements Api {

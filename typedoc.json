@@ -1,7 +1,9 @@
 {
   "name": "Creta",
   "entryPoints": [
-    "packages/knossos/server.ts"
+    "packages/knossos/server.ts",
+    "packages/labyrinth/index.ts",
+    "packages/minotaur/index.ts"
   ],
   "out": "docs/api"
 }

@@ -17,6 +17,7 @@ describe('labyrinth', () => {
     // given
     const app = express()
     app.use(await hydraBox({
+      path: '/api',
       loadApi: apiFactory(),
       codePath,
       loader: loader(),
@@ -39,6 +40,7 @@ describe('labyrinth', () => {
     // given
     const app = express()
     app.use(await hydraBox({
+      path: '/api',
       loadApi: apiFactory(),
       codePath,
       loader: loader({
@@ -71,6 +73,7 @@ describe('labyrinth', () => {
     // given
     const app = express()
     app.use(await hydraBox({
+      path: '/api',
       loadApi: apiFactory(),
       codePath,
       loader: loader({
@@ -103,6 +106,7 @@ describe('labyrinth', () => {
     // given
     const app = express()
     app.use(await hydraBox({
+      path: '/api',
       loadApi: apiFactory<RequestHandler>({
         code: (req, res) => res.send(req.labyrinth),
       }),
@@ -140,6 +144,7 @@ describe('labyrinth', () => {
     // given
     const app = express()
     app.use(await hydraBox({
+      path: '/api',
       loadApi: apiFactory<RequestHandler>({
         code: (req, res) => res.send(req.labyrinth),
       }),
@@ -182,6 +187,7 @@ describe('labyrinth', () => {
     // given
     const app = express()
     app.use(await hydraBox({
+      path: '/api',
       loadApi: apiFactory(),
       codePath,
       loader: loader(),
@@ -209,6 +215,7 @@ describe('labyrinth', () => {
     // given
     const app = express()
     app.use(await hydraBox({
+      path: '/api',
       loadApi: apiFactory(),
       codePath,
       loader: loader(),
@@ -239,6 +246,7 @@ describe('labyrinth', () => {
     // given
     const app = express()
     app.use(await hydraBox({
+      path: '/api',
       loadApi: apiFactory(),
       codePath,
       loader: loader(),

@@ -1,16 +1,37 @@
+/**
+ * @packageDocumentation
+ * @module @hydrofoil/minotaur
+ */
+
 import Api, { ApiInit } from 'hydra-box/Api'
 import walk from '@fcostarodrigo/walk'
+import type { ApiFactory } from '@hydrofoil/labyrinth'
 import { log } from '../labyrinth/lib/logger'
 
-interface ApiFromFilesystem {
-  baseUri: string
-  codePath: string
-  defaultBase?: string
+export interface ApiFromFilesystem {
+  baseUri?: {
+    /**
+     * The base URI used in the parsed sources
+     */
+    default: string
+    /**
+     * The base URI to replace the one parsed. Useful when deploying an API into multiple environments
+     */
+    replaced: string
+  }
+  /**
+   * Directory from which to load the API Documentation RDF sources
+   */
   apiPath: string
-  path?: string
 }
 
-export async function fromFilesystem({ apiPath, baseUri, codePath, defaultBase = 'urn:hydra-box:api', path = '/api' }: ApiFromFilesystem): Promise<Api> {
+/**
+ * Creates a {@link ApiFactory} function which will recursively load turtle files from {@link apiPath}
+ *
+ * @param apiPath
+ * @param baseUri
+ */
+export const fromFilesystem = ({ apiPath, baseUri }: ApiFromFilesystem): ApiFactory => async ({ path, codePath }): Promise<Api> => {
   const options: ApiInit = {
     path,
     codePath,
@@ -34,6 +55,8 @@ export async function fromFilesystem({ apiPath, baseUri, codePath, defaultBase =
     throw new Error('No API files found')
   }
 
-  api.rebase(defaultBase, baseUri)
+  if (baseUri) {
+    api.rebase(baseUri.default, baseUri.replaced)
+  }
   return api
 }
