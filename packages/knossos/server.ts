@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @hydrofoil/knossos/server
+ */
+
 import express from 'express'
 import { hydraBox } from '@hydrofoil/labyrinth'
 import StreamClient from 'sparql-http-client/StreamClient'

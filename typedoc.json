@@ -1,0 +1,7 @@
+{
+  "name": "Creta",
+  "entryPoints": [
+    "packages/knossos/server.ts"
+  ],
+  "out": "docs/api"
+}
