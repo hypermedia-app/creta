@@ -4,69 +4,67 @@ import { expect } from 'chai'
 import { as } from '@tpluscode/rdf-ns-builders'
 import { created, updated, deleted } from '../activity'
 
-describe('@hydrofoil/express-events', () => {
-  describe('activity', () => {
-    describe('created', () => {
-      it('returns resource of correct type', () => {
-        // when
-        const activity = created(namedNode('created'))
+describe('@hydrofoil/express-events/activity', () => {
+  describe('created', () => {
+    it('returns resource of correct type', () => {
+      // when
+      const activity = created(namedNode('created'))
 
-        // then
-        expect(activity.types).to.deep.contain.members([as.Create])
-      })
-
-      it('does not allow overriding object', () => {
-        // given
-        const object = namedNode('created')
-
-        // when
-        const activity = created(object, { object: namedNode('foo') })
-
-        // then
-        expect(activity.object).to.eq(object)
-      })
+      // then
+      expect(activity.types).to.deep.contain.members([as.Create])
     })
 
-    describe('updated', () => {
-      it('returns resource of correct type', () => {
-        // when
-        const activity = updated(namedNode('updated'))
+    it('does not allow overriding object', () => {
+      // given
+      const object = namedNode('created')
 
-        // then
-        expect(activity.types).to.deep.contain.members([as.Update])
-      })
+      // when
+      const activity = created(object, { object: namedNode('foo') })
 
-      it('does not allow overriding object', () => {
-        // given
-        const object = namedNode('created')
+      // then
+      expect(activity.object).to.eq(object)
+    })
+  })
 
-        // when
-        const activity = updated(object, { object: namedNode('foo') })
+  describe('updated', () => {
+    it('returns resource of correct type', () => {
+      // when
+      const activity = updated(namedNode('updated'))
 
-        // then
-        expect(activity.object).to.eq(object)
-      })
+      // then
+      expect(activity.types).to.deep.contain.members([as.Update])
     })
 
-    describe('deleted', () => {
-      it('returns resource of correct type', () => {
-        // when
-        const activity = deleted(namedNode('deleted'))
+    it('does not allow overriding object', () => {
+      // given
+      const object = namedNode('created')
 
-        // then
-        expect(activity.types).to.deep.contain.members([as.Delete])
-      })
+      // when
+      const activity = updated(object, { object: namedNode('foo') })
 
-      it('does not allow overriding object', () => {
-        // given
-        const object = namedNode('created')
+      // then
+      expect(activity.object).to.eq(object)
+    })
+  })
 
-        // when
-        const activity = deleted(object, { object: namedNode('foo') })
+  describe('deleted', () => {
+    it('returns resource of correct type', () => {
+      // when
+      const activity = deleted(namedNode('deleted'))
 
-        // then
-        expect(activity.object).to.eq(object)
-      })
+      // then
+      expect(activity.types).to.deep.contain.members([as.Delete])
+    })
+
+    it('does not allow overriding object', () => {
+      // given
+      const object = namedNode('created')
+
+      // when
+      const activity = deleted(object, { object: namedNode('foo') })
+
+      // then
+      expect(activity.object).to.eq(object)
     })
   })
 })

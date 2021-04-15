@@ -8,7 +8,7 @@ import { as } from '@tpluscode/rdf-ns-builders'
 import { knossosMock } from '@labyrinth/testing/knossos'
 import { blankNode } from '@labyrinth/testing/nodeFactory'
 import { knossosEvents, ns } from '../index'
-import * as lib from '../lib'
+import * as lib from '../lib/loadHandlers'
 
 describe('@hydrofoil/express-events', () => {
   let app: Express

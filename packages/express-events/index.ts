@@ -6,7 +6,9 @@ import $rdf from 'rdf-ext'
 import { nanoid } from 'nanoid'
 import namespace from '@rdfjs/namespace'
 import { attach } from 'rdf-express-node-factory'
-import { loadHandlers, isNamedNode, runHandler } from './lib'
+import { isNamedNode } from './lib'
+import { loadHandlers } from './lib/loadHandlers'
+import { runHandler } from './lib/runHandler'
 
 export const ns = namespace('https://hypermedia.app/events#')
 
@@ -75,8 +77,7 @@ export const knossosEvents = ({ path = '_activity' }: KnossosEvents = {}): expre
               return
             }
 
-            entry.handled = true
-            return runHandler(entry.handler, entry.impl, item.activity, req)
+            return runHandler(entry, item.activity, req)
           })
 
           return Promise.all(immediatePromises)
@@ -93,12 +94,8 @@ export const knossosEvents = ({ path = '_activity' }: KnossosEvents = {}): expre
     req.knossos.log('Running remaining event handlers')
     for (const { activity, handlers } of pendingEvents) {
       handlers.then((arr) => {
-        for (const { handler, impl, handled } of arr) {
-          if (handled) {
-            continue
-          }
-
-          runHandler(handler, impl, activity, req).catch(req.knossos.log.extend('event'))
+        for (const entry of arr) {
+          runHandler(entry, activity, req).catch(req.knossos.log.extend('event'))
         }
       }).catch(req.knossos.log.extend('event'))
     }
