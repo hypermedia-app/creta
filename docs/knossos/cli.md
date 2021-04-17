@@ -1,5 +1,7 @@
 # @hydrofoil/knossos
 
+Knossos is mainly meant to be used as a command-line tools which prepares and serves data-centric Hydra APIs.
+
 ### `knossos init`
 
 Does not take any parameters at the moment.

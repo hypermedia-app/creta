@@ -50,3 +50,31 @@ To authorize requests, `knossos` uses [Web Access Control](https://www.w3.org/wi
 During request, the `req.agent`, if given, is combined with the identifier and RDF types of the requested resource to query the database for instances of `acl:Authorization`, which grant access.
 
 If there is no authenticated agent, `knossos` will query for authorization resources with `[] acl:agentClass foaf:Agent`, which is the Web Access Control way for granting anonymous access.
+
+## System account
+
+Administrative access to the API is also possible using a system account. Having ran the `knossos init` command, a default ACL resource is generated, which grants the system account full control of all instances of `rdfs:Resource`:
+
+```turtle
+</api/authorization/system-controls-all>
+   a acl:Authorization ;
+   acl:agentClass knossos:SystemAccount ;
+   acl:accessToClass rdfs:Resource ;
+   acl:mode acl:Control ;
+.
+```
+
+> [!TIP]
+> The system account can be effectively disabled or fine-tuned by removing or modifying this ACL resource.
+
+To authenticate as the system account, set the `Authorization` header as shown below.
+
+```
+Authorization: System token
+```
+
+The value of `token` is randomly generated when the application starts. Find in the application log output, in a message similar to:
+
+```
+System account authentication token: XApbsLsYRYeSS4ZU9QBEl
+```
