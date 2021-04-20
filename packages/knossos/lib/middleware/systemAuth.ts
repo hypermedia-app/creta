@@ -10,13 +10,12 @@ import { knossos } from '../namespace'
 interface SystemAuth {
   log: Debugger
   name: string
+  systemAuthKey?: string
 }
 
 const systemAuthPattern = /^System (.+)$/
 
-export const systemAuth = ({ log, name }: SystemAuth): express.RequestHandler => {
-  const systemAuthKey = nanoid()
-
+export const systemAuth = ({ log, name, systemAuthKey = nanoid() }: SystemAuth): express.RequestHandler => {
   log('System account authentication token: %s', systemAuthKey)
 
   return (req, res, next) => {

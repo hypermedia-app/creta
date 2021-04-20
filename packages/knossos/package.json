@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "@labyrinth/testing": "^0.0.0",
+    "@tpluscode/rdfine": "^0.5.25",
     "@types/camouflage-rewrite": "^1.2.0",
     "@types/fs-extra": "^9.0.10",
     "@types/nanoid": "^2.1.0",
