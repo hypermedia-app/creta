@@ -114,6 +114,8 @@ graph <api/auth/anyone-read-articles> {
 > [!TIP]
 > As seen above, by default, every resource is stored in its own named graph, using its own identifier as the graph's name. At the time of writing it is the only resource persistence pattern supported by knossos.
 
+## Creating resources
+
 ## Validation
 
 Knossos uses SHACL via [express-middleware-shacl](https://npm.im/express-middleware-shacl) to validate resources when handling requests with RDF bodies.

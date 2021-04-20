@@ -77,7 +77,7 @@ const checkPermissions = (client: StreamClient) => asyncMiddleware(async (req, r
   const types = (await req.resource()).out(rdf.type).terms
   const error = await check({
     types,
-    accessMode: acl.Control,
+    accessMode: acl.Create,
     client,
     agent: req.agent,
   })
