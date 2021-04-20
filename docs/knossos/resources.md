@@ -41,6 +41,7 @@ graph <> {
 graph <api/Article> {
   <api/Article> a hydra:Class, rdfs:Class, sh:NodeShape ;
     rdfs:subClassOf schema:Article ;
+    knossos:createWithPUT true ;
     sh:property [
       sh:name "Title" ;
       sh:path schema:name ;
@@ -113,6 +114,37 @@ graph <api/auth/anyone-read-articles> {
 
 > [!TIP]
 > As seen above, by default, every resource is stored in its own named graph, using its own identifier as the graph's name. At the time of writing it is the only resource persistence pattern supported by knossos.
+
+## Creating resources
+
+New resources are created with a `PUT` HTTP request with an RDF body. The request target is assumed to be the base URI for the parser and thus an empty named node can be used to refer to the creates resource.
+
+```http request
+PUT /article/intro-to-rdf HTTP/2
+Authorization: Bearer token
+Content-Type: text/turtle
+
+prefix schema: <http://schema.org/>
+
+<> a </api/Article> ;
+  schema:name "Introduction to RDF" ;
+  schema:articleBody " ... " ;
+.
+```
+
+For such a request to succeed, a number of conditions must be met:
+
+- there needs to exist a `sh:NodeShape` describing the class `</api/Article>` (see [Validation](#validation) section below)
+- at least on type of the created resource needs to be annotated with `knossos:createWithPUT true`
+- none of the types can have `knossos:createWithPUT false`
+- an `acl:Authorization` needs to exist, granting `acl:Control` or `acl:Create` mode to any of the resource types
+
+> [!NOTE]
+> This assumes that the resource does not already exist. Same resource would be used to [update](#updating-resources), but would require slightly different setup
+
+The exact same method would be used to create any kind of resource, be it "user resources", such as the article above, as well as instances of classes, `acl:Authorization`, etc. This way, a uniform interface is used to control all aspects of an API.
+
+## Updating resources
 
 ## Validation
 

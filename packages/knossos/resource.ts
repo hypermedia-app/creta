@@ -5,11 +5,11 @@ import { Debugger } from 'debug'
 import { created, updated } from '@hydrofoil/knossos-events/activity'
 import { as, acl, hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { StreamClient } from 'sparql-http-client/StreamClient'
-import error from 'http-errors'
 import httpStatus from 'http-status'
 import { Router } from 'express'
 import { check } from 'rdf-web-access-control'
 import httpError from 'http-errors'
+import { attach } from 'express-rdf-request'
 import { shaclValidate } from './shacl'
 import { knossos } from './lib/namespace'
 import { save } from './lib/resource'
@@ -54,17 +54,19 @@ const saveResource = ({ create }: { create: boolean }) => asyncMiddleware(async 
 })
 
 const ensureNotExists = asyncMiddleware(async (req, res, next) => {
+  await attach(req, res)
+
   const api = clownface(req.hydra.api)
   const resource = await req.resource()
   const exists = await req.knossos.store.exists(resource.term)
 
   if (exists) {
-    req.knossos.log('exists')
-    return next(new error.Conflict())
+    req.knossos.log('Resource <%s> already exists', resource.term)
+    return next(new httpError.Conflict())
   }
 
   if (!canBeCreatedWithPut(api, resource, req.knossos.log)) {
-    return next(new error.MethodNotAllowed())
+    return next(new httpError.MethodNotAllowed())
   }
 
   req.knossos.log('Ok')
@@ -75,14 +77,14 @@ const checkPermissions = (client: StreamClient) => asyncMiddleware(async (req, r
   req.knossos.log('Checking type restrictions')
 
   const types = (await req.resource()).out(rdf.type).terms
-  const error = await check({
+  const accessGranted = await check({
     types,
-    accessMode: acl.Control,
+    accessMode: acl.Create,
     client,
     agent: req.agent,
   })
 
-  if (!error) {
+  if (!accessGranted) {
     return next(new httpError.Forbidden())
   }
 
