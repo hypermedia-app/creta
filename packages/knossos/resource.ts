@@ -10,7 +10,7 @@ import httpStatus from 'http-status'
 import { Router } from 'express'
 import { check } from 'rdf-web-access-control'
 import httpError from 'http-errors'
-import { shaclValidate } from './lib/middleware/shacl'
+import { shaclValidate } from './shacl'
 import { knossos } from './lib/namespace'
 import { save } from './lib/resource'
 

@@ -113,3 +113,62 @@ graph <api/auth/anyone-read-articles> {
 
 > [!TIP]
 > As seen above, by default, every resource is stored in its own named graph, using its own identifier as the graph's name. At the time of writing it is the only resource persistence pattern supported by knossos.
+
+## Validation
+
+Knossos uses SHACL via [express-middleware-shacl](https://npm.im/express-middleware-shacl) to validate resources when handling requests with RDF bodies.
+
+To validate a resource, knossos will load from the store all Node Shapes, which target the exact resource or its types. Shown below is a request to update a resource, its current state, and the shapes which would be loaded from the store.
+
+### Example update request
+
+```http request
+PUT /user/john
+Content-Type: text/turtle
+
+<> a </api/Person> ; schema:name "John Doe" .
+```
+
+### Loaded shapes
+
+Currently, knossos loads shapes using implicit class target, explicit class target, and node target.
+
+```turtle
+@prefix schema: <http://schema.org/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+# implicitly targeted shape
+</api/Person>
+  a rdf:Class, sh:NodeShape ;
+  rdfs:subClassOf schema:Person ;
+.
+
+# explicitly targeted shape
+</shape/schema:Person>
+  a sh:NodeShape ;
+  sh:targetClass schema:Person ;
+.
+
+# node target
+</shape/user/john>
+  a sh:NodeShape ;
+  sh:targetNode </user/john> ;
+.
+```
+
+### Using the module
+
+To protect custom resource handlers, precede your middleware with the shacl module.
+
+```typescript
+import { Router } from 'express'
+import { shaclValidate } from '@hydrofoil/knossos/shacl'
+
+export const middleware = Router()
+    .use(shaclValidate)
+    .use((req, res) => {
+        res.send('Request valid')
+    })
+```

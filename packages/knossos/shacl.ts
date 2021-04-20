@@ -2,8 +2,8 @@ import TermSet from '@rdfjs/term-set'
 import { rdf, rdfs, sh } from '@tpluscode/rdf-ns-builders'
 import { shaclMiddleware } from 'express-middleware-shacl'
 import $rdf from 'rdf-ext'
-import { DESCRIBE } from '@tpluscode/sparql-builder'
 import clownface from 'clownface'
+import { shapesQuery } from './lib/shacl'
 
 export const shaclValidate = shaclMiddleware({
   async loadShapes(req) {
@@ -12,14 +12,11 @@ export const shaclValidate = shaclMiddleware({
       ...req.shacl.dataGraph.out(rdf.type).terms,
     ])
 
-    const describe = DESCRIBE`?class ?subClass`
-      .WHERE`
-        VALUES ?class { ${[...types]} }
-        
-        ?class ${rdf.type}?/${rdfs.subClassOf}* ?subClass .
-      `
-
-    const dataset = await $rdf.dataset().import(await describe.execute(req.labyrinth.sparql.query))
+    const dataset = await $rdf.dataset().import(await shapesQuery({
+      term: req.hydra.term,
+      types: [...types],
+      sparql: req.labyrinth.sparql,
+    }))
 
     const hasSubClass = clownface({ dataset }).has(rdfs.subClassOf)
     for (const shape of hasSubClass.toArray()) {

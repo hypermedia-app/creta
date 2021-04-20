@@ -9,7 +9,7 @@ import $rdf from 'rdf-ext'
 import { fromPointer } from '@rdfine/hydra/lib/IriTemplate'
 import type { ResourceIdentifier } from '@tpluscode/rdfine'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
-import { shaclValidate } from './lib/middleware/shacl'
+import { shaclValidate } from './shacl'
 import { knossos } from './lib/namespace'
 import { save } from './lib/resource'
 
