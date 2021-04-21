@@ -11,7 +11,7 @@ import { KnossosMock, knossosMock } from '@labyrinth/testing/knossos'
 import clownface from 'clownface'
 import { expect } from 'chai'
 import { namedNode } from '@labyrinth/testing/nodeFactory'
-import { create } from '../resource'
+import * as resource from '../resource'
 import * as ns from '../lib/namespace'
 import * as shacl from '../shacl'
 
@@ -48,7 +48,7 @@ describe('@hydrofoil/knossos/resource', () => {
           })
         next()
       })
-      app.use(create(client))
+      app.use(resource.create(client))
 
       // when
       const response = request(app)
@@ -62,7 +62,7 @@ describe('@hydrofoil/knossos/resource', () => {
 
     it('returns 405 if class does not allow PUT to create', async () => {
       // given
-      app.use(create(client))
+      app.use(resource.create(client))
 
       // when
       const response = request(app)
@@ -86,7 +86,7 @@ describe('@hydrofoil/knossos/resource', () => {
           })
         next()
       })
-      app.use(create(client))
+      app.use(resource.create(client))
 
       // when
       const response = request(app)
@@ -108,7 +108,7 @@ describe('@hydrofoil/knossos/resource', () => {
         next()
       })
       knossos.store.exists.resolves(true)
-      app.use(create(client))
+      app.use(resource.create(client))
 
       // when
       const response = request(app)
@@ -133,7 +133,7 @@ describe('@hydrofoil/knossos/resource', () => {
             })
           next()
         })
-        app.use(create(client))
+        app.use(resource.create(client))
 
         // when
         response = request(app)
@@ -168,6 +168,41 @@ describe('@hydrofoil/knossos/resource', () => {
         await response
 
         expect(knossos.events.handleImmediate).to.have.been.called
+      })
+    })
+  })
+
+  describe('PUT', () => {
+    describe('on successful request', () => {
+      let response: request.Test
+
+      beforeEach(async () => {
+        // given
+        app.use(resource.PUT)
+
+        // when
+        response = request(app)
+          .put('/foo')
+          .send(turtle`<> a ${schema.Person} .`.toString())
+          .set('Content-Type', 'text/turtle')
+      })
+
+      it('emits as:Update event', async () => {
+        await response
+
+        expect(knossos.events).to.have.been.calledWith(sinon.match({
+          types: [as.Update],
+        }))
+      })
+
+      it('handles immediate events', async () => {
+        await response
+
+        expect(knossos.events.handleImmediate).to.have.been.called
+      })
+
+      it('returns 200', async () => {
+        await response.expect(httpStatus.OK)
       })
     })
   })

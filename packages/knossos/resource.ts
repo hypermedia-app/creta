@@ -1,9 +1,7 @@
 import asyncMiddleware from 'middleware-async'
 import clownface from 'clownface'
-import TermSet from '@rdfjs/term-set'
-import { Debugger } from 'debug'
 import { created, updated } from '@hydrofoil/knossos-events/activity'
-import { as, acl, hydra, rdf } from '@tpluscode/rdf-ns-builders'
+import { as, acl, rdf } from '@tpluscode/rdf-ns-builders'
 import { StreamClient } from 'sparql-http-client/StreamClient'
 import httpStatus from 'http-status'
 import { Router } from 'express'
@@ -11,28 +9,7 @@ import { check } from 'rdf-web-access-control'
 import httpError from 'http-errors'
 import { attach } from 'express-rdf-request'
 import { shaclValidate } from './shacl'
-import { knossos } from './lib/namespace'
-import { save } from './lib/resource'
-
-function canBeCreatedWithPut(api: clownface.AnyPointer, resource: clownface.GraphPointer, log: Debugger) {
-  const types = resource.out(rdf.type)
-  const classes = api.has(hydra.supportedClass, types).out(hydra.supportedClass)
-
-  const classesAllowingPut = new TermSet(classes.has(knossos.createWithPUT, true).terms)
-  const classesForbiddingPut = new TermSet(classes.has(knossos.createWithPUT, false).terms)
-
-  if (classesAllowingPut.size === 0) {
-    log('None of classes %O permit creating resources with PUT', [...new TermSet(classes.terms)])
-    return false
-  }
-
-  if (classesForbiddingPut.size > 0) {
-    log('Classes %O forbid creating resources with PUT', [...classesForbiddingPut])
-    return false
-  }
-
-  return true
-}
+import { canBeCreatedWithPut, save } from './lib/resource'
 
 const saveResource = ({ create }: { create: boolean }) => asyncMiddleware(async (req, res) => {
   const resource = await req.resource()

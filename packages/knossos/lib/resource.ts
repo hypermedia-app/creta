@@ -1,7 +1,9 @@
 import { NamedNode } from 'rdf-js'
-import { rdf } from '@tpluscode/rdf-ns-builders'
+import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
 import express from 'express'
+import { Debugger } from 'debug'
+import TermSet from '@rdfjs/term-set'
 import { Knossos } from '../server'
 import { knossos } from './namespace'
 
@@ -45,4 +47,24 @@ export async function save({ resource, req }: Save): Promise<void> {
   }
 
   await req.knossos.store.save(resource)
+}
+
+export function canBeCreatedWithPut(api: clownface.AnyPointer, resource: clownface.GraphPointer, log: Debugger) {
+  const types = resource.out(rdf.type)
+  const classes = api.has(hydra.supportedClass, types).out(hydra.supportedClass)
+
+  const classesAllowingPut = new TermSet(classes.has(knossos.createWithPUT, true).terms)
+  const classesForbiddingPut = new TermSet(classes.has(knossos.createWithPUT, false).terms)
+
+  if (classesAllowingPut.size === 0) {
+    log('None of classes %O permit creating resources with PUT', [...new TermSet(classes.terms)])
+    return false
+  }
+
+  if (classesForbiddingPut.size > 0) {
+    log('Classes %O forbid creating resources with PUT', [...classesForbiddingPut])
+    return false
+  }
+
+  return true
 }

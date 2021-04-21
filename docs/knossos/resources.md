@@ -146,6 +146,27 @@ The exact same method would be used to create any kind of resource, be it "user 
 
 ## Updating resources
 
+A `PUT` verb can also be used to update (replace) an existing resource. To allow updates, any of an existing resource's types must be supported class and support the `PUT` method. Knossos provides a generic update handler implementation.
+
+For example, to make the `/api/Article` class updatable with `PUT`, it would have be extended with at minimum the triples below.
+
+```turtle
+prefix code: <https://code.described.at/>
+prefix hydra: <http://www.w3.org/ns/hydra/core#>
+
+<api/Article>
+  hydra:supportedOperation [
+    hydra:method "PUT" ;
+    code:implementedBy [
+      a code:EcmaScript ;
+      code:link <node:@hydrofoil/knossos/resource#PUT>
+    ] ;
+  ] ;
+.
+```
+
+This will have the API load a handler from the module `@hydrofoil/knossos/resource`. Similarly to creating resources, that handler will require appropriate `acl:Authorization` and perform validation of resource's SHACL shapes.
+
 ## Validation
 
 Knossos uses SHACL via [express-middleware-shacl](https://npm.im/express-middleware-shacl) to validate resources when handling requests with RDF bodies.
