@@ -1685,18 +1685,18 @@
   dependencies:
     "@types/node" "*"
 
-"@types/rdf-loader-code@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@types/rdf-loader-code/-/rdf-loader-code-0.3.0.tgz#300b94dafe272d895c7017f86c44559bc3181ff4"
-  integrity sha512-yTezYvnyI0uObPcSb9rXGowsDJyhwMlPAe6mHfoYQU11+j6oO9nQmVQmS5toiIRN8wqCnYlkxgHmnHK05WTqtw==
+"@types/rdf-loader-code@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@types/rdf-loader-code/-/rdf-loader-code-0.3.1.tgz#f38d1c23ffd81df6e70adb510c5c1e6a36c05ec7"
+  integrity sha512-EaFehHKGlvr9f9MYwlmZMmYX1cLlVFCl9aPliWZvLso1LlisNvaKYB1CFMJpsu8kJ/qj8OiCaWJ4MiO3HSTSeA==
   dependencies:
     "@types/rdf-js" "*"
     "@types/rdf-loaders-registry" "*"
 
-"@types/rdf-loaders-registry@*", "@types/rdf-loaders-registry@^0.2.0":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@types/rdf-loaders-registry/-/rdf-loaders-registry-0.2.1.tgz#f4306370b39c4e73bd9a0f990e075a103edfa1bb"
-  integrity sha512-hNIPUwnFRsb1JQXIfEvpEPze6+WiKexDhtS0O5zDoCWk9Q3AzmOMV2ak5AQmB8Q+bde+11eX7gVEl6Ng4mauNQ==
+"@types/rdf-loaders-registry@*", "@types/rdf-loaders-registry@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@types/rdf-loaders-registry/-/rdf-loaders-registry-0.3.0.tgz#c6c2451ae32aa2b673bdaa1ed916d60769f4e189"
+  integrity sha512-++NyOUz79avr28F4itX5E+LkrhCfmUjpw3i/9qkJRGvASRGYDTr8NG22Rf3QZNrBwyu2w5Gfw/G6gIduhbsMNw==
   dependencies:
     "@types/clownface" "*"
     "@types/rdf-js" "*"
