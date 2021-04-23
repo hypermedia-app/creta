@@ -57,6 +57,8 @@ Program.command('put')
         } else {
           log('Failed to reset hydra:ApiDocumentation: %s', await res.text())
         }
+      } else {
+        log('No System token provided. API restart may be necessary for changes to be applied')
       }
     }
 

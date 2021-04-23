@@ -91,6 +91,8 @@ export const knossosEvents = ({ path = '_activity' }: KnossosEvents = {}): expre
   res.event = emit
 
   res.once('finish', function runRemainingHandlers() {
+    if (pendingEvents.length === 0) return
+
     req.knossos.log('Running remaining event handlers')
     for (const { activity, handlers } of pendingEvents) {
       handlers.then((arr) => {
@@ -101,6 +103,8 @@ export const knossosEvents = ({ path = '_activity' }: KnossosEvents = {}): expre
     }
   })
   res.once('finish', async function saveActivities() {
+    if (pendingEvents.length === 0) return
+
     req.knossos.log('Saving events')
     for (const { activity } of pendingEvents) {
       if (!isNamedNode(activity.pointer)) {
