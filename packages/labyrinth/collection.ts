@@ -1,21 +1,17 @@
 import asyncMiddleware from 'middleware-async'
-import clownface, { AnyPointer, GraphPointer } from 'clownface'
+import clownface, { AnyPointer } from 'clownface'
 import { hydra } from '@tpluscode/rdf-ns-builders'
 import * as lib from './lib/collection'
 import * as template from './lib/template'
 import { log } from './lib/logger'
-
-function isGraphPointer(pointer: AnyPointer): pointer is GraphPointer {
-  return !!pointer.term
-}
 
 export const get = asyncMiddleware(async (req, res) => {
   const types = clownface(req.hydra.api).node([...req.hydra.resource.types])
 
   const collection = await req.hydra.resource.clownface()
   let query: AnyPointer | undefined
-  const search = collection.out(hydra.search)
-  if (isGraphPointer(search)) {
+  const search = await lib.loadSearch(collection, req.labyrinth.sparql)
+  if (search) {
     query = template.toPointer(search, req.query)
 
     log('Search params %s', query.dataset.toString())

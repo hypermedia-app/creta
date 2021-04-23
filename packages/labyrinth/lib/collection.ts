@@ -1,5 +1,5 @@
 import { NamedNode } from 'rdf-js'
-import clownface, { AnyPointer, GraphPointer, MultiPointer } from 'clownface'
+import clownface, { AnyPointer, GraphPointer } from 'clownface'
 import { fromPointer, IriTemplate } from '@rdfine/hydra/lib/IriTemplate'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import $rdf from 'rdf-ext'
@@ -8,6 +8,7 @@ import { ResourceIdentifier } from '@tpluscode/rdfine'
 import { HydraBox } from 'hydra-box'
 import DatasetExt from 'rdf-ext/lib/Dataset'
 import * as ns from '@hydrofoil/namespaces'
+import { DESCRIBE } from '@tpluscode/sparql-builder'
 import { getSparqlQuery } from './query/collection'
 import { loadLinkedResources } from './query/eagerLinks'
 
@@ -69,10 +70,29 @@ function addTemplateMappings(collection: GraphPointer, template: IriTemplate, re
   })
 }
 
-function getTemplate(resource: GraphPointer): IriTemplate | null {
-  const templateVariables = resource.out(hydra.search) as MultiPointer<ResourceIdentifier>
-  if (templateVariables.term) {
-    return fromPointer(templateVariables.toArray()[0])
+function isGraphPointer(pointer: AnyPointer): pointer is GraphPointer<ResourceIdentifier> {
+  return pointer.term?.termType === 'NamedNode' || pointer.term?.termType === 'BlankNode'
+}
+
+export async function loadSearch(resource: GraphPointer, client: StreamClient): Promise<GraphPointer<ResourceIdentifier> | null> {
+  const search = resource.out(hydra.search)
+  if (isGraphPointer(search)) {
+    if (search.term.termType === 'NamedNode') {
+      const dataset = await $rdf.dataset().import(await DESCRIBE`${search.term}`.execute(client.query))
+
+      return clownface({ dataset }).node(search.term)
+    }
+
+    return search
+  }
+
+  return null
+}
+
+async function getTemplate(resource: GraphPointer, client: StreamClient): Promise<IriTemplate | null> {
+  const templateVariables = await loadSearch(resource, client)
+  if (templateVariables) {
+    return fromPointer(templateVariables)
   }
 
   return null
@@ -100,7 +120,7 @@ export async function collection({ hydraBox, pageSize, sparqlClient, query, ...r
     dataset: $rdf.dataset([...rest.collection.dataset]),
     term: rest.collection.term,
   })
-  const template = getTemplate(await hydraBox.resource.clownface())
+  const template = await getTemplate(await hydraBox.resource.clownface(), sparqlClient)
 
   const pageQuery = await getSparqlQuery({
     api: hydraBox.api,

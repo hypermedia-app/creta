@@ -12,22 +12,5 @@
       hydra:property rdf:type ;
       hydra:object </api/User> ;
     ] ;
-  hydra:search
-    [
-      a hydra:IriTemplate ;
-      hydra:template "{?name}" ;
-      hydra:resolveRelativeTo hydra:LinkContext ;
-      hydra:mapping
-        [
-          hydra:variable "name" ;
-          hydra:property foaf:nick ;
-          query:filter
-            """
-            async function ({ subject, predicate, object }) {
-              const { sparql } = await import('@tpluscode/rdf-string')
-              return sparql`${subject} ${predicate} "${object.value}" .`
-            }
-            """^^code:EcmaScript
-        ] ;
-    ] ;
+  hydra:search </api/template/user-search> ;
 .
