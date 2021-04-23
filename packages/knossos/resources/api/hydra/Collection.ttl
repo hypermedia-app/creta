@@ -19,7 +19,10 @@
      ] ;
    sh:property
      [
-       sh:path hydra:manages ;
+       sh:path
+         [
+           sh:alternativePath ( hydra:manages hydra:memberAssertion )
+         ] ;
        sh:minCount 1 ;
      ]
 .

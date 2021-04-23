@@ -1,3 +1,6 @@
+@prefix code: <https://code.described.at/> .
+@prefix query: <https://hypermedia.app/query#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
@@ -8,5 +11,23 @@
     [
       hydra:property rdf:type ;
       hydra:object </api/User> ;
+    ] ;
+  hydra:search
+    [
+      a hydra:IriTemplate ;
+      hydra:template "{?name}" ;
+      hydra:resolveRelativeTo hydra:LinkContext ;
+      hydra:mapping
+        [
+          hydra:variable "name" ;
+          hydra:property foaf:nick ;
+          query:filter
+            """
+            async function ({ subject, predicate, object }) {
+              const { sparql } = await import('@tpluscode/rdf-string')
+              return sparql`${subject} ${predicate} "${object.value}" .`
+            }
+            """^^code:EcmaScript
+        ] ;
     ] ;
 .

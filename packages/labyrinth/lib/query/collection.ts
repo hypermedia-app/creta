@@ -25,11 +25,13 @@ function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPoin
 
     const value = queryPointer.out(property.id)
     if (value.values.length === 0) {
+      log('Value not found for %s', property.id.value)
       return ''
     }
 
     const queryFilters = mapping.pointer.out(query.filter)
     if (!queryFilters.value) {
+      log('Implementation not found for %s', property.id.value)
       return ''
     }
 
@@ -47,11 +49,11 @@ function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPoin
   }
 }
 
-function createManagesBlockPatterns(member: Variable) {
-  return function (previous: SparqlTemplateResult, manages: GraphPointer): SparqlTemplateResult {
-    const subject = manages.out(hydra.subject).term
-    const predicate = manages.out(hydra.property).term
-    const object = manages.out(hydra.object).term
+function createMemberAssertionPatterns(member: Variable) {
+  return function (previous: SparqlTemplateResult, memberAssertion: GraphPointer): SparqlTemplateResult {
+    const subject = memberAssertion.out(hydra.subject).term
+    const predicate = memberAssertion.out(hydra.property).term
+    const object = memberAssertion.out(hydra.object).term
 
     if (subject && predicate) {
       return sparql`${previous}\n${subject} ${predicate} ${member} .`
@@ -131,15 +133,15 @@ export interface SparqlQueries {
 
 export async function getSparqlQuery({ api, collection, pageSize, query = cf({ dataset: $rdf.dataset() }), variables } : CollectionQueryParams): Promise<SparqlQueries | null> {
   const subject = $rdf.variable('member')
-  const manages = collection
-    .out(hydra.manages)
+  const memberAssertions = collection
+    .out([hydra.manages, hydra.memberAssertion])
     .filter(onlyValidManagesBlocks)
-  if (!manages.values.length) {
+  if (!memberAssertions.values.length) {
     warn(`Collection ${collection.value} has no valid manages block and will always return empty`)
     return null
   }
 
-  const managesBlockPatterns = manages.toArray().reduce(createManagesBlockPatterns(subject), sparql``)
+  const managesBlockPatterns = memberAssertions.toArray().reduce(createMemberAssertionPatterns(subject), sparql``)
   let filterPatters: Array<string | SparqlTemplateResult> = []
   if (variables) {
     filterPatters = await Promise.all(variables.mapping.map(createTemplateVariablePatterns(subject, query, api)))

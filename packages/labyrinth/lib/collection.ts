@@ -69,8 +69,8 @@ function addTemplateMappings(collection: GraphPointer, template: IriTemplate, re
   })
 }
 
-function getTemplate(hydra: HydraBox): IriTemplate | null {
-  const templateVariables = hydra.operation.out(ns.hydraBox.variables) as MultiPointer<ResourceIdentifier>
+function getTemplate(resource: GraphPointer): IriTemplate | null {
+  const templateVariables = resource.out(hydra.search) as MultiPointer<ResourceIdentifier>
   if (templateVariables.term) {
     return fromPointer(templateVariables.toArray()[0])
   }
@@ -100,7 +100,7 @@ export async function collection({ hydraBox, pageSize, sparqlClient, query, ...r
     dataset: $rdf.dataset([...rest.collection.dataset]),
     term: rest.collection.term,
   })
-  const template = getTemplate(hydraBox)
+  const template = getTemplate(await hydraBox.resource.clownface())
 
   const pageQuery = await getSparqlQuery({
     api: hydraBox.api,
@@ -122,7 +122,7 @@ export async function collection({ hydraBox, pageSize, sparqlClient, query, ...r
   collection.addOut(hydra.totalItems, total)
 
   const memberAssertions = collection.any()
-    .has(rdf.type, collection.out(hydra.manages).has(hydra.property, rdf.type).out(hydra.object))
+    .has(rdf.type, collection.out([hydra.manages, hydra.memberAssertion]).has(hydra.property, rdf.type).out(hydra.object))
   collection.namedNode(collection.term)
     .addOut(hydra.member, memberAssertions)
 

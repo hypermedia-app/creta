@@ -12,6 +12,7 @@ import { fromPointer } from '@rdfine/hydra/lib/IriTemplate'
 import { ex } from '@labyrinth/testing/namespace'
 import '@labyrinth/testing/sparql'
 import { api } from '@labyrinth/testing/hydra-box'
+import { shrink } from '@zazuko/rdf-vocabularies'
 import { getSparqlQuery } from '../../../lib/query/collection'
 import { byTitle } from '../../test-api/filter'
 import { ToSparqlPatterns } from '../../../lib/query'
@@ -50,54 +51,126 @@ const expectedQuery = (options: ExpectedQuerySetup) => {
 describe('@hydrofoil/labyrinth/lib/query/collection', () => {
   describe('getSparqlQuery', () => {
     describe('members', () => {
-      it('filters by property/object manages block', async () => {
-        // given
-        const expected = expectedQuery(sparql`?member ${rdf.type} ${schema.Person}`)
-        const query = await getSparqlQuery({
-          api: api(),
-          collection: cf({ dataset: $rdf.dataset() })
-            .blankNode()
-            .addOut(hydra.manages, manages => {
-              manages.addOut(hydra.property, rdf.type)
-              manages.addOut(hydra.object, schema.Person)
-            }),
-          pageSize: 10,
-          variables: null,
-        })
+      const memberAssertionProperty = [hydra.manages, hydra.memberAssertion]
 
-        // when
-        const result = query?.members.build()
-
-        // then
-        expect(result).to.be.a.query(expected)
-      })
-
-      it('ignores incomplete manages blocks', async () => {
-        // given
-        const expected = expectedQuery(sparql`?member ${rdf.type} ${schema.Person}`)
-        const query = await getSparqlQuery({
-          api: api(),
-          collection: cf({ dataset: $rdf.dataset() })
-            .blankNode()
-            .addOut(hydra.manages, manages => {
-              manages.addOut(hydra.property, rdf.type)
-              manages.addOut(hydra.object, schema.Person)
+      for (const property of memberAssertionProperty) {
+        describe('using ' + shrink(property.value), () => {
+          it('filters by property/object assertion', async () => {
+            // given
+            const expected = expectedQuery(sparql`?member ${rdf.type} ${schema.Person}`)
+            const query = await getSparqlQuery({
+              api: api(),
+              collection: cf({ dataset: $rdf.dataset() })
+                .blankNode()
+                .addOut(property, manages => {
+                  manages.addOut(hydra.property, rdf.type)
+                  manages.addOut(hydra.object, schema.Person)
+                }),
+              pageSize: 10,
+              variables: null,
             })
-            .addOut(hydra.manages, manages => {
-              manages.addOut(hydra.property, ex.foo)
-            }),
-          pageSize: 10,
-          variables: null,
+
+            // when
+            const result = query?.members.build()
+
+            // then
+            expect(result).to.be.a.query(expected)
+          })
+
+          it('ignores incomplete member assertion', async () => {
+            // given
+            const expected = expectedQuery(sparql`?member ${rdf.type} ${schema.Person}`)
+            const query = await getSparqlQuery({
+              api: api(),
+              collection: cf({ dataset: $rdf.dataset() })
+                .blankNode()
+                .addOut(property, manages => {
+                  manages.addOut(hydra.property, rdf.type)
+                  manages.addOut(hydra.object, schema.Person)
+                })
+                .addOut(property, manages => {
+                  manages.addOut(hydra.property, ex.foo)
+                }),
+              pageSize: 10,
+              variables: null,
+            })
+
+            // when
+            const result = query?.members.build()
+
+            // then
+            expect(result).to.be.a.query(expected)
+          })
+
+          it('return null if there are no valid member assertions', async () => {
+            // given
+            const query = await getSparqlQuery({
+              api: api(),
+              collection: cf({ dataset: $rdf.dataset() })
+                .blankNode()
+                .addOut(property, manages => {
+                  manages.addOut(hydra.property, ex.foo)
+                })
+                .addOut(property, manages => {
+                  manages.addOut(hydra.subject, ex.s)
+                  manages.addOut(hydra.property, ex.p)
+                  manages.addOut(hydra.object, ex.o)
+                }),
+              pageSize: 10,
+              variables: null,
+            })
+
+            // then
+            expect(query).to.be.null
+          })
+
+          it('filters by subject/object assertion', async () => {
+            // given
+            const expected = expectedQuery(sparql`${ex.JohnDoe} ?member ${ex.JaneDoe}`)
+            const query = await getSparqlQuery({
+              api: api(),
+              collection: cf({ dataset: $rdf.dataset() })
+                .blankNode()
+                .addOut(property, manages => {
+                  manages.addOut(hydra.subject, ex.JohnDoe)
+                  manages.addOut(hydra.object, ex.JaneDoe)
+                }),
+              pageSize: 10,
+              variables: null,
+            })
+
+            // when
+            const result = query?.members.build()
+
+            // then
+            expect(result).to.be.a.query(expected)
+          })
+
+          it('filters by subject/property assertion', async () => {
+            // given
+            const expected = expectedQuery(sparql`${ex.JohnDoe} ${schema.knows} ?member`)
+            const query = await getSparqlQuery({
+              api: api(),
+              collection: cf({ dataset: $rdf.dataset() })
+                .blankNode()
+                .addOut(property, manages => {
+                  manages.addOut(hydra.property, schema.knows)
+                  manages.addOut(hydra.subject, ex.JohnDoe)
+                }),
+              pageSize: 10,
+              variables: null,
+            })
+
+            // when
+            const result = query?.members.build()
+
+            // then
+            expect(result).to.be.a.query(expected)
+          })
         })
+      }
 
-        // when
-        const result = query?.members.build()
-
-        // then
-        expect(result).to.be.a.query(expected)
-      })
-
-      it('return null if there are no manages blocks', async () => {
+      it('return null if there are no member assertions', async () => {
         // given
         const query = await getSparqlQuery({
           api: api(),
@@ -110,72 +183,6 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
         expect(query).to.be.null
       })
 
-      it('return null if there are no valid manages blocks', async () => {
-        // given
-        const query = await getSparqlQuery({
-          api: api(),
-          collection: cf({ dataset: $rdf.dataset() })
-            .blankNode()
-            .addOut(hydra.manages, manages => {
-              manages.addOut(hydra.property, ex.foo)
-            })
-            .addOut(hydra.manages, manages => {
-              manages.addOut(hydra.subject, ex.s)
-              manages.addOut(hydra.property, ex.p)
-              manages.addOut(hydra.object, ex.o)
-            }),
-          pageSize: 10,
-          variables: null,
-        })
-
-        // then
-        expect(query).to.be.null
-      })
-
-      it('filters by subject/object manages block', async () => {
-        // given
-        const expected = expectedQuery(sparql`${ex.JohnDoe} ?member ${ex.JaneDoe}`)
-        const query = await getSparqlQuery({
-          api: api(),
-          collection: cf({ dataset: $rdf.dataset() })
-            .blankNode()
-            .addOut(hydra.manages, manages => {
-              manages.addOut(hydra.subject, ex.JohnDoe)
-              manages.addOut(hydra.object, ex.JaneDoe)
-            }),
-          pageSize: 10,
-          variables: null,
-        })
-
-        // when
-        const result = query?.members.build()
-
-        // then
-        expect(result).to.be.a.query(expected)
-      })
-
-      it('filters by subject/property manages block', async () => {
-        // given
-        const expected = expectedQuery(sparql`${ex.JohnDoe} ${schema.knows} ?member`)
-        const query = await getSparqlQuery({
-          api: api(),
-          collection: cf({ dataset: $rdf.dataset() })
-            .blankNode()
-            .addOut(hydra.manages, manages => {
-              manages.addOut(hydra.property, schema.knows)
-              manages.addOut(hydra.subject, ex.JohnDoe)
-            }),
-          pageSize: 10,
-          variables: null,
-        })
-
-        // when
-        const result = query?.members.build()
-
-        // then
-        expect(result).to.be.a.query(expected)
-      })
-
       it('filters by annotated criteria', async () => {
         // given
         const expected = expectedQuery(sparql` ${ex.JohnDoe} ${schema.knows} ?member . ?member ${schema.title} "Foo"`)
@@ -185,7 +192,7 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
           }),
           collection: cf({ dataset: $rdf.dataset() })
             .blankNode()
-            .addOut(hydra.manages, manages => {
+            .addOut(hydra.memberAssertion, manages => {
               manages.addOut(hydra.property, schema.knows)
               manages.addOut(hydra.subject, ex.JohnDoe)
             }),
@@ -221,7 +228,7 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
           api: api(),
           collection: cf({ dataset: $rdf.dataset() })
             .blankNode()
-            .addOut(hydra.manages, manages => {
+            .addOut(hydra.memberAssertion, manages => {
               manages.addOut(hydra.property, schema.knows)
               manages.addOut(hydra.subject, ex.JohnDoe)
             }),
@@ -256,7 +263,7 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
           api: api(),
           collection: cf({ dataset: $rdf.dataset() })
             .blankNode()
-            .addOut(hydra.manages, manages => {
+            .addOut(hydra.memberAssertion, manages => {
               manages.addOut(hydra.property, schema.knows)
               manages.addOut(hydra.subject, ex.JohnDoe)
             }),
