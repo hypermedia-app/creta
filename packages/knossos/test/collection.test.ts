@@ -11,7 +11,7 @@ import { namedNode } from '@labyrinth/testing/nodeFactory'
 import { expect } from 'chai'
 import sinon from 'sinon'
 import httpStatus from 'http-status'
-import { POSTCreate } from '../collection'
+import { CreateMember } from '../collection'
 import * as ns from '../lib/namespace'
 
 describe('@hydrofoil/knossos/collection', () => {
@@ -38,7 +38,7 @@ describe('@hydrofoil/knossos/collection', () => {
     })
   })
 
-  describe('POSTCreate', () => {
+  describe('CreateMember', () => {
     const setClassMemberTemplate: express.RequestHandler = function (req, res, next) {
       clownface(req.hydra.api)
         .node(ex.Collection)
@@ -60,7 +60,7 @@ describe('@hydrofoil/knossos/collection', () => {
 
     it('returns 201', async () => {
       // given
-      app.post('/collection', POSTCreate)
+      app.post('/collection', CreateMember)
 
       // when
       const response = request(app)
@@ -74,7 +74,7 @@ describe('@hydrofoil/knossos/collection', () => {
 
     it('return 409 is resource already exists', async () => {
       // given
-      app.post('/collection', POSTCreate)
+      app.post('/collection', CreateMember)
       knossos.store.exists.resolves(true)
 
       // when
@@ -89,7 +89,7 @@ describe('@hydrofoil/knossos/collection', () => {
 
     it('creates identifier from template', async () => {
       // given
-      app.post('/collection', POSTCreate)
+      app.post('/collection', CreateMember)
 
       // when
       await request(app)
@@ -114,7 +114,7 @@ describe('@hydrofoil/knossos/collection', () => {
         })
         next()
       })
-      app.post('/collection', POSTCreate)
+      app.post('/collection', CreateMember)
 
       // when
       await request(app)

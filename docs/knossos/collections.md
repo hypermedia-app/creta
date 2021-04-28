@@ -212,7 +212,7 @@ export function startsWith({ subject, predicate, object }) {
 
 ## Creating members
 
-A collection can be used to create new instances of its type by sending `POST` requests. This is a common way which has the server assign identifiers of the newly created resources, as described by the [POST-PUT Creation pattern](http://restalk-patterns.org/post-put.html).
+A collection can be used to create new instances of its type, typically by sending `POST` requests. This is a common way which has the server assign identifiers of the newly created resources, as described by the [POST-PUT Creation pattern](http://restalk-patterns.org/post-put.html).
 
 To enable this feature, the collection class has to support the `POST` operation, implemented by a generic `knossos` handler. It also has to be annotated with an IRI Template for the new instance identifiers.
 
@@ -237,7 +237,7 @@ prefix code: <https://code.described.at/>
       code:implementedBy
         [
           a code:EcmaScript ;
-          code:link <node:@hydrofoil/knossos/collection#POSTCreate> ;
+          code:link <node:@hydrofoil/knossos/collection#CreateMember> ;
         ] ;
     ] ;
   knossos:memberTemplate
@@ -260,7 +260,7 @@ prefix code: <https://code.described.at/>
 > [!TIP]
 > The snippet above proposes to subclass the article collection so that API providers have fine-grained control of which collections can be used to create new resources and which cannot.
 
-The handler `@hydrofoil/knossos/collection#POSTCreate` builds an identifier from the request payload as described by the `hydra:mapping`. It will also ensure that the new instance has all the member assertions.
+The handler `@hydrofoil/knossos/collection#CreateMember` builds an identifier from the request payload as described by the `hydra:mapping`. It will also ensure that the new instance has all the member assertions.
 
 ```turtle
 prefix schema: <http://schema.org/>

@@ -71,7 +71,7 @@ graph <api/ArticleCollection> {
         code:implementedBy
           [
             a code:EcmaScript ;
-            code:link <node:@hydrofoil/knossos/collection#POSTCreate> ;
+            code:link <node:@hydrofoil/knossos/collection#CreateMember> ;
           ] ;
       ] ;
 }

@@ -28,7 +28,7 @@ const setBeforeHooks: express.RequestHandler = (req, res, next) => {
 describe('@hydrofoil/knossos/resource', () => {
   let app: express.Express
   let knossos: KnossosMock
-  let check: sinon.SinonStub
+  let check: sinon.SinonStub<any, Promise<boolean>>
 
   beforeEach(() => {
     check = sinon.stub(wac, 'check').resolves(true)

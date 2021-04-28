@@ -95,9 +95,9 @@ describe('@hydrofoil/labyrinth/collection', () => {
       // given
       const app = express()
       app.use(hydraBox({
-        setup: api => {
-          api.resource.term = ex.people
-          api.operation.addOut(ns.hydraBox.variables, template => {
+        setup: async api => {
+          api.resource.term = ex.people;
+          (await api.resource.clownface()).addOut(hydra.search, template => {
             template.addOut(rdf.type, hydra.IriTemplate)
             template.addOut(hydra.template, '/{?title}')
             template.addOut(hydra.mapping, mapping => {
@@ -107,12 +107,15 @@ describe('@hydrofoil/labyrinth/collection', () => {
             })
           })
         },
-        query: cf({ dataset: $rdf.dataset() }).blankNode().addOut(schema.title, 'Titanic'),
       }))
       app.use(get)
 
       // when
-      const res = await request(app).get('/')
+      const res = await request(app)
+        .get('/')
+        .query({
+          title: 'Titanic',
+        })
 
       // then
       const dataset = await $rdf.dataset().import(parsers.import('application/ld+json', toStream(res.text))!)
@@ -128,9 +131,9 @@ describe('@hydrofoil/labyrinth/collection', () => {
       // given
       const app = express()
       app.use(hydraBox({
-        setup: api => {
+        setup: async api => {
           api.resource.term = ex.people
-          api.operation.addOut(ns.hydraBox.variables, template => {
+          ;(await api.resource.clownface()).addOut(hydra.search, template => {
             template.addOut(rdf.type, hydra.IriTemplate)
             template.addOut(hydra.template, '/{?title,page}')
             template.addOut(hydra.mapping, mapping => {
@@ -145,9 +148,6 @@ describe('@hydrofoil/labyrinth/collection', () => {
             })
           })
         },
-        query: cf({ dataset: $rdf.dataset() }).blankNode()
-          .addOut(hydra.pageIndex, 50)
-          .addOut(schema.title, 'Titanic'),
       }))
       totalsQuery.resolves([{
         count: { value: 1000 },
@@ -155,7 +155,12 @@ describe('@hydrofoil/labyrinth/collection', () => {
       app.use(get)
 
       // when
-      const res = await request(app).get('/')
+      const res = await request(app)
+        .get('/')
+        .query({
+          title: 'Titanic',
+          page: '50',
+        })
 
       // then
       const dataset = await $rdf.dataset().import(parsers.import('application/ld+json', toStream(res.text))!)

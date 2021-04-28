@@ -33,7 +33,7 @@ function rename(member: GraphPointer, id: NamedNode): GraphPointer<NamedNode> {
   return member.node(id)
 }
 
-export const POSTCreate = Router().use(shaclValidate).use(asyncMiddleware(async (req, res, next) => {
+export const CreateMember = Router().use(shaclValidate).use(asyncMiddleware(async (req, res, next) => {
   const api = clownface(req.hydra.api)
   const collection = await req.hydra.resource.clownface()
   const types = collection.out([hydra.manages, hydra.memberAssertion]).has(hydra.property, rdf.type).out(hydra.object)
