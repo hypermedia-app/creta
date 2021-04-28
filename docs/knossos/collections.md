@@ -173,7 +173,7 @@ prefix query: <https://hypermedia.app/query#>
     hydra:property schema:title ;
     query:filter
     [
-      a code:EcmaScript ;
+      a code:EcmaScriptModule ;
       code:link <file:filters/articles/title.js#startsWith> ;
     ] ;
   ] ;
@@ -190,25 +190,95 @@ prefix hydra: <http://www.w3.org/ns/hydra/core#>
 .
 ```
 
-Finally, implement the `query:filter` code link, which will be loaded when the mapped query params is set. It must a CommonJS module exporting a function which returns a string, or a `SparqlTemplateResult`, as shown in the example below.
+Finally, implement the `query:filter` code link, which will be loaded when the mapped query params is set. It must be a module exporting a function which returns a string, or a `SparqlTemplateResult`, as shown in the example below.
 
 ```js
-const { sparql } = require('@tpluscode/rdf-string')
+import { sparql } from '@tpluscode/rdf-string'
 
 /**
 * Create a graph pattern to get article title and
 * filter where the title starts with the provided value
 */
-function startsWith({ subject, predicate, object }) { 
+export function startsWith({ subject, predicate, object }) { 
   return sparql`
   ${subject} ${predicate} ?title .
 
   FILTER ( REGEX (?title, "^${object.value}", "i") )`
 }
-
-module.exports = {
-  startsWith
-}
 ```
 
+> [!TIP]
+> Consult the package [rdf-loader-code](https://npm.im/rdf-loader-code) for more details about loading modules using RDF declarations.
+
 ## Creating members
+
+A collection can be used to create new instances of its type by sending `POST` requests. This is a common way which has the server assign identifiers of the newly created resources, as described by the [POST-PUT Creation pattern](http://restalk-patterns.org/post-put.html).
+
+To enable this feature, the collection class has to support the `POST` operation, implemented by a generic `knossos` handler. It also has to be annotated with an IRI Template for the new instance identifiers.
+
+```turtle
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix schema: <http://schema.org/>
+prefix acl: <http://www.w3.org/ns/auth/acl#> 
+prefix hydra: <http://www.w3.org/ns/hydra/core#> 
+prefix knossos: <https://hypermedia.app/knossos#> 
+prefix auth: <https://hypermedia.app/auth#> 
+prefix code: <https://code.described.at/>
+
+</api/WritableArticleCollection>
+  rdfs:subClassOf </api/ArticleCollection> ;
+  hydra:supportedOperation
+    [
+      a schema:CreateAction ;
+      auth:access acl:Create ;
+      hydra:method "POST" ;
+      hydra:title "New Article" ;
+      hydra:expects </api/Article> ;
+      code:implementedBy
+        [
+          a code:EcmaScript ;
+          code:link <node:@hydrofoil/knossos/collection#POSTCreate> ;
+        ] ;
+    ] ;
+  knossos:memberTemplate
+    [
+      a hydra:IriTemplate ;
+      hydra:template "/article/{title}" ;
+      hydra:mapping
+        [
+          hydra:variable "title" ;
+          hydra:property schema:title ;
+          hydra:require true ;
+        ] ;
+    ] ;
+.
+```
+
+> [!WARNING]
+> The type `schema:CreateAction` is necessary for the operation to create a new resource, if the payload
+
+> [!TIP]
+> The snippet above proposes to subclass the article collection so that API providers have fine-grained control of which collections can be used to create new resources and which cannot.
+
+The handler `@hydrofoil/knossos/collection#POSTCreate` builds an identifier from the request payload as described by the `hydra:mapping`. It will also ensure that the new instance has all the member assertions.
+
+```turtle
+prefix schema: <http://schema.org/>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix hydra: <http://www.w3.org/ns/hydra/core#>
+
+</articles/new>
+  a </api/WritableArticleCollection> ;
+  hydra:memberAssertion 
+  [
+    hydra:property rdf:type ;
+    hydra:object </api/Article> ;
+  ] ,
+  [
+    hydra:property schema:creativeWorkStatus ;
+    hydra:object "Draft" ;
+  ] ;
+.
+```
+
+Given a `POST` request to the `</articles/new>`, the API will explicitly add the `<> rdf:type </api/Article>` and `<> schema:creativeWorkStatus "Draft"` statements about the newly created resource.

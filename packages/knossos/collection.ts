@@ -7,11 +7,14 @@ import error from 'http-errors'
 import httpStatus from 'http-status'
 import $rdf from 'rdf-ext'
 import { fromPointer } from '@rdfine/hydra/lib/IriTemplate'
-import type { ResourceIdentifier } from '@tpluscode/rdfine'
+import { IriTemplateBundle } from '@rdfine/hydra/bundles'
+import RdfResource, { ResourceIdentifier } from '@tpluscode/rdfine'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
 import { shaclValidate } from './shacl'
 import { knossos } from './lib/namespace'
 import { save } from './lib/resource'
+
+RdfResource.factory.addMixin(...IriTemplateBundle)
 
 function checkMemberTemplate(ptr: AnyPointer): ptr is GraphPointer<ResourceIdentifier> {
   return ptr.term?.termType === 'NamedNode' || ptr.term?.termType === 'BlankNode'
@@ -30,10 +33,10 @@ function rename(member: GraphPointer, id: NamedNode): GraphPointer<NamedNode> {
   return member.node(id)
 }
 
-export const POST = Router().use(shaclValidate).use(asyncMiddleware(async (req, res, next) => {
+export const POSTCreate = Router().use(shaclValidate).use(asyncMiddleware(async (req, res, next) => {
   const api = clownface(req.hydra.api)
   const collection = await req.hydra.resource.clownface()
-  const types = collection.out(hydra.manages).has(hydra.property, rdf.type).out(hydra.object)
+  const types = collection.out([hydra.manages, hydra.memberAssertion]).has(hydra.property, rdf.type).out(hydra.object)
 
   if (!types.terms.length) {
     return next(new error.InternalServerError('Collection does not have a member assertion with `hydra:property rdf:type`'))
