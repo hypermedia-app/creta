@@ -90,6 +90,7 @@
     ]
   },
   "devDependencies": {
-    "eslint-import-resolver-typescript": "^2.4.0"
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "tsconfig-paths": "^3.9.0"
   }
 }

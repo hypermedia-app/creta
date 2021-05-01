@@ -3,6 +3,7 @@ require('@babel/register')({
   configFile: './babel.config.json',
   extensions: ['.js', '.jsx', '.ts', '.tsx'],
 })
+require('tsconfig-paths/register')
 
 require('chai-snapshot-matcher')
 

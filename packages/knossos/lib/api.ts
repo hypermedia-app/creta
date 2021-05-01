@@ -1,22 +1,22 @@
-import { NamedNode, Term } from 'rdf-js'
+import { NamedNode, Stream, Term } from 'rdf-js'
 import type { Api } from 'hydra-box/Api'
 import StreamClient from 'sparql-http-client/StreamClient'
 import $rdf from 'rdf-ext'
 import { Debugger } from 'debug'
 import ApiBase from 'hydra-box/Api'
 import { ApiFactory } from '@hydrofoil/labyrinth'
-import { CONSTRUCT } from '@tpluscode/sparql-builder'
-import { hydra } from '@tpluscode/rdf-ns-builders'
 import { Handler } from '@hydrofoil/knossos-events'
 import clownface, { GraphPointer } from 'clownface'
 import DatasetExt from 'rdf-ext/lib/Dataset'
 import express from 'express'
 import httpStatus from 'http-status'
 import { ResourceStore } from './store'
+import * as query from './query'
 
 interface ApiFromStore {
   store: ResourceStore
   log?: Debugger
+  loadClasses?(): Promise<Stream>
 }
 
 function assertTerm(term: Term | undefined): asserts term is NamedNode {
@@ -39,7 +39,7 @@ export const DELETE: express.RequestHandler = (req, res) => {
   res.send(httpStatus.NO_CONTENT)
 }
 
-const createApi: (arg: ApiFromStore) => ApiFactory = ({ store, log }) => async ({ path = '/api', sparql, codePath }) => {
+const createApi: (arg: ApiFromStore) => ApiFactory = ({ store, log, loadClasses = query.loadClasses }) => async ({ path = '/api', sparql, codePath }) => {
   const client = new StreamClient(sparql)
 
   return new (class extends ApiBase implements Api {
@@ -65,14 +65,7 @@ const createApi: (arg: ApiFromStore) => ApiFactory = ({ store, log }) => async (
         api = await store.load(this.term)
       }
 
-      const resources = await CONSTRUCT`?s ?p ?o . ?c ?cp ?co. ${this.term} ${hydra.supportedClass} ?c`
-        .WHERE`
-          ?c a ${hydra.Class} ;
-             ${hydra.apiDocumentation} ${this.term} ; 
-             ?cp ?co .
-          ?c (<>|!<>)+ ?s .
-          ?s ?p ?o .
-        `.execute(client.query)
+      const resources = await loadClasses(this.term, client)
       await api.dataset.import(resources)
 
       this.dataset = api.dataset

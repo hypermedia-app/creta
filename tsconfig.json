@@ -20,7 +20,11 @@
     "typeRoots": [
       "node_modules/@types",
       "types"
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "knossos/*": ["packages/knossos/*"]
+    }
   },
   "include": [
     "apps",
