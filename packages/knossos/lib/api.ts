@@ -5,7 +5,6 @@ import $rdf from 'rdf-ext'
 import { Debugger } from 'debug'
 import ApiBase from 'hydra-box/Api'
 import { ApiFactory } from '@hydrofoil/labyrinth'
-import { Handler } from '@hydrofoil/knossos-events'
 import clownface, { GraphPointer } from 'clownface'
 import DatasetExt from 'rdf-ext/lib/Dataset'
 import express from 'express'
@@ -29,13 +28,13 @@ function assertTerm(term: Term | undefined): asserts term is NamedNode {
   }
 }
 
-export const invalidate: Handler = ({ req }) => {
+export const invalidate = ({ req }: { req: express.Request }) => {
   req.knossos.log('ApiDocumentation will be reloaded on next request')
   req.hydra.api.initialized = false
 }
 
-export const DELETE: express.RequestHandler = (req, res) => {
-  req.hydra.api.initialized = false
+export const Invalidate: express.RequestHandler = (req, res) => {
+  invalidate({ req })
   res.send(httpStatus.NO_CONTENT)
 }
 

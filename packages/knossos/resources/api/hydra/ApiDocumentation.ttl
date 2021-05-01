@@ -17,7 +17,7 @@
       code:implementedBy
         [
           a code:EcmaScript ;
-          code:link <node:@hydrofoil/knossos/lib/api#DELETE> ;
+          code:link <node:@hydrofoil/knossos/lib/api#Invalidate> ;
         ]
     ] ;
 .
