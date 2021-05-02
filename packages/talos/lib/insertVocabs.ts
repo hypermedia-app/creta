@@ -26,7 +26,7 @@ function insertVocab(client: StreamClient) {
 export async function insertVocabs(options: StreamClientOptions): Promise<void> {
   const client = new StreamClient(options)
 
-  const datasets = await vocabularies({ only: ['hydra', 'acl', 'as'] })
+  const datasets = await vocabularies({ only: ['hydra', 'acl', 'as', 'rdfs'] })
 
   await Promise.all(Object.entries(datasets).map(insertVocab(client)))
 }

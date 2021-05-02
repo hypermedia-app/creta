@@ -1,70 +1,15 @@
-import path from 'path'
 import Program from 'commander'
-import debug from 'debug'
-import fetch from 'node-fetch'
-import { bootstrap } from './lib/bootstrap'
-import { insertVocabs } from './lib/insertVocabs'
+import { put } from './lib/command'
 
 Program.command('put')
   .requiredOption('--api <api>')
   .requiredOption('--endpoint <endpoint>')
-  .option('--vocabs', 'Insert required vocabularies to store')
-  .option('--resources', 'Insert resources')
+  .option('--vocabs', 'Insert required vocabularies to store', false)
+  .option('--resources', 'Insert resources', false)
   .option('--token <token>', 'System authentication token')
   .option('-u, --user <user>')
   .option('-p, --password <password>')
   .option('-d, --dir <dir>', 'Directory with resource to bootstrap', './resources')
-  .action(async ({ api, endpoint, user, password, dir, vocabs, resources, token }) => {
-    const log = debug('talos')
-    log.enabled = true
-
-    let inserted = false
-
-    if (vocabs) {
-      inserted = true
-      await insertVocabs({
-        endpointUrl: endpoint,
-        updateUrl: endpoint,
-        user,
-        password,
-      }).then(() => log('Inserted vocabularies'))
-    }
-
-    if (resources) {
-      inserted = true
-      const cwd = path.resolve(process.cwd(), dir)
-
-      await bootstrap({
-        log,
-        api,
-        cwd,
-        endpointUrl: endpoint,
-        updateUrl: endpoint,
-        user,
-        password,
-      })
-
-      if (token) {
-        const res = await fetch(`${api}/api`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `System ${token}`,
-          },
-        })
-
-        if (res.ok) {
-          log('Reset hydra:ApiDocumentation')
-        } else {
-          log('Failed to reset hydra:ApiDocumentation: %s', await res.text())
-        }
-      } else {
-        log('No System token provided. API restart may be necessary for changes to be applied')
-      }
-    }
-
-    if (!inserted) {
-      log('Nothing selected for bootstrapping. Please check --help option')
-    }
-  })
+  .action(put)
 
 Program.parse(process.argv)
