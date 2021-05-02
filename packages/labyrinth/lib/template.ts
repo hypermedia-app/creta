@@ -1,11 +1,13 @@
 import { BlankNode, NamedNode, Term } from 'rdf-js'
-import { hydra } from '@tpluscode/rdf-ns-builders'
+import { hydra, xsd } from '@tpluscode/rdf-ns-builders'
 import clownface, { GraphPointer } from 'clownface'
 import $rdf from 'rdf-ext'
 import DatasetExt from 'rdf-ext/lib/Dataset'
 import type { ParsedQs } from 'qs'
+import httpError from 'http-errors'
 
 const literalValueRegex = /^"(?<value>.+)"(@|\^\^)?((?<=@)(?<language>.*))?((?<=\^\^)(?<datatype>.*))?$/
+const TRUE = $rdf.literal('true', xsd.boolean)
 
 function createTermFromVariable({ template, value }: {template: GraphPointer; value: string}) {
   if (!hydra.ExplicitRepresentation.equals(template.out(hydra.variableRepresentation).term)) {
@@ -32,6 +34,11 @@ export function toPointer(template: GraphPointer, queryParams: ParsedQs): GraphP
   template.out(hydra.mapping).forEach(mapping => {
     const variable = mapping.out(hydra.variable).value
     const property = mapping.out(hydra.property).term
+    const required = mapping.out(hydra.required).term?.equals(TRUE)
+
+    if (variable && required && !queryParams[variable]) {
+      throw new httpError.BadRequest(`Missing required template variable ${variable}`)
+    }
 
     if (variable && property) {
       variablePropertyMap.set(variable, property)
