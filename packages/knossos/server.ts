@@ -35,7 +35,7 @@ export interface Authentication {
   (arg: { client: StreamClient }): express.RequestHandler | Promise<express.RequestHandler>
 }
 
-interface Options {
+export interface Options {
   name: string
   log: Debugger
   endpointUrl: string

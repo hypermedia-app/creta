@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @hydrofoil/knossos/lib/resource
+ */
+
 import { NamedNode } from 'rdf-js'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
@@ -7,16 +12,40 @@ import TermSet from '@rdfjs/term-set'
 import { Knossos } from '../server'
 import { knossos } from './namespace'
 
-interface BeforeSaveParams {
+export interface BeforeSaveParams {
+  /**
+   * Graph pointer to the hook in resource
+   */
+  node: GraphPointer
+  /**
+   * Graph pointer to the saved resource
+   */
   after: GraphPointer
+  /**
+   * Graph pointer to the current resource. If that resource did not exist,
+   * it will be an empty dataset
+   */
   before: GraphPointer
+  /**
+   * Graph pointer to the `hydra:ApiDocumentation`
+   */
   api: AnyPointer
+  /**
+   * The current knossos instance
+   */
   knossos: Knossos
+  /**
+   * Graph pointer to the authenticated agent
+   */
   agent: GraphPointer | undefined
 }
 
+/**
+ * A "before hook" function, called when resources are created and updated, such
+ * as when handling PUT requests or POST to a collection
+ */
 export interface BeforeSave {
-  (arg: BeforeSaveParams): void
+  (arg: BeforeSaveParams): void | Promise<void>
 }
 
 interface Save {
@@ -28,28 +57,37 @@ export async function save({ resource, req }: Save): Promise<void> {
   const api = clownface(req.hydra.api)
 
   const before = await req.knossos.store.load(resource.term)
-  const guards = await Promise.all(api
+  const beforeSaveHooks = await Promise.all(api
     .node(resource.out(rdf.type))
     .out(knossos.beforeSave)
-    .map(pointer => req.loadCode<BeforeSave>(pointer)))
+    .map<Promise<[GraphPointer, BeforeSave | null]>>(async pointer => [pointer, await req.loadCode<BeforeSave>(pointer)]))
 
-  for (const guard of guards) {
-    if (guard) {
-      req.knossos.log('Running before save hook %s', guard.name)
-      guard({
+  const promises = beforeSaveHooks.reduce((promises, [node, hook]) => {
+    if (!hook) {
+      req.knossos.log('Failed to load before save hook %s', node.value)
+      return promises
+    }
+
+    req.knossos.log('Running before save hook %s', hook.name)
+    return [
+      ...promises,
+      hook({
         api,
+        node,
         after: resource,
         before,
         knossos: req.knossos,
         agent: req.agent,
-      })
-    }
-  }
+      }),
+    ]
+  }, [] as ReturnType<BeforeSave>[])
+
+  await Promise.all(promises)
 
   await req.knossos.store.save(resource)
 }
 
-export function canBeCreatedWithPut(api: clownface.AnyPointer, resource: clownface.GraphPointer, log: Debugger) {
+export function canBeCreatedWithPut(api: clownface.AnyPointer, resource: clownface.GraphPointer, log: Debugger): boolean {
   const types = resource.out(rdf.type)
   const classes = api.has(hydra.supportedClass, types).out(hydra.supportedClass)
 

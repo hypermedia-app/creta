@@ -4,3 +4,4 @@
   * [Collections](knossos/collections.md "Collections | Knossos | Creta")
   * [Security](knossos/auth.md "Security | Knossos | Creta")
   * [Resource URLs](knossos/resource-url.md "Resource URLs | Knossos | Creta")
+* [Advanced](knossos/advanced.md "Advanced | Knossos | Creta")

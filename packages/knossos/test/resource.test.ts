@@ -11,19 +11,28 @@ import { KnossosMock, knossosMock } from '@labyrinth/testing/knossos'
 import clownface from 'clownface'
 import { expect } from 'chai'
 import { namedNode } from '@labyrinth/testing/nodeFactory'
+import httpError from 'http-errors'
 import * as resource from '../resource'
 import * as ns from '../lib/namespace'
 import * as shacl from '../shacl'
 
+const setBeforeHooks: express.RequestHandler = (req, res, next) => {
+  const graph = clownface(req.hydra.api)
+  graph.node(schema.Person)
+    .addOut(ns.knossos.beforeSave, graph.blankNode('beforePerson'))
+  graph.node(foaf.Agent)
+    .addOut(ns.knossos.beforeSave, graph.blankNode('beforeAgent'))
+  next()
+}
+
 describe('@hydrofoil/knossos/resource', () => {
   let app: express.Express
   let knossos: KnossosMock
-  const check = sinon.stub(wac, 'check')
-  const validate = sinon.stub(shacl, 'shaclValidate')
+  let check: sinon.SinonStub
 
   beforeEach(() => {
-    check.resolves(true)
-    validate.callsFake((req, res, next) => next())
+    check = sinon.stub(wac, 'check').resolves(true)
+    sinon.stub(shacl, 'shaclValidate').callsFake((req, res, next) => next())
 
     app = express()
     knossos = knossosMock(app)
@@ -32,9 +41,8 @@ describe('@hydrofoil/knossos/resource', () => {
     knossos.store.load.callsFake(async (term: any) => namedNode(term))
   })
 
-  after(() => {
-    check.restore()
-    validate.restore()
+  afterEach(() => {
+    sinon.restore()
   })
 
   describe('create', () => {
@@ -118,6 +126,68 @@ describe('@hydrofoil/knossos/resource', () => {
 
       // then
       await response.expect(httpStatus.CONFLICT)
+    })
+
+    it('runs before hooks from all types', async () => {
+      // given
+      const agentHook = sinon.spy()
+      const personHook = sinon.spy()
+      app.use((req, res, next) => {
+        req.loadCode = sinon.stub()
+          .onFirstCall().resolves(personHook)
+          .onSecondCall().resolves(agentHook)
+        next()
+      })
+      app.use((req, res, next) => {
+        clownface(req.hydra.api)
+          .addOut(hydra.supportedClass, schema.Person, Person => {
+            Person.addOut(ns.knossos.createWithPUT, true)
+          })
+        next()
+      })
+      app.use(setBeforeHooks)
+      knossos.store.exists.resolves(false)
+      app.use(resource.create(client))
+
+      // when
+      await request(app)
+        .put('/foo')
+        .send(turtle`<> a ${schema.Person}, ${foaf.Agent} .`.toString())
+        .set('Content-Type', 'text/turtle')
+
+      // then
+      expect(agentHook).to.have.been.called
+      expect(personHook).to.have.been.called
+    })
+
+    it('ignores before hooks which fail to load', async () => {
+      // given
+      const personHook = sinon.spy()
+      app.use((req, res, next) => {
+        req.loadCode = sinon.stub()
+          .onFirstCall().resolves(personHook)
+          .onSecondCall().resolves(null)
+        next()
+      })
+      app.use((req, res, next) => {
+        clownface(req.hydra.api)
+          .addOut(hydra.supportedClass, schema.Person, Person => {
+            Person.addOut(ns.knossos.createWithPUT, true)
+          })
+        next()
+      })
+      app.use(setBeforeHooks)
+      knossos.store.exists.resolves(false)
+      app.use(resource.create(client))
+
+      // when
+      await request(app)
+        .put('/foo')
+        .send(turtle`<> a ${schema.Person}, ${foaf.Agent} .`.toString())
+        .set('Content-Type', 'text/turtle')
+
+      // then
+      expect(personHook).to.have.been.called
     })
 
     describe('on successful request', () => {
@@ -204,6 +274,74 @@ describe('@hydrofoil/knossos/resource', () => {
       it('returns 200', async () => {
         await response.expect(httpStatus.OK)
       })
+    })
+
+    it('runs before hooks from all types', async () => {
+      // given
+      const agentHook = sinon.spy()
+      const personHook = sinon.spy()
+      app.use((req, res, next) => {
+        req.loadCode = sinon.stub()
+          .onFirstCall().resolves(personHook)
+          .onSecondCall().resolves(agentHook)
+        next()
+      })
+      app.use(setBeforeHooks)
+      app.use(resource.PUT)
+
+      // when
+      await request(app)
+        .put('/foo')
+        .send(turtle`<> a ${schema.Person}, ${foaf.Agent} .`.toString())
+        .set('Content-Type', 'text/turtle')
+
+      // then
+      expect(agentHook).to.have.been.called
+      expect(personHook).to.have.been.called
+    })
+
+    it('ignores before hooks which fail to load', async () => {
+      // given
+      const personHook = sinon.spy()
+      app.use((req, res, next) => {
+        req.loadCode = sinon.stub()
+          .onFirstCall().resolves(personHook)
+          .onSecondCall().resolves(null)
+        next()
+      })
+      app.use(setBeforeHooks)
+      app.use(resource.PUT)
+
+      // when
+      await request(app)
+        .put('/foo')
+        .send(turtle`<> a ${schema.Person}, ${foaf.Agent} .`.toString())
+        .set('Content-Type', 'text/turtle')
+
+      // then
+      expect(personHook).to.have.been.called
+    })
+
+    it('responds error when hook throws', async () => {
+      // given
+      const personHook = sinon.stub().callsFake(() => {
+        throw new httpError.Conflict()
+      })
+      app.use((req, res, next) => {
+        req.loadCode = sinon.stub().resolves(personHook)
+        next()
+      })
+      app.use(setBeforeHooks)
+      app.use(resource.PUT)
+
+      // when
+      const response = request(app)
+        .put('/foo')
+        .send(turtle`<> a ${schema.Person}, ${foaf.Agent} .`.toString())
+        .set('Content-Type', 'text/turtle')
+
+      // then
+      await response.expect(httpStatus.CONFLICT)
     })
   })
 })
