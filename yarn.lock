@@ -3539,14 +3539,6 @@ express-http-problem-details@^0.2.1:
     http-problem-details "^0.1.2"
     http-problem-details-mapper "^0.1.4"
 
-express-jwt-permissions@^1.3.3:
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/express-jwt-permissions/-/express-jwt-permissions-1.3.3.tgz#77f15c359972b485bed608b3f7baeddc3fedd153"
-  integrity sha512-OcZDpoFqYf2YogKjvm9mc5+N9KNVb3FCP5BKWB/hW0CDm4IeQH7tXRuAstSA4MnpDm7AiWVS6TE1uaWjTgLy8Q==
-  dependencies:
-    express-unless "^0.5.0"
-    lodash.get "^4.4.2"
-
 express-jwt@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/express-jwt/-/express-jwt-6.0.0.tgz#20886c730983ffb1c706a4383235df86eff349b8"
@@ -3594,11 +3586,6 @@ express-unless@^0.3.0:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/express-unless/-/express-unless-0.3.1.tgz#2557c146e75beb903e2d247f9b5ba01452696e20"
   integrity sha1-JVfBRudb65A+LSR/m1ugFFJpbiA=
-
-express-unless@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/express-unless/-/express-unless-0.5.0.tgz#c2ece477f4155089143dbb869d07c57c5eb6ab9b"
-  integrity sha1-wuzkd/QVUIkUPbuGnQfFfF62q5s=
 
 express@^4.17.1:
   version "4.17.1"
