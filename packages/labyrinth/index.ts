@@ -35,7 +35,10 @@ declare module 'express-serve-static-core' {
   }
 }
 
-type MiddlewareParams = {
+/**
+ * Parameters to configure a labyrinth middleware
+ */
+export type MiddlewareParams = {
   // eslint-disable-next-line no-use-before-define
   loadApi: ApiFactory
   codePath: string
@@ -52,7 +55,7 @@ type MiddlewareParams = {
   }
 }
 
-type ApiFactoryOptions = Omit<MiddlewareParams, 'loadApi'>
+export type ApiFactoryOptions = Omit<MiddlewareParams, 'loadApi'>
 
 /**
  * Callable interface which gets called on application start to initialize the instance

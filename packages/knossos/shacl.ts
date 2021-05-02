@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @hydrofoil/knossos/shacl
+ */
+
 import TermSet from '@rdfjs/term-set'
 import { rdf, rdfs, sh } from '@tpluscode/rdf-ns-builders'
 import { shaclMiddleware } from 'express-middleware-shacl'
@@ -5,6 +10,9 @@ import $rdf from 'rdf-ext'
 import clownface from 'clownface'
 import { shapesQuery } from './lib/shacl'
 
+/**
+ * Middleware which runs SHACL validation of request payload
+ */
 export const shaclValidate = shaclMiddleware({
   async loadShapes(req) {
     const types = new TermSet([

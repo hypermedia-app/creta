@@ -48,8 +48,11 @@ export interface BeforeSave {
   (arg: BeforeSaveParams): void | Promise<void>
 }
 
-interface Save {
+export interface Save {
   req: express.Request
+  /**
+   * The resource to save
+   */
   resource: GraphPointer<NamedNode>
 }
 
