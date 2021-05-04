@@ -1,0 +1,4 @@
+<> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/auth/acl#Authorization> .
+<> <http://www.w3.org/ns/auth/acl#accessToClass> <http://www.w3.org/2000/01/rdf-schema#Resource> .
+<> <http://www.w3.org/ns/auth/acl#agentClass> <https://hypermedia.app/knossos#SystemAccount> .
+<> <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Control> .

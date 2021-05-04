@@ -1,4 +1,0 @@
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix events: <https://hypermedia.app/events#> .
-
-events:EventHandler rdfs:subClassOf rdfs:Resource .

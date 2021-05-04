@@ -13,6 +13,17 @@ Program.command('serve <endpoint>')
   .option('--authModule <authModule>', 'Authentication module. Must default-export an express handler factory. Can be lazy.')
   .action(serve)
 
-Program.command('init').action(init)
+Program.command('init [packages...]')
+  .action(async (packages) => {
+    const result = await init({
+      dest: process.cwd(),
+      paths: [
+        __dirname,
+      ],
+      packages,
+    })
+
+    process.exit(result)
+  })
 
 Program.parse(process.argv)
