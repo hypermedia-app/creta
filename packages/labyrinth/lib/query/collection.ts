@@ -174,6 +174,6 @@ export async function getSparqlQuery({ api, collection, pageSize, query = cf({ d
         }
         
         GRAPH ?g { ?s ?p ?o }`,
-    totals: SELECT`(count(${subject}) as ?count)`.WHERE`GRAPH ?g { ${memberPatterns} }`,
+    totals: SELECT`(count(distinct ${subject}) as ?count)`.WHERE`GRAPH ?g { ${memberPatterns} }`,
   }
 }
