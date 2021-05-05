@@ -56,7 +56,7 @@ As an alternative to `knossos`, `minotaur` comes with a filesystem loader of the
 
 ## Auxiliary packages
 
-### (Coming soon) @hydrofoil/talos
+### @hydrofoil/talos
 
 > [!TIP]
 > Named after a mythical giant who guarded Crete by throwing great boulders at approaching enemies
