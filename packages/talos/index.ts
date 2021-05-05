@@ -1,7 +1,7 @@
 import Program from 'commander'
 import { put } from './lib/command'
 
-Program.command('put')
+Program.command('put', 'Initializes the database from local resource files')
   .requiredOption('--api <api>')
   .requiredOption('--endpoint <endpoint>')
   .option('--vocabs', 'Insert required vocabularies to store', false)
