@@ -7,6 +7,7 @@
     "talos-dev": "bin/index.ts"
   },
   "dependencies": {
+    "@fcostarodrigo/walk": "^5.0.1",
     "@hydrofoil/knossos": "^0.0.0",
     "@rdfjs/formats-common": "^2.1.0",
     "@tpluscode/rdf-ns-builders": "^0.4.2",
@@ -16,14 +17,14 @@
     "clownface": "^1.2.0",
     "commander": "^6.1.0",
     "debug": "^4.3.1",
-    "glob": "^7.1.6",
+    "mime-types": "^2.1.30",
     "node-fetch": "^2.6.1",
     "rdf-ext": "^1.3.1",
     "sparql-http-client": "^2.2.3"
   },
   "devDependencies": {
     "@rdfjs/namespace": "^1.1.0",
-    "@types/glob": "^7.1.3",
+    "@types/mime-types": "^2.1.0",
     "chai": "^4.3.4"
   }
 }

@@ -4,7 +4,7 @@ import { put } from 'talos/lib/command/put'
 import { ASK, DELETE, SELECT } from '@tpluscode/sparql-builder'
 import ParsingClient from 'sparql-http-client/ParsingClient'
 import { expect } from 'chai'
-import { acl, as, hydra, rdfs, schema } from '@tpluscode/rdf-ns-builders'
+import { acl, as, doap, hydra, rdfs, schema } from '@tpluscode/rdf-ns-builders'
 import namespace from '@rdfjs/namespace'
 
 const api = 'http://example.com/base'
@@ -56,7 +56,7 @@ describe('@hydrofoil/talos/lib/command/put', () => {
     }
   })
 
-  describe('resources', () => {
+  describe('--resources', () => {
     before(async () => {
       await put({
         ...params,
@@ -68,6 +68,16 @@ describe('@hydrofoil/talos/lib/command/put', () => {
       it('inserts into graph constructed from path', () => {
         const userCreated = ASK`${ns('project/creta/user/tpluscode')} a ${schema.Person}`
           .FROM(ns('project/creta/user/tpluscode'))
+          .execute(client.query)
+
+        expect(userCreated).to.eventually.be.true
+      })
+    })
+
+    describe('n-quads', () => {
+      it('inserts into graph constructed from path', () => {
+        const userCreated = ASK`${ns('project/creta/project/creta')} a ${doap.Project}`
+          .FROM(ns('project/creta/project/creta'))
           .execute(client.query)
 
         expect(userCreated).to.eventually.be.true

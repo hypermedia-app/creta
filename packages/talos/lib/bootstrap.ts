@@ -1,7 +1,8 @@
-import { promisify } from 'util'
 import path from 'path'
 import * as fs from 'fs'
-import glob from 'glob'
+import { DatasetCore } from 'rdf-js'
+import walk from '@fcostarodrigo/walk'
+import * as mime from 'mime-types'
 import StreamClient, { StreamClientOptions } from 'sparql-http-client'
 import $rdf from 'rdf-ext'
 import { parsers } from '@rdfjs/formats-common'
@@ -15,22 +16,39 @@ type Options = StreamClientOptions & {
   cwd: string
 }
 
-const globp = promisify(glob)
-
 export async function bootstrap({ log, api, cwd, ...options }: Options): Promise<void> {
   const store = new ResourcePerGraphStore(new StreamClient(options))
-  const files = await globp('**/*.ttl', { cwd, realpath: true })
 
-  for (const file of files) {
+  for await (const file of walk(cwd)) {
+    const relative = path.relative(cwd, file)
     const resourcePath = path.relative(cwd, file)
       .replace(/\..+$/, '')
       .replace(/\/?index$/, '')
 
     const url = `${api}/${resourcePath}`
 
-    const dataset = await $rdf.dataset().import(parsers.import('text/turtle', fs.createReadStream(file), {
+    const mediaType = mime.lookup(file)
+    if (!mediaType) {
+      log('Could not determine media type for file %s', relative)
+      continue
+    }
+
+    const parserStream = parsers.import(mediaType, fs.createReadStream(file), {
       baseIRI: url,
-    })!)
+    })
+    if (!parserStream) {
+      log('Unsupported media type %s from %s', mediaType, relative)
+      continue
+    }
+
+    let dataset: DatasetCore
+    try {
+      dataset = await $rdf.dataset().import(parserStream)
+    } catch (e) {
+      log('Failed to parse %s: %s', relative, e.message)
+      continue
+    }
+
     const pointer = clownface({ dataset }).namedNode(url)
 
     if (await store.exists(pointer.term)) {
