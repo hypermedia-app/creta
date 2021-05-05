@@ -7,7 +7,7 @@
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 
 <>
-  rdfs:subClassOf hydra:ApiDocumentation, rdfs:Resource ;
+  rdfs:subClassOf hydra:ApiDocumentation ;
   a sh:NodeShape, rdfs:Class, hydra:Class ;
   hydra:apiDocumentation </api> ;
   hydra:supportedOperation
