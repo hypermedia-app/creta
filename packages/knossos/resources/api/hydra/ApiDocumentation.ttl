@@ -6,7 +6,7 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 
-</api/hydra/ApiDocumentation>
+<>
   rdfs:subClassOf hydra:ApiDocumentation, rdfs:Resource ;
   a sh:NodeShape, rdfs:Class, hydra:Class ;
   hydra:apiDocumentation </api> ;

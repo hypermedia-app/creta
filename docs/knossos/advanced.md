@@ -10,7 +10,7 @@
 When resources are created or updated, knossos can run user code right before. The hooks can be used to create custom checks on the resources or modify their content which will be stored.
 
 > [!TIP]
-> A hook can be async, returning a `Promise`. If request should not proceed, throw an `Error` inside the hook. This can be useful when it would implement custom resource validation.
+> A hook can be async, returning a `Promise`. If request should not proceed, throw an `Error` inside the hook. This can be useful when it would enforce custom resource constraints.
 
 ```turtle
 @prefix sh: <http://www.w3.org/ns/shacl#> .
