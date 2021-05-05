@@ -10,6 +10,9 @@ Program.command('put')
   .option('-u, --user <user>')
   .option('-p, --password <password>')
   .option('-d, --dir <dir>', 'Directory with resource to bootstrap', './resources')
-  .action(put)
+  .option('--apiPath <apiPath>', 'The path of the API Documentation resource', '/api')
+  .action(async (arg) => {
+    process.exit(await put(arg))
+  })
 
 Program.parse(process.argv)

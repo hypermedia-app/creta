@@ -13,9 +13,10 @@ interface Put {
   vocabs?: boolean
   resources?: boolean
   token?: string
+  apiPath?: string
 }
 
-async function insertResources({ dir, token, api, endpoint, user, password }: Put, log: Debugger) {
+async function insertResources({ dir, token, api, endpoint, user, password, apiPath }: Put, log: Debugger) {
   const cwd = path.resolve(process.cwd(), dir)
 
   await bootstrap({
@@ -29,7 +30,7 @@ async function insertResources({ dir, token, api, endpoint, user, password }: Pu
   })
 
   if (token) {
-    const res = await fetch(`${api}/api`, {
+    const res = await fetch(`${api}${apiPath}`, {
       method: 'DELETE',
       headers: {
         Authorization: `System ${token}`,
@@ -46,7 +47,7 @@ async function insertResources({ dir, token, api, endpoint, user, password }: Pu
   }
 }
 
-export async function put(arg: Put): Promise<void> {
+export async function put(arg: Put): Promise<number> {
   const log = debug('talos')
   log.enabled = true
 
@@ -69,5 +70,8 @@ export async function put(arg: Put): Promise<void> {
 
   if (!inserted) {
     log('Nothing selected for bootstrapping. Please check --help option')
+    return -1
   }
+
+  return 0
 }

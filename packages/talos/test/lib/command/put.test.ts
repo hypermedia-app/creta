@@ -6,6 +6,8 @@ import ParsingClient from 'sparql-http-client/ParsingClient'
 import { expect } from 'chai'
 import { acl, as, doap, hydra, rdfs, schema } from '@tpluscode/rdf-ns-builders'
 import namespace from '@rdfjs/namespace'
+import * as NodeFetch from 'node-fetch'
+import sinon from 'sinon'
 
 const api = 'http://example.com/base'
 const ns = namespace(api + '/')
@@ -83,5 +85,46 @@ describe('@hydrofoil/talos/lib/command/put', () => {
         expect(userCreated).to.eventually.be.true
       })
     })
+  })
+
+  describe('--resources --token', () => {
+    let fetch: sinon.SinonStub
+
+    before(async () => {
+      fetch = sinon.stub(NodeFetch, 'default').resolves({
+        ok: true,
+      } as any)
+
+      await put({
+        ...params,
+        resources: true,
+        token: 'foo-bar',
+        apiPath: '/da-api',
+      })
+    })
+
+    afterEach(() => {
+      sinon.restore()
+    })
+
+    it('requests DELETE of ApiDocumentation', () => {
+      // expect
+      expect(fetch).to.have.been.calledWith('http://example.com/base/da-api', sinon.match({
+        method: 'DELETE',
+        headers: {
+          Authorization: sinon.match(/^System .+/),
+        },
+      }))
+    })
+  })
+
+  it('returns error = -1 when no switch was given', async () => {
+    // when
+    const result = await put({
+      ...params,
+    })
+
+    // then
+    expect(result).to.eq(-1)
   })
 })
