@@ -1,0 +1,2 @@
+<> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <undefined/api/hydra/ApiDocumentation> .
+<> <http://www.w3.org/ns/hydra/core#entrypoint> </> .

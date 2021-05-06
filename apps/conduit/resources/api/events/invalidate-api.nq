@@ -1,0 +1,14 @@
+<> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://hypermedia.app/events#EventHandler> .
+<> <http://www.w3.org/2000/01/rdf-schema#comment> "Void ApiDocumentation cache when a hydra:Class is created of updated" .
+<> <https://code.described.at/implementedBy> _:c14n1 .
+<> <https://hypermedia.app/events#eventSpec> _:c14n0 .
+<> <https://hypermedia.app/events#eventSpec> _:c14n3 .
+<> <https://hypermedia.app/events#objectSpec> _:c14n2 .
+_:c14n0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <https://www.w3.org/ns/activitystreams#Create> .
+_:c14n0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> .
+_:c14n1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://code.described.at/EcmaScript> .
+_:c14n1 <https://code.described.at/link> <node:@hydrofoil/knossos/lib/api#invalidate> .
+_:c14n2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.w3.org/ns/hydra/core#Class> .
+_:c14n2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> .
+_:c14n3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <https://www.w3.org/ns/activitystreams#Update> .
+_:c14n3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> .

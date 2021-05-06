@@ -1,0 +1,25 @@
+{
+  "name": "@hydrofoil/knossos-events",
+  "version": "0.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "@hydrofoil/namespaces": "^0.0.0",
+    "@rdfjs/namespace": "^1.1.0",
+    "@rdfine/as": "^0.1.0",
+    "@tpluscode/rdf-ns-builders": "^0.4.2",
+    "@tpluscode/rdf-string": "^0.2.22",
+    "@tpluscode/sparql-builder": "^0.3.11",
+    "clownface": "^1.2.0",
+    "nanoid": "^3.1.20",
+    "rdf-ext": "^1.3.1",
+    "rdf-express-node-factory": "^1.1"
+  },
+  "devDependencies": {
+    "@labyrinth/testing": "^0.0.0",
+    "chai": "^4.3.4",
+    "express": "^4.17.1",
+    "mocha": "^8.3.2",
+    "sinon": "^9",
+    "supertest": "^6.1.3"
+  }
+}

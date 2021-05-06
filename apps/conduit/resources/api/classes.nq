@@ -1,0 +1,4 @@
+<> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <hydra/Collection> .
+<> <http://www.w3.org/ns/hydra/core#manages> _:c14n0 .
+_:c14n0 <http://www.w3.org/ns/hydra/core#object> <http://www.w3.org/ns/hydra/core#Class> .
+_:c14n0 <http://www.w3.org/ns/hydra/core#property> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> .

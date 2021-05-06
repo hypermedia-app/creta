@@ -1,0 +1,61 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix auth: <https://hypermedia.app/auth#> .
+@prefix acl: <http://www.w3.org/ns/auth/acl#> .
+@prefix knossos: <https://hypermedia.app/knossos#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix bio: <http://purl.org/vocab/bio/0.1/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix code: <https://code.described.at/> .
+@prefix schema: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+
+</api/User>
+  a </api/hydra/Class>, sh:NodeShape, rdfs:Class ;
+  rdfs:subClassOf </api/hydra/Resource> ;
+  hydra:apiDocumentation </api> ;
+  hydra:supportedOperation
+    [
+      a schema:ReplaceAction ;
+      hydra:method "PUT" ;
+      hydra:title "Update User" ;
+      code:implementedBy
+        [
+          a code:EcmaScript ;
+          code:link <node:@hydrofoil/knossos/resource#PUT>
+        ] ;
+    ] ;
+  sh:property
+    [
+      sh:path foaf:email ;
+      sh:name "Email" ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:order 10 ;
+    ],
+    [
+      sh:path foaf:nick ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:order 20 ;
+    ],
+    [
+      sh:path foaf:img ;
+      sh:nodeKind sh:IRI ;
+      sh:maxCount 1 ;
+      sh:order 30 ;
+    ],
+    [
+      sh:path bio:biography ;
+      dash:singleLine false ;
+      sh:maxCount 1 ;
+      sh:order 40 ;
+    ]  ;
+  knossos:beforeSave
+    [
+      a code:EcmaScript ;
+      code:link <file:lib/resource#guardReadOnlyPredicates> ;
+    ] ;
+.

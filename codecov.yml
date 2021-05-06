@@ -1,0 +1,4 @@
+ignore:
+  - mocha-setup.js
+  - "packages/testing/**/*"
+  - "apps/**/*"

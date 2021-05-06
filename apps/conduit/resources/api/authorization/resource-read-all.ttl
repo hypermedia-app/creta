@@ -1,0 +1,9 @@
+prefix hydra: <http://www.w3.org/ns/hydra/core#>
+prefix foaf: <http://xmlns.com/foaf/0.1/>
+prefix acl: <http://www.w3.org/ns/auth/acl#>
+
+<> a </api/acl/Authorization> ;
+   acl:agentClass foaf:Agent ;
+   acl:accessToClass hydra:Resource, hydra:Collection ;
+   acl:mode acl:Read ;
+.

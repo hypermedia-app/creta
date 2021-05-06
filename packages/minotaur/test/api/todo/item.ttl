@@ -1,0 +1,4 @@
+@base <http://example.com/> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+
+<api/TodoItem> a hydra:Class .

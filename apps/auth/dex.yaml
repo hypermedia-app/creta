@@ -1,0 +1,51 @@
+issuer: https://auth.labyrinth.lndo.site
+storage:
+  type: sqlite3
+  config:
+    file: /var/dex/dex.db
+web:
+  http: 0.0.0.0:80
+staticClients:
+  - id: conduit
+    redirectURIs:
+      - "https://app.conduit.knossos.lndo.site/login/callback"
+    name: Conduit
+    secret: bar
+
+connectors:
+  - type: ldap
+    name: Email
+    id: ldap
+    config:
+      host: ldap:389
+      insecureNoSSL: true
+
+      # This would normally be a read-only user.
+      bindDN: cn=admin,dc=example,dc=org
+      bindPW: admin
+
+      usernamePrompt: Email Address
+
+      userSearch:
+        baseDN: ou=People,dc=example,dc=org
+        filter: "(objectClass=person)"
+        username: mail
+        # "DN" (case sensitive) is a special attribute name. It indicates that
+        # this value should be taken from the entity's DN not an attribute on
+        # the entity.
+        idAttr: DN
+        emailAttr: mail
+        nameAttr: cn
+
+      groupSearch:
+        baseDN: ou=Groups,dc=example,dc=org
+        filter: "(objectClass=groupOfNames)"
+
+        userMatchers:
+          # A user is a member of a group when their DN matches
+          # the value of a "member" attribute on the group entity.
+          - userAttr: DN
+            groupAttr: member
+
+        # The group name should be the "cn" value.
+        nameAttr: cn

@@ -1,0 +1,73 @@
+name: labyrinth
+services:
+  conduit:
+    type: node:custom
+    build:
+      - npm i -g nodemon
+    command: nodemon -w packages -w apps --ignore **/*.http --ignore **/*.ttl --ignore **/*.env.json --ext ts,js --exec node --inspect=0.0.0.0:47671 -r ts-node/register --inspect packages/knossos/index.ts serve http://store:10035/repositories/labyrinth?infer=true --name conduit --authModule ./apps/conduit/middleware/authenticate --codePath ./apps/conduit --user minos --password password
+    port: 8888
+    ssl: true
+    overrides:
+      image: node:14
+      ports:
+        - '47671:47671'
+      environment:
+        TS_NODE_TRANSPILE_ONLY: "true"
+        DEBUG: conduit*,hydra*,hydra-box*,labyrinth*,SPARQL,-labyrinth:request:headers
+        AUTH_JWKS_URI: http://auth/keys
+        AUTH_ISSUER: https://auth.labyrinth.lndo.site
+        AUTH_AUDIENCE: conduit
+    moreHttpPorts:
+      - 47671
+    scanner: false
+  store:
+    type: compose
+    volumes:
+      agdata:
+      agconfig:
+    ports:
+      - 10000-10035:10000-10035
+    run:
+      - agtool repos create http://minos:password@127.0.0.1:10035/repositories/labyrinth
+      - agtool repos create http://minos:password@127.0.0.1:10035/repositories/tests
+    services:
+      image: franzinc/agraph
+      command: /entrypoint.sh
+      shm_size: 1g
+      environment:
+        AGRAPH_SUPER_USER: minos
+        AGRAPH_SUPER_PASSWORD: password
+        ENABLE_DATA_WRITE: "true"
+        ENABLE_UPDATE: "true"
+        ENABLE_UPLOAD: "true"
+      volumes:
+        - agdata:/agraph/data
+        - agconfig:/agraph/etc
+  auth:
+    type: compose
+    scanner: false
+    ssl: true
+    services:
+      image: ghcr.io/dexidp/dex
+      command: dex serve /app/apps/auth/dex.yaml
+  ldap:
+    type: compose
+    scanner: false
+    services:
+      image: osixia/openldap
+      command: /container/tool/run --copy-service
+      volumes:
+        - ./apps/auth/ldap.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/config-ldap.ldif
+
+tooling:
+  agtool:
+    service: store
+    cmd: agtool
+
+proxy:
+  store:
+    - db.labyrinth.lndo.site:10035
+  conduit:
+    - conduit.knossos.lndo.site:8888
+  auth:
+    - auth.labyrinth.lndo.site

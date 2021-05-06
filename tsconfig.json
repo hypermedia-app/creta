@@ -20,17 +20,18 @@
     "typeRoots": [
       "node_modules/@types",
       "types"
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "knossos/*": ["packages/knossos/*"],
+      "labyrinth/*": ["packages/labyrinth/*"],
+      "talos/*": ["packages/talos/*"]
+    }
   },
-  "files": [
-    "index.ts",
-    "collection.ts",
-    "resource.ts",
-    "errors.ts"
-  ],
   "include": [
-    "types.ts",
+    "apps",
     "types",
-    "test"
-  ]
+    "packages"
+  ],
+  "exclude": ["packages/*/bin/*.ts"]
 }
