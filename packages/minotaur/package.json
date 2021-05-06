@@ -2,8 +2,12 @@
   "name": "@hydrofoil/minotaur",
   "version": "0.0.0",
   "scripts": {
-    "prepack": "tsc"
+    "prepare": "tsc"
   },
+  "files": [
+    "*.js",
+    "*.d.ts"
+  ],
   "dependencies": {
     "@fcostarodrigo/walk": "^5.0.0",
     "hydra-box": "^0.6"

@@ -2,6 +2,15 @@
   "name": "@hydrofoil/knossos-events",
   "version": "0.0.0",
   "main": "index.js",
+  "scripts": {
+    "prepare": "tsc"
+  },
+  "files": [
+    "resources",
+    "lib/**/*.js",
+    "*.js",
+    "*.d.ts"
+  ],
   "dependencies": {
     "@hydrofoil/namespaces": "^0.0.0",
     "@rdfjs/namespace": "^1.1.0",

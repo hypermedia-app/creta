@@ -3,8 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "resources": "knossos-dev init",
-    "bootstrap": "talos-dev put --vocabs --resources --api https://conduit.knossos.lndo.site --endpoint http://db.labyrinth.lndo.site/repositories/labyrinth --user minos --password password"
+    "resources": "../../packages/knossos/bin/index.ts init",
+    "bootstrap": "../../packages/talos/bin/index.ts put --vocabs --resources --api https://conduit.knossos.lndo.site --endpoint http://db.labyrinth.lndo.site/repositories/labyrinth --user minos --password password"
   },
   "dependencies": {
     "@hydrofoil/knossos": "0.0.0",

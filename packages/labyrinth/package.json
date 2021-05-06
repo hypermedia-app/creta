@@ -3,7 +3,7 @@
   "version": "0.4.1",
   "description": "Build Hydra APIs on top of hydra-box",
   "scripts": {
-    "prepack": "tsc"
+    "prepare": "tsc"
   },
   "files": [
     "*.js",

@@ -3,9 +3,16 @@
   "version": "0.0.0",
   "main": "index.js",
   "bin": {
-    "talos": "bin/index.js",
-    "talos-dev": "bin/index.ts"
+    "talos": "bin/index.js"
   },
+  "scripts": {
+    "prepare": "tsc"
+  },
+  "files": [
+    "lib/**/*.js",
+    "*.js",
+    "*.d.ts"
+  ],
   "dependencies": {
     "@fcostarodrigo/walk": "^5.0.1",
     "@hydrofoil/knossos": "^0.0.0",

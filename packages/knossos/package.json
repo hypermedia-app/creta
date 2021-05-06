@@ -2,12 +2,17 @@
   "name": "@hydrofoil/knossos",
   "version": "0.0.0",
   "bin": {
-    "knossos": "bin/index.js",
-    "knossos-dev": "bin/index.ts"
+    "knossos": "bin/index.js"
   },
   "scripts": {
-    "prepublish": "tsc"
+    "prepare": "tsc"
   },
+  "files": [
+    "resources",
+    "lib/**/*.js",
+    "*.js",
+    "*.d.ts"
+  ],
   "dependencies": {
     "@fcostarodrigo/walk": "^5.0.1",
     "@hydrofoil/knossos-events": "0.0.0",
