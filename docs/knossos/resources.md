@@ -115,6 +115,31 @@ graph <api/auth/anyone-read-articles> {
 > [!TIP]
 > As seen above, by default, every resource is stored in its own named graph, using its own identifier as the graph's name. At the time of writing it is the only resource persistence pattern supported by knossos.
 
+## Getting resources
+
+The easiest way to make any resource dereferencable, is to ensure that is the type `hydra:Resource`, which matches its definition in the Hydra Core spec. If taking advantage of reasoning, this can be done by subclassing.
+
+```turtle
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<api/Article> rdfs:subClassOf hydra:Resource .
+```
+
+By default, a Knossos-based API supports a generic `GET` operation on all instances of `<api/hydra/Resource>`, implemented by the module [@hydrofoil/labyrinth/resource](/api/modules/_hydrofoil_labyrinth_resource.html#get)
+
+> [!TIP]
+> `<api/hydra/Resource>` is a subclass of `hydra:Resource`, which follows the pattern that terms from external vocabularies should be inherited into API-specific classes, allowing more fine-grained control.
+
+> [!WARNING]
+ The representation returned by a `GET` request handled by the generic handler will be the result of a `DESCRIBE` query over union graph. Thus, if using inferencing, or spreading the resource's triples over multiple named graphs, the response may include more data than expected. To fetch only triples from the resource's "own" named graph, use the [`return=minimal` preference](https://webconcepts.info/concepts/http-preference/return).
+>
+> ```http request
+GET /article/rdf-101
+Accept: text/turtle
+Prefer: return=minimal
+> ```
+
 ## Creating resources
 
 New resources are created with a `PUT` HTTP request with an RDF body. The request target is assumed to be the base URI for the parser and thus an empty named node can be used to refer to the creates resource.

@@ -5,7 +5,7 @@ import request from 'supertest'
 import { hydraBox } from '@labyrinth/testing/hydra-box'
 import { get } from '../resource'
 
-describe('@hydrofoil/laybrinth/resource', () => {
+describe('@hydrofoil/labyrinth/resource', () => {
   describe('get', () => {
     it('returns 200 OK', async () => {
       // given
