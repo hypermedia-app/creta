@@ -2,7 +2,6 @@
 <> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/hydra/core#Class> .
 <> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#NodeShape> .
 <> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/ns/auth/acl#Authorization> .
-<> <http://www.w3.org/ns/hydra/core#apiDocumentation> <undefined/api> .
 <> <http://www.w3.org/ns/hydra/core#supportedOperation> _:c14n7 .
 <> <http://www.w3.org/ns/shacl#or> _:c14n16 .
 <> <http://www.w3.org/ns/shacl#or> _:c14n20 .

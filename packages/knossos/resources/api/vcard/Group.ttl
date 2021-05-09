@@ -7,7 +7,6 @@
 
 <> rdfs:subClassOf vcard:Group ;
   a sh:NodeShape, rdfs:Class, hydra:Class ;
-  hydra:apiDocumentation </api> ;
   sh:property
     [
       sh:path vcard:hasUID ;
