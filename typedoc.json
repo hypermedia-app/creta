@@ -5,6 +5,7 @@
     "packages/knossos/shacl.ts",
     "packages/knossos/lib/resource.ts",
     "packages/labyrinth/index.ts",
+    "packages/labyrinth/resource.ts",
     "packages/minotaur/index.ts"
   ],
   "out": "docs/api"

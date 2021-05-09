@@ -1645,6 +1645,11 @@
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
 
+"@types/parse-prefer-header@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@types/parse-prefer-header/-/parse-prefer-header-1.0.1.tgz#8ccd3e935484310c791336fd6c001a4de77335bf"
+  integrity sha512-oCHqtlcIWl28cmnhIEdZD/P2uKnXCGjJUTcfawjIn3NTvtp9A2yctlcaRzOKpytDqEOhJOfjzQHuENaxX6QMNg==
+
 "@types/qs@*":
   version "6.9.4"
   resolved "https://registry.yarnpkg.com/@types/qs/-/qs-6.9.4.tgz#a59e851c1ba16c0513ea123830dd639a0a15cb6a"
@@ -5022,6 +5027,11 @@ locate-path@^6.0.0:
   dependencies:
     p-locate "^5.0.0"
 
+lodash.camelcase@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
+  integrity sha1-soqmKIorn8ZRA1x3EfZathkDMaY=
+
 lodash.clonedeep@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
@@ -5794,6 +5804,13 @@ parse-json@^5.0.0:
     json-parse-even-better-errors "^2.3.0"
     lines-and-columns "^1.1.6"
 
+parse-prefer-header@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/parse-prefer-header/-/parse-prefer-header-1.0.0.tgz#75aeb73766bb6531dde063ee023876ead49648f7"
+  integrity sha1-da63N2a7ZTHd4GPuAjh26tSWSPc=
+  dependencies:
+    lodash.camelcase "^4.3.0"
+
 parseurl@~1.3.3:
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/parseurl/-/parseurl-1.3.3.tgz#9da19e7bee8d12dff0513ed5b76957793bc2e8d4"
@@ -6213,10 +6230,10 @@ rdf-validate-shacl@^0.2.6:
     debug "^4.0.0"
     rdf-validate-datatype "^0.1.1"
 
-rdf-web-access-control@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/rdf-web-access-control/-/rdf-web-access-control-1.0.0.tgz#eac1eeae334adb1b4f85bc84b5ceb212c2035319"
-  integrity sha512-TtCZon69xPiigGCrTcodvxCeiiot6JAMrqopaWejxmJbOlYBPCY2lc9YMPkiiitWkAmI+qxLJqRi1F4Lo//cNg==
+rdf-web-access-control@^1.0.0, rdf-web-access-control@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/rdf-web-access-control/-/rdf-web-access-control-1.0.1.tgz#4477179ea6fc29f15831308e01a1d624b7be4606"
+  integrity sha512-WFUYU1Z6ehrFTxpOekZbg9ZveIv08eR0mtM4Td0er8jsbiU8eQ5YcaeRDKoqN4meYjI5K+WqRysTS+t10Ua9TQ==
   dependencies:
     "@tpluscode/rdf-ns-builders" "^0.4.2"
     "@tpluscode/sparql-builder" "^0.3.12"

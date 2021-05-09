@@ -1,0 +1,18 @@
+@prefix schema: <http://schema.org/> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+@prefix code: <https://code.described.at/> .
+
+<>
+  a </api/hydra/Class> ;
+  hydra:apiDocumentation </api> ;
+  hydra:supportedOperation
+    [
+      hydra:method "GET" ;
+      hydra:title "Update User" ;
+      code:implementedBy
+        [
+          a code:EcmaScript ;
+          code:link <file:lib/users#currentUser>
+        ] ;
+    ] ;
+.

@@ -22,21 +22,46 @@ export { SparqlQueryLoader } from './lib/loader'
 
 RdfResource.factory.addMixin(...Object.values(Hydra))
 
+/**
+ * Represents the runtime instance of a Labyrinth API
+ *
+ * Accessible on the `Request` object of an express handlere
+ *
+ * ```ts
+ * import type { Request } from 'express'
+ *
+ * function handler(req: Request) {
+ *   const { labyrinth } = req
+ * }
+ * ```
+ */
+export interface Labyrinth {
+  /**
+   * Gets or sets a streaming client to access the databse
+   */
+  sparql: StreamClient
+
+  /**
+   * Gets the default configuration for collection handler
+   */
+  collection: {
+    /**
+     * Default collection page size
+     */
+    pageSize: number
+  }
+}
+
 declare module 'express-serve-static-core' {
   export interface Request {
     hydra: HydraBox
     loadCode<T extends any = unknown>(node: GraphPointer, options?: Record<any, any>): T | Promise<T> | null
-    labyrinth: {
-      sparql: StreamClient
-      collection: {
-        pageSize: number
-      }
-    }
+    labyrinth: Labyrinth
   }
 }
 
 /**
- * Parameters to configure a labyrinth middleware
+ * Parameters to configure labyrinth middleware
  */
 export type MiddlewareParams = {
   // eslint-disable-next-line no-use-before-define
@@ -65,6 +90,9 @@ export interface ApiFactory {
   (params: ApiFactoryOptions): Promise<Api>
 }
 
+/**
+ * Creates the labyrinth express middleware
+ */
 export async function hydraBox(middlewareInit: MiddlewareParams): Promise<Router> {
   const { loader, sparql, options, loadApi, ...params } = middlewareInit
 

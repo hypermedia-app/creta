@@ -10,7 +10,7 @@ import { loader, apiFactory } from '@labyrinth/testing/hydra-box'
 import { ex } from '@labyrinth/testing/namespace'
 import { hydraBox } from '../index'
 
-describe('labyrinth', () => {
+describe('@hydrofoil/labyrinth', () => {
   const codePath = path.resolve(__dirname, '..')
 
   it('returns 404 when no operation is found', async () => {

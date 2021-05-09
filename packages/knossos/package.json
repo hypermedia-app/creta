@@ -42,7 +42,7 @@
     "middleware-async": "^1.3.1",
     "nanoid": "^3.1.22",
     "rdf-ext": "^1.3.1",
-    "rdf-web-access-control": "^1.0.0",
+    "rdf-web-access-control": "^1.0.1",
     "sparql-http-client": "^2.2.3"
   },
   "devDependencies": {

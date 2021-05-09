@@ -72,10 +72,9 @@ export class SparqlQueryLoader implements ResourceLoader {
     log(`loading resource ${term.value} by object usage`)
     const bindings = await SELECT`*`
       .WHERE`
-      graph ?parent {
         ?parent ?link ${term} .
         ?parent ${rdf.type} ?type .
-      }`
+      `
       .execute(this.__client.query)
 
     const resources = bindings.reduce((set, { parent, link, type }) => {
