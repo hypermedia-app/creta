@@ -97,7 +97,6 @@ export function hydraBox({ setup, query }: MiddlewareOptions = {}): RequestHandl
     req.hydra = hydra
     req.agent = namedNode('agent')
     req.labyrinth = {
-      preferReturnMinimal: false,
       sparql: {
         store: sinon.createStubInstance(StreamStore) as any,
         query: {
