@@ -6230,10 +6230,10 @@ rdf-validate-shacl@^0.2.6:
     debug "^4.0.0"
     rdf-validate-datatype "^0.1.1"
 
-rdf-web-access-control@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/rdf-web-access-control/-/rdf-web-access-control-1.0.0.tgz#eac1eeae334adb1b4f85bc84b5ceb212c2035319"
-  integrity sha512-TtCZon69xPiigGCrTcodvxCeiiot6JAMrqopaWejxmJbOlYBPCY2lc9YMPkiiitWkAmI+qxLJqRi1F4Lo//cNg==
+rdf-web-access-control@^1.0.0, rdf-web-access-control@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/rdf-web-access-control/-/rdf-web-access-control-1.0.1.tgz#4477179ea6fc29f15831308e01a1d624b7be4606"
+  integrity sha512-WFUYU1Z6ehrFTxpOekZbg9ZveIv08eR0mtM4Td0er8jsbiU8eQ5YcaeRDKoqN4meYjI5K+WqRysTS+t10Ua9TQ==
   dependencies:
     "@tpluscode/rdf-ns-builders" "^0.4.2"
     "@tpluscode/sparql-builder" "^0.3.12"
