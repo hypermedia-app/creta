@@ -13,7 +13,6 @@ import * as Hydra from '@rdfine/hydra'
 import StreamClient from 'sparql-http-client/StreamClient'
 import { GraphPointer } from 'clownface'
 import type { Api } from 'hydra-box/Api'
-import parsePreferHeader from 'parse-prefer-header'
 import { logRequest, logRequestError } from './lib/logger'
 import { removeHydraOperations, preprocessResource } from './lib/middleware'
 import { SparqlQueryLoader } from './lib/loader'
@@ -41,10 +40,6 @@ export interface Labyrinth {
    * Gets or sets a streaming client to access the databse
    */
   sparql: StreamClient
-  /**
-   * @returns `true` when the request headers contain `Prefer: return=minimal`
-   */
-  preferReturnMinimal: boolean
 
   /**
    * Gets the default configuration for collection handler
@@ -111,13 +106,7 @@ export async function hydraBox(middlewareInit: MiddlewareParams): Promise<Router
   }
   app.use(rdfFactory())
   app.use((req, res, next) => {
-    req.labyrinth = {
-      ...labyrinth,
-      get preferReturnMinimal() {
-        const prefer = parsePreferHeader(req.header('Prefer'))
-        return prefer.return === 'minimal'
-      },
-    }
+    req.labyrinth = labyrinth
     req.loadCode = (node, options) => req.hydra.api.loaderRegistry.load<any>(node, {
       basePath: req.hydra.api.codePath,
       ...(options || {}),

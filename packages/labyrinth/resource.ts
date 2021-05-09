@@ -9,7 +9,14 @@ import $rdf from 'rdf-ext'
 import TermSet from '@rdfjs/term-set'
 import { query } from '@hydrofoil/namespaces'
 import { DESCRIBE } from '@tpluscode/sparql-builder'
+import parsePreferHeader from 'parse-prefer-header'
+import express from 'express'
 import { loadLinkedResources } from './lib/query/eagerLinks'
+
+export function preferMinimal(req: express.Request): boolean {
+  const prefer = parsePreferHeader(req.header('Prefer'))
+  return prefer.return === 'minimal'
+}
 
 /**
  * Generic middleware for handling `GET` requests
@@ -20,7 +27,8 @@ export const get = asyncMiddleware(async (req, res) => {
     term: [...req.hydra.resource.types],
   })
 
-  if (req.labyrinth.preferReturnMinimal) {
+  if (preferMinimal(req)) {
+    res.setHeader('Preference-Applied', 'return=minimal')
     return res.quadStream(req.hydra.resource.quadStream())
   }
 
