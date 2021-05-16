@@ -1,10 +1,10 @@
-import { describe, it } from 'mocha'
+import { describe, it, beforeEach } from 'mocha'
 import { expect } from 'chai'
 import cf from 'clownface'
 import $rdf from 'rdf-ext'
 import { hydra, rdf, schema } from '@tpluscode/rdf-ns-builders'
 import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
-import { CONSTRUCT, SELECT } from '@tpluscode/sparql-builder'
+import { SELECT } from '@tpluscode/sparql-builder'
 import * as Hydra from '@rdfine/hydra'
 import RdfResource from '@tpluscode/rdfine'
 import * as ns from '@hydrofoil/namespaces'
@@ -13,6 +13,9 @@ import { ex } from '@labyrinth/testing/namespace'
 import '@labyrinth/testing/sparql'
 import { api } from '@labyrinth/testing/hydra-box'
 import { shrink } from '@zazuko/rdf-vocabularies'
+import { StreamClient } from 'sparql-http-client/StreamClient'
+import sinon from 'sinon'
+import intoStream from 'into-stream'
 import { getSparqlQuery } from '../../../lib/query/collection'
 import { byTitle } from '../../test-api/filter'
 import { ToSparqlPatterns } from '../../../lib/query'
@@ -27,29 +30,32 @@ type ExpectedQuerySetup = SparqlTemplateResult | {
 
 const expectedQuery = (options: ExpectedQuerySetup) => {
   const patterns = 'patterns' in options ? options.patterns : options
-  let select = SELECT`?g`
+  let select = SELECT.DISTINCT`?member`
     .WHERE`
-      GRAPH ?g { 
-        ${patterns}
-      }
+      ${patterns}
+      filter(isiri(?member)) 
     `
 
   if ('limit' in options) {
     select = select.LIMIT(options.limit).OFFSET(options.offset)
   }
 
-  const query = CONSTRUCT`?s ?p ?o`
-    .WHERE`{
-      ${select}
-    }
-    
-    GRAPH ?g { ?s ?p ?o }`
-
-  return query.build()
+  return select.build()
 }
 
 describe('@hydrofoil/labyrinth/lib/query/collection', () => {
   describe('getSparqlQuery', () => {
+    let client: StreamClient
+
+    beforeEach(() => {
+      client = {
+        query: {
+          construct: sinon.stub().resolves($rdf.dataset().toStream()),
+          select: sinon.stub().resolves(intoStream([])),
+        },
+      } as any
+    })
+
     describe('members', () => {
       const memberAssertionProperty = [hydra.manages, hydra.memberAssertion]
 
@@ -71,10 +77,13 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
             })
 
             // when
-            const result = query?.members.build()
+            await query?.members(client)
 
             // then
-            expect(result).to.be.a.query(expected)
+            expect(client.query.select).to.have.been.calledWith(sinon.match(value => {
+              expect(value).to.be.a.query(expected)
+              return true
+            }))
           })
 
           it('ignores incomplete member assertion', async () => {
@@ -96,10 +105,13 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
             })
 
             // when
-            const result = query?.members.build()
+            await query?.members(client)
 
             // then
-            expect(result).to.be.a.query(expected)
+            expect(client.query.select).to.have.been.calledWith(sinon.match(value => {
+              expect(value).to.be.a.query(expected)
+              return true
+            }))
           })
 
           it('return null if there are no valid member assertions', async () => {
@@ -140,10 +152,13 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
             })
 
             // when
-            const result = query?.members.build()
+            await query?.members(client)
 
             // then
-            expect(result).to.be.a.query(expected)
+            expect(client.query.select).to.have.been.calledWith(sinon.match(value => {
+              expect(value).to.be.a.query(expected)
+              return true
+            }))
           })
 
           it('filters by subject/property assertion', async () => {
@@ -162,10 +177,13 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
             })
 
             // when
-            const result = query?.members.build()
+            await query?.members(client)
 
             // then
-            expect(result).to.be.a.query(expected)
+            expect(client.query.select).to.have.been.calledWith(sinon.match(value => {
+              expect(value).to.be.a.query(expected)
+              return true
+            }))
           })
         })
       }
@@ -211,10 +229,13 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
         })
 
         // when
-        const result = query?.members.build()
+        await query?.members(client)
 
         // then
-        expect(result).to.be.a.query(expected)
+        expect(client.query.select).to.have.been.calledWith(sinon.match(value => {
+          expect(value).to.be.a.query(expected)
+          return true
+        }))
       })
 
       it('applies LIMIT/OFFSET when template has pageIndex property', async () => {
@@ -246,10 +267,13 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
         })
 
         // when
-        const result = query?.members.build()
+        await query?.members(client)
 
         // then
-        expect(result).to.be.a.query(expected)
+        expect(client.query.select).to.have.been.calledWith(sinon.match(value => {
+          expect(value).to.be.a.query(expected)
+          return true
+        }))
       })
 
       it('applies page size from query before the default', async () => {
@@ -286,10 +310,13 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
         })
 
         // when
-        const result = query?.members.build()
+        await query?.members(client)
 
         // then
-        expect(result).to.be.a.query(expected)
+        expect(client.query.select).to.have.been.calledWith(sinon.match(value => {
+          expect(value).to.be.a.query(expected)
+          return true
+        }))
       })
     })
   })
