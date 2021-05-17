@@ -2,7 +2,7 @@ import { NamedNode, Term } from 'rdf-js'
 import { PassThrough } from 'stream'
 import $rdf from 'rdf-ext'
 import { PropertyResource, Resource, ResourceLoader } from 'hydra-box'
-import { CONSTRUCT, SELECT } from '@tpluscode/sparql-builder'
+import { DESCRIBE, SELECT } from '@tpluscode/sparql-builder'
 import debug from 'debug'
 import ParsingClient from 'sparql-http-client/ParsingClient'
 import StreamClient from 'sparql-http-client/StreamClient'
@@ -104,7 +104,7 @@ export class SparqlQueryLoader implements ResourceLoader {
 
   private __createDatasetGetters(term: NamedNode): Pick<Resource, 'dataset' | 'quadStream'> {
     const fullDataset = () => {
-      return CONSTRUCT`?s ?p ?o`.FROM(term).WHERE`?s ?p ?o`.execute(this.__streamClient.query)
+      return DESCRIBE`${term}`.execute(this.__streamClient.query)
     }
 
     return {
