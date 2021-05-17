@@ -1,7 +1,8 @@
 import { dirname, resolve, relative } from 'path'
-import { createReadStream, ensureFile, promises as fs } from 'fs-extra'
+import type { Readable } from 'stream'
+import { createReadStream, createWriteStream, ensureFile } from 'fs-extra'
 import walk from '@fcostarodrigo/walk'
-import { parsers } from '@rdfjs/formats-common'
+import { parsers, serializers } from '@rdfjs-elements/formats-pretty'
 import $rdf from 'rdf-ext'
 import debug from 'debug'
 import DatasetExt from 'rdf-ext/lib/Dataset'
@@ -38,8 +39,7 @@ export async function init({ dest, paths, packages }: Init): Promise<number> {
     for await (const file of walk(sourceDir)) {
       const relativePath = relative(sourceDir, file)
       log('Loading resource %s', relativePath)
-      const outPath = relativePath.replace(/ttl$/, 'nq')
-      const outFile = resolve(destDir, outPath)
+      const outFile = resolve(destDir, relativePath)
 
       const mediaType = 'text/turtle'
       const stream = parsers.import(mediaType, createReadStream(file))
@@ -59,8 +59,16 @@ export async function init({ dest, paths, packages }: Init): Promise<number> {
         continue
       }
       await ensureFile(outFile)
-      filesSaved.push(fs.writeFile(outFile, dataset.toCanonical())
-        .then(() => log('Saved resource file %s', outPath)))
+
+      const quadStream = serializers.import('text/turtle', dataset.toStream()) as any as Readable
+      quadStream.pipe(createWriteStream(outFile))
+
+      const promise = new Promise((resolve, reject) => {
+        quadStream.on('end', resolve)
+        quadStream.on('error', reject)
+      }).then(() => log('Saved resource file %s', relativePath))
+
+      filesSaved.push(promise)
     }
   }
 
