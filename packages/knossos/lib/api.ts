@@ -9,6 +9,7 @@ import clownface, { GraphPointer } from 'clownface'
 import DatasetExt from 'rdf-ext/lib/Dataset'
 import express from 'express'
 import httpStatus from 'http-status'
+import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { ResourceStore } from './store'
 import * as query from './query'
 
@@ -66,6 +67,9 @@ const createApi: (arg: ApiFromStore) => ApiFactory = ({ store, log, loadClasses 
 
       const resources = await loadClasses(this.term, client)
       await api.dataset.import(resources)
+
+      const supportedClasses = api.any().has(rdf.type, hydra.Class)
+      api.node(this.term).addOut(hydra.supportedClass, supportedClasses)
 
       this.dataset = api.dataset
       this.initialized = true
