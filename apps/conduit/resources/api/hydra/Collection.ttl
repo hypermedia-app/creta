@@ -7,6 +7,7 @@
 
 <> rdfs:subClassOf hydra:Collection ;
 	a hydra:Class, rdfs:Class, sh:NodeShape ;
+	hydra:apiDocumentation </api> ;
 	hydra:supportedOperation [
 		hydra:method "GET" ;
 		auth:access acl:Read ;
