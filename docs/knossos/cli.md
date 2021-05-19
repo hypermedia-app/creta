@@ -4,7 +4,17 @@ Knossos is mainly meant to be used as a command-line tools which prepares and se
 
 ### `knossos init`
 
-Does not take any parameters at the moment.
+```
+Usage: knossos init [options] [packages...]
+
+Populates the initial directory structure of resource files in turtle format
+
+Arguments:
+  packages    Additional package names to source initial resources
+
+Options:
+  -h, --help  display help for command
+```
 
 ### `knossos serve`
 

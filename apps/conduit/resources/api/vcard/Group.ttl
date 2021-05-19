@@ -1,0 +1,29 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+
+<> rdfs:subClassOf vcard:Group ;
+	a sh:NodeShape, rdfs:Class, hydra:Class ;
+	hydra:apiDocumentation </api> ;
+	sh:property [
+		sh:path vcard:hasUID ;
+		sh:minCount 1 ;
+		sh:maxCount 1 ;
+		sh:pattern "^urn:uuid:" ;
+		sh:nodeKind sh:IRI ;
+	], [
+		sh:path dcterms:created ;
+		sh:maxCount 1 ;
+		sh:datatype xsd:dateTime ;
+	], [
+		sh:path dcterms:modified ;
+		sh:maxCount 1 ;
+		sh:datatype xsd:dateTime ;
+	], [
+		sh:path vcard:hasMember ;
+		sh:nodeKind sh:IRI ;
+	] .
+
