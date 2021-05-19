@@ -14,6 +14,9 @@ Program.command('serve <endpoint>')
   .action(serve)
 
 Program.command('init [packages...]')
+  .description('Populates the initial directory structure of resource files in turtle format', {
+    packages: 'Additional package names to source initial resources',
+  })
   .action(async (packages) => {
     const result = await init({
       dest: process.cwd(),

@@ -6,7 +6,7 @@
 @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
 
 <> rdfs:subClassOf vcard:Group ;
-  a sh:NodeShape, rdfs:Class, hydra:Class ;
+  a sh:NodeShape, rdfs:Class, </api/hydra/Class> ;
   sh:property
     [
       sh:path vcard:hasUID ;

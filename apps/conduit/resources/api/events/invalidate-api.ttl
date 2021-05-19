@@ -1,0 +1,25 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix code: <https://code.described.at/> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+@prefix as: <https://www.w3.org/ns/activitystreams#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix events: <https://hypermedia.app/events#> .
+
+<> a events:EventHandler ;
+	rdfs:comment "Void ApiDocumentation cache when a hydra:Class is created of updated" ;
+	events:eventSpec [
+		rdf:predicate rdf:type ;
+		rdf:object as:Update ;
+	], [
+		rdf:predicate rdf:type ;
+		rdf:object as:Create ;
+	] ;
+	events:objectSpec [
+		rdf:predicate rdf:type ;
+		rdf:object hydra:Class ;
+	] ;
+	code:implementedBy [
+		rdf:type code:EcmaScript ;
+		code:link <node:@hydrofoil/knossos/lib/api#invalidate> ;
+	] .
+

@@ -1,14 +1,20 @@
 import path from 'path'
-import { pathExists, promises as fs } from 'fs-extra'
+import { createReadStream, pathExists, promises as fs } from 'fs-extra'
 import { init } from 'knossos/lib/command'
 import temp from 'tempy'
 import { expect } from 'chai'
 import $rdf from 'rdf-ext'
 import clownface from 'clownface'
 import { rdf, rdfs, schema } from '@tpluscode/rdf-ns-builders'
+import { parsers } from '@rdfjs-elements/formats-pretty'
 
 function rootPath(pathName: string) {
   return path.resolve(__dirname, '../../test-resources', pathName)
+}
+
+async function parseToCanonical(path: string): Promise<string> {
+  const dataset = await $rdf.dataset().import(parsers.import('text/turtle', createReadStream(path))!)
+  return dataset.toCanonical()
 }
 
 describe('@hydrofoil/knossos/lib/command/init', () => {
@@ -26,7 +32,7 @@ describe('@hydrofoil/knossos/lib/command/init', () => {
     await fs.rm(dest, { recursive: true, force: true })
   })
 
-  it('copies source resources in turtle format as canonical n-quads', async () => {
+  it('copies source resources in turtle format as turtle', async () => {
     // given
     paths.push(rootPath('formats'))
     const expected = clownface({ dataset: $rdf.dataset() })
@@ -43,7 +49,7 @@ describe('@hydrofoil/knossos/lib/command/init', () => {
 
     // then
     expect(result).to.eq(0)
-    const writtenFile = (await fs.readFile(path.resolve(dest, 'resources/api/classes/User.nq'))).toString()
+    const writtenFile = await parseToCanonical(path.resolve(dest, 'resources/api/classes/User.ttl'))
     expect(writtenFile).to.eq(expected.dataset.toCanonical())
   })
 
@@ -60,8 +66,8 @@ describe('@hydrofoil/knossos/lib/command/init', () => {
 
     // then
     expect(result).to.eq(1)
-    const goodFile = path.resolve(dest, 'resources/user/john.nq')
-    const badFile = path.resolve(dest, 'resources/users.nq')
+    const goodFile = path.resolve(dest, 'resources/user/john.ttl')
+    const badFile = path.resolve(dest, 'resources/users.ttl')
     await expect(pathExists(goodFile)).to.eventually.eq(true)
     await expect(pathExists(badFile)).to.eventually.eq(false)
   })
@@ -76,7 +82,7 @@ describe('@hydrofoil/knossos/lib/command/init', () => {
 
     // then
     expect(result).to.be.eq(0)
-    const EventHandler = path.resolve(dest, 'resources/api/events/EventHandler.nq')
+    const EventHandler = path.resolve(dest, 'resources/api/events/EventHandler.ttl')
     await expect(pathExists(EventHandler)).to.eventually.eq(true)
   })
 
@@ -93,7 +99,7 @@ describe('@hydrofoil/knossos/lib/command/init', () => {
 
     // then
     expect(result).to.be.eq(0)
-    const EventHandler = path.resolve(dest, 'resources/foo.nq')
+    const EventHandler = path.resolve(dest, 'resources/foo.ttl')
     await expect(pathExists(EventHandler)).to.eventually.eq(true)
   })
 })
