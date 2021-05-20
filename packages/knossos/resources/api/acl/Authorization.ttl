@@ -11,6 +11,7 @@
 <> rdfs:subClassOf acl:Authorization ;
   a hydra:Class, sh:NodeShape, rdfs:Class ;
   knossos:createWithPUT true ;
+  hydra:apiDocumentation </api> ;
   hydra:supportedOperation
     [
       hydra:method "PUT" ;

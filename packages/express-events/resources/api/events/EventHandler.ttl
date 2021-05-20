@@ -9,6 +9,7 @@
 
 <> rdfs:subClassOf events:EventHandler ;
    a sh:NodeShape, rdfs:Class, hydra:Class ;
+   hydra:apiDocumentation </api> ;
    hydra:supportedOperation
      [
        hydra:method "PUT" ;

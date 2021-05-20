@@ -9,6 +9,7 @@
 <>
   rdfs:subClassOf hydra:ApiDocumentation ;
   a sh:NodeShape, rdfs:Class, </api/hydra/Class> ;
+  hydra:apiDocumentation </api> ;
   hydra:supportedOperation
     [
       hydra:method "DELETE" ;

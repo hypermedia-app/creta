@@ -7,7 +7,7 @@
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 
 <> rdfs:subClassOf hydra:Class, </api/hydra/Resource> ;
-	a </api/hydra/Class>, sh:NodeShape, rdfs:Class ;
+	a sh:NodeShape, rdfs:Class, </api/hydra/Class> ;
 	hydra:apiDocumentation </api> ;
 	knossos:createWithPUT true ;
 	hydra:supportedOperation [

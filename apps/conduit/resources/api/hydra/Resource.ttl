@@ -5,7 +5,7 @@
 @prefix auth: <https://hypermedia.app/auth#> .
 
 <> rdfs:subClassOf hydra:Resource ;
-	a hydra:Class ;
+	a </api/hydra/Class> ;
 	hydra:apiDocumentation </api> ;
 	hydra:supportedOperation [
 		hydra:method "GET" ;
