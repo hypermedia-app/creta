@@ -1,25 +1,15 @@
 @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix code: <https://code.described.at/> .
-@prefix auth: <https://hypermedia.app/auth#> .
 @prefix knossos: <https://hypermedia.app/knossos#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 @prefix acl: <http://www.w3.org/ns/auth/acl#> .
 
-<> rdfs:subClassOf acl:Authorization ;
-	a hydra:Class, sh:NodeShape, rdfs:Class ;
+<> sh:targetClass acl:Authorization ;
+	a sh:NodeShape ;
 	knossos:createWithPUT true ;
 	hydra:apiDocumentation </api> ;
-	hydra:supportedOperation [
-		hydra:method "PUT" ;
-		auth:access acl:Write ;
-		code:implementedBy [
-			rdf:type code:EcmaScript ;
-			code:link <node:@hydrofoil/knossos/resource#PUT> ;
-		] ;
-	] ;
 	sh:property [
 		sh:path acl:mode ;
 		sh:minCount 1 ;

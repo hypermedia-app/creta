@@ -13,8 +13,9 @@
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 
 </api/User>
-  a </api/hydra/Class>, sh:NodeShape, rdfs:Class ;
-  rdfs:subClassOf </api/hydra/Resource> ;
+  a hydra:Class, sh:NodeShape, rdfs:Class ;
+  rdfs:subClassOf hydra:Resource ;
+  hydra:apiDocumentation </api> ;
   rdfs:label "User class" ;
   hydra:supportedOperation
     [

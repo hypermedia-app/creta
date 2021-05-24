@@ -3,18 +3,16 @@
 @prefix acl: <http://www.w3.org/ns/auth/acl#> .
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 @prefix auth: <https://hypermedia.app/auth#> .
+@prefix knossos: <https://hypermedia.app/knossos#> .
 
-<> rdfs:subClassOf hydra:Resource ;
-  a </api/hydra/Class> ;
+<>
+  knossos:supportedByClass hydra:Resource ;
   hydra:apiDocumentation </api> ;
-  hydra:supportedOperation
+  hydra:method "GET" ;
+  auth:access acl:Read ;
+  code:implementedBy
     [
-      hydra:method "GET" ;
-      auth:access acl:Read ;
-      code:implementedBy
-        [
-          a code:EcmaScript ;
-          code:link <node:@hydrofoil/labyrinth/resource#get> ;
-        ]
+      a code:EcmaScript ;
+      code:link <node:@hydrofoil/labyrinth/resource#get> ;
     ]
 .

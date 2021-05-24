@@ -28,7 +28,6 @@ describe('@hydrofoil/knossos/lib/api', () => {
 
       api = await factory({
         log: sinon.spy() as any,
-        store,
         loadClasses,
       })({
         codePath,

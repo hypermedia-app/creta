@@ -1,0 +1,10 @@
+@prefix knossos: <https://hypermedia.app/knossos#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+
+<> a sh:NodeShape ;
+	sh:targetClass hydra:Class ;
+	hydra:apiDocumentation </api> ;
+	knossos:createWithPUT true .
+

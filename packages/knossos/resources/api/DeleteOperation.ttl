@@ -7,17 +7,13 @@
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 
 <>
-  rdfs:subClassOf hydra:ApiDocumentation ;
-  a sh:NodeShape, rdfs:Class, </api/hydra/Class> ;
+  knossos:supportedByClass hydra:ApiDocumentation ;
+  hydra:method "DELETE" ;
+  auth:access acl:Delete ;
   hydra:apiDocumentation </api> ;
-  hydra:supportedOperation
+  code:implementedBy
     [
-      hydra:method "DELETE" ;
-      auth:access acl:Delete ;
-      code:implementedBy
-        [
-          a code:EcmaScript ;
-          code:link <node:@hydrofoil/knossos/lib/api#Invalidate> ;
-        ]
-    ] ;
+      a code:EcmaScript ;
+      code:link <node:@hydrofoil/knossos/lib/api#Invalidate> ;
+    ]
 .

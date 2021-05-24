@@ -1,0 +1,15 @@
+@prefix acl: <http://www.w3.org/ns/auth/acl#> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+@prefix code: <https://code.described.at/> .
+@prefix auth: <https://hypermedia.app/auth#> .
+@prefix knossos: <https://hypermedia.app/knossos#> .
+
+<> hydra:method "PUT" ;
+	auth:access acl:Write ;
+	knossos:supportedByClass acl:Authorization ;
+	hydra:apiDocumentation </api> ;
+	code:implementedBy [
+		<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> code:EcmaScript ;
+		code:link <node:@hydrofoil/knossos/resource#PUT> ;
+	] .
+

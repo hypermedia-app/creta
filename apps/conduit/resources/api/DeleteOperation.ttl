@@ -6,15 +6,11 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 
-<> rdfs:subClassOf hydra:ApiDocumentation ;
-	a sh:NodeShape, rdfs:Class, </api/hydra/Class> ;
+<> knossos:supportedByClass hydra:ApiDocumentation ;
+	hydra:method "DELETE" ;
+	auth:access acl:Delete ;
 	hydra:apiDocumentation </api> ;
-	hydra:supportedOperation [
-		hydra:method "DELETE" ;
-		auth:access acl:Delete ;
-		code:implementedBy [
-			<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> code:EcmaScript ;
-			code:link <node:@hydrofoil/knossos/lib/api#Invalidate> ;
-		] ;
+	code:implementedBy [
+		<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> code:EcmaScript ;
+		code:link <node:@hydrofoil/knossos/lib/api#Invalidate> ;
 	] .
-

@@ -92,7 +92,6 @@ export async function serve({ log, endpointUrl, updateUrl, port, name, codePath,
     sparql,
     path,
     loadApi: createApi({
-      store,
       log,
     }),
     middleware: {

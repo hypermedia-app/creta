@@ -7,8 +7,8 @@
 @prefix auth: <https://hypermedia.app/auth#> .
 @prefix knossos: <https://hypermedia.app/knossos#> .
 
-<> rdfs:subClassOf events:EventHandler ;
-	a sh:NodeShape, rdfs:Class, hydra:Class ;
+<> sh:targetClass events:EventHandler ;
+	a sh:NodeShape ;
 	hydra:apiDocumentation </api> ;
 	hydra:supportedOperation [
 		hydra:method "PUT" ;

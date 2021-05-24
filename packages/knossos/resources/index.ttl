@@ -1,1 +1,3 @@
-<> a </api/hydra/Resource> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+
+<> a hydra:Resource .

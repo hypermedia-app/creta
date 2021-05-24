@@ -1,9 +1,5 @@
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
-@prefix minos: <https://hypermedia.app/minos#> .
 
-<> a </api/hydra/ApiDocumentation> ;
-	hydra:entrypoint <../> ;
-  minos:shapes </api/shapes> ;
-  minos:classes </api/classes> ;
-.
+<> a hydra:ApiDocumentation ;
+	hydra:entrypoint <../> .
 
