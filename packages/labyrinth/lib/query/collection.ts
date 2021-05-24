@@ -186,7 +186,7 @@ export async function getSparqlQuery({ api, collection, pageSize, query = cf({ d
       const stream = await SELECT`(count(distinct ${subject}) as ?count)`.WHERE`${memberPatterns}`.execute(client.query)
       const [result] = await toArray(stream)
 
-      return Number.parseInt(result.count)
+      return Number.parseInt(result.count.value)
     },
   }
 }
