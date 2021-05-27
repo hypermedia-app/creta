@@ -14,7 +14,8 @@ import * as query from './query'
 
 interface ApiFromStore {
   log?: Debugger
-  loadClasses?(): Promise<Stream>
+  loadClasses?(api: NamedNode, client: StreamClient.StreamClient): Promise<Stream>
+  loadApiDocumentation?(api: NamedNode, client: StreamClient.StreamClient): Promise<Stream>
 }
 
 function assertTerm(term: Term | undefined): asserts term is NamedNode {
@@ -37,7 +38,11 @@ export const Invalidate: express.RequestHandler = (req, res) => {
   res.send(httpStatus.NO_CONTENT)
 }
 
-const createApi: (arg: ApiFromStore) => ApiFactory = ({ log, loadClasses = query.loadClasses }) => async ({ path = '/api', sparql, codePath }) => {
+function describeApiDocumentation(term: NamedNode, client: StreamClient.StreamClient) {
+  return DESCRIBE`${term}`.execute(client.query)
+}
+
+const createApi: (arg: ApiFromStore) => ApiFactory = ({ log, loadClasses = query.loadClasses, loadApiDocumentation = describeApiDocumentation }) => async ({ path = '/api', sparql, codePath }) => {
   const client = new StreamClient(sparql)
 
   return new (class extends ApiBase implements Api {
@@ -56,7 +61,7 @@ const createApi: (arg: ApiFromStore) => ApiFactory = ({ log, loadClasses = query
 
       const dataset = $rdf.dataset()
       await Promise.all([
-        dataset.import(await DESCRIBE`${this.term}`.execute(client.query)),
+        dataset.import(await loadApiDocumentation(this.term, client)),
         dataset.import(await loadClasses(this.term, client)),
       ])
 
