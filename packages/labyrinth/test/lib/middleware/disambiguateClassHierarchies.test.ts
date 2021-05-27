@@ -1,15 +1,15 @@
 import { describe, it } from 'mocha'
-import express from 'express'
+import { Resource } from 'hydra-box'
 import $rdf from 'rdf-ext'
+import { ex } from '@labyrinth/testing/namespace'
+import express from 'express'
+import { hydraBox } from '@labyrinth/testing/hydra-box'
+import clownface from 'clownface'
 import * as ns from '@tpluscode/rdf-ns-builders'
 import request from 'supertest'
-import { Resource } from 'hydra-box'
-import clownface from 'clownface'
-import { hydraBox } from '@labyrinth/testing/hydra-box'
-import { ex } from '@labyrinth/testing/namespace'
-import { removeHydraOperations } from '../../../lib/middleware'
+import { disambiguateClassHierarchies } from '../../../lib/middleware'
 
-describe('@hydrofoil/labyrinth/lib/middleware/removeHydraOperations', () => {
+describe('@hydrofoil/labyrinth/lib/middleware/disambiguateClassHierarchies', () => {
   const resource: Resource = {
     prefetchDataset: $rdf.dataset(),
     dataset: async () => $rdf.dataset(),
@@ -20,27 +20,29 @@ describe('@hydrofoil/labyrinth/lib/middleware/removeHydraOperations', () => {
     types: new Set(),
   }
 
-  it('removes hydra:Resource operation if another exists', async () => {
+  it('removes operations of base class if another is found supported by child class', async () => {
     // given
     const app = express()
     app.use(hydraBox({
       setup: hydra => {
         const api = clownface({ dataset: $rdf.dataset() })
-          .node(ex.HydraOperation)
+          .node(ex.GetResource)
           .addIn(ns.hydra.supportedOperation, ns.hydra.Resource)
-          .node(ex.UserOperation)
-          .addIn(ns.hydra.supportedOperation, ex.Resource)
+          .node(ex.GetCollection)
+          .addIn(ns.hydra.supportedOperation, ns.hydra.Collection)
+          .node(ns.hydra.Collection)
+          .addOut(ns.rdfs.subClassOf, ns.hydra.Resource)
 
         hydra.operations.push({
           resource,
-          operation: api.node(ex.UserOperation),
+          operation: api.node(ex.GetResource),
         }, {
           resource,
-          operation: api.node(ex.HydraOperation),
+          operation: api.node(ex.GetCollection),
         })
       },
     }))
-    app.use(removeHydraOperations)
+    app.use(disambiguateClassHierarchies)
     app.use((req, res) => {
       res.send(req.hydra.operations.map(({ operation }) => operation.term.value))
     })
@@ -50,31 +52,31 @@ describe('@hydrofoil/labyrinth/lib/middleware/removeHydraOperations', () => {
 
     // then
     await response.expect([
-      ex.UserOperation.value,
+      ex.GetCollection.value,
     ])
   })
 
-  it('removes hydra:Resource operation if another exists (reverse order)', async () => {
+  it('does not remove operations which are supported by unrelated classes', async () => {
     // given
     const app = express()
     app.use(hydraBox({
       setup: hydra => {
         const api = clownface({ dataset: $rdf.dataset() })
-          .node(ex.HydraOperation)
+          .node(ex.GetResource)
           .addIn(ns.hydra.supportedOperation, ns.hydra.Resource)
-          .node(ex.UserOperation)
-          .addIn(ns.hydra.supportedOperation, ex.Resource)
+          .node(ex.GetPerson)
+          .addIn(ns.hydra.supportedOperation, ns.schema.Person)
 
         hydra.operations.push({
           resource,
-          operation: api.node(ex.HydraOperation),
+          operation: api.node(ex.GetResource),
         }, {
           resource,
-          operation: api.node(ex.UserOperation),
+          operation: api.node(ex.GetPerson),
         })
       },
     }))
-    app.use(removeHydraOperations)
+    app.use(disambiguateClassHierarchies)
     app.use((req, res) => {
       res.send(req.hydra.operations.map(({ operation }) => operation.term.value))
     })
@@ -84,26 +86,39 @@ describe('@hydrofoil/labyrinth/lib/middleware/removeHydraOperations', () => {
 
     // then
     await response.expect([
-      ex.UserOperation.value,
+      ex.GetResource.value,
+      ex.GetPerson.value,
     ])
   })
 
-  it('does not remove hydra:Resource operation if it is the only one', async () => {
+  it('keeps all operations of bottom class in hierarchy', async () => {
     // given
     const app = express()
     app.use(hydraBox({
       setup: hydra => {
         const api = clownface({ dataset: $rdf.dataset() })
-          .node(ex.HydraOperation)
+          .node(ex.GetResource)
           .addIn(ns.hydra.supportedOperation, ns.hydra.Resource)
+          .node(ex.GetCollection)
+          .addIn(ns.hydra.supportedOperation, ns.hydra.Collection)
+          .node(ex.AlsoGetCollection)
+          .addIn(ns.hydra.supportedOperation, ns.hydra.Collection)
+          .node(ns.hydra.Collection)
+          .addOut(ns.rdfs.subClassOf, ns.hydra.Resource)
 
         hydra.operations.push({
           resource,
-          operation: api.node(ex.HydraOperation),
+          operation: api.node(ex.GetResource),
+        }, {
+          resource,
+          operation: api.node(ex.GetCollection),
+        }, {
+          resource,
+          operation: api.node(ex.AlsoGetCollection),
         })
       },
     }))
-    app.use(removeHydraOperations)
+    app.use(disambiguateClassHierarchies)
     app.use((req, res) => {
       res.send(req.hydra.operations.map(({ operation }) => operation.term.value))
     })
@@ -113,7 +128,8 @@ describe('@hydrofoil/labyrinth/lib/middleware/removeHydraOperations', () => {
 
     // then
     await response.expect([
-      ex.HydraOperation.value,
+      ex.GetCollection.value,
+      ex.AlsoGetCollection.value,
     ])
   })
 })

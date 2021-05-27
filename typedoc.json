@@ -1,10 +1,13 @@
 {
   "name": "Creta",
   "entryPoints": [
+    "packages/knossos/lib/resource.ts",
     "packages/knossos/server.ts",
     "packages/knossos/shacl.ts",
-    "packages/knossos/lib/resource.ts",
     "packages/labyrinth/index.ts",
+    "packages/labyrinth/lib/middleware.ts",
+    "packages/labyrinth/lib/middleware/disambiguateClassHierarchies.ts",
+    "packages/labyrinth/lib/middleware/removeHydraOperations.ts",
     "packages/labyrinth/resource.ts",
     "packages/minotaur/index.ts"
   ],
