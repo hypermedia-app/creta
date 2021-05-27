@@ -9,8 +9,8 @@
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 
 </api/UsersCollection>
-  a </api/hydra/Class>, rdfs:Class, sh:NodeShape ;
-  rdfs:subClassOf </api/hydra/Collection> ;
+  a hydra:Class, rdfs:Class, sh:NodeShape ;
+  rdfs:subClassOf hydra:Collection ;
   hydra:apiDocumentation </api> ;
   knossos:createWithPUT true ;
   hydra:supportedOperation

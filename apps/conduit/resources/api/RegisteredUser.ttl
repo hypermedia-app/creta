@@ -8,9 +8,8 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 
 </api/RegisteredUser>
-  a </api/hydra/Class>, sh:NodeShape, rdfs:Class ;
+  a hydra:Class, sh:NodeShape, rdfs:Class ;
   hydra:apiDocumentation </api> ;
-  rdfs:subClassOf </api/hydra/Resource> ;
   sh:property
     [
       sh:path rdf:type ;

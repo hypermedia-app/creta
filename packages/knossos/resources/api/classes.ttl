@@ -2,10 +2,14 @@
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 
 <>
-  a <hydra/Collection> ;
+  a hydra:Collection ;
   hydra:manages
     [
       hydra:property rdf:type ;
       hydra:object hydra:Class ;
+    ],
+    [
+      hydra:property hydra:apiDocumentation ;
+      hydra:object </api> ;
     ]
 .

@@ -1,0 +1,15 @@
+@prefix acl: <http://www.w3.org/ns/auth/acl#> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+@prefix code: <https://code.described.at/> .
+@prefix auth: <https://hypermedia.app/auth#> .
+@prefix knossos: <https://hypermedia.app/knossos#> .
+
+<> knossos:supportedByClass hydra:Collection ;
+	hydra:apiDocumentation </api> ;
+	hydra:method "GET" ;
+	auth:access acl:Read ;
+	code:implementedBy [
+		<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> code:EcmaScript ;
+		code:link <node:@hydrofoil/labyrinth/collection#get> ;
+	] .
+

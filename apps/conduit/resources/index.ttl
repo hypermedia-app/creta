@@ -1,4 +1,4 @@
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 
-<> a </api/hydra/Resource> .
+<> a hydra:Resource .
 

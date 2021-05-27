@@ -14,7 +14,7 @@ import StreamClient from 'sparql-http-client/StreamClient'
 import { GraphPointer } from 'clownface'
 import type { Api } from 'hydra-box/Api'
 import { logRequest, logRequestError } from './lib/logger'
-import { removeHydraOperations, preprocessResource } from './lib/middleware'
+import { removeHydraOperations, preprocessResource, disambiguateClassHierarchies } from './lib/middleware'
 import { SparqlQueryLoader } from './lib/loader'
 import { ensureArray } from './lib/array'
 
@@ -126,6 +126,7 @@ export async function hydraBox(middlewareInit: MiddlewareParams): Promise<Router
       middleware: {
         operations: [
           removeHydraOperations,
+          disambiguateClassHierarchies,
           ...ensureArray(params.middleware?.operations),
         ],
         resource: [

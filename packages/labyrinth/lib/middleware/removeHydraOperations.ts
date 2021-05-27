@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @hydrofoil/labyrinth/lib/middleware/removeHydraOperations
+ */
+
 import { Term } from 'rdf-js'
 import { RequestHandler } from 'express'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
@@ -9,6 +14,10 @@ function isHydraType(type: Term) {
   return type.value.startsWith(hydra().value)
 }
 
+/**
+ * hydra-box operation middleware which discards operations supported by a class from the `hydra:` namespace
+ * if any other operation is found, supported by a different class
+ */
 export const removeHydraOperations: RequestHandler = (req, res, next) => {
   if (req.hydra.operations.length < 2) {
     return next()

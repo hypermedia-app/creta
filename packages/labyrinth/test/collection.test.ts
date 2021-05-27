@@ -9,7 +9,7 @@ import { hydra, rdf, schema } from '@tpluscode/rdf-ns-builders'
 import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
 import { parsers } from '@rdfjs/formats-common'
-import toStream from 'string-to-stream'
+import toStream from 'into-stream'
 import { hydraBox } from '@labyrinth/testing/hydra-box'
 import * as ns from '@hydrofoil/namespaces'
 import { ex } from '@labyrinth/testing/namespace'
@@ -21,22 +21,21 @@ RdfResource.factory.addMixin(...Object.values(Hydra))
 
 describe('@hydrofoil/labyrinth/collection', () => {
   let collectionQueryMock: SinonStubbedInstance<typeof collectionQuery>
-  let membersQuery: SinonStub
-  let totalsQuery: SinonStub
+  let memberData: SinonStub
+  let members: SinonStub
+  let totals: SinonStub
 
   beforeEach(() => {
     collectionQueryMock = sinon.stub(collectionQuery)
-    membersQuery = sinon.stub().resolves($rdf.dataset().toStream())
-    totalsQuery = sinon.stub().resolves([])
+    members = sinon.stub().resolves([])
+    totals = sinon.stub().resolves(0)
+    memberData = sinon.stub().resolves($rdf.dataset().toStream())
 
     collectionQueryMock.getSparqlQuery.resolves({
-      members: {
-        execute: membersQuery,
-      },
-      totals: {
-        execute: totalsQuery,
-      },
-    } as any)
+      members,
+      memberData,
+      totals,
+    })
   })
 
   afterEach(() => {
@@ -149,9 +148,7 @@ describe('@hydrofoil/labyrinth/collection', () => {
           })
         },
       }))
-      totalsQuery.resolves([{
-        count: { value: 1000 },
-      }])
+      totals.resolves(1000)
       app.use(get)
 
       // when

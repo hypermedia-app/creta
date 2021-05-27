@@ -4,7 +4,7 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix events: <https://hypermedia.app/events#> .
 
-<> a </api/events/EventHandler> ;
+<> a events:EventHandler ;
    rdfs:comment "Sets User vcard:UID" ;
    events:immediate true ;
    events:eventSpec

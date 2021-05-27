@@ -1,6 +1,5 @@
 import factory from 'knossos/lib/api'
 import sinon from 'sinon'
-import { ResourceStore } from 'knossos/lib/store'
 import { expect } from 'chai'
 import $rdf from 'rdf-ext'
 import { Api } from 'hydra-box/Api'
@@ -11,25 +10,20 @@ describe('@hydrofoil/knossos/lib/api', () => {
   const codePath = './lib/hydra'
   const path = '/api/path'
   const sparql: any = {}
-  let store: sinon.SinonStubbedInstance<ResourceStore>
   let loadClasses: sinon.SinonStub
+  let loadApiDocumentation: sinon.SinonStub
 
   describe('API', () => {
     let api: Api
 
     beforeEach(async () => {
       loadClasses = sinon.stub().resolves($rdf.dataset().toStream())
-      store = {
-        exists: sinon.stub(),
-        load: sinon.stub(),
-        delete: sinon.stub(),
-        save: sinon.stub(),
-      }
+      loadApiDocumentation = sinon.stub().resolves($rdf.dataset().toStream())
 
       api = await factory({
         log: sinon.spy() as any,
-        store,
         loadClasses,
+        loadApiDocumentation,
       })({
         codePath,
         path,
@@ -43,33 +37,20 @@ describe('@hydrofoil/knossos/lib/api', () => {
     })
 
     describe('.init', () => {
-      it('loads resource from store if it exists', async () => {
+      it('loads api resource ', async () => {
         // given
-        store.exists.resolves(true)
-        store.load.resolves(namedNode(term))
+        loadApiDocumentation.resolves(namedNode(term).dataset.toStream())
 
         // when
         await api.init()
 
         // then
-        expect(store.load).to.have.been.calledWith(sinon.match(term))
-      })
-
-      it('does not load if API resource does not exist', async () => {
-        // given
-        store.exists.resolves(false)
-
-        // when
-        await api.init()
-
-        // then
-        expect(store.load).not.to.have.been.called
+        expect(loadApiDocumentation).to.have.been.calledWith(sinon.match(term))
       })
 
       it('sets initialized', async () => {
         // given
-        store.exists.resolves(true)
-        store.load.resolves(namedNode(term))
+        loadApiDocumentation.resolves(namedNode(term).dataset.toStream())
 
         // when
         await api.init()

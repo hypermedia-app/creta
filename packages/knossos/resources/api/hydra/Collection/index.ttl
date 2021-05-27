@@ -1,0 +1,19 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix acl: <http://www.w3.org/ns/auth/acl#> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+@prefix auth: <https://hypermedia.app/auth#> .
+
+<>
+  a sh:NodeShape ;
+  sh:targetClass hydra:Collection ;
+  hydra:apiDocumentation </api> ;
+  sh:property
+    [
+      sh:path
+        [
+          sh:alternativePath ( hydra:manages hydra:memberAssertion )
+        ] ;
+      sh:minCount 1 ;
+    ]
+.

@@ -1,5 +1,5 @@
-import { Variable } from 'rdf-js'
-import { CONSTRUCT, SELECT } from '@tpluscode/sparql-builder'
+import { NamedNode, Stream, Variable } from 'rdf-js'
+import { DESCRIBE, SELECT } from '@tpluscode/sparql-builder'
 import { hydra, ldp, rdf } from '@tpluscode/rdf-ns-builders'
 import $rdf from 'rdf-ext'
 import cf, { AnyPointer, GraphPointer } from 'clownface'
@@ -7,6 +7,9 @@ import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
 import { IriTemplate, IriTemplateMapping } from '@rdfine/hydra'
 import { Api } from 'hydra-box/Api'
 import { query } from '@hydrofoil/namespaces'
+import type { StreamClient } from 'sparql-http-client/StreamClient'
+import once from 'once'
+import toArray from 'stream-to-array'
 import { log, warn } from '../logger'
 import { ToSparqlPatterns } from './index'
 
@@ -127,8 +130,9 @@ interface CollectionQueryParams {
 }
 
 export interface SparqlQueries {
-  members: ReturnType<typeof CONSTRUCT>
-  totals: ReturnType<typeof SELECT>
+  members(client: StreamClient): Promise<NamedNode[]>
+  memberData(client: StreamClient): Promise<Stream>
+  totals(client: StreamClient): Promise<number>
 }
 
 export async function getSparqlQuery({ api, collection, pageSize, query = cf({ dataset: $rdf.dataset() }), variables } : CollectionQueryParams): Promise<SparqlQueries | null> {
@@ -151,29 +155,38 @@ export async function getSparqlQuery({ api, collection, pageSize, query = cf({ d
 
   const memberPatterns = sparql`${managesBlockPatterns}\n${filterPatters}`
 
-  let subselect = SELECT`?g`.WHERE` 
-              GRAPH ?g {
+  let memberSelect = SELECT.DISTINCT`${subject}`.WHERE` 
                 ${memberPatterns}
-                
-                ${order.patterns}
-              }`
+                filter (isIRI(${subject}))
+                ${order.patterns}`
 
   if (variables && variables.mapping.some(mapping => mapping.property?.equals(hydra.pageIndex))) {
     const page = Number.parseInt(query.out(hydra.pageIndex).value || '1')
     const hydraLimit = query.out(hydra.limit).value
     const limit = hydraLimit ? parseInt(hydraLimit) : pageSize
 
-    subselect = subselect.LIMIT(limit).OFFSET((page - 1) * limit)
-    subselect = order.addClauses(subselect)
+    memberSelect = memberSelect.LIMIT(limit).OFFSET((page - 1) * limit)
+    memberSelect = order.addClauses(memberSelect)
+  }
+
+  const members = once((client: StreamClient) => {
+    return memberSelect.execute(client.query)
+      .then(toArray)
+      .then(array => array.map(row => row.member))
+  })
+
+  const memberData = async (client: StreamClient) => {
+    return DESCRIBE`${await members(client)}`.execute(client.query)
   }
 
   return {
-    members: CONSTRUCT`?s ?p ?o`.WHERE`
-        {
-            ${subselect}
-        }
-        
-        GRAPH ?g { ?s ?p ?o }`,
-    totals: SELECT`(count(distinct ${subject}) as ?count)`.WHERE`GRAPH ?g { ${memberPatterns} }`,
+    members,
+    memberData,
+    async totals(client) {
+      const stream = await SELECT`(count(distinct ${subject}) as ?count)`.WHERE`${memberPatterns}`.execute(client.query)
+      const [result] = await toArray(stream)
+
+      return Number.parseInt(result.count.value)
+    },
   }
 }

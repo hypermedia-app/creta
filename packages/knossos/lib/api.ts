@@ -5,18 +5,17 @@ import $rdf from 'rdf-ext'
 import { Debugger } from 'debug'
 import ApiBase from 'hydra-box/Api'
 import { ApiFactory } from '@hydrofoil/labyrinth'
-import clownface, { GraphPointer } from 'clownface'
-import DatasetExt from 'rdf-ext/lib/Dataset'
+import clownface from 'clownface'
 import express from 'express'
 import httpStatus from 'http-status'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
-import { ResourceStore } from './store'
+import { DESCRIBE } from '@tpluscode/sparql-builder'
 import * as query from './query'
 
 interface ApiFromStore {
-  store: ResourceStore
   log?: Debugger
-  loadClasses?(): Promise<Stream>
+  loadClasses?(api: NamedNode, client: StreamClient.StreamClient): Promise<Stream>
+  loadApiDocumentation?(api: NamedNode, client: StreamClient.StreamClient): Promise<Stream>
 }
 
 function assertTerm(term: Term | undefined): asserts term is NamedNode {
@@ -39,7 +38,11 @@ export const Invalidate: express.RequestHandler = (req, res) => {
   res.send(httpStatus.NO_CONTENT)
 }
 
-const createApi: (arg: ApiFromStore) => ApiFactory = ({ store, log, loadClasses = query.loadClasses }) => async ({ path = '/api', sparql, codePath }) => {
+function describeApiDocumentation(term: NamedNode, client: StreamClient.StreamClient) {
+  return DESCRIBE`${term}`.execute(client.query)
+}
+
+const createApi: (arg: ApiFromStore) => ApiFactory = ({ log, loadClasses = query.loadClasses, loadApiDocumentation = describeApiDocumentation }) => async ({ path = '/api', sparql, codePath }) => {
   const client = new StreamClient(sparql)
 
   return new (class extends ApiBase implements Api {
@@ -56,17 +59,13 @@ const createApi: (arg: ApiFromStore) => ApiFactory = ({ store, log, loadClasses 
 
       log?.('Initializing API %s', this.term.value)
 
-      let api: GraphPointer<NamedNode, DatasetExt>
+      const dataset = $rdf.dataset()
+      await Promise.all([
+        dataset.import(await loadApiDocumentation(this.term, client)),
+        dataset.import(await loadClasses(this.term, client)),
+      ])
 
-      const apiExists = await store.exists(this.term)
-      if (!apiExists) {
-        api = clownface({ dataset: $rdf.dataset(), term: this.term })
-      } else {
-        api = await store.load(this.term)
-      }
-
-      const resources = await loadClasses(this.term, client)
-      await api.dataset.import(resources)
+      const api = clownface({ dataset, term: this.term })
 
       const supportedClasses = api.any().has(rdf.type, hydra.Class)
       api.node(this.term).addOut(hydra.supportedClass, supportedClasses)

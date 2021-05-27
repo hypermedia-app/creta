@@ -1,21 +1,12 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix code: <https://code.described.at/> .
 @prefix acl: <http://www.w3.org/ns/auth/acl#> .
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 @prefix auth: <https://hypermedia.app/auth#> .
 
-<> rdfs:subClassOf hydra:Collection ;
-	a hydra:Class, rdfs:Class, sh:NodeShape ;
+<> a sh:NodeShape ;
+	sh:targetClass hydra:Collection ;
 	hydra:apiDocumentation </api> ;
-	hydra:supportedOperation [
-		hydra:method "GET" ;
-		auth:access acl:Read ;
-		code:implementedBy [
-			<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> code:EcmaScript ;
-			code:link <node:@hydrofoil/labyrinth/collection#get> ;
-		] ;
-	] ;
 	sh:property [
 		sh:path [
 			sh:alternativePath (

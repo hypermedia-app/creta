@@ -3,12 +3,12 @@
 @prefix code: <https://code.described.at/> .
 
 <>
-  a </api/hydra/Class> ;
+  a hydra:Class ;
   hydra:apiDocumentation </api> ;
   hydra:supportedOperation
     [
       hydra:method "GET" ;
-      hydra:title "Update User" ;
+      hydra:title "Get currently logged-in user" ;
       code:implementedBy
         [
           a code:EcmaScript ;

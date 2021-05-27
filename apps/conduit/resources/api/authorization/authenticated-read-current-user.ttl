@@ -1,6 +1,6 @@
 prefix acl: <http://www.w3.org/ns/auth/acl#>
 
-<> a </api/acl/Authorization> ;
+<> a acl:Authorization ;
    acl:agentClass acl:AuthenticatedAgent ;
    acl:accessTo </user> ;
    acl:mode acl:Read ;

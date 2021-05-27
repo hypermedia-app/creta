@@ -9,7 +9,7 @@ import { hydraBox } from '@labyrinth/testing/hydra-box'
 import { ex } from '@labyrinth/testing/namespace'
 import { removeHydraOperations } from '../../../lib/middleware'
 
-describe('labyrinth/lib/middleware/removeHydraOperations', () => {
+describe('@hydrofoil/labyrinth/lib/middleware/removeHydraOperations', () => {
   const resource: Resource = {
     prefetchDataset: $rdf.dataset(),
     dataset: async () => $rdf.dataset(),

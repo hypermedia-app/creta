@@ -131,20 +131,27 @@ export async function collection({ hydraBox, pageSize, sparqlClient, query, ...r
   })
 
   let total = 0
+  let members: NamedNode[] = []
   if (pageQuery) {
-    const page = await pageQuery.members.execute(sparqlClient.query)
-    const totals = pageQuery.totals.execute(sparqlClient.query)
-    for await (const result of await totals) {
-      total = Number.parseInt(result.count.value)
-    }
-    await collection.dataset.import(page)
+    const getMembers = pageQuery.members(sparqlClient).then(result => {
+      members = result
+    })
+
+    const getTotal = pageQuery.totals(sparqlClient)
+      .then(result => {
+        total = result
+      })
+
+    const getData = pageQuery.memberData(sparqlClient)
+      .then(async stream => {
+        await collection.dataset.import(stream)
+      })
+
+    await Promise.all([getMembers, getTotal, getData])
   }
   collection.addOut(hydra.totalItems, total)
 
-  const memberAssertions = collection.any()
-    .has(rdf.type, collection.out([hydra.manages, hydra.memberAssertion]).has(hydra.property, rdf.type).out(hydra.object))
-  collection.namedNode(collection.term)
-    .addOut(hydra.member, memberAssertions)
+  collection.namedNode(collection.term).addOut(hydra.member, members)
 
   const eagerLoadByCollection = api.node([hydraBox.operation.term, ...hydraBox.resource.types]).out(ns.query.include)
   const eagerLoadByMembers = api.node(collection.out(hydra.member).out(rdf.type).terms).out(ns.query.include)
