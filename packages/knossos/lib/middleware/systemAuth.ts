@@ -5,7 +5,7 @@ import error from 'http-errors'
 import clownface from 'clownface'
 import $rdf from 'rdf-ext'
 import { rdf } from '@tpluscode/rdf-ns-builders'
-import { knossos } from '../namespace'
+import { knossos } from '@hydrofoil/vocabularies/builders/strict'
 
 interface SystemAuth {
   log: Debugger

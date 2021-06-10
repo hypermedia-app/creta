@@ -8,7 +8,7 @@ import { literal } from '@rdfjs/data-model'
 import request from 'supertest'
 import { hydraBox } from '@labyrinth/testing/hydra-box'
 import { ex } from '@labyrinth/testing/namespace'
-import { query } from '@hydrofoil/namespaces'
+import { hyper_query } from '@hydrofoil/vocabularies/builders/strict'
 import { preprocessResource } from '../../../lib/middleware/preprocessResource'
 
 describe('labyrinth/lib/middleware/preprocessResource', () => {
@@ -27,7 +27,7 @@ describe('labyrinth/lib/middleware/preprocessResource', () => {
           .addOut(ns.rdf.type, [ex.Person])
         cf(hydra.api)
           .addOut(ns.hydra.supportedClass, ex.Person, clas => {
-            clas.addOut(query.preprocess, literal('loads and call enrichment function', ex.TestEnrichment))
+            clas.addOut(hyper_query.preprocess, literal('loads and call enrichment function', ex.TestEnrichment))
           })
       },
     }))

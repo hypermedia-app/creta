@@ -9,8 +9,8 @@ import clownface, { AnyPointer, GraphPointer } from 'clownface'
 import express from 'express'
 import { Debugger } from 'debug'
 import TermSet from '@rdfjs/term-set'
+import { knossos } from '@hydrofoil/vocabularies/builders/strict'
 import { Knossos } from '../server'
-import { knossos } from './namespace'
 
 export interface BeforeSaveParams {
   /**

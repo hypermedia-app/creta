@@ -13,7 +13,7 @@ import toStream from 'into-stream'
 import { hydraBox } from '@labyrinth/testing/hydra-box'
 import * as ns from '@hydrofoil/namespaces'
 import { ex } from '@labyrinth/testing/namespace'
-import { query } from '@hydrofoil/namespaces'
+import { hyper_query } from '@hydrofoil/vocabularies/builders/strict'
 import { get } from '../collection'
 import * as collectionQuery from '../lib/query/collection'
 
@@ -119,7 +119,7 @@ describe('@hydrofoil/labyrinth/collection', () => {
       // then
       const dataset = await $rdf.dataset().import(parsers.import('application/ld+json', toStream(res.text))!)
       const title = cf({ dataset })
-        .out(query.templateMappings)
+        .out(hyper_query.templateMappings)
         .out(schema.title)
         .value
 

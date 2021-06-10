@@ -4,13 +4,13 @@ import { fromPointer } from '@rdfine/as/lib/Activity'
 import clownface, { GraphPointer } from 'clownface'
 import $rdf from 'rdf-ext'
 import { nanoid } from 'nanoid'
-import namespace from '@rdfjs/namespace'
+import { hyper_events } from '@hydrofoil/vocabularies/builders/strict'
 import { attach } from 'rdf-express-node-factory'
 import { isNamedNode } from './lib'
 import { loadHandlers } from './lib/loadHandlers'
 import { runHandler } from './lib/runHandler'
 
-export const ns = namespace('https://hypermedia.app/events#')
+export { hyper_events as ns } from '@hydrofoil/vocabularies/builders/strict'
 
 interface HandlerParams {
   event: Activity
@@ -72,7 +72,7 @@ export const knossosEvents = ({ path = '_activity' }: KnossosEvents = {}): expre
       return item.handlers
         .then(handlers => {
           const immediatePromises = handlers.map((entry) => {
-            if (!entry.handler.has(ns.immediate, true).terms.length) {
+            if (!entry.handler.has(hyper_events.immediate, true).terms.length) {
               req.knossos.log('Not immediate handler %s', entry.handler.value)
               return
             }

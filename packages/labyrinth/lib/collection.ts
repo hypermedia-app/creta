@@ -7,7 +7,7 @@ import StreamClient from 'sparql-http-client/StreamClient'
 import { ResourceIdentifier } from '@tpluscode/rdfine'
 import { HydraBox } from 'hydra-box'
 import DatasetExt from 'rdf-ext/lib/Dataset'
-import * as ns from '@hydrofoil/namespaces'
+import { hyper_query } from '@hydrofoil/vocabularies/builders'
 import { DESCRIBE } from '@tpluscode/sparql-builder'
 import { getSparqlQuery } from './query/collection'
 import { loadLinkedResources } from './query/eagerLinks'
@@ -60,7 +60,7 @@ function addCollectionViews({ collection, total, template, query = emptyDataset,
 }
 
 function addTemplateMappings(collection: GraphPointer, template: IriTemplate, request: AnyPointer = emptyDataset): void {
-  collection.addOut(ns.query.templateMappings, currMappings => {
+  collection.addOut(hyper_query.templateMappings, currMappings => {
     template.mapping.forEach(mapping => {
       if (mapping.property) {
         const property = mapping.property.id
@@ -153,8 +153,8 @@ export async function collection({ hydraBox, pageSize, sparqlClient, query, ...r
 
   collection.namedNode(collection.term).addOut(hydra.member, members)
 
-  const eagerLoadByCollection = api.node([hydraBox.operation.term, ...hydraBox.resource.types]).out(ns.query.include)
-  const eagerLoadByMembers = api.node(collection.out(hydra.member).out(rdf.type).terms).out(ns.query.include)
+  const eagerLoadByCollection = api.node([hydraBox.operation.term, ...hydraBox.resource.types]).out(hyper_query.include)
+  const eagerLoadByMembers = api.node(collection.out(hydra.member).out(rdf.type).terms).out(hyper_query.include)
   const includeLinked = [...eagerLoadByCollection.toArray(), ...eagerLoadByMembers.toArray()]
   collection.dataset.addAll(await loadLinkedResources(collection.out(hydra.member), includeLinked, sparqlClient))
 

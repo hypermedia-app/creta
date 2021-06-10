@@ -6,7 +6,7 @@ import cf, { AnyPointer, GraphPointer } from 'clownface'
 import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
 import { IriTemplate, IriTemplateMapping } from '@rdfine/hydra'
 import { Api } from 'hydra-box/Api'
-import { query } from '@hydrofoil/namespaces'
+import { hyper_query } from '@hydrofoil/vocabularies/builders/strict'
 import type { StreamClient } from 'sparql-http-client/StreamClient'
 import once from 'once'
 import toArray from 'stream-to-array'
@@ -32,7 +32,7 @@ function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPoin
       return ''
     }
 
-    const queryFilters = mapping.pointer.out(query.filter)
+    const queryFilters = mapping.pointer.out(hyper_query.filter)
     if (!queryFilters.value) {
       log('Implementation not found for %s', property.id.value)
       return ''
@@ -79,7 +79,7 @@ function onlyValidManagesBlocks(manages: GraphPointer) {
 type SelectBuilder = ReturnType<typeof SELECT>
 
 function createOrdering(api: AnyPointer, collection: GraphPointer, subject: Variable): { patterns: SparqlTemplateResult; addClauses(q: SelectBuilder): SelectBuilder } {
-  const orders = api.node(collection.out(rdf.type) as any).out(query.order).toArray()
+  const orders = api.node(collection.out(rdf.type) as any).out(hyper_query.order).toArray()
   if (!orders.length) {
     return {
       patterns: sparql``,
@@ -92,7 +92,7 @@ function createOrdering(api: AnyPointer, collection: GraphPointer, subject: Vari
   const clauses: Array<{ variable: Variable; descending: boolean }> = []
 
   for (const order of orders[0].list()!) {
-    const propertyPath = order.out(query.path).list()
+    const propertyPath = order.out(hyper_query.path).list()
     if (!propertyPath) continue
 
     const path = [...propertyPath].reduce((current, prop, index) => {
@@ -107,7 +107,7 @@ function createOrdering(api: AnyPointer, collection: GraphPointer, subject: Vari
 
     clauses.push({
       variable,
-      descending: ldp.Descending.equals(order.out(query.direction).term),
+      descending: ldp.Descending.equals(order.out(hyper_query.direction).term),
     })
   }
 

@@ -13,6 +13,7 @@
   ],
   "dependencies": {
     "@hydrofoil/namespaces": "^0.0.0",
+    "@hydrofoil/vocabularies": "^0.1.0",
     "@rdfjs/namespace": "^1.1.0",
     "@rdfine/as": "^0.1.0",
     "@tpluscode/rdf-ns-builders": "^0.4.2",

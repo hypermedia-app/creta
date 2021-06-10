@@ -7,7 +7,8 @@ import sinon from 'sinon'
 import { as } from '@tpluscode/rdf-ns-builders'
 import { knossosMock } from '@labyrinth/testing/knossos'
 import { blankNode } from '@labyrinth/testing/nodeFactory'
-import { knossosEvents, ns } from '../index'
+import { hyper_events } from '@hydrofoil/vocabularies/builders'
+import { knossosEvents } from '../index'
 import * as lib from '../lib/loadHandlers'
 
 describe('@hydrofoil/express-events', () => {
@@ -87,7 +88,7 @@ describe('@hydrofoil/express-events', () => {
         const otherHandler = sinon.spy()
         const loadHandlers = sinon.stub(lib, 'loadHandlers')
         loadHandlers.resolves([{
-          handler: blankNode().addOut(ns.immediate, true),
+          handler: blankNode().addOut(hyper_events.immediate, true),
           impl: immediateHandler,
         }, {
           handler: blankNode(),
@@ -127,7 +128,7 @@ describe('@hydrofoil/express-events', () => {
         const immediateHandler = sinon.spy()
         const loadHandlers = sinon.stub(lib, 'loadHandlers')
         loadHandlers.resolves([{
-          handler: blankNode().addOut(ns.immediate, true),
+          handler: blankNode().addOut(hyper_events.immediate, true),
           impl: immediateHandler,
         }])
 
@@ -163,7 +164,7 @@ describe('@hydrofoil/express-events', () => {
         const otherHandler = sinon.spy()
         const loadHandlers = sinon.stub(lib, 'loadHandlers')
         loadHandlers.resolves([{
-          handler: blankNode().addOut(ns.immediate, true),
+          handler: blankNode().addOut(hyper_events.immediate, true),
           impl: sinon.spy(),
         }, {
           handler: blankNode(),

@@ -10,8 +10,8 @@ import { fromPointer } from '@rdfine/hydra/lib/IriTemplate'
 import { IriTemplateBundle } from '@rdfine/hydra/bundles'
 import RdfResource, { ResourceIdentifier } from '@tpluscode/rdfine'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
+import { knossos } from '@hydrofoil/vocabularies/builders/strict'
 import { shaclValidate } from './shacl'
-import { knossos } from './lib/namespace'
 import { save } from './lib/resource'
 
 RdfResource.factory.addMixin(...IriTemplateBundle)

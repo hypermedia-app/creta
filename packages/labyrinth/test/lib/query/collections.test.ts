@@ -7,7 +7,7 @@ import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
 import { SELECT } from '@tpluscode/sparql-builder'
 import * as Hydra from '@rdfine/hydra'
 import RdfResource from '@tpluscode/rdfine'
-import * as ns from '@hydrofoil/namespaces'
+import { hyper_query } from '@hydrofoil/vocabularies/builders/strict'
 import { fromPointer } from '@rdfine/hydra/lib/IriTemplate'
 import { ex } from '@labyrinth/testing/namespace'
 import '@labyrinth/testing/sparql'
@@ -220,7 +220,7 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
               types: [hydra.IriTemplateMapping],
               property: schema.title,
               variable: 'title',
-              [ns.query.filter.value]: {},
+              [hyper_query.filter.value]: {},
             }],
           }),
           query: cf({ dataset: $rdf.dataset() })

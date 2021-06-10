@@ -11,8 +11,8 @@ import { namedNode } from '@labyrinth/testing/nodeFactory'
 import { expect } from 'chai'
 import sinon from 'sinon'
 import httpStatus from 'http-status'
+import * as ns from '@hydrofoil/vocabularies/builders'
 import { CreateMember } from '../collection'
-import * as ns from '../lib/namespace'
 
 describe('@hydrofoil/knossos/collection', () => {
   let app: express.Express

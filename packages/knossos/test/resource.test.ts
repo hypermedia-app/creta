@@ -12,8 +12,8 @@ import clownface from 'clownface'
 import { expect } from 'chai'
 import { namedNode } from '@labyrinth/testing/nodeFactory'
 import httpError from 'http-errors'
+import * as ns from '@hydrofoil/vocabularies/builders/strict'
 import * as resource from '../resource'
-import * as ns from '../lib/namespace'
 import * as shacl from '../shacl'
 
 const setBeforeHooks: express.RequestHandler = (req, res, next) => {

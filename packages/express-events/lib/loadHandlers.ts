@@ -3,10 +3,11 @@ import { Activity } from '@rdfine/as'
 import { DESCRIBE } from '@tpluscode/sparql-builder'
 import { as, rdf, rdfs } from '@tpluscode/rdf-ns-builders'
 import { sparql } from '@tpluscode/rdf-string'
+import { hyper_events } from '@hydrofoil/vocabularies/builders/strict'
 import { code } from '@hydrofoil/namespaces'
 import type * as express from 'express'
 import $rdf from 'rdf-ext'
-import { Handler, ns } from '../index'
+import { Handler } from '../index'
 
 export interface RuntimeHandler {
   handler: GraphPointer
@@ -26,12 +27,12 @@ function handlerQuery(event: Activity) {
       
   ${event.object ? sparql`${event.object.id} a ?type .` : sparql`VALUES ?type { ${rdfs.Resource} }`}
 
-  ?handler a ${ns.EventHandler} ;
-           ${ns.eventSpec} [
+  ?handler a ${hyper_events.EventHandler} ;
+           ${hyper_events.eventSpec} [
               ${rdf.predicate} ${rdf.type} ;
               ${rdf.object} ?activity ;
            ] ;
-           ${ns.objectSpec} [
+           ${hyper_events.objectSpec} [
               ${rdf.predicate} ${rdf.type} ;
               ${rdf.object} ?type ;
            ] ;

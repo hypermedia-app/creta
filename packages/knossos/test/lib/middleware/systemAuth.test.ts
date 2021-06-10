@@ -4,8 +4,8 @@ import request from 'supertest'
 import httpStatus from 'http-status'
 import RdfResource from '@tpluscode/rdfine'
 import { expect } from 'chai'
+import { knossos } from '@hydrofoil/vocabularies/builders/strict'
 import { systemAuth } from '../../../lib/middleware/systemAuth'
-import { knossos } from '../../../lib/namespace'
 
 describe('@hydrofoil/knossos/lib/middleware/systemAuth', () => {
   const log: any = sinon.spy()
