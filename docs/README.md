@@ -66,7 +66,3 @@ Talos is a CLI tool which can be used to boostrap initial resources inside a tri
 ### @hydrofoil/knossos-events
 
 Configure domain-event handlers by declaratively annotating data structures directly, in a data-centric fashion.
-
-### @hydrofoil/namespaces
-
-Exports RDF/JS namespace builders of vocabularies used by the other packages.

@@ -15,8 +15,7 @@
     "hydra-box": "^0.6.1"
   },
   "dependencies": {
-    "@hydrofoil/namespaces": "^0.0.0",
-    "@hydrofoil/vocabularies": "^0.1.0",
+    "@hydrofoil/vocabularies": "^0.1.6",
     "@rdfine/hydra": "^0.6",
     "@rdfjs/data-model": "^1.2",
     "@rdfjs/term-map": "^1.0.0",

@@ -8,7 +8,7 @@ import { blankNode } from '@labyrinth/testing/nodeFactory'
 import DatasetExt from 'rdf-ext/lib/Dataset'
 import $rdf from 'rdf-ext'
 import clownface, { AnyContext, AnyPointer } from 'clownface'
-import { code } from '@hydrofoil/namespaces'
+import { code } from '@hydrofoil/vocabularies/builders'
 import { loadHandlers } from '../../lib/loadHandlers'
 
 describe('@hydrofoil/express-events/lib/loadHandlers', () => {
