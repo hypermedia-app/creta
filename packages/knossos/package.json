@@ -1,6 +1,6 @@
 {
   "name": "@hydrofoil/knossos",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "bin": {
     "knossos": "bin/index.js"
   },
@@ -15,8 +15,8 @@
   ],
   "dependencies": {
     "@fcostarodrigo/walk": "^5.0.1",
-    "@hydrofoil/knossos-events": "0.0.0",
-    "@hydrofoil/labyrinth": "^0.4.1",
+    "@hydrofoil/knossos-events": "0.1.0",
+    "@hydrofoil/labyrinth": "^0.5.0",
     "@hydrofoil/vocabularies": "^0.1.1",
     "@rdfine/hydra": "^0.6.4",
     "@graphy/content.trig.read": "^4.3.3",

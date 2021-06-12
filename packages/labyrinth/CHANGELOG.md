@@ -1,5 +1,23 @@
 # @hydrofoil/labyrinth
 
+## 0.5.0
+
+### Minor Changes
+
+- e195d2f: Breaking: Use `DESCRIBE` query form to get collection members
+- 8df3380: Breaking changes:
+  - Extracted `protectedResource` export to package `@hydrofoil/labyrinth-jwt-permissions`
+    - Removed all `auth` features from core
+  - Decoupled logic creating hydra-box API
+    - `@hydrofoil/minotaur` loads local RDF files
+    - `@hydrofoil/knossos` loads `hydra:ApiDocumentation` from store
+  - default `SparqlQueryLoader` uses default graph (assumes Union Graph is queries)
+
+### Patch Changes
+
+- a083172: Add support for `Prefer: return=minimal` to only select from own graph
+- ea1fab4: Operation middleware to resolve ambiguous operation by selecting operation supported by most derived class
+
 ## 0.4.1
 
 ### Patch Changes
