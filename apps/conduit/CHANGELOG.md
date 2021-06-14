@@ -1,10 +1,20 @@
 # @hydrofoil/conduit
 
+## 0.1.1
+
+### Patch Changes
+
+- Updated dependencies [b4906f2]
+- Updated dependencies [699c630]
+- Updated dependencies [3f6cdb8]
+  - @hydrofoil/knossos@0.1.1
+
 ## 0.1.0
+
 ### Minor Changes
 
 - 166bed1: First version
-  
+
   Starting an example app, loosely based on https://github.com/gothinkster/realworld
 
 ### Patch Changes
