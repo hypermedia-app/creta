@@ -32,7 +32,7 @@ describe('@hydrofoil/knossos/resource', () => {
 
   beforeEach(() => {
     check = sinon.stub(wac, 'check').resolves(true)
-    sinon.stub(shacl, 'shaclValidate').callsFake((req, res, next) => next())
+    sinon.stub(shacl, 'shaclValidate').callsFake(() => (req, res, next) => next())
 
     app = express()
     knossos = knossosMock(app)

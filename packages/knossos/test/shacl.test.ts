@@ -51,7 +51,7 @@ describe('@hydrofoil/knossos/shacl', () => {
   it('loads shapes for the sum of resource types and payload types', async () => {
     // given
     resourceTypes.add(foaf.Agent)
-    app.post('*', shaclValidate, ok)
+    app.post('*', shaclValidate(), ok)
 
     // when
     await request(app)
