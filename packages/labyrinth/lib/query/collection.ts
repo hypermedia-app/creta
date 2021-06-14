@@ -176,7 +176,12 @@ export async function getSparqlQuery({ api, collection, pageSize, query = cf({ d
   })
 
   const memberData = async (client: StreamClient) => {
-    return DESCRIBE`${await members(client)}`.execute(client.query)
+    const ids = await members(client)
+    if (ids.length === 0) {
+      return $rdf.dataset().toStream()
+    }
+
+    return DESCRIBE`${ids}`.execute(client.query)
   }
 
   return {
