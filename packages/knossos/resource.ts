@@ -69,9 +69,9 @@ const checkPermissions = (client: StreamClient) => asyncMiddleware(async (req, r
   next()
 })
 
-export const create = (client: StreamClient) => Router().use(ensureNotExists, checkPermissions(client), shaclValidate, saveResource({ create: true }))
+export const create = (client: StreamClient) => Router().use(ensureNotExists, checkPermissions(client), shaclValidate(), saveResource({ create: true }))
 
-export const PUT = Router().use(shaclValidate, saveResource({ create: false }))
+export const PUT = Router().use(shaclValidate(), saveResource({ create: false }))
 
 export const DELETE = Router().use(asyncMiddleware(async (req, res) => {
   await req.knossos.store.delete(req.hydra.resource.term)
