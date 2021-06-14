@@ -46,12 +46,14 @@ const expectedQuery = (options: ExpectedQuerySetup) => {
 describe('@hydrofoil/labyrinth/lib/query/collection', () => {
   describe('getSparqlQuery', () => {
     let client: StreamClient
+    let select: sinon.SinonStub
 
     beforeEach(() => {
+      select = sinon.stub().resolves(intoStream([]))
       client = {
         query: {
           construct: sinon.stub().resolves($rdf.dataset().toStream()),
-          select: sinon.stub().resolves(intoStream([])),
+          select,
         },
       } as any
     })
@@ -317,6 +319,52 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
           expect(value).to.be.a.query(expected)
           return true
         }))
+      })
+    })
+
+    describe('memberData', () => {
+      it('returns empty when there are no members', async () => {
+        // given
+        const query = await getSparqlQuery({
+          api: api(),
+          collection: cf({ dataset: $rdf.dataset() }).blankNode()
+            .addOut(hydra.memberAssertion, manages => {
+              manages.addOut(hydra.property, schema.knows)
+              manages.addOut(hydra.subject, ex.JohnDoe)
+            }),
+          pageSize: 10,
+          variables: null,
+        })
+
+        // when
+        const dataset = await $rdf.dataset().import(await query!.memberData(client))
+
+        // then
+        expect(dataset.size).to.eq(0)
+        expect(client.query.construct).not.to.have.been.called
+      })
+
+      it('describes collection members', async () => {
+        // given
+        const query = await getSparqlQuery({
+          api: api(),
+          collection: cf({ dataset: $rdf.dataset() }).blankNode()
+            .addOut(hydra.memberAssertion, manages => {
+              manages.addOut(hydra.property, schema.knows)
+              manages.addOut(hydra.subject, ex.JohnDoe)
+            }),
+          pageSize: 10,
+          variables: null,
+        })
+        select.resolves(intoStream.object([
+          ex.JaneDoe,
+        ]))
+
+        // when
+        await $rdf.dataset().import(await query!.memberData(client))
+
+        // then
+        expect(client.query.construct).to.have.been.called
       })
     })
   })
