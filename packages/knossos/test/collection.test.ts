@@ -108,6 +108,7 @@ describe('@hydrofoil/knossos/collection', () => {
 
     it('creates identifier from template with transforms', async () => {
       // given
+      let loadCode!: sinon.SinonStub
       app.use((req, res, next) => {
         clownface(req.hydra.api)
           .node(ex.Collection)
@@ -115,8 +116,8 @@ describe('@hydrofoil/knossos/collection', () => {
           .out(hydra.mapping)
           .addOut(ns.knossos.transformVariable)
 
-        ;(req.hydra.api.loaderRegistry.load as sinon.SinonStub)
-          .resolves((term: Term) => $rdf.literal(`${term.value}-and-jane`))
+        ;({ loadCode } = req as any)
+        loadCode.resolves((term: Term) => $rdf.literal(`${term.value}-and-jane`))
 
         next()
       })
@@ -132,6 +133,9 @@ describe('@hydrofoil/knossos/collection', () => {
       // then
       expect(knossos.store.save).to.have.been.calledWith(sinon.match({
         term: ex('foo/john-and-jane'),
+      }))
+      expect(loadCode).to.have.been.calledWith(sinon.match.any, sinon.match({
+        basePath: sinon.match.string,
       }))
     })
 
