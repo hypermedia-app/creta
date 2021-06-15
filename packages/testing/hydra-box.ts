@@ -96,6 +96,7 @@ export function hydraBox({ setup, query }: MiddlewareOptions = {}): RequestHandl
     setup && await setup(hydra)
     req.hydra = hydra
     req.agent = namedNode('agent')
+    req.loadCode = sinon.stub()
     req.labyrinth = {
       sparql: {
         store: sinon.createStubInstance(StreamStore) as any,

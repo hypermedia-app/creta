@@ -24,6 +24,7 @@ export function hasAllRequiredVariables(template: IriTemplate, variables: GraphP
 }
 
 export async function applyTransformations(req: Request, resource: GraphPointer, template: GraphPointer): Promise<void> {
+  const { api } = req.hydra
   const mappingsWithTransform = template.out(hydra.mapping).has(knossos.transformVariable).toArray()
 
   for (const mapping of mappingsWithTransform) {
@@ -34,7 +35,7 @@ export async function applyTransformations(req: Request, resource: GraphPointer,
       .map(async object => {
         return transformations.reduce((promise, transformation) => {
           return promise.then(async previous => {
-            const transformFunc = await req.hydra.api.loaderRegistry.load<TransformVariable>(transformation)
+            const transformFunc = await req.loadCode<TransformVariable>(transformation, { basePath: api.codePath })
             if (transformFunc) {
               return transformFunc(previous)
             }
