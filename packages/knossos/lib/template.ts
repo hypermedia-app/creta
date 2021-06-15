@@ -35,7 +35,11 @@ export async function applyTransformations(req: Request, resource: GraphPointer,
         return transformations.reduce((promise, transformation) => {
           return promise.then(async previous => {
             const transformFunc = await req.hydra.api.loaderRegistry.load<TransformVariable>(transformation)
-            return transformFunc ? transformFunc(previous) : previous
+            if (transformFunc) {
+              return transformFunc(previous)
+            }
+
+            throw new Error('Failed to load transformation ' + transformation.value)
           })
         }, Promise.resolve(object.term))
       })

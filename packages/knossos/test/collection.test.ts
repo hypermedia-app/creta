@@ -3,7 +3,7 @@ import express from 'express'
 import request from 'supertest'
 import { hydraBox } from '@labyrinth/testing/hydra-box'
 import clownface, { GraphPointer } from 'clownface'
-import { foaf, hydra, rdf, schema } from '@tpluscode/rdf-ns-builders'
+import { foaf, hydra, rdf, rdfs, schema } from '@tpluscode/rdf-ns-builders'
 import { ex } from '@labyrinth/testing/namespace'
 import { KnossosMock, knossosMock } from '@labyrinth/testing/knossos'
 import { turtle } from '@tpluscode/rdf-string'
@@ -133,6 +133,47 @@ describe('@hydrofoil/knossos/collection', () => {
       expect(knossos.store.save).to.have.been.calledWith(sinon.match({
         term: ex('foo/john-and-jane'),
       }))
+    })
+
+    it('throws when transform fails to load transforms', async () => {
+      // given
+      app.use((req, res, next) => {
+        clownface(req.hydra.api)
+          .node(ex.Collection)
+          .out(ns.knossos.memberTemplate)
+          .out(hydra.mapping)
+          .addOut(ns.knossos.transformVariable)
+
+        ;(req.hydra.api.loaderRegistry.load as sinon.SinonStub).resolves(null)
+
+        next()
+      })
+      app.post('/collection', CreateMember)
+
+      // when
+      const response = request(app)
+        .post('/collection')
+        .send(turtle`<> ${schema.name} "john" .`.toString())
+        .set('content-type', 'text/turtle')
+        .set('host', 'example.com')
+
+      // then
+      await response.expect(500)
+    })
+
+    it('throws when a member template variable is missing', async () => {
+      // given
+      app.post('/collection', CreateMember)
+
+      // when
+      const response = request(app)
+        .post('/collection')
+        .send(turtle`<> ${rdfs.label} "john" .`.toString())
+        .set('content-type', 'text/turtle')
+        .set('host', 'example.com')
+
+      // then
+      await response.expect(400)
     })
 
     it('adds all member assertions', async () => {
