@@ -260,6 +260,58 @@ prefix code: <https://code.described.at/>
 > [!TIP]
 > The snippet above proposes to subclass the article collection so that API providers have fine-grained control of which collections can be used to create new resources and which cannot.
 
+### Transforming variables
+
+The above snippet could return long identifiers, riddled with percent-encoded characters which otherwise would not be allowed in URIs.
+
+Another pitfall could be clashing identifiers, given the same values of the mapped predicates.
+
+For that purpose, knossos allows adding a transformation function to each mapping, so that objects can be modified before they are passed to the template for expansion.
+
+```turtle
+prefix code: <https://code.described.at/>
+prefix schema: <http://schema.org/>
+prefix hydra: <http://www.w3.org/ns/hydra/core#>
+prefix knossos: <https://hypermedia.app/knossos#> 
+
+</api/WritableArticleCollection>
+  knossos:memberTemplate
+    [
+      a hydra:IriTemplate ;
+      hydra:template "/article/{title}" ;
+      hydra:mapping
+        [
+          hydra:variable "title" ;
+          hydra:property schema:title ;
+          hydra:require true ;
+          knossos:transformVariable
+            [
+                a code:EcmaScript ;
+                code:link <file:lib/article#slugifyTitle> ;
+            ] ;
+        ] ;
+    ] ;
+.
+```
+
+The hypothetical implementation of `lib/article` could cut the title and add a random string at the end to create shorter, random URIs
+
+```typescript
+import type { TransformVariable } from '@hydrofoil/knossos/collection'
+import $rdf from 'rdf-ext'
+import URLSlugify from 'url-slugify'
+
+const slugify = new URLSlugify() 
+
+export const slugifyTitle: TransformVariable = (term) => {
+    const title = term.value
+    
+    return $rdf.literal(slugify(title.substr(0, 10)))
+}
+```
+
+### Static member assertions
+
 The handler `@hydrofoil/knossos/collection#CreateMember` builds an identifier from the request payload as described by the `hydra:mapping`. It will also ensure that the new instance has all the member assertions.
 
 ```turtle
