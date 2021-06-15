@@ -1,5 +1,13 @@
 # @hydrofoil/knossos
 
+## 0.1.2
+
+### Patch Changes
+
+- 246d269: Transform variables when creating member identifiers
+- Updated dependencies [2701b91]
+  - @hydrofoil/labyrinth@0.5.1
+
 ## 0.1.1
 
 ### Patch Changes

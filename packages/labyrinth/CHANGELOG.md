@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.5.1
+
+### Patch Changes
+
+- 2701b91: Empty collection failed to dereference
+
 ## 0.5.0
 
 ### Minor Changes
