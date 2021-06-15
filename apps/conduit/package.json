@@ -1,13 +1,13 @@
 {
   "name": "@hydrofoil/conduit",
   "private": true,
-  "version": "0.1.1",
+  "version": "0.1.2",
   "scripts": {
     "resources": "../../packages/knossos/bin/index.ts init",
     "bootstrap": "../../packages/talos/bin/index.ts put --vocabs --resources --api https://conduit.knossos.lndo.site --endpoint http://db.labyrinth.lndo.site/repositories/labyrinth --user minos --password password"
   },
   "dependencies": {
-    "@hydrofoil/knossos": "0.1.1",
+    "@hydrofoil/knossos": "0.1.2",
     "@rdfjs/term-set": "^1.0.1",
     "@tpluscode/rdf-ns-builders": "^0.4",
     "@tpluscode/sparql-builder": "^0.3.11",
