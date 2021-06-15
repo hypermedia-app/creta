@@ -13,6 +13,9 @@ import clownface, { AnyPointer, GraphPointer } from 'clownface'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
 import { shaclValidate } from './shacl'
 import { save } from './lib/resource'
+import { applyTransformations, hasAllRequiredVariables } from './lib/template'
+
+export type { TransformVariable } from './lib/template'
 
 RdfResource.factory.addMixin(...IriTemplateBundle)
 
@@ -43,15 +46,20 @@ export const CreateMember = Router().use(shaclValidate({ payloadTypesOnly: true 
   }
 
   const { type } = rdf
-  const { memberTemplate } = knossos
-  const memberTemplateS = api.node(collection.out(type)).out(memberTemplate)
-  if (!checkMemberTemplate(memberTemplateS)) {
-    req.knossos.log.extend('collection')('Found member templates %o', memberTemplateS.map(mt => mt.out(hydra.template).value))
+  const memberTemplate = api.node(collection.out(type)).out(knossos.memberTemplate)
+  if (!checkMemberTemplate(memberTemplate)) {
+    req.knossos.log.extend('collection')('Found member templates %o', memberTemplate.map(mt => mt.out(hydra.template).value))
     return next(new error.InternalServerError(`No unique knossos:memberTemplate found for collection ${collection.value}`))
   }
 
   let member = await req.resource()
-  const memberId = $rdf.namedNode(new URL(fromPointer(memberTemplateS).expand(member), req.absoluteUrl()).toString())
+  const iriTemplate = fromPointer(memberTemplate)
+  if (!hasAllRequiredVariables(iriTemplate, member)) {
+    return next(new error.BadRequest('Not all URI Template variables were provided.'))
+  }
+
+  await applyTransformations(req, member, iriTemplate.pointer)
+  const memberId = $rdf.namedNode(new URL(iriTemplate.expand(member), req.absoluteUrl()).toString())
 
   if (await req.knossos.store.exists(memberId)) {
     return next(new error.Conflict())

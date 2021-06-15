@@ -1,3 +1,4 @@
+import { Term } from 'rdf-js'
 import express from 'express'
 import request from 'supertest'
 import { hydraBox } from '@labyrinth/testing/hydra-box'
@@ -12,6 +13,7 @@ import { expect } from 'chai'
 import sinon from 'sinon'
 import httpStatus from 'http-status'
 import * as ns from '@hydrofoil/vocabularies/builders'
+import $rdf from 'rdf-ext'
 import { CreateMember } from '../collection'
 
 describe('@hydrofoil/knossos/collection', () => {
@@ -101,6 +103,35 @@ describe('@hydrofoil/knossos/collection', () => {
       // then
       expect(knossos.store.save).to.have.been.calledWith(sinon.match({
         term: ex('foo/john'),
+      }))
+    })
+
+    it('creates identifier from template with transforms', async () => {
+      // given
+      app.use((req, res, next) => {
+        clownface(req.hydra.api)
+          .node(ex.Collection)
+          .out(ns.knossos.memberTemplate)
+          .out(hydra.mapping)
+          .addOut(ns.knossos.transformVariable)
+
+        ;(req.hydra.api.loaderRegistry.load as sinon.SinonStub)
+          .resolves((term: Term) => $rdf.literal(`${term.value}-and-jane`))
+
+        next()
+      })
+      app.post('/collection', CreateMember)
+
+      // when
+      await request(app)
+        .post('/collection')
+        .send(turtle`<> ${schema.name} "john" .`.toString())
+        .set('content-type', 'text/turtle')
+        .set('host', 'example.com')
+
+      // then
+      expect(knossos.store.save).to.have.been.calledWith(sinon.match({
+        term: ex('foo/john-and-jane'),
       }))
     })
 
