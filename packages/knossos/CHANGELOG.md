@@ -1,5 +1,13 @@
 # @hydrofoil/knossos
 
+## 0.1.3
+
+### Patch Changes
+
+- 2de1da3: Base path needs to be passed to loader
+- Updated dependencies [36470b5]
+  - @hydrofoil/knossos-events@0.1.1
+
 ## 0.1.2
 
 ### Patch Changes
