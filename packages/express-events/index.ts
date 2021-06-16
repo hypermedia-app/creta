@@ -71,13 +71,14 @@ export const knossosEvents = ({ path = '_activity' }: KnossosEvents = {}): expre
     const immediate = pendingEvents.map((item) => {
       return item.handlers
         .then(handlers => {
-          const immediatePromises = handlers.map((entry) => {
+          const immediatePromises = handlers.map(async (entry) => {
             if (!entry.handler.has(hyper_events.immediate, true).terms.length) {
               req.knossos.log('Not immediate handler %s', entry.handler.value)
               return
             }
 
-            return runHandler(entry, item.activity, req)
+            await runHandler(entry, item.activity, req)
+            entry.handled = true
           })
 
           return Promise.all(immediatePromises)

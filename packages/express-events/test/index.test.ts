@@ -123,6 +123,34 @@ describe('@hydrofoil/express-events', () => {
         })
       })
 
+      it('only runs an immediate handler once', async () => {
+        // given
+        const immediateHandler = sinon.spy()
+        const loadHandlers = sinon.stub(lib, 'loadHandlers')
+        loadHandlers.resolves([{
+          handler: blankNode().addOut(hyper_events.immediate, true),
+          impl: immediateHandler,
+        }])
+
+        app.use('/my/app', Router().get('*', async (req, res) => {
+          res.event({
+            types: [as.Create],
+          })
+
+          await res.event.handleImmediate()
+
+          res.sendStatus(200)
+        }))
+
+        // when
+        await request(app)
+          .get('/my/app/foo')
+          .set('host', 'example.com')
+
+        // then
+        expect(immediateHandler).to.have.been.calledOnce
+      })
+
       it('called multiple times, runs handlers only once', async () => {
         // given
         const immediateHandler = sinon.spy()
