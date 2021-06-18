@@ -4,6 +4,8 @@ import { hydra } from '@tpluscode/rdf-ns-builders'
 import type { GraphPointer } from 'clownface'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
 import { Request } from 'express'
+import $rdf from 'rdf-ext'
+import clownface from 'clownface'
 
 export interface TransformVariable {
   (term: Term): Term
@@ -23,11 +25,12 @@ export function hasAllRequiredVariables(template: IriTemplate, variables: GraphP
   return true
 }
 
-export async function applyTransformations(req: Request, resource: GraphPointer, template: GraphPointer): Promise<void> {
+export async function applyTransformations(req: Request, resource: GraphPointer, template: GraphPointer): Promise<GraphPointer> {
   const { api } = req.hydra
-  const mappingsWithTransform = template.out(hydra.mapping).has(knossos.transformVariable).toArray()
+  const mappings = template.out(hydra.mapping).toArray()
+  const variables = clownface({ dataset: $rdf.dataset() }).blankNode()
 
-  for (const mapping of mappingsWithTransform) {
+  for (const mapping of mappings) {
     const transformations = mapping.out(knossos.transformVariable).toArray()
     const property = mapping.out(hydra.property)
 
@@ -45,6 +48,8 @@ export async function applyTransformations(req: Request, resource: GraphPointer,
         }, Promise.resolve(object.term))
       })
 
-    resource.deleteOut(property).addOut(property, await Promise.all(transformed))
+    variables.addOut(property, await Promise.all(transformed))
   }
+
+  return variables
 }

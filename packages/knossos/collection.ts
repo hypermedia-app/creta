@@ -58,8 +58,8 @@ export const CreateMember = Router().use(shaclValidate({ payloadTypesOnly: true 
     return next(new error.BadRequest('Not all URI Template variables were provided.'))
   }
 
-  await applyTransformations(req, member, iriTemplate.pointer)
-  const memberId = $rdf.namedNode(new URL(iriTemplate.expand(member), req.absoluteUrl()).toString())
+  const templateVariables = await applyTransformations(req, member, iriTemplate.pointer)
+  const memberId = $rdf.namedNode(new URL(iriTemplate.expand(templateVariables), req.absoluteUrl()).toString())
 
   if (await req.knossos.store.exists(memberId)) {
     return next(new error.Conflict())
