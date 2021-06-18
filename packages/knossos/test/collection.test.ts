@@ -131,8 +131,10 @@ describe('@hydrofoil/knossos/collection', () => {
         .set('host', 'example.com')
 
       // then
-      expect(knossos.store.save).to.have.been.calledWith(sinon.match({
-        term: ex('foo/john-and-jane'),
+      expect(knossos.store.save).to.have.been.calledWith(sinon.match((value: GraphPointer) => {
+        expect(value.term).to.deep.eq(ex('foo/john-and-jane'))
+        expect(value.out(schema.name).value).to.eq('john')
+        return true
       }))
       expect(loadCode).to.have.been.calledWith(sinon.match.any, sinon.match({
         basePath: sinon.match.string,
