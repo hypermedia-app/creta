@@ -1,5 +1,11 @@
 # @hydrofoil/knossos-events
 
+## 0.2.0
+
+### Minor Changes
+
+- fa6ce84: Separate EventSource class from operation
+
 ## 0.1.1
 
 ### Patch Changes

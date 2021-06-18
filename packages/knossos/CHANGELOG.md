@@ -1,5 +1,13 @@
 # @hydrofoil/knossos
 
+## 0.1.4
+
+### Patch Changes
+
+- c029c37: Variable transformation modified original resource
+- Updated dependencies [fa6ce84]
+  - @hydrofoil/knossos-events@0.2.0
+
 ## 0.1.3
 
 ### Patch Changes
