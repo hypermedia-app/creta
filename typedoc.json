@@ -2,6 +2,7 @@
   "name": "Creta",
   "entryPoints": [
     "packages/knossos/lib/resource.ts",
+    "packages/knossos/lib/store.ts",
     "packages/knossos/server.ts",
     "packages/knossos/shacl.ts",
     "packages/labyrinth/index.ts",
