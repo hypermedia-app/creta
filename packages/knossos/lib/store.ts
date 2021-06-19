@@ -35,7 +35,7 @@ function assertNamedNode(term: Term): asserts term is NamedNode {
 
 /**
  * Default implementation of {@see ResourceStore}, which keeps each resource
- * is its ow named graph.
+ * is its own named graph.
  */
 export class ResourcePerGraphStore implements ResourceStore {
   constructor(private client: StreamClient) {
