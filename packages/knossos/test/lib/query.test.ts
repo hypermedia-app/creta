@@ -38,8 +38,10 @@ describe('@hydrofoil/knossos/lib/query', () => {
       const dataset = await $rdf.dataset().import(await loadClasses(ex.api, client))
 
       // then
-      const clas = clownface({ dataset }).namedNode(ex.doStuff)
-      expect(clas.out().values).to.have.length.greaterThan(0)
+      const supportedOp = clownface({ dataset }).namedNode(ex.doStuff)
+      expect(supportedOp.out().values).to.have.length.greaterThan(0)
+      const prop = clownface({ dataset }).namedNode(ex.property)
+      expect(prop.out().values).to.have.length.greaterThan(0)
     })
   })
 })

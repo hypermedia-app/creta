@@ -4,7 +4,7 @@ import { DESCRIBE } from '@tpluscode/sparql-builder'
 import { hydra } from '@tpluscode/rdf-ns-builders'
 
 export function loadClasses(api: NamedNode, client: StreamClient): Promise<Stream> {
-  return DESCRIBE`?c ?sp ?op`
+  return DESCRIBE`?c ?sp ?op ?p`
     .WHERE`
     BIND ( ${api} as ?api ) .
     
@@ -19,7 +19,8 @@ export function loadClasses(api: NamedNode, client: StreamClient): Promise<Strea
       )
     } union {
       ?c ${hydra.supportedProperty} ?sp .
-      ?sp ${hydra.property}/${hydra.supportedOperation} ?op .
+      ?sp ${hydra.property} ?p.
+      ?p ${hydra.supportedOperation} ?op .
  
       FILTER (
         EXISTS { ?c ${hydra.apiDocumentation} ?api } ||
