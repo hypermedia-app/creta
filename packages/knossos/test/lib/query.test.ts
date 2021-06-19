@@ -1,0 +1,26 @@
+import { expect } from 'chai'
+import $rdf from 'rdf-ext'
+import clownface from 'clownface'
+import { client, testData } from '@labyrinth/testing/client'
+import { ex } from '@labyrinth/testing/namespace'
+import { sparql } from '@tpluscode/rdf-string'
+import { hydra } from '@tpluscode/rdf-ns-builders'
+import { loadClasses } from '../../lib/query'
+
+describe('@hydrofoil/knossos/lib/query', () => {
+  describe('loadClasses', () => {
+    it('finds all classes for the given API', async () => {
+      // given
+      await testData(sparql`
+        ${ex.Class} a ${hydra.Class} ; ${hydra.apiDocumentation} ${ex.api} .
+      `)
+
+      // when
+      const dataset = await $rdf.dataset().import(await loadClasses(ex.api, client))
+
+      // then
+      const clas = clownface({ dataset }).namedNode(ex.Class)
+      expect(clas.out().values).to.have.length.greaterThan(0)
+    })
+  })
+})

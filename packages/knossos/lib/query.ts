@@ -6,7 +6,7 @@ import { hydra } from '@tpluscode/rdf-ns-builders'
 export function loadClasses(api: NamedNode, client: StreamClient): Promise<Stream> {
   return DESCRIBE`?c ?op`
     .WHERE`{
-      ?c a ${hydra.Class} ; ${hydra.apiDocumentation} ${api} ; ${hydra.supportedOperation} ?op .
+      ?c a ${hydra.Class} ; ${hydra.apiDocumentation} ${api} .
     } union {
       ?c a ${hydra.Class} ; ${hydra.supportedOperation} ?op .
       ?op ${hydra.apiDocumentation} ${api} .
