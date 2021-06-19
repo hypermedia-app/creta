@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @hydrofoil/knossos/lib/store
+ */
+
 import { NamedNode, Term } from 'rdf-js'
 import clownface, { GraphPointer } from 'clownface'
 import { StreamClient } from 'sparql-http-client/StreamClient'
@@ -6,6 +11,12 @@ import $rdf from 'rdf-ext'
 import { sparql } from '@tpluscode/rdf-string'
 import DatasetExt from 'rdf-ext/lib/Dataset'
 
+/**
+ * Provides functions to work with individual resources.
+ *
+ * Implementors should take care to retrieve and manipulate only resource's "own" triples,
+ * that is, avoid retrieving inferred statements or statements from other resources' representations.
+ */
 export interface ResourceStore {
   exists(term: Term): Promise<boolean>
 
@@ -22,6 +33,10 @@ function assertNamedNode(term: Term): asserts term is NamedNode {
   }
 }
 
+/**
+ * Default implementation of {@see ResourceStore}, which keeps each resource
+ * is its ow named graph.
+ */
 export class ResourcePerGraphStore implements ResourceStore {
   constructor(private client: StreamClient) {
   }
