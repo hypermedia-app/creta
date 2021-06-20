@@ -9,6 +9,7 @@ import DatasetExt from 'rdf-ext/lib/Dataset'
 import $rdf from 'rdf-ext'
 import clownface, { AnyContext, AnyPointer } from 'clownface'
 import { code } from '@hydrofoil/vocabularies/builders'
+import { ex } from '@labyrinth/testing/namespace'
 import { loadHandlers } from '../../lib/loadHandlers'
 
 describe('@hydrofoil/express-events/lib/loadHandlers', () => {
@@ -33,6 +34,11 @@ describe('@hydrofoil/express-events/lib/loadHandlers', () => {
       },
       knossos: {
         log: sinon.spy() as any,
+      },
+      hydra: {
+        api: {
+          term: ex.api,
+        },
       },
     } as RecursivePartial<express.Request>
   })
