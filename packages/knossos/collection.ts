@@ -11,7 +11,7 @@ import { IriTemplateBundle } from '@rdfine/hydra/bundles'
 import RdfResource, { ResourceIdentifier } from '@tpluscode/rdfine'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
-import { DESCRIBE } from '@tpluscode/sparql-builder'
+import { describeResource } from '@hydrofoil/labyrinth/lib/query/describeResource'
 import { shaclValidate } from './shacl'
 import { save } from './lib/resource'
 import { applyTransformations, hasAllRequiredVariables } from './lib/template'
@@ -79,5 +79,5 @@ export const CreateMember = Router().use(shaclValidate({ payloadTypesOnly: true 
 
   res.status(httpStatus.CREATED)
   res.setHeader('Location', memberId.value)
-  return res.quadStream(await DESCRIBE`${member.term}`.execute(req.labyrinth.sparql.query))
+  return res.quadStream(await describeResource(member.term, req.labyrinth.sparql))
 }))

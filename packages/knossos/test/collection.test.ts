@@ -14,6 +14,7 @@ import sinon from 'sinon'
 import httpStatus from 'http-status'
 import * as ns from '@hydrofoil/vocabularies/builders'
 import $rdf from 'rdf-ext'
+import * as describeResource from '@hydrofoil/labyrinth/lib/query/describeResource'
 import { CreateMember } from '../collection'
 
 describe('@hydrofoil/knossos/collection', () => {
@@ -34,10 +35,15 @@ describe('@hydrofoil/knossos/collection', () => {
         manages.addOut(hydra.object, schema.Person)
       })
 
-      knossos.store.load.callsFake(async term => namedNode(term.value))
+      sinon.stub(describeResource, 'describeResource')
+        .resolves(namedNode(ex.Foo).addOut(rdf.type, schema.Person).dataset.toStream())
 
       next()
     })
+  })
+
+  afterEach(() => {
+    sinon.restore()
   })
 
   describe('CreateMember', () => {
