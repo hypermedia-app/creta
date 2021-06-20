@@ -8,4 +8,5 @@ prefix knossos: <https://hypermedia.app/knossos#>
    acl:agentClass knossos:SystemAccount ;
    acl:accessToClass rdfs:Resource ;
    acl:mode acl:Control ;
+   hydra:apiDocumentation </api> ;
 .
