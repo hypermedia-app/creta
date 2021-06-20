@@ -9,6 +9,7 @@ import DatasetExt from 'rdf-ext/lib/Dataset'
 import $rdf from 'rdf-ext'
 import clownface, { AnyContext } from 'clownface'
 import { expect } from 'chai'
+import { ex } from '@labyrinth/testing/namespace'
 import { shaclValidate } from '../shacl'
 import * as shacl from '../lib/shacl'
 
@@ -30,6 +31,9 @@ describe('@hydrofoil/knossos/shacl', () => {
     app = express()
     app.use((req, res, next) => {
       req.hydra = {
+        api: {
+          term: ex.api,
+        },
         resource: {
           types: resourceTypes,
         },
