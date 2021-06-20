@@ -1,4 +1,5 @@
 * [Getting started](getting-started.md "Getting started | Creta")
+* [Design](design.md "Designing APIs | Creta")
 * [Knossos](knossos/cli.md "Knossos | Creta")
   * [Resources](knossos/resources.md "Resources | Knossos | Creta")
   * [Collections](knossos/collections.md "Collections | Knossos | Creta")
