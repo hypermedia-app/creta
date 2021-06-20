@@ -196,6 +196,10 @@ describe('@hydrofoil/knossos/collection', () => {
           assert.addOut(hydra.property, rdf.type)
           assert.addOut(hydra.object, foaf.Person)
         })
+        collection.addOut(hydra.memberAssertion, assert => {
+          assert.addOut(hydra.property, foaf.knows)
+          assert.addOut(hydra.object, ex.Jane)
+        })
         next()
       })
       app.post('/collection', CreateMember)
@@ -212,6 +216,9 @@ describe('@hydrofoil/knossos/collection', () => {
         expect(value.out(rdf.type).terms).to.deep.contain.members([
           schema.Person,
           foaf.Person,
+        ])
+        expect(value.out(foaf.knows).terms).to.deep.contain.members([
+          ex.Jane,
         ])
         return true
       }))

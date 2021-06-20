@@ -40,7 +40,8 @@ function rename(member: GraphPointer, id: NamedNode): GraphPointer<NamedNode> {
 export const CreateMember = Router().use(shaclValidate({ payloadTypesOnly: true })).use(asyncMiddleware(async (req, res, next) => {
   const api = clownface(req.hydra.api)
   const collection = await req.hydra.resource.clownface()
-  const types = collection.out([hydra.manages, hydra.memberAssertion]).has(hydra.property, rdf.type).out(hydra.object)
+  const memberAssertions = collection.out([hydra.manages, hydra.memberAssertion])
+  const types = memberAssertions.has(hydra.property, rdf.type).out(hydra.object)
 
   if (!types.terms.length) {
     return next(new error.InternalServerError('Collection does not have a member assertion with `hydra:property rdf:type`'))
@@ -67,7 +68,16 @@ export const CreateMember = Router().use(shaclValidate({ payloadTypesOnly: true 
   }
 
   req.knossos.log(`Creating resource ${memberId.value}`)
-  member = rename(member, memberId).addOut(rdf.type, types)
+  member = rename(member, memberId)
+  memberAssertions.toArray().reduce((member, asserton) => {
+    const predicate = asserton.out(hydra.property).term
+    const object = asserton.out(hydra.object).term
+    if (predicate && object) {
+      return member.addOut(predicate, object)
+    }
+
+    return member
+  }, rename(member, memberId))
 
   await save({ resource: member, req })
 

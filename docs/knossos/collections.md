@@ -216,6 +216,8 @@ A collection can be used to create new instances of its type, typically by sendi
 
 To enable this feature, the collection class has to support the `POST` operation, implemented by a generic `knossos` handler. It also has to be annotated with an IRI Template for the new instance identifiers.
 
+Member assertions which have `hydra:predicate` and `hydra:object` will be implicitly added to the newly created resource. Other member assertions will be ignored.
+
 ```turtle
 prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 prefix schema: <http://schema.org/>
@@ -255,7 +257,7 @@ prefix code: <https://code.described.at/>
 ```
 
 > [!WARNING]
-> The type `schema:CreateAction` is necessary for the operation to create a new resource, if the payload
+> The type `schema:CreateAction` is necessary for the operation to create a new resource
 
 > [!TIP]
 > The snippet above proposes to subclass the article collection so that API providers have fine-grained control of which collections can be used to create new resources and which cannot.
