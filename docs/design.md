@@ -4,9 +4,10 @@ In principle, a Knossos-powered API adheres to the [Hydra Core vocabulary][hydra
 
 ## API provenance
 
-In order for the resources to correctly "appear" on the APIs surface, they must be explicitly annotated as being part of it. This is done by adding a `hydra:apiDocumentation` to resources and strictly required by:
+In order for the resources to correctly "appear" on the APIs surface, it may be necessary to explicitly annotate them as being part of it. This is done by adding a `hydra:apiDocumentation` to resources and strictly required in some cases:
 
 ```turtle
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX schema: <http://schema.org/>
 PREFIX sh: <http://www.w3.org/ns/shacl#>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
@@ -18,7 +19,14 @@ PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
     hydra:apiDocumentation </api> 
 .
 
-# Required by supported classes or operations
+# Supported classes
+</PersonCollection>
+    a hydra:Class ;
+    rdfs:subClassOf hydra:Collection ;
+    hydra:apiDocumentation </api> ;
+.
+
+# Supported operations
 </PutPerson>
     a hydra:Operation ;
     hydra:apiDocumentation </api> ;
