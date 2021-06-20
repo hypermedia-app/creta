@@ -1349,7 +1349,7 @@
     "@tpluscode/rdf-ns-builders" "^0.4.2"
     readable-stream "^3.6.0"
 
-"@rdfjs/data-model@^1.0.1", "@rdfjs/data-model@^1.1.0", "@rdfjs/data-model@^1.1.1", "@rdfjs/data-model@^1.1.2", "@rdfjs/data-model@^1.2":
+"@rdfjs/data-model@^1.0.1", "@rdfjs/data-model@^1.1.0", "@rdfjs/data-model@^1.1.1", "@rdfjs/data-model@^1.1.2", "@rdfjs/data-model@^1.2", "@rdfjs/data-model@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@rdfjs/data-model/-/data-model-1.2.0.tgz#1daa39f26d48e0ec4d6a60fc4150db7d7ef1bab2"
   integrity sha512-6ITWcu2sr9zJqXUPDm1XJ8DRpea7PotWBIkTzuO1MCSruLOWH2ICoQOAtlJy30cT+GqH9oAQKPR+CHXejsdizA==
@@ -1568,14 +1568,15 @@
     clownface "^1"
     once "^1.4.0"
 
-"@tpluscode/sparql-builder@^0.3.11", "@tpluscode/sparql-builder@^0.3.12", "@tpluscode/sparql-builder@^0.3.9":
-  version "0.3.12"
-  resolved "https://registry.yarnpkg.com/@tpluscode/sparql-builder/-/sparql-builder-0.3.12.tgz#0d017911969a15e956f180eddaf6bea74efb86da"
-  integrity sha512-sPXADwCs+pdN10IPw6EeMNGFZnanP0Ab6gmlo8HEAooCOZs6ZlVpl1S358/7U4zbdLjfnWeyUTdRlR5Ok2Y+IQ==
+"@tpluscode/sparql-builder@^0.3.11", "@tpluscode/sparql-builder@^0.3.12", "@tpluscode/sparql-builder@^0.3.14", "@tpluscode/sparql-builder@^0.3.9":
+  version "0.3.14"
+  resolved "https://registry.yarnpkg.com/@tpluscode/sparql-builder/-/sparql-builder-0.3.14.tgz#60959c1306cfcade2eee8b9b6498d3793fadef3b"
+  integrity sha512-dD9lJ8hbL9LWcQ5ht07nDWUps4bj5z3manrTkxfZhaxSX1eUyvsCLXRmoPmvgAMHJbwZ4LCli17kFp0MPW0PWg==
   dependencies:
     "@rdf-esm/data-model" "^0.5.4"
     "@rdf-esm/term-set" "^0.5.0"
-    "@tpluscode/rdf-ns-builders" "^0.4"
+    "@rdfjs/types" "*"
+    "@tpluscode/rdf-ns-builders" "^1.0.0"
     "@tpluscode/rdf-string" "^0.2.16"
     debug "^4.1.1"
 
@@ -4447,16 +4448,17 @@ husky@^4.2.5:
     slash "^3.0.0"
     which-pm-runs "^1.0.0"
 
-hydra-box-web-access-control@^1:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/hydra-box-web-access-control/-/hydra-box-web-access-control-1.0.0.tgz#fc7d958df175fb38648a1e2c04f017bfa488095c"
-  integrity sha512-xBBNaiXrFtsp5jIs3xRU+F0QfC4gOQ7UoKDRi917K0FgX1F8cp42El24i4TkMVdgwOE3t4qngbl4OqPiSz9mcQ==
+hydra-box-web-access-control@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/hydra-box-web-access-control/-/hydra-box-web-access-control-1.1.1.tgz#59886578c35489e3b3c1aacd1f5188f3564103fb"
+  integrity sha512-PYk99hJEX7UDA0pwr+mtHlmevmmSVO/AagYm7hu/utSuVGpmWpuCK2+GcQKo+sjggE+vWrXlvm7+/w4FMrSdCQ==
   dependencies:
-    "@tpluscode/rdf-ns-builders" "^0.4.2"
+    "@rdfjs/types" "*"
+    "@tpluscode/rdf-ns-builders" "^1.0.0"
     "@types/hydra-box" "*"
     http-errors "^1.8.0"
     middleware-async "^1.3.1"
-    rdf-web-access-control "^1.0.0"
+    rdf-web-access-control "^1.1.0"
 
 hydra-box@^0.6, hydra-box@^0.6.2, hydra-box@^0.6.3:
   version "0.6.3"
@@ -6445,13 +6447,15 @@ rdf-validate-shacl@^0.2.6:
     debug "^4.0.0"
     rdf-validate-datatype "^0.1.1"
 
-rdf-web-access-control@^1.0.0, rdf-web-access-control@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/rdf-web-access-control/-/rdf-web-access-control-1.0.1.tgz#4477179ea6fc29f15831308e01a1d624b7be4606"
-  integrity sha512-WFUYU1Z6ehrFTxpOekZbg9ZveIv08eR0mtM4Td0er8jsbiU8eQ5YcaeRDKoqN4meYjI5K+WqRysTS+t10Ua9TQ==
+rdf-web-access-control@^1.0.1, rdf-web-access-control@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/rdf-web-access-control/-/rdf-web-access-control-1.1.0.tgz#df1f44407d463d9439094b136d938095d09adf34"
+  integrity sha512-q7EHgbE9Ns0NN8WAb16j5X6redpfQpArgViWo/kzjqlSmszGbr8clMLMvrDxd3rzif7yd9ZrvOA+WqH2bmBMoQ==
   dependencies:
-    "@tpluscode/rdf-ns-builders" "^0.4.2"
-    "@tpluscode/sparql-builder" "^0.3.12"
+    "@rdfjs/data-model" "^1.2.0"
+    "@rdfjs/types" "*"
+    "@tpluscode/rdf-ns-builders" "^1.0.0"
+    "@tpluscode/sparql-builder" "^0.3.14"
 
 rdfxml-streaming-parser@^1.2.0, rdfxml-streaming-parser@^1.3.6:
   version "1.4.0"

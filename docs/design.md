@@ -7,6 +7,8 @@ In principle, a Knossos-powered API adheres to the [Hydra Core vocabulary][hydra
 In order for the resources to correctly "appear" on the APIs surface, it may be necessary to explicitly annotate them as being part of it. This is done by adding a `hydra:apiDocumentation` to resources and strictly required in some cases:
 
 ```turtle
+PREFIX acl: <http://www.w3.org/ns/auth/acl#>
+prefix events: <https://hypermedia.app/events#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX schema: <http://schema.org/>
 PREFIX sh: <http://www.w3.org/ns/shacl#>
@@ -29,6 +31,18 @@ PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 # Supported operations
 </PutPerson>
     a hydra:Operation ;
+    hydra:apiDocumentation </api> ;
+.
+
+# Knossos event handlers
+</on-person-created>
+    a events:EventHandler ;
+    hydra:apiDocumentation </api> ;
+.
+
+# ACL authorizations
+</on-person-created>
+    a acl:Authorization ;
     hydra:apiDocumentation </api> ;
 .
 ```
