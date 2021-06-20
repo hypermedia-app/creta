@@ -188,7 +188,7 @@ describe('@hydrofoil/knossos/collection', () => {
       await response.expect(400)
     })
 
-    it('adds all member assertions', async () => {
+    it('adds property/object member assertions', async () => {
       // given
       app.use(async (req, res, next) => {
         const collection = await req.hydra.resource.clownface()
@@ -221,6 +221,35 @@ describe('@hydrofoil/knossos/collection', () => {
           ex.Jane,
         ])
         return true
+      }))
+    })
+
+    it('does not add member assertions other than property/object', async () => {
+      // given
+      app.use(async (req, res, next) => {
+        const collection = await req.hydra.resource.clownface()
+        collection.addOut(hydra.memberAssertion, assert => {
+          assert.addOut(hydra.property, rdf.type)
+          assert.addOut(hydra.object, foaf.Person)
+        })
+        collection.addOut(hydra.memberAssertion, assert => {
+          assert.addOut(hydra.property, foaf.knows)
+          assert.addOut(hydra.subject, ex.Jane)
+        })
+        next()
+      })
+      app.post('/collection', CreateMember)
+
+      // when
+      await request(app)
+        .post('/collection')
+        .send(turtle`<> ${schema.name} "john" .`.toString())
+        .set('content-type', 'text/turtle')
+        .set('host', 'example.com')
+
+      // then
+      expect(knossos.store.save).to.have.been.calledWith(sinon.match((value: GraphPointer) => {
+        return value.any().has(foaf.knows).terms.length === 0
       }))
     })
   })
