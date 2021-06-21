@@ -14,6 +14,7 @@ import sinon from 'sinon'
 import httpStatus from 'http-status'
 import * as ns from '@hydrofoil/vocabularies/builders'
 import $rdf from 'rdf-ext'
+import * as describeResource from '@hydrofoil/labyrinth/lib/query/describeResource'
 import { CreateMember } from '../collection'
 
 describe('@hydrofoil/knossos/collection', () => {
@@ -34,10 +35,15 @@ describe('@hydrofoil/knossos/collection', () => {
         manages.addOut(hydra.object, schema.Person)
       })
 
-      knossos.store.load.callsFake(async term => namedNode(term.value))
+      sinon.stub(describeResource, 'describeResource')
+        .resolves(namedNode(ex.Foo).addOut(rdf.type, schema.Person).dataset.toStream())
 
       next()
     })
+  })
+
+  afterEach(() => {
+    sinon.restore()
   })
 
   describe('CreateMember', () => {
@@ -182,13 +188,17 @@ describe('@hydrofoil/knossos/collection', () => {
       await response.expect(400)
     })
 
-    it('adds all member assertions', async () => {
+    it('adds property/object member assertions', async () => {
       // given
       app.use(async (req, res, next) => {
         const collection = await req.hydra.resource.clownface()
         collection.addOut(hydra.memberAssertion, assert => {
           assert.addOut(hydra.property, rdf.type)
           assert.addOut(hydra.object, foaf.Person)
+        })
+        collection.addOut(hydra.memberAssertion, assert => {
+          assert.addOut(hydra.property, foaf.knows)
+          assert.addOut(hydra.object, ex.Jane)
         })
         next()
       })
@@ -207,7 +217,39 @@ describe('@hydrofoil/knossos/collection', () => {
           schema.Person,
           foaf.Person,
         ])
+        expect(value.out(foaf.knows).terms).to.deep.contain.members([
+          ex.Jane,
+        ])
         return true
+      }))
+    })
+
+    it('does not add member assertions other than property/object', async () => {
+      // given
+      app.use(async (req, res, next) => {
+        const collection = await req.hydra.resource.clownface()
+        collection.addOut(hydra.memberAssertion, assert => {
+          assert.addOut(hydra.property, rdf.type)
+          assert.addOut(hydra.object, foaf.Person)
+        })
+        collection.addOut(hydra.memberAssertion, assert => {
+          assert.addOut(hydra.property, foaf.knows)
+          assert.addOut(hydra.subject, ex.Jane)
+        })
+        next()
+      })
+      app.post('/collection', CreateMember)
+
+      // when
+      await request(app)
+        .post('/collection')
+        .send(turtle`<> ${schema.name} "john" .`.toString())
+        .set('content-type', 'text/turtle')
+        .set('host', 'example.com')
+
+      // then
+      expect(knossos.store.save).to.have.been.calledWith(sinon.match((value: GraphPointer) => {
+        return value.any().has(foaf.knows).terms.length === 0
       }))
     })
   })

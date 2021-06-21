@@ -22,5 +22,26 @@ describe('@hydrofoil/knossos/lib/query', () => {
       const clas = clownface({ dataset }).namedNode(ex.Class)
       expect(clas.out().values).to.have.length.greaterThan(0)
     })
+
+    it('loads operations supported by properties', async () => {
+      // given
+      await testData(sparql`
+        ${ex.Class} a ${hydra.Class} ; ${hydra.apiDocumentation} ${ex.api} .
+        ${ex.Class} ${hydra.supportedProperty} [
+          ${hydra.property} ${ex.property} ;
+        ] .
+        ${ex.property} ${hydra.supportedOperation} ${ex.doStuff} .
+        ${ex.doStuff} a ${hydra.Operation} .
+      `)
+
+      // when
+      const dataset = await $rdf.dataset().import(await loadClasses(ex.api, client))
+
+      // then
+      const supportedOp = clownface({ dataset }).namedNode(ex.doStuff)
+      expect(supportedOp.out().values).to.have.length.greaterThan(0)
+      const prop = clownface({ dataset }).namedNode(ex.property)
+      expect(prop.out().values).to.have.length.greaterThan(0)
+    })
   })
 })

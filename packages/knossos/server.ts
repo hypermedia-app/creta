@@ -12,7 +12,8 @@ import cors from 'cors'
 import webAccessControl from 'hydra-box-web-access-control'
 import { knossosEvents } from '@hydrofoil/knossos-events'
 import camo from 'camouflage-rewrite'
-import { problemJson } from '../labyrinth/errors'
+import { problemJson } from '@hydrofoil/labyrinth/errors'
+import { filterAclByApi } from './lib/accessControl'
 import createApi from './lib/api'
 import { ResourcePerGraphStore, ResourceStore } from './lib/store'
 import { create } from './resource'
@@ -95,7 +96,10 @@ export async function serve({ log, endpointUrl, updateUrl, port, name, codePath,
       log,
     }),
     middleware: {
-      resource: webAccessControl({ client }),
+      resource: webAccessControl({
+        client,
+        additionalPatterns: filterAclByApi,
+      }),
     },
   }))
   app.put('/*', create(client))

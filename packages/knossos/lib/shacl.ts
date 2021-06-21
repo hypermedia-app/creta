@@ -1,6 +1,6 @@
 import { NamedNode, Stream, Term } from 'rdf-js'
 import { DESCRIBE } from '@tpluscode/sparql-builder'
-import { rdf, rdfs, sh } from '@tpluscode/rdf-ns-builders'
+import { rdf, rdfs, sh, hydra } from '@tpluscode/rdf-ns-builders/strict'
 import { StreamClient } from 'sparql-http-client/StreamClient'
 import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
 
@@ -8,32 +8,33 @@ interface ShapesQuery {
   term: NamedNode
   types: Term[]
   sparql: StreamClient
+  api: NamedNode
 }
 
-function subClassShapesPatterns(parentPattern: SparqlTemplateResult) {
+function subClassShapesPatterns(api: NamedNode, parentPattern: SparqlTemplateResult) {
   return sparql`
   OPTIONAL {
     ${parentPattern}
 
     {
-      ?parent a ${sh.NodeShape}, ${rdfs.Class} .
+      ?parent a ${sh.NodeShape}, ${rdfs.Class} ; ${hydra.apiDocumentation} ${api} .
     }
     UNION 
     {
-      ?parentShape ${sh.targetClass} ?parent .
+      ?parentShape ${sh.targetClass} ?parent ; ${hydra.apiDocumentation} ${api} .
     }
   }`
 }
 
-export function shapesQuery({ term, types, ...arg }: ShapesQuery): Promise<Stream> {
+export function shapesQuery({ term, types, api, ...arg }: ShapesQuery): Promise<Stream> {
   const describe = DESCRIBE`?shape ?parent ?parentShape`
     .WHERE`
       {
         VALUES ?shape { ${types} }
 
-        ?shape a ${rdfs.Class}, ${sh.NodeShape} .
+        ?shape a ${rdfs.Class}, ${sh.NodeShape} ; ${hydra.apiDocumentation} ${api} .
 
-        ${subClassShapesPatterns(sparql`
+        ${subClassShapesPatterns(api, sparql`
           ?shape ${rdf.type}?/${rdfs.subClassOf}* ?parent .
         `)}
       }
@@ -41,15 +42,15 @@ export function shapesQuery({ term, types, ...arg }: ShapesQuery): Promise<Strea
       {
         VALUES ?class { ${types} }
 
-        ?shape a ${sh.NodeShape} ; ${sh.targetClass} ?class .
+        ?shape a ${sh.NodeShape} ; ${sh.targetClass} ?class ; ${hydra.apiDocumentation} ${api} .
 
-        ${subClassShapesPatterns(sparql`
+        ${subClassShapesPatterns(api, sparql`
           ?class ${rdfs.subClassOf}+ ?parent .
         `)}
       }
       UNION
       {
-        ?shape ${sh.targetNode} ${term}
+        ?shape ${sh.targetNode} ${term} ; ${hydra.apiDocumentation} ${api} .
       }
       `
 

@@ -38,6 +38,7 @@ export const shaclValidate = ({ payloadTypesOnly }: Options = {}): RequestHandle
       term: req.hydra.term,
       types: [...types],
       sparql: req.labyrinth.sparql,
+      api: req.hydra.api.term!,
     }))
 
     const hasSubClass = clownface({ dataset }).has(rdfs.subClassOf)

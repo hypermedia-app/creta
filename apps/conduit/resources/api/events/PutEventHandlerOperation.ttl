@@ -1,13 +1,17 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix acl: <http://www.w3.org/ns/auth/acl#> .
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix events: <https://hypermedia.app/events#> .
 @prefix code: <https://code.described.at/> .
 @prefix auth: <https://hypermedia.app/auth#> .
 @prefix knossos: <https://hypermedia.app/knossos#> .
 
-<> sh:targetClass events:EventHandler ;
-	a sh:NodeShape ;
-	hydra:apiDocumentation </api> .
+<> knossos:supportedByClass events:EventHandler ;
+	hydra:apiDocumentation </api> ;
+	hydra:method "PUT" ;
+	auth:access acl:Write ;
+	code:implementedBy [
+		<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> code:EcmaScript ;
+		code:link <node:@hydrofoil/knossos/resource#PUT> ;
+	] .
 

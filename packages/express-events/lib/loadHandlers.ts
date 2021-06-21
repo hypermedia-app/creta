@@ -1,7 +1,8 @@
+import { NamedNode } from 'rdf-js'
 import clownface, { GraphPointer, MultiPointer } from 'clownface'
 import { Activity } from '@rdfine/as'
 import { DESCRIBE } from '@tpluscode/sparql-builder'
-import { as, rdf, rdfs } from '@tpluscode/rdf-ns-builders'
+import { as, rdf, rdfs, hydra } from '@tpluscode/rdf-ns-builders/strict'
 import { sparql } from '@tpluscode/rdf-string'
 import { hyper_events, code } from '@hydrofoil/vocabularies/builders/strict'
 import type * as express from 'express'
@@ -18,7 +19,7 @@ function hasOneImplementation(pointer: MultiPointer): pointer is GraphPointer {
   return !!pointer.term
 }
 
-function handlerQuery(event: Activity) {
+function handlerQuery(event: Activity, api: NamedNode) {
   const activityTypes = [...event.types].map(({ id }) => id)
 
   return DESCRIBE`?handler`.WHERE`
@@ -35,12 +36,13 @@ function handlerQuery(event: Activity) {
               ${rdf.predicate} ${rdf.type} ;
               ${rdf.object} ?type ;
            ] ;
-           ${code.implementedBy} ?impl .`
+           ${code.implementedBy} ?impl ;
+           ${hydra.apiDocumentation} ${api}`
 }
 
 export async function loadHandlers(req: express.Request, event: Activity) {
   const client = req.labyrinth.sparql
-  const dataset = await $rdf.dataset().import(await handlerQuery(event).execute(client.query))
+  const dataset = await $rdf.dataset().import(await handlerQuery(event, req.hydra.api.term!).execute(client.query))
 
   return Promise.all(clownface({ dataset })
     .has(code.implementedBy)
