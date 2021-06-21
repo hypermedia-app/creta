@@ -1,5 +1,24 @@
 # @hydrofoil/knossos
 
+## 0.2.0
+
+### Minor Changes
+
+- 73ca0a8: Filter ACL to only coonsider those with `hydra:apiDocumentation` property
+- 090d840: Collection#CreateMember must respond with full representation
+- ea8c6f9: Requires SHACL shape resources to have `hydra:apiDocumentation` property
+
+### Patch Changes
+
+- 634fd08: Not all member assertions were added to collection members
+- 233b408: API documentation excludes classes which do not have a `hydra:supportedOperation`
+
+  This caused classes which only had a `hydra:supportedProperty` to not appear in the `ApiDocumentation` resource
+
+- 4cf1b24: Api Documentation would not load operations supported by properties
+- Updated dependencies [63f9362]
+  - @hydrofoil/knossos-events@0.2.1
+
 ## 0.1.4
 
 ### Patch Changes

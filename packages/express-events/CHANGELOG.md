@@ -1,5 +1,11 @@
 # @hydrofoil/knossos-events
 
+## 0.2.1
+
+### Patch Changes
+
+- 63f9362: `hydra:apiDocumentation` triple added to event handler
+
 ## 0.2.0
 
 ### Minor Changes
