@@ -4,6 +4,9 @@ In principle, a Knossos-powered API adheres to the [Hydra Core vocabulary][hydra
 
 ## API provenance
 
+> [!NOTE]
+> Running `talos put --resources` inject the `hydra:apiDocumentation` link automatically. Thus, it is usually not necessary to explicitly add it to the resources when using `talos` to bootsrtap the database.
+
 In order for the resources to correctly "appear" on the APIs surface, it may be necessary to explicitly annotate them as being part of it. This is done by adding a `hydra:apiDocumentation` to resources and strictly required in some cases:
 
 ```turtle
