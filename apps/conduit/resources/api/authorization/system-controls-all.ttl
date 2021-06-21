@@ -7,5 +7,6 @@
 <> a acl:Authorization ;
 	acl:agentClass knossos:SystemAccount ;
 	acl:accessToClass rdfs:Resource ;
-	acl:mode acl:Control .
+	acl:mode acl:Control ;
+	hydra:apiDocumentation </api> .
 
