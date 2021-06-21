@@ -74,6 +74,14 @@ describe('@hydrofoil/talos/lib/command/put', () => {
 
         expect(userCreated).to.eventually.be.true
       })
+
+      it('adds apiDocumentation link', () => {
+        const userCreated = ASK`${ns('project/creta/user/tpluscode')} ${hydra.apiDocumentation} ?api`
+          .FROM(ns('project/creta/user/tpluscode'))
+          .execute(client.query)
+
+        expect(userCreated).to.eventually.be.true
+      })
     })
 
     describe('n-quads', () => {

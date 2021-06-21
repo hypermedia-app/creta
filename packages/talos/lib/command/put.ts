@@ -1,6 +1,7 @@
 import path from 'path'
 import debug, { Debugger } from 'debug'
 import fetch from 'node-fetch'
+import $rdf from 'rdf-ext'
 import { insertVocabs } from '../insertVocabs'
 import { bootstrap } from '../bootstrap'
 
@@ -19,9 +20,11 @@ interface Put {
 async function insertResources({ dir, token, api, endpoint, user, password, apiPath }: Put, log: Debugger) {
   const cwd = path.resolve(process.cwd(), dir)
 
+  const apiUri = $rdf.namedNode(`${api}${apiPath}`)
   await bootstrap({
     log,
     api,
+    apiUri,
     cwd,
     endpointUrl: endpoint,
     updateUrl: endpoint,
@@ -30,7 +33,7 @@ async function insertResources({ dir, token, api, endpoint, user, password, apiP
   })
 
   if (token) {
-    const res = await fetch(`${api}${apiPath}`, {
+    const res = await fetch(apiUri.value, {
       method: 'DELETE',
       headers: {
         Authorization: `System ${token}`,
