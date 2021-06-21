@@ -1,5 +1,11 @@
 # @hydrofoil/talos
 
+## 0.2.0
+
+### Minor Changes
+
+- c51aa59: Add `hydra:apiDocumentation` to bootstrapped resources
+
 ## 0.1.2
 
 ### Patch Changes
