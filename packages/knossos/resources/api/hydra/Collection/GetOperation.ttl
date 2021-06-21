@@ -6,7 +6,6 @@
 
 <>
   knossos:supportedBy hydra:Collection ;
-  hydra:apiDocumentation </api> ;
   hydra:method "GET" ;
   auth:access acl:Read ;
   code:implementedBy

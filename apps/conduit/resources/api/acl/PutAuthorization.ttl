@@ -7,7 +7,6 @@
 <> hydra:method "PUT" ;
 	auth:access acl:Write ;
 	knossos:supportedBy acl:Authorization ;
-	hydra:apiDocumentation </api> ;
 	code:implementedBy [
 		<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> code:EcmaScript ;
 		code:link <node:@hydrofoil/knossos/resource#PUT> ;

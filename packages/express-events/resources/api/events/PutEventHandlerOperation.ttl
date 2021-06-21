@@ -8,7 +8,6 @@
 
 <>
   knossos:supportedBy events:EventHandler ;
-  hydra:apiDocumentation </api> ;
   hydra:method "PUT" ;
   auth:access acl:Write ;
   code:implementedBy

@@ -6,7 +6,6 @@ prefix minos: <https://hypermedia.app/minos#>
 <>
   a sh:NodeShape, minos:NavMenuShape ;
   dash:applicableToClass hydra:ApiDocumentation ;
-  hydra:apiDocumentation </api> ;
   sh:property
     [
       sh:name "Classes"@en ;

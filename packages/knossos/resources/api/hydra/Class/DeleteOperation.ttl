@@ -6,7 +6,6 @@
 
 <>
   knossos:supportedBy hydra:Class ;
-  hydra:apiDocumentation </api> ;
   hydra:method "DELETE" ;
   auth:access acl:Delete ;
   code:implementedBy

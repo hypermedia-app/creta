@@ -10,5 +10,4 @@
 <>
   sh:targetClass events:EventHandler ;
   a sh:NodeShape ;
-  hydra:apiDocumentation </api> ;
 .
