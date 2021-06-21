@@ -6,6 +6,7 @@ import $rdf from 'rdf-ext'
 import { nanoid } from 'nanoid'
 import { hyper_events } from '@hydrofoil/vocabularies/builders/strict'
 import { attach } from 'rdf-express-node-factory'
+import once from 'once'
 import { isNamedNode } from './lib'
 import { loadHandlers } from './lib/loadHandlers'
 import { runHandler } from './lib/runHandler'
@@ -34,7 +35,7 @@ declare module 'express-serve-static-core' {
 
 interface PendingEvent {
   activity: Activity
-  handlers: Promise<Array<{ handler: GraphPointer; impl: Handler; handled?: boolean }>>
+  handlers: () => Promise<Array<{ handler: GraphPointer; impl: Handler; handled?: boolean }>>
 }
 
 interface KnossosEvents {
@@ -58,7 +59,7 @@ export const knossosEvents = ({ path = '_activity' }: KnossosEvents = {}): expre
       })
       pendingEvents.push({
         activity,
-        handlers: loadHandlers(req, activity),
+        handlers: once(() => loadHandlers(req, activity)),
       })
     }
   }
@@ -69,7 +70,7 @@ export const knossosEvents = ({ path = '_activity' }: KnossosEvents = {}): expre
     }
 
     const immediate = pendingEvents.map((item) => {
-      return item.handlers
+      return item.handlers()
         .then(handlers => {
           const immediatePromises = handlers.map(async (entry) => {
             if (!entry.handler.has(hyper_events.immediate, true).terms.length) {
@@ -96,7 +97,7 @@ export const knossosEvents = ({ path = '_activity' }: KnossosEvents = {}): expre
 
     req.knossos.log('Running remaining event handlers')
     for (const { activity, handlers } of pendingEvents) {
-      handlers.then((arr) => {
+      handlers().then((arr) => {
         for (const entry of arr) {
           runHandler(entry, activity, req).catch(req.knossos.log.extend('event'))
         }
