@@ -7,8 +7,7 @@
 
 <>
   sh:targetClass vcard:Group ;
-  a sh:NodeShape ;
-  hydra:apiDocumentation </api> ;
+  a sh:NodeShape, rdfs:Class, hydra:Class ;
   sh:property
     [
       sh:path vcard:hasUID ;

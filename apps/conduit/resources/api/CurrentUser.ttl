@@ -4,7 +4,6 @@
 
 <>
   a hydra:Class ;
-  hydra:apiDocumentation </api> ;
   hydra:supportedOperation
     [
       hydra:method "GET" ;

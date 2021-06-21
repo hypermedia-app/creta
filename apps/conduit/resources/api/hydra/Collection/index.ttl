@@ -6,7 +6,6 @@
 
 <> a sh:NodeShape ;
 	sh:targetClass hydra:Collection ;
-	hydra:apiDocumentation </api> ;
 	sh:property [
 		sh:path [
 			sh:alternativePath (

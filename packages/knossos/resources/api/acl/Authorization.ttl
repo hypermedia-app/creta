@@ -10,7 +10,6 @@
   sh:targetClass acl:Authorization ;
   a sh:NodeShape ;
   knossos:createWithPUT true ;
-  hydra:apiDocumentation </api> ;
   sh:property
     [
       sh:path acl:mode ;

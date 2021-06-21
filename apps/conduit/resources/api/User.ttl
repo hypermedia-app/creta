@@ -15,7 +15,6 @@
 </api/User>
   a hydra:Class, sh:NodeShape, rdfs:Class ;
   rdfs:subClassOf hydra:Resource ;
-  hydra:apiDocumentation </api> ;
   rdfs:label "User class" ;
   hydra:supportedOperation
     [

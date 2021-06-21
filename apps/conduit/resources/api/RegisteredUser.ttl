@@ -9,7 +9,6 @@
 
 </api/RegisteredUser>
   a hydra:Class, sh:NodeShape, rdfs:Class ;
-  hydra:apiDocumentation </api> ;
   sh:property
     [
       sh:path rdf:type ;

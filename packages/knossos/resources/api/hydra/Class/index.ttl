@@ -6,6 +6,5 @@
 <>
   a sh:NodeShape ;
   sh:targetClass hydra:Class ;
-  hydra:apiDocumentation </api> ;
   knossos:createWithPUT true ;
 .

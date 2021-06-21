@@ -7,7 +7,6 @@
 
 <> a events:EventHandler ;
    rdfs:comment "Void ApiDocumentation cache when a hydra:Class is created of updated" ;
-   hydra:apiDocumentation </api> ;
    events:eventSpec
      [
        rdf:predicate rdf:type ;

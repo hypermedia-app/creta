@@ -11,7 +11,6 @@
 </api/UsersCollection>
   a hydra:Class, rdfs:Class, sh:NodeShape ;
   rdfs:subClassOf hydra:Collection ;
-  hydra:apiDocumentation </api> ;
   knossos:createWithPUT true ;
   hydra:supportedOperation
     [
