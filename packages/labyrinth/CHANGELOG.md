@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.5.2
+
+### Patch Changes
+
+- 7609e41: Update depdendencies
+
 ## 0.5.1
 
 ### Patch Changes
