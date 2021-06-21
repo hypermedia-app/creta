@@ -1,5 +1,11 @@
 # @hydrofoil/knossos-events
 
+## 0.2.2
+
+### Patch Changes
+
+- 83b05db: Handler were loaded too early, causing none to be found
+
 ## 0.2.1
 
 ### Patch Changes
