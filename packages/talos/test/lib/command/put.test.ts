@@ -5,6 +5,7 @@ import { ASK, DELETE, SELECT } from '@tpluscode/sparql-builder'
 import ParsingClient from 'sparql-http-client/ParsingClient'
 import { expect } from 'chai'
 import { acl, as, doap, hydra, rdfs, schema } from '@tpluscode/rdf-ns-builders'
+import * as wikibusVocabs from '@wikibus/vocabularies/builders/strict'
 import namespace from '@rdfjs/namespace'
 import * as NodeFetch from 'node-fetch'
 import sinon from 'sinon'
@@ -56,6 +57,55 @@ describe('@hydrofoil/talos/lib/command/put', () => {
         expect(parseInt(results[0].count.value)).to.be.greaterThan(0)
       })
     }
+  })
+
+  describe('--vocabs --extraVocab', () => {
+    const vocabs = Object.values(wikibusVocabs).map((ns) => ns())
+
+    beforeEach(async () => {
+      await DELETE`?s ?p ?o`.WHERE`?s ?p ?o`.execute(client.query)
+    })
+
+    it('inserts all vocabs when no specific prefixes selected', async () => {
+      // when
+      await put({
+        ...params,
+        vocabs: true,
+        extraVocabs: [{
+          package: '@wikibus/vocabularies',
+        }],
+      })
+
+      // then
+      for (const namespace of vocabs) {
+        const results = await SELECT`(count(*) as ?count)`
+          .WHERE`?s ?p ?o`
+          .FROM(namespace).execute(client.query)
+
+        expect(parseInt(results[0].count.value)).to.be.greaterThan(0)
+      }
+    })
+
+    it('inserts specific vocabs', async () => {
+      // when
+      await put({
+        ...params,
+        vocabs: true,
+        extraVocabs: [{
+          package: '@wikibus/vocabularies',
+          prefixes: ['wba'],
+        }],
+      })
+
+      // then
+      const hasWba = await ASK`?s ?p ?o`.FROM(wikibusVocabs.wba()).execute(client.query)
+      expect(hasWba).to.be.true
+
+      const hasOther = await ASK`?s ?p ?o`
+        .FROM(wikibusVocabs.wbo()).FROM(wikibusVocabs.wb_events())
+        .execute(client.query)
+      expect(hasOther).to.be.false
+    })
   })
 
   describe('--resources', () => {
