@@ -1,5 +1,6 @@
 import Program from 'commander'
 import { put } from './lib/command'
+import { parseExtraVocabs } from './lib/command/extraVocabs'
 
 Program.command('put')
   .description('Initializes the database from local resource files')
@@ -12,6 +13,7 @@ Program.command('put')
   .option('-p, --password <password>')
   .option('-d, --dir <dir>', 'Directory with resource to bootstrap', './resources')
   .option('--apiPath <apiPath>', 'The path of the API Documentation resource', '/api')
+  .option('--extraVocabs <...extraVocab>', 'Package name and (optionally) comma-separated prefixes', parseExtraVocabs)
   .action(async (arg) => {
     process.exit(await put(arg))
   })

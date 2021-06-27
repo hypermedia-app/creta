@@ -33,6 +33,7 @@
   "devDependencies": {
     "@rdfjs/namespace": "^1.1.0",
     "@types/mime-types": "^2.1.0",
+    "@wikibus/vocabularies": "^0.2.1",
     "chai": "^4.3.4",
     "sinon": "^9"
   }

@@ -2,7 +2,7 @@ import path from 'path'
 import debug, { Debugger } from 'debug'
 import fetch from 'node-fetch'
 import $rdf from 'rdf-ext'
-import { insertVocabs } from '../insertVocabs'
+import { ExtraVocab, insertVocabs } from '../insertVocabs'
 import { bootstrap } from '../bootstrap'
 
 interface Put {
@@ -15,6 +15,7 @@ interface Put {
   resources?: boolean
   token?: string
   apiPath?: string
+  extraVocabs?: Array<ExtraVocab>
 }
 
 async function insertResources({ dir, token, api, endpoint, user, password, apiPath }: Put, log: Debugger) {
@@ -63,6 +64,8 @@ export async function put(arg: Put): Promise<number> {
       updateUrl: arg.endpoint,
       user: arg.user,
       password: arg.password,
+    }, {
+      extraVocabs: arg.extraVocabs,
     }).then(() => log('Inserted vocabularies'))
   }
 
