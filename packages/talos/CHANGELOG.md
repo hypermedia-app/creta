@@ -1,5 +1,11 @@
 # @hydrofoil/talos
 
+## 0.2.1
+
+### Patch Changes
+
+- ad1932f: Add option to put additional vocabs from compatible packages
+
 ## 0.2.0
 
 ### Minor Changes
