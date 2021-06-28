@@ -42,3 +42,22 @@ export function cannotUnpublish({ before, after }) {
   }
 }
 ```
+
+> [!WARNING]
+> For the hook to kick-in, the calling handler must not use directly the `req.knossos.store` but import a `save` function
+>
+> ```javascript
+> import { save } from '@hydrofoil/knossos/lib/resource'
+> import clownface from 'clownface' 
+>
+> export async function createWithHooks(req, res, next) {
+>    // create the resource    
+>    const resource = clownface({ /* ... */ }).namedNode()
+>
+>    // save it, so that hooks are executed
+>    await save({ resource, req })
+>
+>    // continue with the handler
+>    res.sendStatus(200)
+> }
+> ```
