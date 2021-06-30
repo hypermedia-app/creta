@@ -44,7 +44,7 @@ describe('@hydrofoil/labbyrinth/lib/loader/SparqlQueryLoader', function () {
       graph ${ex.Leonard} {
         ${ex.Leonard} 
           ${rdf.type} ${schema.Person}, ${hydra.Resource} ;
-          ${foaf.knows} ${ex.Bernadette}, ${ex.Howard} ;
+          ${foaf.knows} ${ex.Bernadette}, ${ex.Howard}, ${ex.Penny} ;
           ${schema.spouse} ${ex.Penny} ;
           ${schema.name} "Leonard Hofstadter" ; 
       }
@@ -149,15 +149,32 @@ describe('@hydrofoil/labbyrinth/lib/loader/SparqlQueryLoader', function () {
       const term = ex.Bernadette
 
       // when
-      const resoruces = await loader.forPropertyOperation(term)
+      const resources = await loader.forPropertyOperation(term)
 
       // then
-      const subjects = resoruces.map(({ term }) => term.value)
+      const subjects = resources.map(({ term }) => term.value)
       expect(subjects).to.contain.all.members([
         ex.Sheldon.value,
         ex.Leonard.value,
         ex.Penny.value,
         ex.Howard.value,
+      ])
+    })
+
+    it('returns objects for usage of same object with multiple properties', async () => {
+      // given
+      const term = ex.Penny
+
+      // when
+      const resources = await loader.forPropertyOperation(term)
+
+      // then
+      const properties = resources.map(({ property }) => property)
+      expect(resources).to.containAll<PropertyResource>(({ term }) => term.equals(ex.Leonard))
+      expect(properties).to.have.length(2)
+      expect(properties).to.deep.contain.all.members([
+        foaf.knows,
+        schema.spouse,
       ])
     })
 
