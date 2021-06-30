@@ -70,7 +70,7 @@ export class SparqlQueryLoader implements ResourceLoader {
 
   async forPropertyOperation(term: NamedNode): Promise<PropertyResource[]> {
     log(`loading resource ${term.value} by object usage`)
-    const bindings = await SELECT`*`
+    const bindings = await SELECT.DISTINCT`*`
       .WHERE`
         ?parent ?link ${term} .
         ?parent ${rdf.type} ?type .
@@ -82,7 +82,8 @@ export class SparqlQueryLoader implements ResourceLoader {
         return set
       }
 
-      const resource = set.get(parent) || {
+      const linkMap = set.get(parent) || new TermMap()
+      const resource = linkMap.get(link) || {
         term: parent,
         property: link,
         object: term,
@@ -96,10 +97,10 @@ export class SparqlQueryLoader implements ResourceLoader {
         resource.types.add(type)
       }
 
-      return set.set(parent, resource)
-    }, new TermMap<NamedNode, PropertyResource>())
+      return set.set(parent, linkMap.set(link, resource))
+    }, new TermMap<Term, TermMap<Term, PropertyResource>>())
 
-    return [...resources.values()]
+    return [...resources.values()].flatMap(values => [...values.values()])
   }
 
   private __createDatasetGetters(term: NamedNode): Pick<Resource, 'dataset' | 'quadStream'> {
