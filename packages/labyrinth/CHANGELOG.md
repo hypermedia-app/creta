@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.5.3
+
+### Patch Changes
+
+- 1aebd6c: Operation would not be found if an object would have been used in multiple relations, if not all were supported properties
+
 ## 0.5.2
 
 ### Patch Changes
