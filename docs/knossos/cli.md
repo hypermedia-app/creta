@@ -34,3 +34,6 @@ Options:
   -h, --help                 display help for command
 
 ```
+
+> [!TIP]
+> In development environment you might use `knossos-ts` binary instead, which supports TypeScript modules.
