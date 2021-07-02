@@ -2,7 +2,8 @@
   "name": "@hydrofoil/knossos",
   "version": "0.2.0",
   "bin": {
-    "knossos": "bin/index.js"
+    "knossos": "bin/index.js",
+    "knossos-ts": "bin/ts.js"
   },
   "scripts": {
     "prepare": "tsc"
