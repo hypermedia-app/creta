@@ -1,5 +1,13 @@
 # @hydrofoil/knossos
 
+## 0.2.1
+
+### Patch Changes
+
+- c9385e9: Add `knossos-ts` bin for supporting TypeScript imports
+- Updated dependencies [ed116d8]
+  - @hydrofoil/labyrinth@0.5.4
+
 ## 0.2.0
 
 ### Minor Changes

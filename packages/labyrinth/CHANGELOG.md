@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.5.4
+
+### Patch Changes
+
+- ed116d8: Ordering collections by annotating instances
+
 ## 0.5.3
 
 ### Patch Changes
