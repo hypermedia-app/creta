@@ -2,7 +2,7 @@ import { describe, it, beforeEach } from 'mocha'
 import { expect } from 'chai'
 import cf from 'clownface'
 import $rdf from 'rdf-ext'
-import { hydra, rdf, schema } from '@tpluscode/rdf-ns-builders'
+import { foaf, hydra, ldp, rdf, schema } from '@tpluscode/rdf-ns-builders'
 import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
 import { SELECT } from '@tpluscode/sparql-builder'
 import * as Hydra from '@rdfine/hydra'
@@ -24,8 +24,9 @@ RdfResource.factory.addMixin(...Object.values(Hydra))
 
 type ExpectedQuerySetup = SparqlTemplateResult | {
   patterns: SparqlTemplateResult
-  limit: number
-  offset: number
+  limit?: number
+  offset?: number
+  order?: Array<{ pattern: SparqlTemplateResult; desc?: boolean }>
 }
 
 const expectedQuery = (options: ExpectedQuerySetup) => {
@@ -36,8 +37,14 @@ const expectedQuery = (options: ExpectedQuerySetup) => {
       filter(isiri(?member)) 
     `
 
-  if ('limit' in options) {
+  if ('limit' in options && typeof options.limit !== 'undefined' && typeof options.offset !== 'undefined') {
     select = select.LIMIT(options.limit).OFFSET(options.offset)
+  }
+
+  if ('order' in options) {
+    select = (options.order || []).reduce((query, order, index) => {
+      return query.WHERE`optional { ${order.pattern} }`.ORDER().BY($rdf.variable(`order${index + 1}`), order.desc)
+    }, select)
   }
 
   return select.build()
@@ -319,6 +326,188 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
           expect(value).to.be.a.query(expected)
           return true
         }))
+      })
+
+      describe('order', () => {
+        it('applies order from collection type', async () => {
+          // given
+          const expected = expectedQuery({
+            patterns: sparql`${ex.JohnDoe} ${schema.knows} ?member .`,
+            offset: 0,
+            limit: 10,
+            order: [{
+              pattern: sparql`?member ${schema.name} ?order1 .`,
+            }],
+          })
+          const hydraApi = api()
+          const apiNode = cf(hydraApi)
+          apiNode
+            .node(ex.Collection)
+            .addList(hyper_query.order, [
+              apiNode.blankNode().addOut(hyper_query.path, schema.name),
+            ])
+          const query = await getSparqlQuery({
+            api: hydraApi,
+            collection: cf({ dataset: $rdf.dataset() })
+              .blankNode()
+              .addOut(rdf.type, ex.Collection)
+              .addOut(hydra.memberAssertion, manages => {
+                manages.addOut(hydra.property, schema.knows)
+                manages.addOut(hydra.subject, ex.JohnDoe)
+              }),
+            pageSize: 10,
+            variables: fromPointer(cf({ dataset: $rdf.dataset() }).blankNode(), {
+              mapping: [{
+                types: [hydra.IriTemplateMapping],
+                property: hydra.pageIndex,
+                variable: 'page',
+              }],
+            }),
+          })
+
+          // when
+          await query?.members(client)
+
+          // then
+          expect(client.query.select).to.have.been.calledWith(sinon.match(value => {
+            expect(value).to.be.a.query(expected)
+            return true
+          }))
+        })
+
+        it('applies descending order', async () => {
+          // given
+          const expected = expectedQuery({
+            patterns: sparql`${ex.JohnDoe} ${schema.knows} ?member .`,
+            offset: 0,
+            limit: 10,
+            order: [{
+              pattern: sparql`?member ${schema.name} ?order1 .`,
+            }, {
+              pattern: sparql`?member ${schema.dateCreated} ?order2 .`,
+              desc: true,
+            }],
+          })
+          const hydraApi = api()
+          const apiNode = cf(hydraApi)
+          apiNode
+            .node(ex.Collection)
+            .addList(hyper_query.order, [
+              apiNode.blankNode().addOut(hyper_query.path, schema.name),
+              apiNode.blankNode().addOut(hyper_query.path, schema.dateCreated).addOut(hyper_query.direction, ldp.Descending),
+            ])
+          const query = await getSparqlQuery({
+            api: hydraApi,
+            collection: cf({ dataset: $rdf.dataset() })
+              .blankNode()
+              .addOut(rdf.type, ex.Collection)
+              .addOut(hydra.memberAssertion, manages => {
+                manages.addOut(hydra.property, schema.knows)
+                manages.addOut(hydra.subject, ex.JohnDoe)
+              }),
+            pageSize: 10,
+            variables: fromPointer(cf({ dataset: $rdf.dataset() }).blankNode(), {
+              mapping: [{
+                types: [hydra.IriTemplateMapping],
+                property: hydra.pageIndex,
+                variable: 'page',
+              }],
+            }),
+          })
+
+          // when
+          await query?.members(client)
+
+          // then
+          expect(client.query.select).to.have.been.calledWith(sinon.match(value => {
+            expect(value).to.be.a.query(expected)
+            return true
+          }))
+        })
+
+        it('applies order from collection instance over its type', async () => {
+          // given
+          const expected = expectedQuery({
+            patterns: sparql`${ex.JohnDoe} ${schema.knows} ?member .`,
+            offset: 0,
+            limit: 10,
+            order: [{
+              pattern: sparql`?member ${foaf.name} ?order1 .`,
+            }],
+          })
+          const hydraApi = api()
+          const apiNode = cf(hydraApi)
+          apiNode
+            .node(ex.Collection)
+            .addList(hyper_query.order, [
+              apiNode.blankNode().addOut(hyper_query.path, schema.name),
+            ])
+          const collection = cf({ dataset: $rdf.dataset() }).blankNode()
+          const query = await getSparqlQuery({
+            api: hydraApi,
+            collection: collection
+              .addOut(rdf.type, ex.Collection)
+              .addOut(hydra.memberAssertion, manages => {
+                manages.addOut(hydra.property, schema.knows)
+                manages.addOut(hydra.subject, ex.JohnDoe)
+              })
+              .addList(hyper_query.order, [
+                collection.blankNode().addOut(hyper_query.path, foaf.name),
+              ]),
+            pageSize: 10,
+            variables: fromPointer(cf({ dataset: $rdf.dataset() }).blankNode(), {
+              mapping: [{
+                types: [hydra.IriTemplateMapping],
+                property: hydra.pageIndex,
+                variable: 'page',
+              }],
+            }),
+          })
+
+          // when
+          await query?.members(client)
+
+          // then
+          expect(client.query.select).to.have.been.calledWith(sinon.match(value => {
+            expect(value).to.be.a.query(expected)
+            return true
+          }))
+        })
+
+        it('does not apply order when collection is not paged', async () => {
+          // given
+          const expected = expectedQuery({
+            patterns: sparql`${ex.JohnDoe} ${schema.knows} ?member .`,
+          })
+          const hydraApi = api()
+          const apiNode = cf(hydraApi)
+          apiNode
+            .node(ex.Collection)
+            .addList(hyper_query.order, [
+              apiNode.blankNode().addOut(hyper_query.path, schema.name),
+            ])
+          const query = await getSparqlQuery({
+            api: hydraApi,
+            collection: cf({ dataset: $rdf.dataset() })
+              .blankNode()
+              .addOut(rdf.type, ex.Collection)
+              .addOut(hydra.memberAssertion, manages => {
+                manages.addOut(hydra.property, schema.knows)
+                manages.addOut(hydra.subject, ex.JohnDoe)
+              }),
+            pageSize: 10,
+            variables: null,
+          })
+
+          // when
+          await query?.members(client)
+
+          // then
+          expect(client.query.select).to.have.been.calledWith(sinon.match(value => {
+            expect(value).to.be.a.query(expected)
+            return true
+          }))
+        })
       })
     })
 

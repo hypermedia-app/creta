@@ -210,6 +210,86 @@ export function startsWith({ subject, predicate, object }) {
 > [!TIP]
 > Consult the package [rdf-loader-code](https://npm.im/rdf-loader-code) for more details about loading modules using RDF declarations.
 
+## Paging
+
+To split a large collection into multiple pages, it is required to add to a [search template](#queries) a variable mapped to the property `hydra:pageIndex`.
+
+```turtle
+PREFIX api: <https://example.com/api#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+
+</articles>
+  a api:ArticleCollection ;
+  hydra:limit 20 ;
+  hydra:search [
+    hydra:template "{?page}" ;
+    hydra:mapping 
+      [
+        hydra:variable "page" ;
+        hydra:property hydra:pageIndex ;
+      ] ;
+    ]
+.
+```
+
+This will allow clients to navigate the collection 20 items at a time.
+
+> [!TIP]
+> The default page size equal `10`. Additionally, it can be set on the collection type, to set the default page size for all its instances
+>
+> ```turtle
+PREFIX api: <https://example.com/api#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+>
+> api:ArticleCollection hydra:limit 15 .
+> ```
+
+Each page of such a collection will return `hydra:PartialCollectionView` with links to other pages for the client to follow:
+
+```turtle
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+
+</users?page=10>
+  hydra:view
+    [
+      hydra:first </users?page=1> ;
+      hydra:previous </users?page=9> ;
+      hydra:next </users?page=11> ;
+      hydra:last </users?page=99> ;
+    ] ;
+.
+```
+
+## Ordering
+
+A [paged](#paging) collection can be further configured to apply specific order to the returned members. Simiarly to paging, both the collection type, as well as the instances can be annotated with information for the server to apply ordering
+
+```turtle
+PREFIX ldp: <http://www.w3.org/ns/ldp#>
+PREFIX schema: <http://schema.org/>
+PREFIX api: <https://example.com/api#>
+prefix hydra: <http://www.w3.org/ns/hydra/core#>
+prefix query: <https://hypermedia.app/query#>
+
+# an instance sorted by titles and then by dates, descending
+</articles>
+  a api:ArticleCollection ;
+  query:order (
+    [ query:path schema:title ]
+    [ query:path schema:dateCreated ; query:direction ldp:Descending ]
+  ) ;
+.
+
+# other instances will be ordered only by title
+api:ArticleCollection
+  query:order (
+    [ query:path schema:title ]
+  ) ;
+.
+```
+
+The object of `query:order` must be a list. The only recognized value for `query:direction` is `ldp:Descending`. Any other value will be ignored.
+
 ## Creating members
 
 A collection can be used to create new instances of its type, typically by sending `POST` requests. This is a common way which has the server assign identifiers of the newly created resources, as described by the [POST-PUT Creation pattern](http://restalk-patterns.org/post-put.html).
