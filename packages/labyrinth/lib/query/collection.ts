@@ -10,6 +10,7 @@ import { hyper_query } from '@hydrofoil/vocabularies/builders/strict'
 import type { StreamClient } from 'sparql-http-client/StreamClient'
 import once from 'once'
 import toArray from 'stream-to-array'
+import { toSparql } from 'clownface-shacl-path'
 import { log, warn } from '../logger'
 import { ToSparqlPatterns } from './index'
 
@@ -79,8 +80,11 @@ function onlyValidManagesBlocks(manages: GraphPointer) {
 type SelectBuilder = ReturnType<typeof SELECT>
 
 function createOrdering(api: AnyPointer, collection: GraphPointer, subject: Variable): { patterns: SparqlTemplateResult; addClauses(q: SelectBuilder): SelectBuilder } {
-  const orders = api.node(collection.out(rdf.type) as any).out(hyper_query.order).toArray()
-  if (!orders.length) {
+  const [instanceOrders] = collection.out(hyper_query.order).toArray()
+  const [typeOrders] = api.node(collection.out(rdf.type)).out(hyper_query.order).toArray()
+  const orders = instanceOrders?.list() || typeOrders?.list()
+
+  if (!orders) {
     return {
       patterns: sparql``,
       addClauses: q => q,
@@ -91,15 +95,8 @@ function createOrdering(api: AnyPointer, collection: GraphPointer, subject: Vari
   let patterns = sparql``
   const clauses: Array<{ variable: Variable; descending: boolean }> = []
 
-  for (const order of orders[0].list()!) {
-    const propertyPath = order.out(hyper_query.path).list()
-    if (!propertyPath) continue
-
-    const path = [...propertyPath].reduce((current, prop, index) => {
-      const next = index ? sparql`/${prop.term}` : sparql`${prop.term}`
-
-      return sparql`${current}${next}`
-    }, sparql``)
+  for (const order of orders) {
+    const path = toSparql(order.out(hyper_query.path))
     const variable = $rdf.variable(`order${++orderIndex}`)
 
     const pattern = sparql`OPTIONAL { ${subject} ${path} ${variable} } .`
@@ -157,15 +154,14 @@ export async function getSparqlQuery({ api, collection, pageSize, query = cf({ d
 
   let memberSelect = SELECT.DISTINCT`${subject}`.WHERE` 
                 ${memberPatterns}
-                filter (isIRI(${subject}))
-                ${order.patterns}`
+                filter (isIRI(${subject}))`
 
   if (variables && variables.mapping.some(mapping => mapping.property?.equals(hydra.pageIndex))) {
     const page = Number.parseInt(query.out(hydra.pageIndex).value || '1')
     const hydraLimit = query.out(hydra.limit).value
     const limit = hydraLimit ? parseInt(hydraLimit) : pageSize
 
-    memberSelect = memberSelect.LIMIT(limit).OFFSET((page - 1) * limit)
+    memberSelect = memberSelect.WHERE`${order.patterns}`.LIMIT(limit).OFFSET((page - 1) * limit)
     memberSelect = order.addClauses(memberSelect)
   }
 
