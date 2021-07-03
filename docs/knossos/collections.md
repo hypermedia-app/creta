@@ -288,7 +288,13 @@ api:ArticleCollection
 .
 ```
 
-The object of `query:order` must be a list. The only recognized value for `query:direction` is `ldp:Descending`. Any other value will be ignored.
+The object of `query:order` must be a list.
+
+Allowed objects of `query:path` are any valid [SHACL Property Paths][spp], with the exception of `sh:zeroOrMorePath` and `sh:oneOrMorePath`.
+
+[spp]: https://www.w3.org/TR/shacl/#property-shapes
+
+The only recognized value for `query:direction` is `ldp:Descending`. Any other value will be ignored.
 
 ## Creating members
 
