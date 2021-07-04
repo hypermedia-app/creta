@@ -13,6 +13,8 @@ import toStream from 'into-stream'
 import { hydraBox } from '@labyrinth/testing/hydra-box'
 import * as ns from '@hydrofoil/vocabularies/builders/strict'
 import { ex } from '@labyrinth/testing/namespace'
+import { fromPointer } from '@rdfine/hydra/lib/IriTemplate'
+import { fromPointer as mapping } from '@rdfine/hydra/lib/IriTemplateMapping'
 import { get } from '../collection'
 import * as collectionQuery from '../lib/query/collection'
 
@@ -213,6 +215,40 @@ describe('@hydrofoil/labyrinth/collection', () => {
       // then
       expect(collectionQueryMock.getSparqlQuery).to.have.been.calledOnceWith(sinon.match({
         pageSize: 15,
+      }))
+    })
+
+    it('passes page size from query string', async () => {
+      // given
+      const app = express()
+      app.use(hydraBox({
+        setup: async hydraBox => {
+          hydraBox.resource.types.add(ex.Collection)
+          ;(await hydraBox.resource.clownface()).addOut(hydra.search, template => {
+            fromPointer(template, {
+              template: '?pageSize',
+              mapping: mapping(template.blankNode(), {
+                variable: 'pageSize',
+                property: hydra.limit,
+              }),
+            })
+          })
+        },
+      }))
+      app.use((req, res, next) => {
+        req.labyrinth.collection.pageSize = 25
+        next()
+      })
+      app.use(get)
+
+      // when
+      await request(app).get('/').query({
+        pageSize: 10,
+      })
+
+      // then
+      expect(collectionQueryMock.getSparqlQuery).to.have.been.calledOnceWith(sinon.match({
+        pageSize: 10,
       }))
     })
 

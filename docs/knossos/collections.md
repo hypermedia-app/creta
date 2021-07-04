@@ -260,9 +260,35 @@ PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 .
 ```
 
+Finally, `hydra:limit` can also appear as a search template variable, allowing clients to request pages of arbitrary size.
+
+The collection below will default to 20 items per page, overridable by setting a query string such as `pageSize=10`.
+
+```turtle
+PREFIX api: <https://example.com/api#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+
+</articles>
+  a api:ArticleCollection ;
+  hydra:limit 20 ;
+  hydra:search [
+    hydra:template "{?page,pageSize}" ;
+    hydra:mapping 
+      [
+        hydra:variable "page" ;
+        hydra:property hydra:pageIndex ;
+      ],
+      [
+        hydra:variable "pageSize" ;
+        hydra:property hydra:limit ;
+      ];
+    ]
+.
+```
+
 ## Ordering
 
-A [paged](#paging) collection can be further configured to apply specific order to the returned members. Simiarly to paging, both the collection type, as well as the instances can be annotated with information for the server to apply ordering
+A [paged](#paging) collection can be further configured to apply specific order to the returned members. Similarly to paging, both the collection type, as well as the instances can be annotated with information for the server to apply ordering
 
 ```turtle
 PREFIX ldp: <http://www.w3.org/ns/ldp#>
