@@ -17,7 +17,7 @@ export const get = asyncMiddleware(async (req, res) => {
     log('Search params %s', query.dataset.toString())
   }
 
-  const hydraLimit = collection.out(hydra.limit).value || types.out(hydra.limit).value
+  const hydraLimit = query?.out(hydra.limit).value || collection.out(hydra.limit).value || types.out(hydra.limit).value
   const pageSize = hydraLimit ? parseInt(hydraLimit) : req.labyrinth.collection.pageSize
 
   const { dataset } = await lib.collection({
