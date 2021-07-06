@@ -1,0 +1,6 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npx lint-staged
+npx run-p -cs "talos:helptext:*" || true
+git add docs/talos

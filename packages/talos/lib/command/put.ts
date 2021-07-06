@@ -1,83 +1,29 @@
 import path from 'path'
-import debug, { Debugger } from 'debug'
-import fetch from 'node-fetch'
 import $rdf from 'rdf-ext'
-import { ExtraVocab, insertVocabs } from '../insertVocabs'
 import { bootstrap } from '../bootstrap'
+import { deleteApi } from '../deleteApi'
+import type { Command } from '.'
 
-interface Put {
+interface Put extends Command {
   api: string
-  endpoint: string
-  user?: string
-  password?: string
-  dir: string
-  vocabs?: boolean
-  resources?: boolean
-  token?: string
   apiPath?: string
-  extraVocabs?: Array<ExtraVocab>
 }
 
-async function insertResources({ dir, token, api, endpoint, user, password, apiPath }: Put, log: Debugger) {
-  const cwd = path.resolve(process.cwd(), dir)
-
+export async function put(directories: string[], { token, api, endpoint, user, password, apiPath }: Put) {
   const apiUri = $rdf.namedNode(`${api}${apiPath}`)
-  await bootstrap({
-    log,
-    api,
-    apiUri,
-    cwd,
-    endpointUrl: endpoint,
-    updateUrl: endpoint,
-    user,
-    password,
-  })
+  for (const dir of directories) {
+    const cwd = path.resolve(process.cwd(), dir)
 
-  if (token) {
-    const res = await fetch(apiUri.value, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `System ${token}`,
-      },
+    await bootstrap({
+      api,
+      apiUri,
+      cwd,
+      endpointUrl: endpoint,
+      updateUrl: endpoint,
+      user,
+      password,
     })
-
-    if (res.ok) {
-      log('Reset hydra:ApiDocumentation')
-    } else {
-      log('Failed to reset hydra:ApiDocumentation: %s', await res.text())
-    }
-  } else {
-    log('No System token provided. API restart may be necessary for changes to be applied')
-  }
-}
-
-export async function put(arg: Put): Promise<number> {
-  const log = debug('talos')
-  log.enabled = true
-
-  let inserted = false
-
-  if (arg.vocabs) {
-    inserted = true
-    await insertVocabs({
-      endpointUrl: arg.endpoint,
-      updateUrl: arg.endpoint,
-      user: arg.user,
-      password: arg.password,
-    }, {
-      extraVocabs: arg.extraVocabs,
-    }).then(() => log('Inserted vocabularies'))
   }
 
-  if (arg.resources) {
-    inserted = true
-    await insertResources(arg, log)
-  }
-
-  if (!inserted) {
-    log('Nothing selected for bootstrapping. Please check --help option')
-    return -1
-  }
-
-  return 0
+  await deleteApi({ apiUri, token })
 }

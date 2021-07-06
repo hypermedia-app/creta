@@ -3,7 +3,7 @@
   "version": "0.2.1",
   "main": "index.js",
   "bin": {
-    "talos": "bin/index.js"
+    "talos": "bin/talos.js"
   },
   "scripts": {
     "prepare": "tsc"

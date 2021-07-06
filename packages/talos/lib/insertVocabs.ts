@@ -6,6 +6,7 @@ import { INSERT } from '@tpluscode/sparql-builder'
 import { sparql } from '@tpluscode/rdf-string'
 import $rdf from 'rdf-ext'
 import DatasetExt from 'rdf-ext/lib/Dataset'
+import { log } from './log'
 
 export interface ExtraVocab {
   package: string
@@ -39,6 +40,7 @@ function insertVocab(client: StreamClient) {
     }`
     const query = sparql`DROP SILENT GRAPH <${namespace.value}>;\n${insert}`.toString()
 
+    log('Inserting vocab %s', namespace.value)
     return client.query.update(query)
   }
 }
@@ -47,7 +49,7 @@ export async function insertVocabs(options: StreamClientOptions, { extraVocabs =
   const client = new StreamClient(options)
 
   const datasets = {
-    ...await coreVocabularies({ only: ['hydra', 'acl', 'as', 'rdfs', 'sh'] }),
+    ...await coreVocabularies({ only: ['hydra', 'acl', 'as', 'rdf', 'rdfs', 'sh'] }),
     ...await hydrofoilVocabularies(),
     ...await loadExtraVocabs(extraVocabs),
   }
