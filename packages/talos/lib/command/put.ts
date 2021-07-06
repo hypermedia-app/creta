@@ -4,7 +4,7 @@ import { bootstrap } from '../bootstrap'
 import { deleteApi } from '../deleteApi'
 import type { Command } from '.'
 
-interface Put extends Command {
+export interface Put extends Command {
   api: string
   apiPath?: string
 }
