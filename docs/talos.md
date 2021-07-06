@@ -2,7 +2,7 @@
 
 Talos is a command-line tool, which creates a bridge between minimal resources necessary to start a creta-based project, and a specific instance of said project.
 
-Use it to bootstrap and update core resources of an API, which ar necessary for it to function.
+Use it to bootstrap and update core resources of an API, which are necessary for it to function.
 
 ## PUT resources
 
