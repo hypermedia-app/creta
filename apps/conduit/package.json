@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.6",
   "scripts": {
-    "resources": "../../packages/knossos/bin/index.ts init",
+    "resources": "../../packages/knossos/bin/knossos.ts init",
     "bootstrap": "run-s bootstrap:*",
     "bootstrap:api": "../../packages/talos/bin/talos.ts put --api https://conduit.knossos.lndo.site --endpoint http://db.labyrinth.lndo.site/repositories/labyrinth --user minos --password password",
     "bootstrap:vocabs": "../../packages/talos/bin/talos.ts put-vocabs --apiDoc https://conduit.knossos.lndo.site/api --endpoint http://db.labyrinth.lndo.site/repositories/labyrinth --user minos --password password"
