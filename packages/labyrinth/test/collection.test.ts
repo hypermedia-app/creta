@@ -164,6 +164,7 @@ describe('@hydrofoil/labyrinth/collection', () => {
       const dataset = await $rdf.dataset().import(parsers.import('application/ld+json', toStream(res.text))!)
       const view = cf({ dataset }).out(hydra.view)
 
+      expect(view.term).to.deep.eq($rdf.namedNode('?title=Titanic&page=50'))
       expect(view.out(hydra.first).value).to.eq('?title=Titanic')
       expect(view.out(hydra.previous).value).to.eq('?title=Titanic&page=49')
       expect(view.out(hydra.next).value).to.eq('?title=Titanic&page=51')
