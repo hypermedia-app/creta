@@ -6,19 +6,18 @@ import * as mime from 'mime-types'
 import StreamClient, { StreamClientOptions } from 'sparql-http-client'
 import $rdf from 'rdf-ext'
 import { parsers } from '@rdfjs/formats-common'
-import { Debugger } from 'debug'
 import clownface from 'clownface'
 import { ResourcePerGraphStore } from '@hydrofoil/knossos/lib/store'
 import { hydra } from '@tpluscode/rdf-ns-builders/strict'
+import { log } from './log'
 
 type Options = StreamClientOptions & {
-  log: Debugger
   api: string
   apiUri: NamedNode
   cwd: string
 }
 
-export async function bootstrap({ log, api, apiUri, cwd, ...options }: Options): Promise<void> {
+export async function bootstrap({ api, apiUri, cwd, ...options }: Options): Promise<void> {
   const store = new ResourcePerGraphStore(new StreamClient(options))
 
   for await (const file of walk(cwd)) {

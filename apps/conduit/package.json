@@ -3,8 +3,10 @@
   "private": true,
   "version": "0.1.6",
   "scripts": {
-    "resources": "../../packages/knossos/bin/index.ts init",
-    "bootstrap": "../../packages/talos/bin/index.ts put --vocabs --resources --api https://conduit.knossos.lndo.site --endpoint http://db.labyrinth.lndo.site/repositories/labyrinth --user minos --password password"
+    "resources": "../../packages/knossos/bin/knossos.ts init",
+    "bootstrap": "run-s bootstrap:*",
+    "bootstrap:api": "../../packages/talos/bin/talos.ts put --api https://conduit.knossos.lndo.site --endpoint http://db.labyrinth.lndo.site/repositories/labyrinth --user minos --password password",
+    "bootstrap:vocabs": "../../packages/talos/bin/talos.ts put-vocabs --apiDoc https://conduit.knossos.lndo.site/api --endpoint http://db.labyrinth.lndo.site/repositories/labyrinth --user minos --password password"
   },
   "dependencies": {
     "@hydrofoil/knossos": "0.2.1",
@@ -22,6 +24,7 @@
   },
   "devDependencies": {
     "@hydrofoil/talos": "0.2.1",
-    "@types/node-fetch": "^2.5.10"
+    "@types/node-fetch": "^2.5.10",
+    "npm-run-all": "^4.1.5"
   }
 }

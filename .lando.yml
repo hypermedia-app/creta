@@ -5,7 +5,6 @@ services:
     build:
       - npm i -g nodemon
     command: nodemon -w packages -w apps --ignore **/*.http --ignore **/*.ttl --ignore **/*.env.json --ext ts,js --exec node --inspect=0.0.0.0:47671 -r ts-node/register --inspect packages/knossos/index.ts serve http://store:10035/repositories/labyrinth?infer=true --name conduit --authModule ./apps/conduit/middleware/authenticate --codePath ./apps/conduit --user minos --password password
-    port: 8888
     ssl: true
     overrides:
       image: node:14
@@ -25,8 +24,6 @@ services:
     volumes:
       agdata:
       agconfig:
-    ports:
-      - 10000-10035:10000-10035
     run:
       - agtool repos create http://minos:password@127.0.0.1:10035/repositories/labyrinth
       - agtool repos create http://minos:password@127.0.0.1:10035/repositories/tests
