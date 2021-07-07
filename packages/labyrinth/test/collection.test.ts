@@ -127,48 +127,91 @@ describe('@hydrofoil/labyrinth/collection', () => {
       expect(title).to.eq('Titanic')
     })
 
-    it('adds pages links', async () => {
-      // given
-      const app = express()
-      app.use(hydraBox({
-        setup: async api => {
-          api.resource.term = ex.people
-          ;(await api.resource.clownface()).addOut(hydra.search, template => {
-            template.addOut(rdf.type, hydra.IriTemplate)
-            template.addOut(hydra.template, '/{?title,page}')
-            template.addOut(hydra.mapping, mapping => {
-              mapping.addOut(rdf.type, hydra.IriTemplateMapping)
-              mapping.addOut(hydra.property, schema.title)
-              mapping.addOut(hydra.variable, 'title')
+    describe('paged collection', () => {
+      let app: express.Express
+
+      beforeEach(() => {
+        app = express()
+        app.use(hydraBox({
+          setup: async api => {
+            api.resource.term = ex.people
+            ;(await api.resource.clownface()).addOut(hydra.search, template => {
+              template.addOut(rdf.type, hydra.IriTemplate)
+              template.addOut(hydra.template, '/{?title,page}')
+              template.addOut(hydra.mapping, mapping => {
+                mapping.addOut(rdf.type, hydra.IriTemplateMapping)
+                mapping.addOut(hydra.property, schema.title)
+                mapping.addOut(hydra.variable, 'title')
+              })
+              template.addOut(hydra.mapping, mapping => {
+                mapping.addOut(rdf.type, hydra.IriTemplateMapping)
+                mapping.addOut(hydra.property, hydra.pageIndex)
+                mapping.addOut(hydra.variable, 'page')
+              })
             })
-            template.addOut(hydra.mapping, mapping => {
-              mapping.addOut(rdf.type, hydra.IriTemplateMapping)
-              mapping.addOut(hydra.property, hydra.pageIndex)
-              mapping.addOut(hydra.variable, 'page')
-            })
+          },
+        }))
+        totals.resolves(1000)
+        app.use(get)
+      })
+
+      it('adds pages links', async () => {
+        // when
+        const res = await request(app)
+          .get('/')
+          .query({
+            title: 'Titanic',
+            page: '50',
           })
-        },
-      }))
-      totals.resolves(1000)
-      app.use(get)
 
-      // when
-      const res = await request(app)
-        .get('/')
-        .query({
-          title: 'Titanic',
-          page: '50',
-        })
+        // then
+        const dataset = await $rdf.dataset().import(parsers.import('application/ld+json', toStream(res.text))!)
+        const view = cf({ dataset }).out(hydra.view)
 
-      // then
-      const dataset = await $rdf.dataset().import(parsers.import('application/ld+json', toStream(res.text))!)
-      const view = cf({ dataset }).out(hydra.view)
+        expect(view.term).to.deep.eq($rdf.namedNode('?title=Titanic&page=50'))
+        expect(view.out(hydra.first).value).to.eq('?title=Titanic')
+        expect(view.out(hydra.previous).value).to.eq('?title=Titanic&page=49')
+        expect(view.out(hydra.next).value).to.eq('?title=Titanic&page=51')
+        expect(view.out(hydra.last).value).to.eq('?title=Titanic&page=84')
+      })
 
-      expect(view.term).to.deep.eq($rdf.namedNode('?title=Titanic&page=50'))
-      expect(view.out(hydra.first).value).to.eq('?title=Titanic')
-      expect(view.out(hydra.previous).value).to.eq('?title=Titanic&page=49')
-      expect(view.out(hydra.next).value).to.eq('?title=Titanic&page=51')
-      expect(view.out(hydra.last).value).to.eq('?title=Titanic&page=84')
+      it('adds pages links to first page', async () => {
+        // when
+        const res = await request(app)
+          .get('/')
+          .query({
+            title: 'Titanic',
+          })
+
+        // then
+        const dataset = await $rdf.dataset().import(parsers.import('application/ld+json', toStream(res.text))!)
+        const view = cf({ dataset }).out(hydra.view)
+
+        expect(view.term).to.deep.eq($rdf.namedNode('?title=Titanic'))
+        expect(view.out(hydra.first).value).to.eq('?title=Titanic')
+        expect(view.out(hydra.previous).value).to.be.undefined
+        expect(view.out(hydra.next).value).to.eq('?title=Titanic&page=2')
+        expect(view.out(hydra.last).value).to.eq('?title=Titanic&page=84')
+      })
+
+      it('adds pages links to last page', async () => {
+        // when
+        const res = await request(app)
+          .get('/')
+          .query({
+            title: 'Titanic',
+            page: '84',
+          })
+
+        // then
+        const dataset = await $rdf.dataset().import(parsers.import('application/ld+json', toStream(res.text))!)
+        const view = cf({ dataset }).out(hydra.view)
+
+        expect(view.term).to.deep.eq($rdf.namedNode('?title=Titanic&page=84'))
+        expect(view.out(hydra.first).value).to.eq('?title=Titanic')
+        expect(view.out(hydra.next).value).to.be.undefined
+        expect(view.out(hydra.last).value).to.eq('?title=Titanic&page=84')
+      })
     })
 
     it('passes pageSize to create query function', async () => {
