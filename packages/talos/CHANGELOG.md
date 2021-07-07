@@ -1,5 +1,11 @@
 # @hydrofoil/talos
 
+## 0.3.0
+
+### Minor Changes
+
+- 2883c1c: Split `put --resources` and `put --vocabs` into separate commands
+
 ## 0.2.1
 
 ### Patch Changes
