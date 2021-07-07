@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.5.5
+
+### Patch Changes
+
+- d0bcd09: Client-defined `hydra:limit` from query string
+
 ## 0.5.4
 
 ### Patch Changes
