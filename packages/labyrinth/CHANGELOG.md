@@ -1,5 +1,15 @@
 # @hydrofoil/labyrinth
 
+## 0.6.0
+
+### Minor Changes
+
+- ff74998: Eager loading annotated by `query:include` must use `DESCRIBE` like the rest of queries
+
+### Patch Changes
+
+- 511b6c8: Missing id of collection's `PartialCollectionView`
+
 ## 0.5.5
 
 ### Patch Changes
