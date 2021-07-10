@@ -1,5 +1,14 @@
 # @hydrofoil/knossos
 
+## 0.2.2
+
+### Patch Changes
+
+- 30dbfa6: Shape for `vcard:Group` should not be a `hydra:Class`
+- Updated dependencies [511b6c8]
+- Updated dependencies [ff74998]
+  - @hydrofoil/labyrinth@0.6.0
+
 ## 0.2.1
 
 ### Patch Changes
