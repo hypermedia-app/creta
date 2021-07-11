@@ -1,5 +1,13 @@
 # @hydrofoil/conduit
 
+## 0.1.8
+
+### Patch Changes
+
+- b3e24eb: Upgrade `@hydrofoil/vocabularies`
+- Updated dependencies [b3e24eb]
+  - @hydrofoil/knossos@0.2.3
+
 ## 0.1.7
 
 ### Patch Changes
