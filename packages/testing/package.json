@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "dependencies": {
-    "@hydrofoil/vocabularies": "^0.1.0",
+    "@hydrofoil/vocabularies": "^0.2.0",
     "@rdfjs/express-handler": "^1.2.1",
     "@rdfjs/namespace": "^1.1.0",
     "@rdfjs/term-set": "^1.0.1",

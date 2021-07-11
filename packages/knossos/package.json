@@ -18,7 +18,7 @@
     "@fcostarodrigo/walk": "^5.0.1",
     "@hydrofoil/knossos-events": "^0.2.1",
     "@hydrofoil/labyrinth": "^0.6.0",
-    "@hydrofoil/vocabularies": "^0.1.7",
+    "@hydrofoil/vocabularies": "^0.2.0",
     "@rdfine/hydra": "^0.6.6",
     "@graphy/content.trig.read": "^4.3.3",
     "@rdfjs/namespace": "^1.1.0",

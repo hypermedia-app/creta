@@ -7,7 +7,7 @@
 <>
   hydra:method "PUT" ;
   auth:access acl:Write ;
-  knossos:supportedByClass hydra:Class ;
+  knossos:supportedBy hydra:Class ;
   hydra:apiDocumentation </api> ;
   code:implementedBy
     [

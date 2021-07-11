@@ -4,7 +4,7 @@
 @prefix auth: <https://hypermedia.app/auth#> .
 @prefix knossos: <https://hypermedia.app/knossos#> .
 
-<> knossos:supportedByClass hydra:Collection ;
+<> knossos:supportedBy hydra:Collection ;
 	hydra:apiDocumentation </api> ;
 	hydra:method "GET" ;
 	auth:access acl:Read ;
