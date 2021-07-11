@@ -1146,10 +1146,10 @@
   dependencies:
     readable-stream "^3.6.0"
 
-"@hydrofoil/vocabularies@^0.1.0", "@hydrofoil/vocabularies@^0.1.5", "@hydrofoil/vocabularies@^0.1.6", "@hydrofoil/vocabularies@^0.1.7":
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/@hydrofoil/vocabularies/-/vocabularies-0.1.7.tgz#e213dee57769e2d44b2a9b691b382045801c9d87"
-  integrity sha512-gyEiausfmHmW3xmWfMsQPTp3subh7NPUlwLxpBn6BHDm0RECJf+t9Fv/Vl3MrsUOiP6wHRmmHKU5un6SjSCPAw==
+"@hydrofoil/vocabularies@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@hydrofoil/vocabularies/-/vocabularies-0.2.0.tgz#36ab95db69d72a709b7f7a002f0f674eb8d8cc0d"
+  integrity sha512-7Nckyo2lsG7F9EpxgJuT7In6PIOo/ze5Dxs5rCS2LsGIW0DeCuCfdgoP5zGpUkgVfYZOKkrpJCXLkePLTRionA==
   dependencies:
     "@rdf-esm/namespace" "^0.5.3"
     "@rdfjs/parser-n3" "^1.1.4"

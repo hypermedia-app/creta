@@ -4,7 +4,7 @@
 @prefix acl: <http://www.w3.org/ns/auth/acl#> .
 @prefix code: <https://code.described.at/> .
 
-<> knossos:supportedByClass hydra:Class ;
+<> knossos:supportedBy hydra:Class ;
 	hydra:apiDocumentation </api> ;
 	hydra:method "DELETE" ;
 	auth:access acl:Delete ;

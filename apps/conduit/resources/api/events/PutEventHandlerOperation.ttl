@@ -6,7 +6,7 @@
 @prefix auth: <https://hypermedia.app/auth#> .
 @prefix knossos: <https://hypermedia.app/knossos#> .
 
-<> knossos:supportedByClass events:EventHandler ;
+<> knossos:supportedBy events:EventHandler ;
 	hydra:apiDocumentation </api> ;
 	hydra:method "PUT" ;
 	auth:access acl:Write ;

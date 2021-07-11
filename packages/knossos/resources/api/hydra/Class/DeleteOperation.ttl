@@ -5,7 +5,7 @@
 @prefix code: <https://code.described.at/> .
 
 <>
-  knossos:supportedByClass hydra:Class ;
+  knossos:supportedBy hydra:Class ;
   hydra:apiDocumentation </api> ;
   hydra:method "DELETE" ;
   auth:access acl:Delete ;

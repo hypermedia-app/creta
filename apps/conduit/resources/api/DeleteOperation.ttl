@@ -6,7 +6,7 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 
-<> knossos:supportedByClass hydra:ApiDocumentation ;
+<> knossos:supportedBy hydra:ApiDocumentation ;
 	hydra:method "DELETE" ;
 	auth:access acl:Delete ;
 	hydra:apiDocumentation </api> ;

@@ -12,7 +12,7 @@
     "*.d.ts"
   ],
   "dependencies": {
-    "@hydrofoil/vocabularies": "^0.1.0",
+    "@hydrofoil/vocabularies": "^0.2.0",
     "@rdfjs/namespace": "^1.1.0",
     "@rdfine/as": "^0.2.1",
     "@tpluscode/rdf-ns-builders": "^1.0.0",
