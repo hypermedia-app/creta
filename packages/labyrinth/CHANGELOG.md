@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.6.1
+
+### Patch Changes
+
+- b3e24eb: Upgrade `@hydrofoil/vocabularies`
+
 ## 0.6.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @hydrofoil/knossos-events
 
+## 0.2.3
+
+### Patch Changes
+
+- b3e24eb: Replace `knossos:supportedByClass` with `knossos:supportedBy`
+
 ## 0.2.2
 
 ### Patch Changes

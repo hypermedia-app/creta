@@ -1,5 +1,13 @@
 # @hydrofoil/talos
 
+## 0.3.1
+
+### Patch Changes
+
+- b3e24eb: Upgrade `@hydrofoil/vocabularies`
+- Updated dependencies [b3e24eb]
+  - @hydrofoil/knossos@0.2.3
+
 ## 0.3.0
 
 ### Minor Changes

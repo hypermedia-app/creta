@@ -1,5 +1,15 @@
 # @hydrofoil/knossos
 
+## 0.2.3
+
+### Patch Changes
+
+- b3e24eb: Replace `knossos:supportedByClass` with `knossos:supportedBy`
+- Updated dependencies [b3e24eb]
+- Updated dependencies [b3e24eb]
+  - @hydrofoil/labyrinth@0.6.1
+  - @hydrofoil/knossos-events@0.2.3
+
 ## 0.2.2
 
 ### Patch Changes
