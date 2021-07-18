@@ -23,6 +23,27 @@ describe('@hydrofoil/knossos/lib/query', () => {
       expect(clas.out().values).to.have.length.greaterThan(0)
     })
 
+    it('finds non-Hydra classes which have operations', async () => {
+      // given
+      await testData(sparql`
+        ${ex.Class} ${hydra.supportedOperation} [
+          ${hydra.apiDocumentation} ${ex.api}
+        ] .
+       
+        ${ex.Class2} ${hydra.apiDocumentation} ${ex.api} .
+        ${ex.Class2} ${hydra.supportedOperation} [] .
+      `)
+
+      // when
+      const dataset = await $rdf.dataset().import(await loadClasses(ex.api, client))
+
+      // then
+      const classes = clownface({ dataset }).has(hydra.supportedOperation)
+      expect(classes.terms).to.deep.contain.members([
+        ex.Class, ex.Class2,
+      ])
+    })
+
     it('loads operations supported by properties', async () => {
       // given
       await testData(sparql`
