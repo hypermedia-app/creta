@@ -1,5 +1,12 @@
 # @hydrofoil/knossos
 
+## 0.2.4
+
+### Patch Changes
+
+- 8c6fc87: Multi-tenancy: ApiDocumentation terms leak between APIs
+- fcd3619: Supported operations should also be loaded when class is not explicitly `hydra:Class`
+
 ## 0.2.3
 
 ### Patch Changes
