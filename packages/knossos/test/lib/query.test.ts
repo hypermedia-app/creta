@@ -4,7 +4,7 @@ import clownface from 'clownface'
 import { client, testData } from '@labyrinth/testing/client'
 import { ex } from '@labyrinth/testing/namespace'
 import { sparql } from '@tpluscode/rdf-string'
-import { hydra } from '@tpluscode/rdf-ns-builders'
+import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { loadClasses } from '../../lib/query'
 
 describe('@hydrofoil/knossos/lib/query', () => {
@@ -42,6 +42,41 @@ describe('@hydrofoil/knossos/lib/query', () => {
       expect(supportedOp.out().values).to.have.length.greaterThan(0)
       const prop = clownface({ dataset }).namedNode(ex.property)
       expect(prop.out().values).to.have.length.greaterThan(0)
+    })
+
+    describe('database shared between APIs', () => {
+      it('returns only classes from the correct API', async () => {
+        // given
+        await testData(sparql`
+          # API 1
+          ${ex.Api1Class} a ${hydra.Class} ; ${hydra.apiDocumentation} ${ex.api1} .
+          ${ex.Api1Class2} a ${hydra.Class} ; ${hydra.supportedOperation} [ ${hydra.apiDocumentation} ${ex.api1} ] .
+          ${ex.Api1Class3} a ${hydra.Class} ; ${hydra.supportedProperty} [ 
+            ${hydra.property} [
+              ${hydra.supportedOperation} [ ${hydra.apiDocumentation} ${ex.api1} ] ;
+            ] ;
+          ] .
+          
+          # API 2
+          ${ex.Api2Class} a ${hydra.Class} ; ${hydra.apiDocumentation} ${ex.api2} .
+          ${ex.Api2Class2} a ${hydra.Class} ; ${hydra.supportedOperation} [ ${hydra.apiDocumentation} ${ex.api2} ] .
+          ${ex.Api2Class3} a ${hydra.Class} ; ${hydra.supportedProperty} [ 
+            ${hydra.property} [
+              ${hydra.supportedOperation} [ ${hydra.apiDocumentation} ${ex.api2} ] ;
+            ] ;
+          ] .
+        `)
+
+        // when
+        const dataset = await $rdf.dataset().import(await loadClasses(ex.api1, client))
+
+        // then
+        const ptr = clownface({ dataset }).has(rdf.type, hydra.Class)
+        expect(ptr.terms).to.have.length(3)
+        expect(ptr.terms).to.deep.contain.members([
+          ex.Api1Class, ex.Api1Class2, ex.Api1Class3,
+        ])
+      })
     })
   })
 })
