@@ -51,7 +51,6 @@
   },
   "devDependencies": {
     "@labyrinth/testing": "^0.0.1",
-    "@tpluscode/rdfine": "^0.5.25",
     "@types/camouflage-rewrite": "^1.2.0",
     "@types/fcostarodrigo__walk": "^5.0.1",
     "@types/fs-extra": "^9.0.10",
