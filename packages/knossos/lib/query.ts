@@ -9,7 +9,7 @@ export function loadClasses(api: NamedNode, client: StreamClient): Promise<Strea
     {
       ?c a ${hydra.Class} ; ${hydra.apiDocumentation} ${api}.
     } union {
-      ?c a ${hydra.Class} ; ${hydra.supportedOperation} ?op .
+      ?c ${hydra.supportedOperation} ?op .
       
       FILTER (
         EXISTS { ?c ${hydra.apiDocumentation} ${api} } ||
