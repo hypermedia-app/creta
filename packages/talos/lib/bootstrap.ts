@@ -26,7 +26,7 @@ export async function bootstrap({ api, apiUri, cwd, ...options }: Options): Prom
       .replace(/\..+$/, '')
       .replace(/\/?index$/, '')
 
-    const url = `${api}/${resourcePath}`
+    const url = encodeURI(`${api}/${resourcePath}`)
 
     const mediaType = mime.lookup(file)
     if (!mediaType) {
