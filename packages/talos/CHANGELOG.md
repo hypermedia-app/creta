@@ -1,5 +1,11 @@
 # @hydrofoil/talos
 
+## 0.3.2
+
+### Patch Changes
+
+- 6d68a5d: Resource paths were not encoded which caused Bad Request on SPARQL Update if they contained spaces or other characters not allowed in URLs
+
 ## 0.3.1
 
 ### Patch Changes
