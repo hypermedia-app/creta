@@ -45,6 +45,14 @@ describe('@hydrofoil/talos/lib/command/put', () => {
         expect(userCreated).to.eventually.be.true
       })
 
+      it('escapes paths to produce valid URIs', () => {
+        const userCreated = ASK`${ns('project/creta/user/Kov%C3%A1cs%20J%C3%A1nos')} a ${schema.Person}`
+          .FROM(ns('project/creta/user/Kov%C3%A1cs%20J%C3%A1nos'))
+          .execute(client.query)
+
+        expect(userCreated).to.eventually.be.true
+      })
+
       it('adds apiDocumentation link', () => {
         const userCreated = ASK`${ns('project/creta/user/tpluscode')} ${hydra.apiDocumentation} ?api`
           .FROM(ns('project/creta/user/tpluscode'))
