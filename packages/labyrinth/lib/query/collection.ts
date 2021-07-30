@@ -1,4 +1,4 @@
-import { NamedNode, Stream, Variable } from 'rdf-js'
+import { NamedNode, Stream, Term, Variable } from 'rdf-js'
 import { DESCRIBE, SELECT } from '@tpluscode/sparql-builder'
 import { hydra, ldp, rdf } from '@tpluscode/rdf-ns-builders'
 import $rdf from 'rdf-ext'
@@ -53,28 +53,36 @@ function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPoin
   }
 }
 
-function createMemberAssertionPatterns(member: Variable) {
-  return function (previous: SparqlTemplateResult, memberAssertion: GraphPointer): SparqlTemplateResult {
-    const subject = memberAssertion.out(hydra.subject).term
-    const predicate = memberAssertion.out(hydra.property).term
-    const object = memberAssertion.out(hydra.object).term
-
-    if (subject && predicate) {
-      return sparql`${previous}\n${subject} ${predicate} ${member} .`
+function * createPatterns(subs: Term[], preds: Term[], objs: Term[]) {
+  for (const subject of subs) {
+    for (const predicate of preds) {
+      for (const object of objs) {
+        yield sparql`${subject} ${predicate} ${object} .`
+      }
     }
-    if (subject && object) {
-      return sparql`${previous}\n${subject} ${member} ${object} .`
-    }
-    if (predicate && object) {
-      return sparql`${previous}\n${member} ${predicate} ${object} .`
-    }
-
-    return previous
   }
 }
 
-function onlyValidManagesBlocks(manages: GraphPointer) {
-  return manages.out([hydra.subject, hydra.property, hydra.object]).values.length === 2
+function toSparqlPattern(member: Variable) {
+  return function (previous: SparqlTemplateResult[], memberAssertion: GraphPointer): SparqlTemplateResult[] {
+    const subject = memberAssertion.out(hydra.subject).terms
+    const predicate = memberAssertion.out(hydra.property).terms
+    const object = memberAssertion.out(hydra.object).terms
+
+    if (subject.length && predicate.length && !object.length) {
+      return [...previous, ...createPatterns(subject, predicate, [member])]
+    }
+    if (subject.length && object.length && !predicate.length) {
+      return [...previous, ...createPatterns(subject, [member], object)]
+    }
+    if (predicate.length && object.length && !subject.length) {
+      return [...previous, ...createPatterns([member], predicate, object)]
+    }
+
+    log('Skipping invalid member assertion')
+
+    return previous
+  }
 }
 
 type SelectBuilder = ReturnType<typeof SELECT>
@@ -136,13 +144,15 @@ export async function getSparqlQuery({ api, collection, pageSize, query = cf({ d
   const subject = $rdf.variable('member')
   const memberAssertions = collection
     .out([hydra.manages, hydra.memberAssertion])
-    .filter(onlyValidManagesBlocks)
-  if (!memberAssertions.values.length) {
+    .toArray()
+    .reduce(toSparqlPattern(subject), [])
+
+  if (!memberAssertions.length) {
     warn(`Collection ${collection.value} has no valid manages block and will always return empty`)
     return null
   }
 
-  const managesBlockPatterns = memberAssertions.toArray().reduce(createMemberAssertionPatterns(subject), sparql``)
+  const managesBlockPatterns = memberAssertions.reduce((combined, next) => sparql`${combined}\n${next}`, sparql``)
   let filterPatters: Array<string | SparqlTemplateResult> = []
   if (variables) {
     filterPatters = await Promise.all(variables.mapping.map(createTemplateVariablePatterns(subject, query, api)))
