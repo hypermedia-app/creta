@@ -170,6 +170,31 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
             }))
           })
 
+          it('allows member assertions with multiple objects', async () => {
+            // given
+            const expected = expectedQuery(sparql`?member ${rdf.type} ${foaf.Person}. ?member ${rdf.type} ${foaf.Agent}`)
+            const query = await getSparqlQuery({
+              api: api(),
+              collection: cf({ dataset: $rdf.dataset() })
+                .blankNode()
+                .addOut(property, manages => {
+                  manages.addOut(hydra.property, rdf.type)
+                  manages.addOut(hydra.object, [foaf.Person, foaf.Agent])
+                }),
+              pageSize: 10,
+              variables: null,
+            })
+
+            // when
+            await query?.members(client)
+
+            // then
+            expect(client.query.select).to.have.been.calledWith(sinon.match(value => {
+              expect(value).to.be.a.query(expected)
+              return true
+            }))
+          })
+
           it('filters by subject/property assertion', async () => {
             // given
             const expected = expectedQuery(sparql`${ex.JohnDoe} ${schema.knows} ?member`)
