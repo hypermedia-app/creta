@@ -23,7 +23,7 @@ export async function bootstrap({ api, apiUri, cwd, ...options }: Options): Prom
   for await (const file of walk(cwd)) {
     const relative = path.relative(cwd, file)
     const resourcePath = path.relative(cwd, file)
-      .replace(/\..+$/, '')
+      .replace(/\.[^.]+$/, '')
       .replace(/\/?index$/, '')
 
     const url = encodeURI(`${api}/${resourcePath}`)
