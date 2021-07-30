@@ -3,7 +3,7 @@ import { put, Put } from 'talos/lib/command/put'
 import { ASK, DELETE } from '@tpluscode/sparql-builder'
 import ParsingClient from 'sparql-http-client/ParsingClient'
 import { expect } from 'chai'
-import { doap, hydra, schema } from '@tpluscode/rdf-ns-builders'
+import { doap, hydra, schema, vcard } from '@tpluscode/rdf-ns-builders'
 import namespace from '@rdfjs/namespace'
 import * as NodeFetch from 'node-fetch'
 import sinon from 'sinon'
@@ -37,38 +37,46 @@ describe('@hydrofoil/talos/lib/command/put', () => {
     })
 
     describe('turtle', () => {
-      it('inserts into graph constructed from path', () => {
+      it('inserts into graph constructed from path', async () => {
         const userCreated = ASK`${ns('project/creta/user/tpluscode')} a ${schema.Person}`
           .FROM(ns('project/creta/user/tpluscode'))
           .execute(client.query)
 
-        expect(userCreated).to.eventually.be.true
+        await expect(userCreated).to.eventually.be.true
       })
 
-      it('escapes paths to produce valid URIs', () => {
+      it('escapes paths to produce valid URIs', async () => {
         const userCreated = ASK`${ns('project/creta/user/Kov%C3%A1cs%20J%C3%A1nos')} a ${schema.Person}`
           .FROM(ns('project/creta/user/Kov%C3%A1cs%20J%C3%A1nos'))
           .execute(client.query)
 
-        expect(userCreated).to.eventually.be.true
+        await expect(userCreated).to.eventually.be.true
       })
 
-      it('adds apiDocumentation link', () => {
+      it('allows dots in paths', async () => {
+        const userCreated = ASK`${ns('project/creta/user.group/john.doe')} a ${vcard.Group}`
+          .FROM(ns('project/creta/user.group/john.doe'))
+          .execute(client.query)
+
+        await expect(userCreated).to.eventually.be.true
+      })
+
+      it('adds apiDocumentation link', async () => {
         const userCreated = ASK`${ns('project/creta/user/tpluscode')} ${hydra.apiDocumentation} ?api`
           .FROM(ns('project/creta/user/tpluscode'))
           .execute(client.query)
 
-        expect(userCreated).to.eventually.be.true
+        await expect(userCreated).to.eventually.be.true
       })
     })
 
     describe('n-quads', () => {
-      it('inserts into graph constructed from path', () => {
+      it('inserts into graph constructed from path', async () => {
         const userCreated = ASK`${ns('project/creta/project/creta')} a ${doap.Project}`
           .FROM(ns('project/creta/project/creta'))
           .execute(client.query)
 
-        expect(userCreated).to.eventually.be.true
+        await expect(userCreated).to.eventually.be.true
       })
     })
   })
