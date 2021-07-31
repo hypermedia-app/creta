@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.6.2
+
+### Patch Changes
+
+- 53ef91d: `hydra:memberAssertion` would not be applied if it had mutliple objects of any of its properties
+
 ## 0.6.1
 
 ### Patch Changes
