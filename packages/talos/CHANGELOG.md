@@ -1,5 +1,11 @@
 # @hydrofoil/talos
 
+## 0.3.3
+
+### Patch Changes
+
+- bd43f68: Dots in resource path caused the URI to be cut short
+
 ## 0.3.2
 
 ### Patch Changes
