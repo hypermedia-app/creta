@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.6.3
+
+### Patch Changes
+
+- acc2bbd: Ability to serve collections which contain a static set of `hydra:member`
+
 ## 0.6.2
 
 ### Patch Changes
