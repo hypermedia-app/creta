@@ -113,16 +113,10 @@ function assertApiTerm(api: AnyPointer): asserts api is GraphPointer<NamedNode> 
   }
 }
 
-export async function collection({ hydraBox, pageSize, sparqlClient, query, ...rest }: CollectionParams): Promise<GraphPointer<NamedNode, DatasetExt>> {
-  const api = clownface(hydraBox.api)
-  assertApiTerm(api)
-
-  const collection = clownface({
-    dataset: $rdf.dataset([...rest.collection.dataset]),
-    term: rest.collection.term,
-  })
-  const template = await getTemplate(await hydraBox.resource.clownface(), sparqlClient)
-
+async function loadDynamicCollection(
+  collection: GraphPointer<NamedNode, DatasetExt>,
+  template: IriTemplate | null,
+  { hydraBox, sparqlClient, pageSize, query }: Pick<CollectionParams, 'hydraBox' | 'sparqlClient' | 'pageSize' | 'query'>) {
   const pageQuery = await getSparqlQuery({
     api: hydraBox.api,
     collection,
@@ -150,8 +144,28 @@ export async function collection({ hydraBox, pageSize, sparqlClient, query, ...r
 
     await Promise.all([getMembers, getTotal, getData])
   }
-  collection.addOut(hydra.totalItems, total)
 
+  return { total, members }
+}
+
+export async function collection({ hydraBox, pageSize, sparqlClient, query, ...rest }: CollectionParams): Promise<GraphPointer<NamedNode, DatasetExt>> {
+  const api = clownface(hydraBox.api)
+  assertApiTerm(api)
+
+  const collection = clownface({
+    dataset: $rdf.dataset([...rest.collection.dataset]),
+    term: rest.collection.term,
+  })
+  const template = await getTemplate(await hydraBox.resource.clownface(), sparqlClient)
+
+  const { total, members } = await loadDynamicCollection(collection, template, {
+    hydraBox,
+    pageSize,
+    query,
+    sparqlClient,
+  })
+
+  collection.addOut(hydra.totalItems, total)
   collection.namedNode(collection.term).addOut(hydra.member, members)
 
   const eagerLoadByCollection = api.node([hydraBox.operation.term, ...hydraBox.resource.types]).out(hyper_query.include)
