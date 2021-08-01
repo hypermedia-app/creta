@@ -21,7 +21,7 @@ prefix sh: <http://www.w3.org/ns/shacl#>
 prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 </api/ArticleCollection>
-  rdfs:subClassOf </api/Collection> ;
+  rdfs:subClassOf hydra:Collection ;
   sh:property 
   [
     sh:path hydra:memberAssertion ;
@@ -75,6 +75,12 @@ prefix hydra: <http://www.w3.org/ns/hydra/core#>
   ] ;
 .
 ```
+
+## Collections with static members
+
+Alternatively, a simplest possible collection directly links to its members using `hydra:member` predicate.
+
+Such a collection does not require `hydra:memberAssertion` as it will always return the same representation. It also does not support filtering.
 
 ## Reading collections
 
