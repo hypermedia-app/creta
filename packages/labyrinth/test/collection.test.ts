@@ -5,7 +5,7 @@ import request from 'supertest'
 import $rdf from 'rdf-ext'
 import cf from 'clownface'
 import sinon, { SinonStub, SinonStubbedInstance } from 'sinon'
-import { hydra, rdf, schema } from '@tpluscode/rdf-ns-builders'
+import { hydra, rdf, schema, xsd } from '@tpluscode/rdf-ns-builders/strict'
 import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
 import { parsers } from '@rdfjs/formats-common'
@@ -345,6 +345,34 @@ describe('@hydrofoil/labyrinth/collection', () => {
 
       // then
       expect(response.body).to.matchSnapshot(this)
+    })
+
+    it('returns existing hydra:members without generating a query', async () => {
+      // given
+      const app = express()
+      collectionQueryMock.getSparqlQuery.resolves(null)
+      app.use(hydraBox({
+        setup: async api => {
+          api.resource.term = ex.movies;
+          (await api.resource.clownface())
+            .addOut(rdf.type, ex.Collection)
+            .addOut(hydra.member, [ex.Titanic, ex.StarWars])
+            .addOut(hydra.totalItems, 4)
+          cf(api.api)
+            .namedNode(ex.Collection)
+        },
+      }))
+      app.use(get)
+
+      // when
+      const res = await request(app).get('/movies').expect(200)
+      const dataset = await $rdf.dataset().import(parsers.import('application/ld+json', toStream(res.text))!)
+      const collection = cf({ dataset }).node(ex.movies)
+
+      // then
+      expect(collection.out(hydra.member).terms).to.deep.contain.members([ex.Titanic, ex.StarWars])
+      expect(collection.out(hydra.totalItems).term).to.deep.eq($rdf.literal('2', xsd.integer))
+      expect(collectionQueryMock.getSparqlQuery).not.to.have.been.called
     })
   })
 })

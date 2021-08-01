@@ -1,4 +1,4 @@
-import { NamedNode } from 'rdf-js'
+import { NamedNode, Term } from 'rdf-js'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
 import { fromPointer, IriTemplate } from '@rdfine/hydra/lib/IriTemplate'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
@@ -158,15 +158,23 @@ export async function collection({ hydraBox, pageSize, sparqlClient, query, ...r
   })
   const template = await getTemplate(await hydraBox.resource.clownface(), sparqlClient)
 
-  const { total, members } = await loadDynamicCollection(collection, template, {
-    hydraBox,
-    pageSize,
-    query,
-    sparqlClient,
-  })
+  let total: number
+  let members: Term[]
+  if (collection.has(hydra.member).terms.length) {
+    members = collection.out(hydra.member).terms
+    total = members.length
+  } else {
+    ({ total, members } = await loadDynamicCollection(collection, template, {
+      hydraBox,
+      pageSize,
+      query,
+      sparqlClient,
+    }))
 
-  collection.addOut(hydra.totalItems, total)
-  collection.namedNode(collection.term).addOut(hydra.member, members)
+    collection.namedNode(collection.term).addOut(hydra.member, members)
+  }
+
+  collection.deleteOut(hydra.totalItems).addOut(hydra.totalItems, total)
 
   const eagerLoadByCollection = api.node([hydraBox.operation.term, ...hydraBox.resource.types]).out(hyper_query.include)
   const eagerLoadByMembers = api.node(collection.out(hydra.member).out(rdf.type).terms).out(hyper_query.include)
