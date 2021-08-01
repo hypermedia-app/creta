@@ -9,7 +9,7 @@ import { HydraBox } from 'hydra-box'
 import DatasetExt from 'rdf-ext/lib/Dataset'
 import { hyper_query } from '@hydrofoil/vocabularies/builders'
 import { DESCRIBE } from '@tpluscode/sparql-builder'
-import { getSparqlQuery } from './query/collection'
+import { getSparqlQuery, memberData } from './query/collection'
 import { loadLinkedResources } from './query/eagerLinks'
 
 const emptyDataset = clownface({ dataset: $rdf.dataset() })
@@ -163,6 +163,7 @@ export async function collection({ hydraBox, pageSize, sparqlClient, query, ...r
   if (collection.has(hydra.member).terms.length) {
     members = collection.out(hydra.member).terms
     total = members.length
+    await collection.dataset.import(await memberData(members, sparqlClient))
   } else {
     ({ total, members } = await loadDynamicCollection(collection, template, {
       hydraBox,
