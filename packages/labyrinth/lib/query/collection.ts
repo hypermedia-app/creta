@@ -140,6 +140,14 @@ export interface SparqlQueries {
   totals(client: StreamClient): Promise<number>
 }
 
+export async function memberData(ids: Term[], client: StreamClient): Promise<Stream> {
+  if (ids.length === 0) {
+    return $rdf.dataset().toStream()
+  }
+
+  return DESCRIBE`${ids}`.execute(client.query)
+}
+
 export async function getSparqlQuery({ api, collection, pageSize, query = cf({ dataset: $rdf.dataset() }), variables } : CollectionQueryParams): Promise<SparqlQueries | null> {
   const subject = $rdf.variable('member')
   const memberAssertions = collection
@@ -181,18 +189,12 @@ export async function getSparqlQuery({ api, collection, pageSize, query = cf({ d
       .then(array => array.map(row => row.member))
   })
 
-  const memberData = async (client: StreamClient) => {
-    const ids = await members(client)
-    if (ids.length === 0) {
-      return $rdf.dataset().toStream()
-    }
-
-    return DESCRIBE`${ids}`.execute(client.query)
-  }
-
   return {
     members,
-    memberData,
+    async memberData(client) {
+      const ids = await members(client)
+      return memberData(ids, client)
+    },
     async totals(client) {
       const stream = await SELECT`(count(distinct ${subject}) as ?count)`.WHERE`${memberPatterns}`.execute(client.query)
       const [result] = await toArray(stream)

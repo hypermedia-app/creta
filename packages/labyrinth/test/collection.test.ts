@@ -5,7 +5,7 @@ import request from 'supertest'
 import $rdf from 'rdf-ext'
 import cf from 'clownface'
 import sinon, { SinonStub, SinonStubbedInstance } from 'sinon'
-import { hydra, rdf, schema, xsd } from '@tpluscode/rdf-ns-builders/strict'
+import { hydra, rdf, rdfs, schema, xsd } from '@tpluscode/rdf-ns-builders/strict'
 import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
 import { parsers } from '@rdfjs/formats-common'
@@ -15,6 +15,7 @@ import * as ns from '@hydrofoil/vocabularies/builders/strict'
 import { ex } from '@labyrinth/testing/namespace'
 import { fromPointer } from '@rdfine/hydra/lib/IriTemplate'
 import { fromPointer as mapping } from '@rdfine/hydra/lib/IriTemplateMapping'
+import clownface from 'clownface'
 import { get } from '../collection'
 import * as collectionQuery from '../lib/query/collection'
 
@@ -351,6 +352,10 @@ describe('@hydrofoil/labyrinth/collection', () => {
       // given
       const app = express()
       collectionQueryMock.getSparqlQuery.resolves(null)
+      collectionQueryMock.memberData.resolves(clownface({ dataset: $rdf.dataset() })
+        .node(ex.Titanic).addOut(rdfs.label, 'Titanic')
+        .node(ex.StarWars).addOut(rdfs.label, 'Star Wars')
+        .dataset.toStream())
       app.use(hydraBox({
         setup: async api => {
           api.resource.term = ex.movies;
@@ -371,6 +376,7 @@ describe('@hydrofoil/labyrinth/collection', () => {
 
       // then
       expect(collection.out(hydra.member).terms).to.deep.contain.members([ex.Titanic, ex.StarWars])
+      expect(collection.node([ex.Titanic, ex.StarWars]).out(rdfs.label).terms).to.have.length(2)
       expect(collection.out(hydra.totalItems).term).to.deep.eq($rdf.literal('2', xsd.integer))
       expect(collectionQueryMock.getSparqlQuery).not.to.have.been.called
     })
