@@ -13,6 +13,7 @@ import webAccessControl from 'hydra-box-web-access-control'
 import { knossosEvents } from '@hydrofoil/knossos-events'
 import camo from 'camouflage-rewrite'
 import { problemJson } from '@hydrofoil/labyrinth/errors'
+import asyncMiddleware from 'middleware-async'
 import { filterAclByApi } from './lib/accessControl'
 import createApi from './lib/api'
 import { ResourcePerGraphStore, ResourceStore } from './lib/store'
@@ -31,6 +32,7 @@ declare module 'express-serve-static-core' {
 }
 
 const app = express()
+const apisMiddlewares = new Map()
 
 export interface Authentication {
   (arg: { client: StreamClient }): express.RequestHandler | Promise<express.RequestHandler>
@@ -88,19 +90,32 @@ export async function serve({ log, endpointUrl, updateUrl, port, name, codePath,
     next()
   })
   app.use(knossosEvents())
-  app.use(await hydraBox({
-    codePath,
-    sparql,
-    path,
-    loadApi: createApi({
-      log,
-    }),
-    middleware: {
-      resource: webAccessControl({
-        client,
-        additionalPatterns: filterAclByApi,
+
+  function createHydra() {
+    return hydraBox({
+      codePath,
+      sparql,
+      path,
+      loadApi: createApi({
+        log,
       }),
-    },
+      middleware: {
+        resource: webAccessControl({
+          client,
+          additionalPatterns: filterAclByApi,
+        }),
+      },
+    })
+  }
+
+  app.use(asyncMiddleware(async (req, res, next) => {
+    let hydraMiddleware = apisMiddlewares.get(req.hostname)
+    if (!hydraMiddleware) {
+      hydraMiddleware = await createHydra()
+      apisMiddlewares.set(req.hostname, hydraMiddleware)
+    }
+
+    hydraMiddleware(req, res, next)
   }))
   app.put('/*', create(client))
   app.use(problemJson({ captureNotFound: true }))
