@@ -59,6 +59,8 @@ talos put ./resources ./resources.dev
 
 ### `talos put --help`
 
+[filename](talos/put.txt ':include')
+
 ## PUT Vocabs
 
 An API server may require certain vocabularies to be inserted into the database in order to take advantage of reasoning across the data and metadata resources.

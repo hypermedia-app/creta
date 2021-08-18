@@ -10,7 +10,8 @@
     "docs": "docsify serve ./docs",
     "talos:helptext:put": "ts-node packages/talos/bin/talos.ts help put > docs/talos/put.txt",
     "talos:helptext:put-vocab": "ts-node packages/talos/bin/talos.ts help put-vocabs > docs/talos/put-vocabs.txt",
-    "typedoc": "typedoc --watch"
+    "typedoc": "typedoc --watch",
+    "start": "node -r ts-node/register --inspect packages/knossos/index.ts serve http://db.labyrinth.lndo.site/repositories/labyrinth?infer=true --name conduit --authModule ./apps/conduit/middleware/authenticate --codePath ./apps/conduit --user minos --password password"
   },
   "dependencies": {
     "@babel/core": "^7.11.6",

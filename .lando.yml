@@ -4,7 +4,7 @@ services:
     type: node:custom
     build:
       - npm i -g nodemon
-    command: nodemon -w packages -w apps --ignore **/*.http --ignore **/*.ttl --ignore **/*.env.json --ext ts,js --exec node --inspect=0.0.0.0:47671 -r ts-node/register --inspect packages/knossos/index.ts serve http://store:10035/repositories/labyrinth?infer=true --name conduit --authModule ./apps/conduit/middleware/authenticate --codePath ./apps/conduit --user minos --password password
+    command: nodemon -w packages -w apps --ignore **/*.ttl --ignore **/*.env.json --ext ts,js --exec npm --node-options --inspect=0.0.0.0:47671 --inspect start
     ssl: true
     overrides:
       image: node:14
@@ -66,5 +66,6 @@ proxy:
     - db.labyrinth.lndo.site:10035
   conduit:
     - conduit.knossos.lndo.site:8888
+    - test.conduit.knossos.lndo.site:8888
   auth:
     - auth.labyrinth.lndo.site
