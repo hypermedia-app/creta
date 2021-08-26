@@ -1,5 +1,13 @@
 # @hydrofoil/knossos
 
+## 0.2.5
+
+### Patch Changes
+
+- 636ba4a: Multi-tenancy: serving multiple APIs from one process
+- Updated dependencies [a973a56]
+  - @hydrofoil/labyrinth@0.6.4
+
 ## 0.2.4
 
 ### Patch Changes

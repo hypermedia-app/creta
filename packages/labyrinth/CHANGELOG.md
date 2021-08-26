@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.6.4
+
+### Patch Changes
+
+- a973a56: Static collection member were not being loaded
+
 ## 0.6.3
 
 ### Patch Changes
