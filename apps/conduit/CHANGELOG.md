@@ -1,5 +1,12 @@
 # @hydrofoil/conduit
 
+## 0.1.10
+
+### Patch Changes
+
+- Updated dependencies [636ba4a]
+  - @hydrofoil/knossos@0.2.5
+
 ## 0.1.9
 
 ### Patch Changes
