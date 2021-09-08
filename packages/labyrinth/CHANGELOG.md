@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.6.5
+
+### Patch Changes
+
+- 4bd7d7a: Support `GRAPH ?member` when member assertion is annotated with `knossos:ownGraphOnly`
+
 ## 0.6.4
 
 ### Patch Changes
