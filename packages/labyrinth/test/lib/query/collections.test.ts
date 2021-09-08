@@ -7,7 +7,7 @@ import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
 import { SELECT } from '@tpluscode/sparql-builder'
 import * as Hydra from '@rdfine/hydra'
 import RdfResource from '@tpluscode/rdfine'
-import { hyper_query } from '@hydrofoil/vocabularies/builders/strict'
+import { hyper_query, knossos } from '@hydrofoil/vocabularies/builders/strict'
 import { fromPointer } from '@rdfine/hydra/lib/IriTemplate'
 import { ex } from '@labyrinth/testing/namespace'
 import '@labyrinth/testing/sparql'
@@ -205,6 +205,32 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
                 .addOut(property, manages => {
                   manages.addOut(hydra.property, schema.knows)
                   manages.addOut(hydra.subject, ex.JohnDoe)
+                }),
+              pageSize: 10,
+              variables: null,
+            })
+
+            // when
+            await query?.members(client)
+
+            // then
+            expect(client.query.select).to.have.been.calledWith(sinon.match(value => {
+              expect(value).to.be.a.query(expected)
+              return true
+            }))
+          })
+
+          it('wraps pattern in GRAPH when knossos:ownGraphOnly is true', async () => {
+            // given
+            const expected = expectedQuery(sparql`GRAPH ?member { ${ex.JohnDoe} ${schema.knows} ?member }`)
+            const query = await getSparqlQuery({
+              api: api(),
+              collection: cf({ dataset: $rdf.dataset() })
+                .blankNode()
+                .addOut(property, manages => {
+                  manages.addOut(hydra.property, schema.knows)
+                  manages.addOut(hydra.subject, ex.JohnDoe)
+                  manages.addOut(knossos.ownGraphOnly, true)
                 }),
               pageSize: 10,
               variables: null,

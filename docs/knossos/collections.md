@@ -157,6 +157,26 @@ SELECT ?article {
 }
 ```
 
+Finally, the static filter can be narrowed down only to the member's own graph:
+
+```diff
++prefix knossos: <https://hypermedia.app/knossos#>
+
+</user/john/starred-articles>
+  hydra:memberAssertion
+  [
+    hydra:property rdf:type ;
+    hydra:object </api/Article> ;
++   knossos:ownGraphOnly true ; 
+  ] ;
+.
+```
+
+This will wrap such a member assertion in a `GRAPH ?member` pattern
+
+> [!TIP
+> This technique is useful to exclude inferred terms from matching the query. Only the resources self-asserted properties will be matched.
+
 ## Queries
 
 Collections can also be queries dynamically using `GET` requests with query strings. The variables passed by the client need to be mapped to URI Template variables which gets reconstructed into an RDF graph of filters on the server. The filters are then transformed into SPARQL query patterns using JS code.

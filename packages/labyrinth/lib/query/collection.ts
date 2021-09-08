@@ -6,11 +6,12 @@ import cf, { AnyPointer, GraphPointer } from 'clownface'
 import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
 import { IriTemplate, IriTemplateMapping } from '@rdfine/hydra'
 import { Api } from 'hydra-box/Api'
-import { hyper_query } from '@hydrofoil/vocabularies/builders/strict'
+import { hyper_query, knossos } from '@hydrofoil/vocabularies/builders/strict'
 import type { StreamClient } from 'sparql-http-client/StreamClient'
 import once from 'once'
 import toArray from 'stream-to-array'
 import { toSparql } from 'clownface-shacl-path'
+import { toRdf } from 'rdf-literal'
 import { log, warn } from '../logger'
 import { ToSparqlPatterns } from './index'
 
@@ -53,11 +54,13 @@ function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPoin
   }
 }
 
-function * createPatterns(subs: Term[], preds: Term[], objs: Term[]) {
+function * createPatterns(subs: Term[], preds: Term[], objs: Term[], { graph }: { graph?: Variable }) {
   for (const subject of subs) {
     for (const predicate of preds) {
       for (const object of objs) {
-        yield sparql`${subject} ${predicate} ${object} .`
+        const pattern = sparql`${subject} ${predicate} ${object} .`
+
+        yield graph ? sparql`GRAPH ${graph} { ${pattern} }` : pattern
       }
     }
   }
@@ -68,15 +71,16 @@ function toSparqlPattern(member: Variable) {
     const subject = memberAssertion.out(hydra.subject).terms
     const predicate = memberAssertion.out(hydra.property).terms
     const object = memberAssertion.out(hydra.object).terms
+    const graph = memberAssertion.out(knossos.ownGraphOnly).term?.equals(toRdf(true)) ? member : undefined
 
     if (subject.length && predicate.length && !object.length) {
-      return [...previous, ...createPatterns(subject, predicate, [member])]
+      return [...previous, ...createPatterns(subject, predicate, [member], { graph })]
     }
     if (subject.length && object.length && !predicate.length) {
-      return [...previous, ...createPatterns(subject, [member], object)]
+      return [...previous, ...createPatterns(subject, [member], object, { graph })]
     }
     if (predicate.length && object.length && !subject.length) {
-      return [...previous, ...createPatterns([member], predicate, object)]
+      return [...previous, ...createPatterns([member], predicate, object, { graph })]
     }
 
     log('Skipping invalid member assertion')
