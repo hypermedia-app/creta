@@ -613,6 +613,42 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
             return true
           }))
         })
+
+        it('ignores :include without path', async () => {
+          // given
+          const expected = expectedQuery({
+            patterns: sparql`
+              ${ex.JohnDoe} ${schema.knows} ?member .
+            `,
+          })
+          const hydraApi = api()
+          const apiNode = cf(hydraApi)
+          apiNode
+            .node(ex.Collection)
+            .addOut(hyper_query.include, null)
+          const query = await getSparqlQuery({
+            api: hydraApi,
+            collection: cf({ dataset: $rdf.dataset() })
+              .blankNode()
+              .addOut(rdf.type, ex.Collection)
+              .addOut(hyper_query.include, null)
+              .addOut(hydra.memberAssertion, manages => {
+                manages.addOut(hydra.property, schema.knows)
+                manages.addOut(hydra.subject, ex.JohnDoe)
+              }),
+            pageSize: 10,
+            variables: null,
+          })
+
+          // when
+          await query?.members(client)
+
+          // then
+          expect(client.query.select).to.have.been.calledWith(sinon.match(value => {
+            expect(value).to.be.a.query(expected)
+            return true
+          }))
+        })
       })
     })
 

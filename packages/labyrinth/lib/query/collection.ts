@@ -138,7 +138,8 @@ function linkedResourcePatterns(api: AnyPointer, collection: GraphPointer, subje
   return [...classIncludes, ...instanceIncludes]
     .reduce((union: SparqlTemplateResult, include) => {
       const path = include.out(hyper_query.path)
-      if (!path.values) {
+      if (path.values.length !== 1) {
+        warn('Skipping include with invalid property path')
         return union
       }
 
