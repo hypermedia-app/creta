@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.6.6
+
+### Patch Changes
+
+- 763d1a1: Feature to eager-load related resources using SHACL paths
+
 ## 0.6.5
 
 ### Patch Changes
