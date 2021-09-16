@@ -16,6 +16,7 @@ import { shrink } from '@zazuko/rdf-vocabularies'
 import { StreamClient } from 'sparql-http-client/StreamClient'
 import sinon from 'sinon'
 import intoStream from 'into-stream'
+import { sh } from '@tpluscode/rdf-ns-builders/strict'
 import { getSparqlQuery } from '../../../lib/query/collection'
 import { byTitle } from '../../test-api/filter'
 import { ToSparqlPatterns } from '../../../lib/query'
@@ -31,7 +32,7 @@ type ExpectedQuerySetup = SparqlTemplateResult | {
 
 const expectedQuery = (options: ExpectedQuerySetup) => {
   const patterns = 'patterns' in options ? options.patterns : options
-  let select = SELECT.DISTINCT`?member`
+  let select = SELECT.DISTINCT`?member ?linked`
     .WHERE`
       ${patterns}
       filter(isiri(?member)) 
@@ -560,6 +561,59 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
           }))
         })
       })
+
+      describe('include', () => {
+        it('adds optional patterns for included resources', async () => {
+          // given
+          const expected = expectedQuery({
+            patterns: sparql`
+              ${ex.JohnDoe} ${schema.knows} ?member .
+            
+              optional {
+                ?member ^${schema.parent} ?linked
+                filter (isiri(?linked))
+              }
+              optional {
+                ?member ${schema.spouse} ?linked
+                filter (isiri(?linked))
+              }
+            `,
+          })
+          const hydraApi = api()
+          const apiNode = cf(hydraApi)
+          apiNode
+            .node(ex.Collection)
+            .addOut(hyper_query.include, include => {
+              include.addOut(hyper_query.path, path => {
+                path.addOut(sh.inversePath, schema.parent)
+              })
+            })
+          const query = await getSparqlQuery({
+            api: hydraApi,
+            collection: cf({ dataset: $rdf.dataset() })
+              .blankNode()
+              .addOut(rdf.type, ex.Collection)
+              .addOut(hyper_query.include, include => {
+                include.addOut(hyper_query.path, schema.spouse)
+              })
+              .addOut(hydra.memberAssertion, manages => {
+                manages.addOut(hydra.property, schema.knows)
+                manages.addOut(hydra.subject, ex.JohnDoe)
+              }),
+            pageSize: 10,
+            variables: null,
+          })
+
+          // when
+          await query?.members(client)
+
+          // then
+          expect(client.query.select).to.have.been.calledWith(sinon.match(value => {
+            expect(value).to.be.a.query(expected)
+            return true
+          }))
+        })
+      })
     })
 
     describe('memberData', () => {
@@ -597,7 +651,7 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
           variables: null,
         })
         select.resolves(intoStream.object([
-          ex.JaneDoe,
+          { member: ex.JaneDoe },
         ]))
 
         // when

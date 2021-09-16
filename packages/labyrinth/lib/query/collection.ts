@@ -12,6 +12,7 @@ import once from 'once'
 import toArray from 'stream-to-array'
 import { toSparql } from 'clownface-shacl-path'
 import { toRdf } from 'rdf-literal'
+import TermSet from '@rdfjs/term-set'
 import { log, warn } from '../logger'
 import { ToSparqlPatterns } from './index'
 
@@ -130,6 +131,26 @@ function createOrdering(api: AnyPointer, collection: GraphPointer, subject: Vari
   }
 }
 
+function linkedResourcePatterns(api: AnyPointer, collection: GraphPointer, subject: Variable, linked: Variable) {
+  const classIncludes = api.node(collection.out(rdf.type)).out(hyper_query.include).toArray()
+  const instanceIncludes = collection.out(hyper_query.include).toArray()
+
+  return [...classIncludes, ...instanceIncludes]
+    .reduce((union: SparqlTemplateResult, include) => {
+      const path = include.out(hyper_query.path)
+      if (!path.values) {
+        return union
+      }
+
+      const graphPattern = sparql`OPTIONAL {
+        ${subject} ${toSparql(path)} ${linked} .
+        FILTER ( isIRI(${linked}) )
+      }`
+
+      return sparql`${union}\n${graphPattern}`
+    }, sparql``)
+}
+
 interface CollectionQueryParams {
   api: Api
   collection: GraphPointer
@@ -154,6 +175,8 @@ export async function memberData(ids: Term[], client: StreamClient): Promise<Str
 
 export async function getSparqlQuery({ api, collection, pageSize, query = cf({ dataset: $rdf.dataset() }), variables } : CollectionQueryParams): Promise<SparqlQueries | null> {
   const subject = $rdf.variable('member')
+  const linked = $rdf.variable('linked')
+
   const memberAssertions = collection
     .out([hydra.manages, hydra.memberAssertion])
     .toArray()
@@ -174,8 +197,9 @@ export async function getSparqlQuery({ api, collection, pageSize, query = cf({ d
 
   const memberPatterns = sparql`${managesBlockPatterns}\n${filterPatters}`
 
-  let memberSelect = SELECT.DISTINCT`${subject}`.WHERE` 
+  let memberSelect = SELECT.DISTINCT`${subject} ${linked}`.WHERE` 
                 ${memberPatterns}
+                ${linkedResourcePatterns(cf(api), collection, subject, linked)}
                 filter (isIRI(${subject}))`
 
   if (variables && variables.mapping.some(mapping => mapping.property?.equals(hydra.pageIndex))) {
@@ -187,17 +211,29 @@ export async function getSparqlQuery({ api, collection, pageSize, query = cf({ d
     memberSelect = order.addClauses(memberSelect)
   }
 
-  const members = once((client: StreamClient) => {
-    return memberSelect.execute(client.query)
-      .then(toArray)
-      .then(array => array.map(row => row.member))
+  const loadIdentifiers = once(async (client: StreamClient) => {
+    const results: Array<Record<string, NamedNode>> = await memberSelect.execute(client.query).then(toArray)
+    return results.reduce((sets, row) => {
+      sets.members.add(row.member)
+      if (row.linked) {
+        sets.linked.add(row.linked)
+      }
+
+      return sets
+    }, {
+      members: new TermSet<NamedNode>(),
+      linked: new TermSet<NamedNode>(),
+    })
   })
 
   return {
-    members,
+    async members(client) {
+      const { members } = await loadIdentifiers(client)
+      return [...members]
+    },
     async memberData(client) {
-      const ids = await members(client)
-      return memberData(ids, client)
+      const ids = await loadIdentifiers(client)
+      return memberData([...ids.members, ...ids.linked], client)
     },
     async totals(client) {
       const stream = await SELECT`(count(distinct ${subject}) as ?count)`.WHERE`${memberPatterns}`.execute(client.query)
