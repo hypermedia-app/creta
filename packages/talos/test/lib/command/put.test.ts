@@ -31,6 +31,14 @@ describe('@hydrofoil/talos/lib/command/put', () => {
     await DELETE`?s ?p ?o`.WHERE`?s ?p ?o`.execute(client.query)
   })
 
+  it('ignores paths which do not exist', async () => {
+    await expect(put([path.resolve(__dirname, '../../foobar')], params)).not.to.have.been.rejected
+  })
+
+  it('ignores paths which are not directories', async () => {
+    await expect(put([path.resolve(__dirname, './put.test.ts')], params)).not.to.have.been.rejected
+  })
+
   describe('--resources', () => {
     before(async () => {
       await put([dir], params)
