@@ -1,5 +1,11 @@
 # @hydrofoil/talos
 
+## 0.3.4
+
+### Patch Changes
+
+- 432ec61: `put`: skip invalid directories with warning
+
 ## 0.3.3
 
 ### Patch Changes
