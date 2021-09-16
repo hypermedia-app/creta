@@ -107,6 +107,27 @@ prefix hydra: <http://www.w3.org/ns/hydra/core#>
 .
 ```
 
+## Eager-loading linked resources
+
+To transclude resources linked to collection members, use the `hyper-query:include` predicate. Its objects must be nodes with the `hyper-query:path` property whose value is a well-formed [SHACL Property Path](https://www.w3.org/TR/shacl/#property-shapes).
+
+> [!TIP]
+> `hyper-query:include` can be used both on instances, as well as collection classes. The latter apply to all instances and get combined with direct inclusion paths.
+
+The example below shows how to extend all article collections to include authors
+
+```turtle
+PREFIX schema: <http://schema.org/>
+PREFIX hyper-query: <https://hypermedia.app/query#>
+
+</api/ArticleCollection>
+    hyper-query:include 
+    [
+        hyper-query:path schema:author ;
+    ] ;
+.
+```
+
 ## Static filters
 
 By adding more objects to the `hydra:memberAssertion` property, the collection can be statically narrowed down to a subset of members.
