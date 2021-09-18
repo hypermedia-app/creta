@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@hydrofoil/knossos": "0.2.5",
-    "@rdfjs/term-set": "^1.0.1",
+    "@rdfjs/term-set": "^1.1.0",
     "@tpluscode/rdf-ns-builders": "^1",
     "@tpluscode/sparql-builder": "^0.3.11",
     "clownface": "^1.2.0",
