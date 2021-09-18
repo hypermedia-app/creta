@@ -46,7 +46,8 @@ export function toPointer(template: GraphPointer, queryParams: ParsedQs): GraphP
   })
 
   Object.entries(queryParams).forEach(([key, param]) => {
-    const values = typeof param === 'string' ? [param]
+    const values = typeof param === 'string'
+      ? [param]
       : Array.isArray(param)
         ? param.map((item: any) => item.toString())
         : []
