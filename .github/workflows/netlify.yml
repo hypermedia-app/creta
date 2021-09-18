@@ -24,6 +24,7 @@ jobs:
         if: env.NETLIFY_AUTH_TOKEN
         with:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ env.NETLIFY_AUTH_TOKEN }}
           NETLIFY_DEPLOY_MESSAGE: Preview ${{ env.BRANCH_NAME }}
           build_directory: docs
           deploy_alias: ${{ env.BRANCH_NAME }}
