@@ -2,5 +2,6 @@
 . "$(dirname "$0")/_/husky.sh"
 
 npx lint-staged
-npx run-p -cs "talos:helptext:*" || true
+yarn talos:helptext:put || true
+yarn talos:helptext:put-vocab || true
 git add docs/talos

@@ -17,6 +17,6 @@
     "@tpluscode/rdf-ns-builders": "^1.0.0",
     "chai": "^4.3.4",
     "clownface": "^1.2.0",
-    "mocha": "^8.3.2"
+    "mocha": "^9.1.1"
   }
 }
