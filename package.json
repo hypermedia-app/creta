@@ -41,7 +41,7 @@
     "@types/rdfjs__term-map": "^1",
     "@types/rdfjs__term-set": "^1.0.1",
     "@types/set-link": "^1.0.1",
-    "@types/sinon": "^9.0.5",
+    "@types/sinon": "^10.0.2",
     "@types/sinon-chai": "^3.2.4",
     "@types/sparql-http-client": "^2.2.5",
     "@types/sparqljs": "^3.0.1",
