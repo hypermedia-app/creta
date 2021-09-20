@@ -1856,13 +1856,13 @@
   dependencies:
     "@types/node" "*"
 
-"@types/rdf-loader-code@^0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@types/rdf-loader-code/-/rdf-loader-code-0.3.1.tgz#f38d1c23ffd81df6e70adb510c5c1e6a36c05ec7"
-  integrity sha512-EaFehHKGlvr9f9MYwlmZMmYX1cLlVFCl9aPliWZvLso1LlisNvaKYB1CFMJpsu8kJ/qj8OiCaWJ4MiO3HSTSeA==
+"@types/rdf-loader-code@^0.3.3":
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/@types/rdf-loader-code/-/rdf-loader-code-0.3.3.tgz#4e23041696cdba954bf69652e86f1b2eddc669e0"
+  integrity sha512-timmnef1auUKMskwEncA9jq0amXt30j6Sit2e/Thof9idch1ro/vyMixuCM0hvQvneei5dGAieQ/wRwy0O2bwA==
   dependencies:
-    "@types/rdf-js" "*"
     "@types/rdf-loaders-registry" "*"
+    rdf-js "^4.0.2"
 
 "@types/rdf-loaders-registry@*", "@types/rdf-loaders-registry@^0.3.0":
   version "0.3.0"
