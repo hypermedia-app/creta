@@ -19,7 +19,7 @@
     "rdf-loader-code": "^0.3.2",
     "rdf-loaders-registry": "^0.2.0",
     "set-link": "^1.0.0",
-    "sinon": "^9.2.4",
+    "sinon": "^11.1.2",
     "sparqljs": "^3.4.1",
     "sparql-http-client": "^2.2.3"
   }
