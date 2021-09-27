@@ -54,7 +54,7 @@
     "chai-quantifiers": "^1.0.15",
     "chai-snapshot-matcher": "^2.0.2",
     "docsify-cli": "^4.4.3",
-    "eslint": "^7.8.1",
+    "eslint": "^7.32.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
