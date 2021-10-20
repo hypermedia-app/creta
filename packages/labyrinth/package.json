@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@hydrofoil/vocabularies": "^0.2.2",
-    "@rdfine/hydra": "^0.7.2",
+    "@rdfine/hydra": "^0.8",
     "@rdfjs/data-model": "^1.2",
     "@rdfjs/term-map": "^1.0.0",
     "@rdfjs/term-set": "^1.1.0",
