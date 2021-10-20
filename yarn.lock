@@ -1279,10 +1279,10 @@
     "@tpluscode/rdf-ns-builders" "^1.0.0"
     "@tpluscode/rdfine" "^0.5.27"
 
-"@rdfine/hydra@^0.7.2":
-  version "0.7.2"
-  resolved "https://registry.yarnpkg.com/@rdfine/hydra/-/hydra-0.7.2.tgz#4f2aa1b1aa883b06caf4b4f9f122d52bd13b6149"
-  integrity sha512-vvUH8jMDFS1dN3unxl4B84Rlen4yiib/dQZyZxL4eJfK9qKEq9GrDuJhjkDTF+o7NLVNFPpXurbu9Wrk01ifxQ==
+"@rdfine/hydra@^0.8":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@rdfine/hydra/-/hydra-0.8.0.tgz#ec7cbbc06d2fe80251c6734f59d8b9c88abe210b"
+  integrity sha512-NDdKsbfHL90YsUPV8+8WFnsceYqCetgEOOEAODGkduzdiwScbDNgWeZJ/xKcdfqxZFfewkRmKgfofWZSTe3KVQ==
   dependencies:
     "@rdf-esm/data-model" "^0.5.3"
     "@rdfine/rdf" "^0.5.4"
