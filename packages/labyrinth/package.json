@@ -27,7 +27,6 @@
     "@types/hydra-box": "^0.6.2",
     "clownface": "^1.1.0",
     "clownface-shacl-path": "^1.2.0",
-    "cors": "^2.8.5",
     "debug": "^4.1.1",
     "express": "^4.17.1",
     "express-http-problem-details": "^0.2.1",

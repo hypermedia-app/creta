@@ -4,7 +4,6 @@ import StreamClient from 'sparql-http-client/StreamClient'
 import $rdf from 'rdf-ext'
 import { Debugger } from 'debug'
 import ApiBase from 'hydra-box/Api'
-import { ApiFactory } from '@hydrofoil/labyrinth'
 import clownface from 'clownface'
 import express from 'express'
 import httpStatus from 'http-status'
@@ -13,6 +12,10 @@ import { DESCRIBE } from '@tpluscode/sparql-builder'
 import * as query from './query'
 
 interface ApiFromStore {
+  apiTerm: NamedNode
+  sparql: StreamClient.StreamClientOptions
+  path?: string
+  codePath?: string
   log?: Debugger
   loadClasses?(api: NamedNode, client: StreamClient.StreamClient): Promise<Stream>
   loadApiDocumentation?(api: NamedNode, client: StreamClient.StreamClient): Promise<Stream>
@@ -42,12 +45,12 @@ function describeApiDocumentation(term: NamedNode, client: StreamClient.StreamCl
   return DESCRIBE`${term}`.execute(client.query)
 }
 
-const createApi: (arg: ApiFromStore) => ApiFactory = ({ log, loadClasses = query.loadClasses, loadApiDocumentation = describeApiDocumentation }) => async ({ path = '/api', sparql, codePath }) => {
+const createApi: (arg: ApiFromStore) => Api = ({ apiTerm: term, log, loadClasses = query.loadClasses, loadApiDocumentation = describeApiDocumentation, sparql, path, codePath }) => {
   const client = new StreamClient(sparql)
 
   return new (class extends ApiBase implements Api {
     constructor() {
-      super({ path, codePath, dataset: $rdf.dataset() })
+      super({ term, path, codePath, dataset: $rdf.dataset() })
     }
 
     async init() {

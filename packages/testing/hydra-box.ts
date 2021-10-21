@@ -48,20 +48,18 @@ export const api = <Code = RequestHandler>({ code }: ApiSetup<Code> = {}): Api =
   }
 }
 
-export function apiFactory<Code>(opts?: ApiSetup<Code>): () => Promise<Api> {
-  return async () => {
-    const copy = api(opts)
+export function testApi<Code>(opts?: ApiSetup<Code>): Api {
+  const copy = api(opts)
 
-    clownface(copy)
-      .addOut(hydra.supportedClass, ex.Config, Config => {
-        Config.addOut(rdf.type, hydra.Class)
-          .addOut(hydra.supportedOperation, op => {
-            op.addOut(hydra.method, 'GET')
-          })
-      })
+  clownface(copy)
+    .addOut(hydra.supportedClass, ex.Config, Config => {
+      Config.addOut(rdf.type, hydra.Class)
+        .addOut(hydra.supportedOperation, op => {
+          op.addOut(hydra.method, 'GET')
+        })
+    })
 
-    return copy
-  }
+  return copy
 }
 
 export function hydraBox({ setup, query }: MiddlewareOptions = {}): RequestHandler {

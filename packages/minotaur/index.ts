@@ -5,10 +5,11 @@
 
 import Api, { ApiInit } from 'hydra-box/Api'
 import walk from '@fcostarodrigo/walk'
-import type { ApiFactory } from '@hydrofoil/labyrinth'
 import { log } from '../labyrinth/lib/logger'
 
 export interface ApiFromFilesystem {
+  path?: string
+  codePath?: string
   baseUri?: {
     /**
      * The base URI used in the parsed sources
@@ -28,10 +29,12 @@ export interface ApiFromFilesystem {
 /**
  * Creates a {@link ApiFactory} function which will recursively load turtle files from {@link apiPath}
  *
- * @param apiPath
+ * @param apiPath filesystem path from where to load RDF
  * @param baseUri
+ * @param path path to the API resource
+ * @param codePath runtime path for relative code modules
  */
-export const fromFilesystem = ({ apiPath, baseUri }: ApiFromFilesystem): ApiFactory => async ({ path, codePath }): Promise<Api> => {
+export const fromFilesystem = async ({ apiPath, baseUri, path, codePath }: ApiFromFilesystem): Promise<Api> => {
   const options: ApiInit = {
     path,
     codePath,

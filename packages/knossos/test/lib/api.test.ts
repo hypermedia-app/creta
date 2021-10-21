@@ -24,12 +24,11 @@ describe('@hydrofoil/knossos/lib/api', () => {
         log: sinon.spy() as any,
         loadClasses,
         loadApiDocumentation,
-      })({
         codePath,
         path,
         sparql,
+        apiTerm: term,
       })
-      api.term = term
     })
 
     afterEach(() => {
