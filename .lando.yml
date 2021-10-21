@@ -28,7 +28,7 @@ services:
       - agtool repos create http://minos:password@127.0.0.1:10035/repositories/labyrinth
       - agtool repos create http://minos:password@127.0.0.1:10035/repositories/tests
     services:
-      image: franzinc/agraph
+      image: franzinc/agraph:v7.1.0
       command: /entrypoint.sh
       shm_size: 1g
       environment:
