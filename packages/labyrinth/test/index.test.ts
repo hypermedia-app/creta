@@ -1,12 +1,12 @@
 import path from 'path'
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import express, { RequestHandler } from 'express'
+import express from 'express'
 import request from 'supertest'
 import $rdf from 'rdf-ext'
 import TermSet from '@rdfjs/term-set'
 import { hydra } from '@tpluscode/rdf-ns-builders'
-import { loader, apiFactory } from '@labyrinth/testing/hydra-box'
+import { loader, testApi } from '@labyrinth/testing/hydra-box'
 import { ex } from '@labyrinth/testing/namespace'
 import { hydraBox } from '../index'
 
@@ -18,7 +18,7 @@ describe('@hydrofoil/labyrinth', () => {
     const app = express()
     app.use(await hydraBox({
       path: '/api',
-      loadApi: apiFactory(),
+      api: testApi(),
       codePath,
       loader: loader(),
       sparql: {
@@ -41,7 +41,7 @@ describe('@hydrofoil/labyrinth', () => {
     const app = express()
     app.use(await hydraBox({
       path: '/api',
-      loadApi: apiFactory(),
+      api: testApi(),
       codePath,
       loader: loader({
         classResource: [{
@@ -74,7 +74,7 @@ describe('@hydrofoil/labyrinth', () => {
     const app = express()
     app.use(await hydraBox({
       path: '/api',
-      loadApi: apiFactory(),
+      api: testApi(),
       codePath,
       loader: loader({
         classResource: [{
@@ -107,8 +107,8 @@ describe('@hydrofoil/labyrinth', () => {
     const app = express()
     app.use(await hydraBox({
       path: '/api',
-      loadApi: apiFactory<RequestHandler>({
-        code: (req, res) => res.send(req.labyrinth),
+      api: testApi({
+        code: (req: express.Request, res: express.Response) => res.send(req.labyrinth),
       }),
       codePath,
       loader: loader({
@@ -145,8 +145,8 @@ describe('@hydrofoil/labyrinth', () => {
     const app = express()
     app.use(await hydraBox({
       path: '/api',
-      loadApi: apiFactory<RequestHandler>({
-        code: (req, res) => res.send(req.labyrinth),
+      api: testApi({
+        code: (req: express.Request, res: express.Response) => res.send(req.labyrinth),
       }),
       codePath,
       loader: loader({
@@ -188,7 +188,7 @@ describe('@hydrofoil/labyrinth', () => {
     const app = express()
     app.use(await hydraBox({
       path: '/api',
-      loadApi: apiFactory(),
+      api: testApi(),
       codePath,
       loader: loader(),
       sparql: {
@@ -216,7 +216,7 @@ describe('@hydrofoil/labyrinth', () => {
     const app = express()
     app.use(await hydraBox({
       path: '/api',
-      loadApi: apiFactory(),
+      api: testApi(),
       codePath,
       loader: loader(),
       sparql: {
@@ -247,7 +247,7 @@ describe('@hydrofoil/labyrinth', () => {
     const app = express()
     app.use(await hydraBox({
       path: '/api',
-      loadApi: apiFactory(),
+      api: testApi(),
       codePath,
       loader: loader(),
       sparql: {

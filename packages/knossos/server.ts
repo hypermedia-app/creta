@@ -3,22 +3,21 @@
  * @module @hydrofoil/knossos/server
  */
 
+import path from 'path'
+import { NamedNode } from 'rdf-js'
 import express from 'express'
-import { hydraBox } from '@hydrofoil/labyrinth'
 import StreamClient from 'sparql-http-client/StreamClient'
 import { resource } from 'express-rdf-request'
 import { Debugger } from 'debug'
-import cors from 'cors'
-import webAccessControl from 'hydra-box-web-access-control'
 import { knossosEvents } from '@hydrofoil/knossos-events'
 import camo from 'camouflage-rewrite'
 import { problemJson } from '@hydrofoil/labyrinth/errors'
 import asyncMiddleware from 'middleware-async'
-import { filterAclByApi } from './lib/accessControl'
-import createApi from './lib/api'
+import $rdf from 'rdf-ext'
+import absoluteUrl from 'absolute-url'
 import { ResourcePerGraphStore, ResourceStore } from './lib/store'
 import { create } from './resource'
-import { systemAuth } from './lib/middleware/systemAuth'
+import { createHydraBox } from './lib/middleware/hydraBox'
 
 export interface Knossos {
   store: ResourceStore
@@ -49,12 +48,17 @@ export interface Options {
   resourceBase?: string
   user?: string
   password?: string
-  middleware?: {
-    authentication?: Authentication
-  }
 }
 
-export async function serve({ log, endpointUrl, updateUrl, port, name, codePath, path, middleware, user, password, resourceBase }: Options) {
+export interface Context {
+  apiTerm: NamedNode
+  sparql: StreamClient.StreamClientOptions
+  client: StreamClient
+  store: ResourceStore
+}
+
+export async function serve(options: Options) {
+  const { log, endpointUrl, updateUrl, port, name, user, password, resourceBase } = options
   const sparql = {
     endpointUrl,
     updateUrl: updateUrl || endpointUrl,
@@ -66,7 +70,6 @@ export async function serve({ log, endpointUrl, updateUrl, port, name, codePath,
   const store = new ResourcePerGraphStore(client)
 
   app.enable('trust proxy')
-  app.use(cors())
 
   if (resourceBase) {
     app.use(camo({
@@ -75,10 +78,6 @@ export async function serve({ log, endpointUrl, updateUrl, port, name, codePath,
       url: resourceBase,
     }))
   }
-  if (middleware?.authentication) {
-    app.use(await middleware.authentication({ client }))
-  }
-  app.use(systemAuth({ log, name }))
   app.use(resource({
     getTerm: req => req.hydra.term,
   }))
@@ -91,27 +90,19 @@ export async function serve({ log, endpointUrl, updateUrl, port, name, codePath,
   })
   app.use(knossosEvents())
 
-  function createHydra() {
-    return hydraBox({
-      codePath,
-      sparql,
-      path,
-      loadApi: createApi({
-        log,
-      }),
-      middleware: {
-        resource: webAccessControl({
-          client,
-          additionalPatterns: filterAclByApi,
-        }),
-      },
-    })
-  }
-
+  app.use(absoluteUrl())
   app.use(asyncMiddleware(async (req, res, next) => {
     let hydraMiddleware = apisMiddlewares.get(req.hostname)
     if (!hydraMiddleware) {
-      hydraMiddleware = await createHydra()
+      const iri = new URL(req.absoluteUrl())
+      const apiIri = new URL(path.join(req.baseUrl, options.path), iri)
+
+      hydraMiddleware = await createHydraBox({
+        apiTerm: $rdf.namedNode(apiIri.toString()),
+        sparql,
+        client,
+        store,
+      }, options)
       apisMiddlewares.set(req.hostname, hydraMiddleware)
     }
 

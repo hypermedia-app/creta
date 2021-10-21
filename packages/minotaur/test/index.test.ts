@@ -9,22 +9,17 @@ const ex = namespace('http://example.com/api/')
 describe('@hydrofoil/minotaur', () => {
   const codePath = './lib'
   const path = '/api'
-  const sparql = {} as any
   let api: Api
 
-  const factory = fromFilesystem({
-    apiPath: resolve(__dirname, './api'),
-    baseUri: {
-      default: 'http://todo.com/',
-      replaced: 'http://example.com/',
-    },
-  })
-
   beforeEach(async () => {
-    api = await factory({
+    api = await fromFilesystem({
+      apiPath: resolve(__dirname, './api'),
+      baseUri: {
+        default: 'http://todo.com/',
+        replaced: 'http://example.com/',
+      },
       codePath,
       path,
-      sparql,
     })
 
     await api.init()
@@ -42,13 +37,10 @@ describe('@hydrofoil/minotaur', () => {
 
   it('throws when no turtle file were found', async () => {
     // given
-    const factory = fromFilesystem({
+    const api = fromFilesystem({
       apiPath: resolve(__dirname, './api/not-ttl'),
-    })
-    const api = factory({
       codePath,
       path,
-      sparql,
     })
 
     // then

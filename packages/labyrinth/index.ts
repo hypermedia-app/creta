@@ -5,18 +5,17 @@
 
 import { HydraBox, middleware, ResourceLoader } from 'hydra-box'
 import { HydraBoxMiddleware } from 'hydra-box/middleware'
-import cors from 'cors'
 import { Router } from 'express'
 import rdfFactory from 'rdf-express-node-factory'
 import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
 import StreamClient from 'sparql-http-client/StreamClient'
-import { GraphPointer } from 'clownface'
 import type { Api } from 'hydra-box/Api'
 import { logRequest, logRequestError } from './lib/logger'
 import { removeHydraOperations, preprocessResource, disambiguateClassHierarchies } from './lib/middleware'
 import { SparqlQueryLoader } from './lib/loader'
 import { ensureArray } from './lib/array'
+import { CodeLoader, codeLoader } from './lib/code'
 
 export { SparqlQueryLoader } from './lib/loader'
 
@@ -55,7 +54,7 @@ export interface Labyrinth {
 declare module 'express-serve-static-core' {
   export interface Request {
     hydra: HydraBox
-    loadCode<T extends any = unknown>(node: GraphPointer, options?: Record<any, any>): T | Promise<T> | null
+    loadCode: CodeLoader
     labyrinth: Labyrinth
   }
 }
@@ -64,14 +63,11 @@ declare module 'express-serve-static-core' {
  * Parameters to configure labyrinth middleware
  */
 export type MiddlewareParams = {
-  // eslint-disable-next-line no-use-before-define
-  loadApi: ApiFactory
+  api: Api
   codePath: string
   loader?: ResourceLoader
   path: string
-  sparql: ConstructorParameters<typeof StreamClient>[0] & {
-    endpointUrl: string
-  }
+  sparql: StreamClient.StreamClientOptions
   middleware?: HydraBoxMiddleware
   options?: {
     collection?: {
@@ -80,21 +76,15 @@ export type MiddlewareParams = {
   }
 }
 
-export type ApiFactoryOptions = Omit<MiddlewareParams, 'loadApi'>
-
-/**
- * Callable interface which gets called on application start to initialize the instance
- * of `hydra:ApiDocumentation`
- */
-export interface ApiFactory {
-  (params: ApiFactoryOptions): Promise<Api>
-}
-
 /**
  * Creates the labyrinth express middleware
  */
 export async function hydraBox(middlewareInit: MiddlewareParams): Promise<Router> {
-  const { loader, sparql, options, loadApi, ...params } = middlewareInit
+  const { loader, sparql, options, api, ...params } = middlewareInit
+
+  if (!('endpointUrl' in sparql)) {
+    throw new Error('Missing endpointUrl in SPARQL options')
+  }
 
   const app = Router()
 
@@ -107,19 +97,13 @@ export async function hydraBox(middlewareInit: MiddlewareParams): Promise<Router
   app.use(rdfFactory())
   app.use((req, res, next) => {
     req.labyrinth = labyrinth
-    req.loadCode = (node, options) => req.hydra.api.loaderRegistry.load<any>(node, {
-      basePath: req.hydra.api.codePath,
-      ...(options || {}),
-    })
+    req.loadCode = (...args) => codeLoader(req.hydra.api)(...args)
     next()
   })
 
   app.use(logRequest)
-  app.use(cors({
-    exposedHeaders: ['link', 'location'],
-  }))
   app.use(middleware(
-    await loadApi(middlewareInit),
+    api,
     {
       baseIriFromRequest: true,
       loader: loader ?? new SparqlQueryLoader(sparql),

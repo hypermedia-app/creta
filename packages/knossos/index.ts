@@ -10,7 +10,6 @@ Program.command('serve <endpoint>')
   .option('-n, --name <name>', 'App name', 'knossos')
   .option('--user <user>', 'SPARQL username')
   .option('--password <password>', 'SPARQL password')
-  .option('--authModule <authModule>', 'Authentication module. Must default-export an express handler factory. Can be lazy.')
   .action(serve)
 
 Program.command('init [packages...]')
