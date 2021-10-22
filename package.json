@@ -14,10 +14,10 @@
     "start": "node -r ts-node/register --inspect packages/knossos/index.ts serve http://db.labyrinth.lndo.site/repositories/labyrinth?infer=true --name conduit --authModule ./apps/conduit/middleware/authenticate --codePath ./apps/conduit --user minos --password password"
   },
   "dependencies": {
-    "@babel/core": "^7.11.6",
-    "@babel/preset-env": "^7.10.4",
-    "@babel/preset-typescript": "^7.10.4",
-    "@babel/register": "^7.11.5",
+    "@babel/core": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
+    "@babel/preset-typescript": "^7.15.0",
+    "@babel/register": "^7.15.3",
     "@changesets/cli": "^2.10.2",
     "@tpluscode/eslint-config": "^0.3",
     "@types/chai": "^4.2.12",
