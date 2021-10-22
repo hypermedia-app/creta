@@ -10,9 +10,8 @@ import { Debugger } from 'debug'
 import { codeLoader } from '@hydrofoil/labyrinth/lib/code'
 import toArray from 'stream-to-array'
 import { SELECT } from '@tpluscode/sparql-builder'
-import { knossos } from '@hydrofoil/vocabularies/builders'
+import { knossos, code } from '@hydrofoil/vocabularies/builders/strict'
 import { hydra, schema } from '@tpluscode/rdf-ns-builders/strict'
-import { code } from '@hydrofoil/vocabularies/builders/strict'
 import type { Context } from '../server'
 
 /**
