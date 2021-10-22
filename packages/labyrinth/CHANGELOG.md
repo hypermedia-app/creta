@@ -1,5 +1,16 @@
 # @hydrofoil/labyrinth
 
+## 0.7.0
+
+### Minor Changes
+
+- 26f731b: BREAKING: CORS middleware is not set up by default
+- 26f731b: Removed ApiFactory
+
+### Patch Changes
+
+- 178f7fc: Updated @rdfine/hydra
+
 ## 0.6.6
 
 ### Patch Changes

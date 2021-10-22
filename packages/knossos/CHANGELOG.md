@@ -1,5 +1,26 @@
 # @hydrofoil/knossos
 
+## 0.3.0
+
+### Minor Changes
+
+- 26f731b: All consumer middleware must be defined in resource graph
+
+  BREAKING CHANGE:
+
+  With the `--authModule` CLI option now gone, authentication middleware now has to be linked from a configuration resource. See [docs](https://creta.hypermedia.app/#/knossos/auth) for details.
+
+- 384cf21: Remove explicit `hydra:apiDocumentation`
+- 26f731b: BREAKING: CORS middleware is not set up by default
+
+### Patch Changes
+
+- 178f7fc: Updated @rdfine/hydra
+- Updated dependencies [26f731b]
+- Updated dependencies [178f7fc]
+- Updated dependencies [26f731b]
+  - @hydrofoil/labyrinth@0.7.0
+
 ## 0.2.5
 
 ### Patch Changes
