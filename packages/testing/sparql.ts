@@ -19,7 +19,7 @@ Assertion.addMethod('query', function (this: Chai.AssertionStatic, expected: str
 
   try {
     expectedQuery = sparqlParser.parse(expected.toString())
-  } catch (e) {
+  } catch (e: any) {
     throw new AssertionError(`Failed to parse expected query.
 ${e.message}.
 
@@ -29,7 +29,7 @@ ${expected}`)
 
   try {
     actualQuery = sparqlParser.parse(this._obj)
-  } catch (e) {
+  } catch (e: any) {
     throw new AssertionError(`Failed to parse actual query.
 ${e.message}.
 

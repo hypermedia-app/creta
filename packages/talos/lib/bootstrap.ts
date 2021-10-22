@@ -45,7 +45,7 @@ export async function bootstrap({ api, apiUri, cwd, ...options }: Options): Prom
     let dataset: DatasetCore
     try {
       dataset = await $rdf.dataset().import(parserStream)
-    } catch (e) {
+    } catch (e: any) {
       log('Failed to parse %s: %s', relative, e.message)
       continue
     }

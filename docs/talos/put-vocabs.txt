@@ -1,0 +1,13 @@
+Usage: talos put-vocabs [options]
+
+Inserts vocabulary graphs into the database
+
+Options:
+  --apiDoc <apiDoc>              
+  --endpoint <endpoint>          
+  --token <token>                System authentication token
+  -u, --user <user>              
+  -p, --password <password>      
+  --extraVocabs <...extraVocab>  Package name and (optionally) comma-separated
+                                 prefixes
+  -h, --help                     display help for command

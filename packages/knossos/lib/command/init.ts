@@ -40,7 +40,7 @@ async function processFile({ sourceDir, file, destDir }: any) {
 
   try {
     dataset = await $rdf.dataset().import(stream)
-  } catch (e) {
+  } catch (e: any) {
     throw new Error(`Failed to parse ${relativePath}: ${e.message}`)
   }
   await ensureFile(outFile)
