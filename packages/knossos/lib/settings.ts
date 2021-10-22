@@ -1,3 +1,9 @@
+/**
+ * @packageDocumentation
+ * @module @hydrofoil/knossos/lib/settings
+ */
+
+import { Term } from 'rdf-js'
 import * as express from 'express'
 import { Api } from 'hydra-box/Api'
 import { Debugger } from 'debug'
@@ -9,23 +15,37 @@ import { hydra, schema } from '@tpluscode/rdf-ns-builders/strict'
 import { code } from '@hydrofoil/vocabularies/builders/strict'
 import type { Context } from '../server'
 
-interface MiddlewareFactory {
+/**
+ * Creates express middleware to be loaded by knossos
+ */
+export interface MiddlewareFactory {
   (context: Context): express.RequestHandler | Promise<express.RequestHandler>
 }
 
-export async function loadMiddlewares(api: Api, log: Debugger, context: Context): Promise<Record<string, express.RequestHandler[]>> {
-  const loadCode = codeLoader(api)
-
+async function defaultConfigurationQuery(api: Api, context: Context): Promise<Term | undefined> {
   const [match] = await toArray(await SELECT`?config`.WHERE`
     ?config a ${knossos.Configuration} ; ${hydra.apiDocumentation} ${api.term}
   `.execute(context.client.query))
 
-  if (!match?.config) {
+  return match.config
+}
+
+export async function loadMiddlewares(
+  api: Api,
+  log: Debugger,
+  context: Context,
+  { getConfigurationId = defaultConfigurationQuery }: { getConfigurationId?: typeof defaultConfigurationQuery } = {},
+): Promise<Record<string, express.RequestHandler[]>> {
+  const loadCode = codeLoader(api)
+
+  const configUri = await getConfigurationId(api, context)
+
+  if (!configUri) {
     log('No configuration resource found')
     return {}
   }
 
-  const config = await context.store.load(match.config)
+  const config = await context.store.load(configUri)
   const middlewares = config.out(knossos.middleware).toArray()
 
   return middlewares.reduce(async (previous, next) => {
