@@ -55,6 +55,7 @@
     "chai-snapshot-matcher": "^2.0.2",
     "docsify-cli": "^4.4.3",
     "eslint": "^7.8.1",
+    "eslint-config-standard": "^16.0.3",
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-node": "^11.1.0",
