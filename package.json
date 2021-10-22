@@ -13,7 +13,7 @@
     "typedoc": "typedoc --watch",
     "start": "node -r ts-node/register --inspect packages/knossos/index.ts serve http://db.labyrinth.lndo.site/repositories/labyrinth?infer=true --name conduit --authModule ./apps/conduit/middleware/authenticate --codePath ./apps/conduit --user minos --password password"
   },
-  "dependencies": {
+  "devDependencies": {
     "@babel/core": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
     "@babel/preset-typescript": "^7.15.0",
@@ -21,7 +21,7 @@
     "@changesets/cli": "^2.10.2",
     "@tpluscode/eslint-config": "^0.3",
     "@types/chai": "^4.2.12",
-    "@types/chai-as-promised": "^7.1.3",
+    "@types/chai-as-promised": "^7.1.4",
     "@types/chai-quantifiers": "^1.0.0",
     "@types/chai-snapshot-matcher": "^1",
     "@types/clownface": "^1.0.3",
@@ -45,7 +45,7 @@
     "@types/sinon-chai": "^3.2.4",
     "@types/sparql-http-client": "^2.2.5",
     "@types/sparqljs": "^3.0.1",
-    "@types/supertest": "^2.0.10",
+    "@types/supertest": "^2.0.11",
     "@types/wait-on": "^5.2.0",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
@@ -55,15 +55,16 @@
     "chai-snapshot-matcher": "^2.0.2",
     "docsify-cli": "^4.4.3",
     "eslint": "^7.8.1",
+    "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^5.0.0",
     "husky": "^7.0.0",
     "lint-staged": "^10.3.0",
-    "sinon-chai": "^3.6.0",
+    "sinon-chai": "^3.7.0",
     "standard": "^16.0.3",
     "ts-node": "^9.1.1",
+    "tsconfig-paths": "^3.9.0",
     "typedoc": "^0.22.4",
     "typescript": "^4.0.2"
   },
@@ -86,9 +87,5 @@
     "*.{js,ts}": [
       "eslint --fix --quiet"
     ]
-  },
-  "devDependencies": {
-    "eslint-import-resolver-typescript": "^2.4.0",
-    "tsconfig-paths": "^3.9.0"
   }
 }
