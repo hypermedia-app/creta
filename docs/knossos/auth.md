@@ -2,13 +2,33 @@
 
 ## Authentication
 
-To set up an authentication middleware, run `knossos serve` with an additional argument
+To set up an authentication middleware, add it to the [configuration](./configuration.md) resource with the `before` key.
 
-```
-yarn knossos serve --authModule ../path/to/authentication.js
+```turtle
+PREFIX code: <https://code.described.at/>
+PREFIX schema: <http://schema.org/>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX knossos: <https://hypermedia.app/knossos#>
+
+<>
+  a knossos:Configuration ;
+  hydra:ApiDocumentation </api> ;
+  knossos:middleware
+    [
+      schema:name "before" ;
+      code:implementedBy
+        [
+          a code:EcmaScript ;
+          code:link <file:path/to/authenticate#default> ;
+        ] ;
+    ] ;
+.
 ```
 
-The value must be a module path, relative to the working directory. Also possible to provide a bare module specifier.
+The value must be a module path, relative to the `codePath` directory passed to the `knossos serve` command.
+
+> [!TIP]
+> It is also possible to provide load from `node_modules`. See [rdf-loader-code](https://github.com/zazuko/rdf-loader-code) package for more examples.
 
 The module must have a default export of a function which returns an express `RequestHandler` or such a promise.
 
