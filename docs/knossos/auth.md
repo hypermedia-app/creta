@@ -39,14 +39,14 @@ Upon successful authentication, the handler should set `req.agent` from a Graph 
 To integrate [basic authentication](https://npm.im/basic-auth)
 
 ```typescript
-import type { Authentication } from '@hydrofoil/knossos/server'
+import type { MiddlewareFactory } from '@hydrofoil/knossos/configuration'
 import auth from 'basic-auth'
 import compare from 'tsscmp' 
 import clownface from 'clownface'
 import $rdf from 'rdf-ext'
 import { foaf, rdf } from '@tpluscode/rdf-ns-builders'
 
-const authentication: Authentication = () => {
+const authentication: MiddlewareFactory = () => {
   return (req, res, next) => {
     const { name, pass } = auth(req)
     
