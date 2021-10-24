@@ -1,5 +1,5 @@
 import { NamedNode } from 'rdf-js'
-import { Router } from 'express'
+import { Request, Router } from 'express'
 import asyncMiddleware from 'middleware-async'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { created } from '@hydrofoil/knossos-events/activity'
@@ -12,7 +12,7 @@ import RdfResource, { ResourceIdentifier } from '@tpluscode/rdfine'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
 import { describeResource } from '@hydrofoil/labyrinth/lib/query/describeResource'
-import { shaclValidate } from './shacl'
+import { payloadTypes, shaclValidate } from './shacl'
 import { save } from './lib/resource'
 import { applyTransformations, hasAllRequiredVariables } from './lib/template'
 
@@ -37,7 +37,18 @@ function rename(member: GraphPointer, id: NamedNode): GraphPointer<NamedNode> {
   return member.node(id)
 }
 
-export const CreateMember = Router().use(shaclValidate({ payloadTypesOnly: true })).use(asyncMiddleware(async (req, res, next) => {
+async function typesToValidate(req: Request) {
+  const collection = await req.hydra.resource.clownface()
+  const memberAssertions = collection.out([hydra.manages, hydra.memberAssertion])
+  const types = memberAssertions.has(hydra.property, rdf.type).out(hydra.object)
+
+  return [
+    ...payloadTypes(req),
+    ...types.terms,
+  ]
+}
+
+export const CreateMember = Router().use(shaclValidate({ typesToValidate })).use(asyncMiddleware(async (req, res, next) => {
   const api = clownface(req.hydra.api)
   const collection = await req.hydra.resource.clownface()
   const memberAssertions = collection.out([hydra.manages, hydra.memberAssertion])

@@ -3,7 +3,7 @@ import express from 'express'
 import request from 'supertest'
 import { turtle } from '@tpluscode/rdf-string'
 import TermSet from '@rdfjs/term-set'
-import { foaf } from '@tpluscode/rdf-ns-builders'
+import { foaf, schema } from '@tpluscode/rdf-ns-builders/strict'
 import sinon from 'sinon'
 import DatasetExt from 'rdf-ext/lib/Dataset'
 import $rdf from 'rdf-ext'
@@ -66,6 +66,28 @@ describe('@hydrofoil/knossos/shacl', () => {
     // then
     expect(shacl.shapesQuery).to.have.been.calledWith(sinon.match({
       types: sinon.match((types: Term[]) => types.every(t => t.equals(foaf.Agent) || t.equals(foaf.Person))),
+      sparql,
+    }))
+  })
+
+  it('loads shapes for custom types', async () => {
+    // given
+    resourceTypes.add(foaf.Agent)
+    app.post('*', shaclValidate({
+      typesToValidate() {
+        return [foaf.Person, schema.Person]
+      },
+    }), ok)
+
+    // when
+    await request(app)
+      .post('/')
+      .send(turtle`<> a ${foaf.Person} .`.toString())
+      .set('content-type', 'text/turtle')
+
+    // then
+    expect(shacl.shapesQuery).to.have.been.calledWith(sinon.match({
+      types: sinon.match((types: Term[]) => types.every(t => t.equals(schema.Person) || t.equals(foaf.Person))),
       sparql,
     }))
   })
