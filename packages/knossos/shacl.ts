@@ -20,6 +20,9 @@ export interface Options {
   typesToValidate?: (req: Request) => Term[] | Promise<Term[]>
 }
 
+/**
+ * Selects payload types and existing resource's types for validation
+ */
 export function payloadAndResourceTypes(req: Request): Term[] {
   return [
     ...(req.hydra.resource?.types || []),
@@ -27,6 +30,9 @@ export function payloadAndResourceTypes(req: Request): Term[] {
   ]
 }
 
+/**
+ * Selects only payload types for validation
+ */
 export function payloadTypes(req: Request): Term[] {
   return req.shacl.dataGraph.out(rdf.type).terms
 }
