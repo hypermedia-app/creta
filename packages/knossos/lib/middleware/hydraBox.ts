@@ -4,7 +4,7 @@ import webAccessControl from 'hydra-box-web-access-control'
 import createApi from '../api'
 import { filterAclByApi } from '../accessControl'
 import type { Context, Options } from '../../server'
-import { loadMiddlewares } from '../settings'
+import { loadMiddlewares, loadAuthorizationPatterns } from '../settings'
 import { systemAuth } from './systemAuth'
 
 export async function createHydraBox({ apiTerm, client, sparql, ...ctx }: Context, options: Options): Promise<express.RequestHandler> {
@@ -13,7 +13,9 @@ export async function createHydraBox({ apiTerm, client, sparql, ...ctx }: Contex
 
   const api = createApi({ apiTerm, log, sparql, codePath, path })
 
-  const middleware = await loadMiddlewares(api, log, { apiTerm, client, sparql, ...ctx })
+  const loadContext = { apiTerm, client, sparql, ...ctx }
+  const middleware = await loadMiddlewares(api, log, loadContext)
+  const authorizationPatterns = await loadAuthorizationPatterns(api, log, loadContext)
 
   if (middleware.before) {
     router.use(middleware.before)
@@ -31,6 +33,7 @@ export async function createHydraBox({ apiTerm, client, sparql, ...ctx }: Contex
         webAccessControl({
           client,
           additionalPatterns: filterAclByApi,
+          additionalChecks: authorizationPatterns,
         }),
         ...(middleware.resource || []),
       ],

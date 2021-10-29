@@ -71,6 +71,26 @@ During request, the `req.agent`, if given, is combined with the identifier and R
 
 If there is no authenticated agent, `knossos` will query for authorization resources with `[] acl:agentClass foaf:Agent`, which is the Web Access Control way for granting anonymous access.
 
+### Custom authorization rules
+
+It is possible to add additional pattern to be executed against the database to customize how agents are authorized. This is done by adding to the [settings resource](configuration.md) links to code which import function passed on to [rdf-web-access-control](https://github.com/hypermedia-app/web-access-control#custom-authorization-checks)
+
+For example, to enable authorization by `acl:agentGroup` us the following snippet:
+
+```turtle
+PREFIX knossos: <https://hypermedia.app/knossos#>
+PREFIX code: <https://code.described.at/>
+
+<>
+  knossos:authorizationRule [
+    code:implementedBy [
+      a code:EcmaScript ;
+      code:link <node:rdf-web-access-control/checks#agentGroup> ;  
+    ] ;
+  ] ;
+.
+```
+
 ## System account
 
 Administrative access to the API is also possible using a system account. Having ran the `knossos init` command, a default ACL resource is generated, which grants the system account full control of all instances of `rdfs:Resource`:
