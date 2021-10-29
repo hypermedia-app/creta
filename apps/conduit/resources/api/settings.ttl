@@ -6,6 +6,14 @@ prefix knossos: <https://hypermedia.app/knossos#>
 <>
   a knossos:Configuration ;
   hydra:ApiDocumentation </api> ;
+  knossos:authorizationRule
+    [
+      code:implementedBy
+        [
+          a code:EcmaScript ;
+          code:link <node:rdf-web-access-control/checks#agentGroup> ;
+        ] ;
+    ] ;
   knossos:middleware
     [
       schema:name "before" ;
