@@ -53,8 +53,7 @@ export async function loadMiddlewares(
     const [name] = next.out(schema.name).values
     const [link] = next.out(code.implementedBy).toArray()
     if (!link) {
-      log(`Missing implementation for middleware '${name}'`)
-      return map
+      throw new Error(`Missing implementation for middleware '${name}'`)
     }
 
     if (!(name in map)) {
@@ -63,7 +62,7 @@ export async function loadMiddlewares(
 
     const factory = await loadCode<MiddlewareFactory>(link)
     if (!factory) {
-      log(`Failed to load ${name} middleware from ${link.out(code.link).value}`)
+      throw new Error(`Failed to load ${name} middleware from ${link.out(code.link).value}`)
     } else {
       log(`Loaded ${name} middleware from ${link.out(code.link).value}`)
       map[name].push(await factory(context))
@@ -97,8 +96,7 @@ export async function loadAuthorizationPatterns(
 
     const patternFactory = await loadCode<AuthorizationPatterns>(link)
     if (!patternFactory) {
-      log(`Failed to load ${link.out(code.link).value}`)
-      return arr
+      throw new Error(`Failed to load ${link.out(code.link).value}`)
     }
 
     log(`Loaded authorization rule ${link.out(code.link).value}`)

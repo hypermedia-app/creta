@@ -73,7 +73,7 @@ If there is no authenticated agent, `knossos` will query for authorization resou
 
 ### Custom authorization rules
 
-It is possible to add additional pattern to be executed against the database to customize how agents are authorized. This is done by adding to the [settings resource](configuration.md) links to code which import function passed on to [rdf-web-access-control](https://github.com/hypermedia-app/web-access-control#custom-authorization-checks)
+It is possible to set up additional rules to be executed against the database, to customize how agents are authorized. This is done by linking the [settings resource](configuration.md) to code which imports function passed on to [rdf-web-access-control](https://github.com/hypermedia-app/web-access-control#custom-authorization-checks)
 
 For example, to enable authorization by `acl:agentGroup` us the following snippet:
 
