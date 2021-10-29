@@ -177,6 +177,35 @@ describe('@hydrofoil/knossos/lib/settings', () => {
       expect(result).to.be.empty
     })
 
+    it('returns loaded auths', async () => {
+      // given
+      const config = namedNode('/config')
+        .addOut(knossos.authorizationRule, auth => {
+          auth
+            .addOut(schema.name, 'after')
+            .addOut(code.implementedBy, impl => {
+              impl
+                .addOut(rdf.type, code.EcmaScript)
+                .addOut(code.link, $rdf.namedNode('foo:bar'))
+            })
+        })
+      store.load.resolves(config)
+      const authRule = () => ({})
+
+      // when
+      const result = await loadAuthorizationPatterns(
+        testApi({
+          code: authRule,
+        }),
+        log,
+        context,
+        { getConfigurationId },
+      )
+
+      // then
+      expect(result).to.deep.eq([authRule])
+    })
+
     it('throws when authorization fails to load', async () => {
       // given
       const config = namedNode('/config')
