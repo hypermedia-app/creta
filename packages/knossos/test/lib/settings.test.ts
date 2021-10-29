@@ -7,7 +7,7 @@ import $rdf from 'rdf-ext'
 import { knossos, code } from '@hydrofoil/vocabularies/builders/strict'
 import { rdf, schema } from '@tpluscode/rdf-ns-builders/strict'
 import { ResourcePerGraphStore, ResourceStore } from '../../lib/store'
-import { loadMiddlewares } from '../../lib/settings'
+import { loadAuthorizationPatterns, loadMiddlewares } from '../../lib/settings'
 import { Context } from '../../server'
 
 describe('@hydrofoil/knossos/lib/settings', () => {
@@ -109,6 +109,100 @@ describe('@hydrofoil/knossos/lib/settings', () => {
         before: [middleware, middleware],
         after: [middleware],
       })
+    })
+
+    it('throws when middleware fails to load', async () => {
+      // given
+      const config = namedNode('/config')
+        .addOut(knossos.middleware, middleware => {
+          middleware
+            .addOut(schema.name, 'before')
+            .addOut(code.implementedBy, impl => {
+              impl
+                .addOut(rdf.type, code.EcmaScript)
+                .addOut(code.link, $rdf.namedNode('foo:bar'))
+            })
+        })
+      store.load.resolves(config)
+
+      // when
+      const result = loadMiddlewares(
+        testApi({
+          code: null,
+        }),
+        log,
+        context,
+        { getConfigurationId },
+      )
+
+      // then
+      await expect(result).to.be.eventually.rejectedWith(/Failed to load/)
+    })
+
+    it('throws when middleware has no implementation', async () => {
+      // given
+      const config = namedNode('/config')
+        .addOut(knossos.middleware, middleware => {
+          middleware.addOut(schema.name, 'before')
+        })
+      store.load.resolves(config)
+
+      // when
+      const result = loadMiddlewares(
+        testApi(),
+        log,
+        context,
+        { getConfigurationId },
+      )
+
+      // then
+      await expect(result).to.be.eventually.rejectedWith(/Missing implementation/)
+    })
+  })
+
+  describe('loadAuthorizationPatterns', () => {
+    it('returns empty when not config is found', async () => {
+      // given
+      getConfigurationId.resolves(undefined)
+
+      // when
+      const result = await loadAuthorizationPatterns(
+        testApi(),
+        log,
+        context,
+        { getConfigurationId },
+      )
+
+      // then
+      expect(result).to.be.empty
+    })
+
+    it('throws when authorization fails to load', async () => {
+      // given
+      const config = namedNode('/config')
+        .addOut(knossos.authorizationRule, auth => {
+          auth
+            .addOut(schema.name, 'after')
+            .addOut(code.implementedBy, impl => {
+              impl
+                .addOut(rdf.type, code.EcmaScript)
+                .addOut(code.link, $rdf.namedNode('foo:bar'))
+            })
+        })
+      store.load.resolves(config)
+
+      // when
+      const result = loadAuthorizationPatterns(
+        testApi({
+          code: null,
+        }),
+        log,
+        context,
+        { getConfigurationId },
+      )
+
+      // then
+      await expect(result).to.be.eventually.rejectedWith('Failed to load foo:bar')
     })
   })
 })
