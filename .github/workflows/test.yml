@@ -17,6 +17,7 @@ jobs:
           docker_version: 20.10.3
       - name: Install lando
         run: sh .ci/install-lando.sh
+      - run: df -h /dev/shm
       - name: Start lando
         run: sh .ci/start-lando.sh
       - run: yarn test
