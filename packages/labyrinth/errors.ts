@@ -1,6 +1,9 @@
 import { ErrorRequestHandler, RequestHandler } from 'express'
 import { IErrorMapper } from 'http-problem-details-mapper'
-import { httpProblemMiddleware } from './lib/problemDetails'
+import * as error from 'express-rdf-problem-details'
+import { NotFoundErrorMapper } from './lib/error/NotFound'
+import { ForbiddenErrorMapper } from './lib/error/ForbiddenError'
+import { UnauthorizedErrorMapper } from './lib/error/UnauthorizedError'
 import { NotFoundError } from './lib/error'
 
 interface Options {
@@ -16,6 +19,13 @@ export function problemJson({ errorMappers = [], captureNotFound = false }: Opti
       }
       return next()
     },
-    httpProblemMiddleware(...errorMappers),
+    error.handler({
+      mappers: [
+        new NotFoundErrorMapper(),
+        new ForbiddenErrorMapper(),
+        new UnauthorizedErrorMapper(),
+        ...errorMappers,
+      ],
+    }),
   ]
 }

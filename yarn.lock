@@ -3839,6 +3839,15 @@ express-middleware-shacl@^1.1.2:
     rdf-validate-shacl "^0.2.6"
     set-link "^1.0.0"
 
+express-rdf-problem-details@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/express-rdf-problem-details/-/express-rdf-problem-details-1.0.1.tgz#b49987d90916b263d5485d1c98372530397706b1"
+  integrity sha512-fdgDZHgatNwz8zLiHm20FYgGBPRlq/WNxPPtKGipGmBi7RGGWNrqeYdbAZfra5mkyRurDhOLqZg9XmULG8T5KA==
+  dependencies:
+    express-http-problem-details "^0.2.1"
+    http-problem-details-mapper "^0.1.7"
+    set-link "^1.0.0"
+
 express-rdf-request@^1.0.0, express-rdf-request@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/express-rdf-request/-/express-rdf-request-1.1.0.tgz#00b6bcbad32ed3afe9fee41b0e8593aace7b8cc0"
