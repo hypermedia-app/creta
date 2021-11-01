@@ -1802,19 +1802,19 @@
   resolved "https://registry.yarnpkg.com/@types/http-errors/-/http-errors-1.8.1.tgz#e81ad28a60bee0328c6d2384e029aec626f1ae67"
   integrity sha512-e+2rjEwK6KDaNOm5Aa9wNGgyS9oSZU/4pfSMMPYNOfjvFI0WVXm29+ITRFr6aKDvvKo7uU1jV68MW4ScsfDi7Q==
 
-"@types/hydra-box@*", "@types/hydra-box@^0.6.2":
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/@types/hydra-box/-/hydra-box-0.6.2.tgz#48c32633e7a1e684983f193685549823f6b2b7bf"
-  integrity sha512-+EtcDYgeJ54lepvsT3O05ve72So2YjCTOwRi3S48ay3s/w8pmkrIyujo8C6b8hbW/ho/NpLHO/cuTRU3Sd9CCA==
+"@types/hydra-box@*", "@types/hydra-box@^0.6.4":
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/@types/hydra-box/-/hydra-box-0.6.4.tgz#3ffa80ab354fb7e10abadeccff90518ef4f584a0"
+  integrity sha512-DnCJqWMEV1lj6X/+9EPrzit8bmK4/uBEDj9wp2qqxXMKzCwIZmlPnNuyPX1hFYHA9O9ghUZNJ0hlAx37/bSOAQ==
   dependencies:
     "@types/absolute-url" "*"
     "@types/clownface" "*"
     "@types/express" "*"
     "@types/rdf-ext" "*"
-    "@types/rdf-js" "*"
     "@types/rdf-loaders-registry" "*"
     "@types/rdfjs__express-handler" "*"
     "@types/set-link" "*"
+    rdf-js "^4.0.2"
 
 "@types/istanbul-lib-coverage@^2.0.1":
   version "2.0.3"
