@@ -41,7 +41,7 @@
     "http-status": "^1.5.0",
     "hydra-box": "^0.6.3",
     "hydra-box-web-access-control": "^1.1.4",
-    "middleware-async": "^1.3.1",
+    "middleware-async": "^1.3.2",
     "nanoid": "^3.1.22",
     "rdf-ext": "^1.3.1",
     "rdf-web-access-control": "^1.0.1",

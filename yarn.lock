@@ -5530,10 +5530,10 @@ micromatch@^4.0.2:
     braces "^3.0.1"
     picomatch "^2.0.5"
 
-middleware-async@^1.2.6, middleware-async@^1.2.7, middleware-async@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/middleware-async/-/middleware-async-1.3.1.tgz#ac1043e6f173048c82dd5fb6683eecca096034d3"
-  integrity sha512-vFlOr3D3GIvv9FeoDRrqHEetFPkJCJmHerf8j1aFDL/SyyJk3f6GCT2mKZHH+iEIWB4PszFTjJuwipMZjjmZAQ==
+middleware-async@^1.2.6, middleware-async@^1.3.1, middleware-async@^1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/middleware-async/-/middleware-async-1.3.2.tgz#757ab49e5cbc284a50a580ef5e81f051f66f9332"
+  integrity sha512-3AcboJCmI2100ky8eMxVaVmG0tqM9Etuv/A6XErt6awwEWUk9298kk7d5Qn7Tj5YtS2KU1nVjUQdwCUrAGNqUA==
 
 mime-db@1.50.0:
   version "1.50.0"
