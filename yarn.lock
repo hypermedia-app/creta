@@ -6447,6 +6447,13 @@ rdf-loaders-registry@^0.2.0:
   dependencies:
     "@rdfjs/data-model" "^1.1.2"
 
+rdf-loaders-registry@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/rdf-loaders-registry/-/rdf-loaders-registry-0.3.0.tgz#050af3b6b4afd1152d6a3d6f3204a0111b1f1405"
+  integrity sha512-rd7a4mT3ERDW9NJrNpdvS6yexn0oBQyBeTnQwQAyC6k8eef4o/DzRIR3ezsW0KiaohfiVSaeqsDetjhlCHpvng==
+  dependencies:
+    "@rdfjs/data-model" "^1.1.2"
+
 rdf-normalize@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/rdf-normalize/-/rdf-normalize-1.0.0.tgz#53496baf362cce9d9fca1f2216c6c30007f99cca"
