@@ -1357,13 +1357,13 @@
     "@tpluscode/rdfine" "^0.5.27"
 
 "@rdfine/hydra@^0.8":
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/@rdfine/hydra/-/hydra-0.8.0.tgz#ec7cbbc06d2fe80251c6734f59d8b9c88abe210b"
-  integrity sha512-NDdKsbfHL90YsUPV8+8WFnsceYqCetgEOOEAODGkduzdiwScbDNgWeZJ/xKcdfqxZFfewkRmKgfofWZSTe3KVQ==
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/@rdfine/hydra/-/hydra-0.8.1.tgz#c69cc64fb2c1525d5f99567e455393a08def10cd"
+  integrity sha512-nA15cHLYMWmR9rlVMgBTqt66ZSFQIcHirg+knYNcqMa3h3RGRDIX8XJzcgMyopzk6zqdyLsaJ0mJ+RJDrYVslA==
   dependencies:
     "@rdf-esm/data-model" "^0.5.3"
-    "@rdfine/rdf" "^0.5.4"
-    "@rdfine/rdfs" "^0.6.7"
+    "@rdfine/rdf" "^0.5.5"
+    "@rdfine/rdfs" "^0.6.8"
     "@tpluscode/rdf-ns-builders" "^1.0.0"
     "@tpluscode/rdfine" "^0.5.29"
     es6-url-template "^3.0.2"
@@ -1388,13 +1388,13 @@
     "@tpluscode/rdf-ns-builders" "^1.0.0"
     "@tpluscode/rdfine" "^0.5.27"
 
-"@rdfine/rdfs@^0.6.5", "@rdfine/rdfs@^0.6.7":
-  version "0.6.7"
-  resolved "https://registry.yarnpkg.com/@rdfine/rdfs/-/rdfs-0.6.7.tgz#9eb05619d178ac599e3c35f765ed12d6893be006"
-  integrity sha512-sT4zlXGy1bafguw57td36eEGkGg3n/ZoP+2VPVYNyio3EeoyisAmXuhohno3c+RpUhahrtEYS513AI2p3a1wDQ==
+"@rdfine/rdfs@^0.6.5", "@rdfine/rdfs@^0.6.8":
+  version "0.6.8"
+  resolved "https://registry.yarnpkg.com/@rdfine/rdfs/-/rdfs-0.6.8.tgz#e5acf8ed78ff375700878bd4aac1679a2aa37e05"
+  integrity sha512-kEoZ1M0n7lSvVetauUzoGkCvSlb3ydvMAJy5xMalYk/K4mwwUXXxcj7nvIoMm2QDgnzAihtvLdckMi82ki3Yow==
   dependencies:
     "@rdf-esm/data-model" "^0.5.3"
-    "@rdfine/rdf" "^0.5.4"
+    "@rdfine/rdf" "^0.5.5"
     "@tpluscode/rdf-ns-builders" "^1.0.0"
     "@tpluscode/rdfine" "^0.5.29"
 
