@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.7.1
+
+### Patch Changes
+
+- a881cbb: Error responses are valid JSON-LD
+
 ## 0.7.0
 
 ### Minor Changes
