@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.7.2
+
+### Patch Changes
+
+- f53c7ac: Add `rdf:type hydra:Error` to problem+json responses
+
 ## 0.7.1
 
 ### Patch Changes
