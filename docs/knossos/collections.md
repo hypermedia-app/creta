@@ -195,7 +195,7 @@ Finally, the static filter can be narrowed down only to the member's own graph:
 
 This will wrap such a member assertion in a `GRAPH ?member` pattern
 
-> [!TIP
+> [!TIP]
 > This technique is useful to exclude inferred terms from matching the query. Only the resources self-asserted properties will be matched.
 
 ## Queries
