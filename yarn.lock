@@ -1681,10 +1681,10 @@
     "@types/connect" "*"
     "@types/node" "*"
 
-"@types/camouflage-rewrite@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@types/camouflage-rewrite/-/camouflage-rewrite-1.2.0.tgz#0413506d606865655425f75b1712fbb72302b0f0"
-  integrity sha512-sqcBk0FCFdyQsP3l2YwLLxlKgF4GNphi90EL6w8Fu5g7dyLZj8x/t44ERe05VJvRWm5bMqUAsMF4Vm8rqQNflg==
+"@types/camouflage-rewrite@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@types/camouflage-rewrite/-/camouflage-rewrite-1.2.1.tgz#baffecc56a8d673ca26dcd9db3769190ad538457"
+  integrity sha512-yjFfXLSmgtFxe+HudIALAfh/CrL/iXzaaO0lbOAuREuygR37ronDXqOrb4DmOcNtFFacLGa7al/vd+g8ueJiZQ==
   dependencies:
     "@types/express" "*"
 
