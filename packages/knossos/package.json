@@ -51,7 +51,7 @@
   },
   "devDependencies": {
     "@labyrinth/testing": "^0.0.1",
-    "@types/camouflage-rewrite": "^1.2.0",
+    "@types/camouflage-rewrite": "^1.2.1",
     "@types/fcostarodrigo__walk": "^5.0.1",
     "@types/fs-extra": "^9.0.10",
     "@types/nanoid": "^2.1.0",
