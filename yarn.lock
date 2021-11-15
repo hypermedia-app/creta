@@ -1790,10 +1790,10 @@
   resolved "https://registry.yarnpkg.com/@types/fcostarodrigo__walk/-/fcostarodrigo__walk-5.0.1.tgz#1e8a064bc551b4fef854eb5f16ec2a613a894a09"
   integrity sha512-vY52pzt3BrREy2Zqar0DdBKykcnMhQiiPt9/DT1FHikJOz9Uub51KNL03JoJXnJGMrhpskjqGpDTSU9KML0HZQ==
 
-"@types/fs-extra@^9.0.10":
-  version "9.0.10"
-  resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-9.0.10.tgz#8023a72e3d06cf54929ea47ec7634e47f33f4046"
-  integrity sha512-O9T2LLkRDiTlalOBdjEkcnT0MRdT2+wglCl7pJUJ3mkWkR8hX4K+5bg2raQNJcLv4V8zGuTXe7Ud3wSqkTyuyQ==
+"@types/fs-extra@^9.0.13":
+  version "9.0.13"
+  resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-9.0.13.tgz#7594fbae04fe7f1918ce8b3d213f74ff44ac1f45"
+  integrity sha512-nEnwB++1u5lVDM2UI4c1+5R+FYaKfaAzS4OococimjVm3nQw3TuzH5UNsocrcTBbhnerblyHj4A49qXbIiZdpA==
   dependencies:
     "@types/node" "*"
 
