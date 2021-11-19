@@ -3,7 +3,6 @@
  * @module @hydrofoil/knossos/server
  */
 
-import { join } from 'path'
 import { NamedNode } from 'rdf-js'
 import express from 'express'
 import StreamClient from 'sparql-http-client/StreamClient'
@@ -13,11 +12,10 @@ import { knossosEvents } from '@hydrofoil/knossos-events'
 import camo from 'camouflage-rewrite'
 import { problemJson } from '@hydrofoil/labyrinth/errors'
 import asyncMiddleware from 'middleware-async'
-import $rdf from 'rdf-ext'
 import absoluteUrl from 'absolute-url'
+import { coreMiddleware } from './lib/coreMiddleware'
 import { ResourcePerGraphStore, ResourceStore } from './lib/store'
 import { create } from './resource'
-import { createHydraBox } from './lib/middleware/hydraBox'
 
 export interface Knossos {
   store: ResourceStore
@@ -29,8 +27,6 @@ declare module 'express-serve-static-core' {
     knossos: Knossos
   }
 }
-
-const apisMiddlewares = new Map()
 
 export interface Authentication {
   (arg: { client: StreamClient }): express.RequestHandler | Promise<express.RequestHandler>
@@ -89,28 +85,15 @@ export default function knossosMiddleware(options: Options): express.Router {
   router.use(knossosEvents())
 
   router.use(absoluteUrl())
-  router.use(asyncMiddleware(async (req, res, next) => {
-    let hydraMiddleware = apisMiddlewares.get(req.hostname)
-    if (!hydraMiddleware) {
-      const iri = new URL(req.absoluteUrl())
-      const apiIri = new URL(join(req.baseUrl, path), iri)
-
-      hydraMiddleware = await createHydraBox({
-        apiTerm: $rdf.namedNode(apiIri.toString()),
-        sparql,
-        client,
-        store,
-      }, {
-        name,
-        codePath,
-        path,
-        log,
-      })
-      apisMiddlewares.set(req.hostname, hydraMiddleware)
-    }
-
-    hydraMiddleware(req, res, next)
-  }))
+  router.use(asyncMiddleware(coreMiddleware({
+    sparql,
+    client,
+    store,
+    name,
+    codePath,
+    path,
+    log,
+  })))
   router.put('/*', create(client))
   router.use(problemJson({ captureNotFound: true }))
 
