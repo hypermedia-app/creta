@@ -8,7 +8,7 @@ import { knossos, code } from '@hydrofoil/vocabularies/builders/strict'
 import { rdf, schema } from '@tpluscode/rdf-ns-builders/strict'
 import { ResourcePerGraphStore, ResourceStore } from '../../lib/store'
 import { loadAuthorizationPatterns, loadMiddlewares } from '../../lib/settings'
-import { Context } from '../../server'
+import { Context } from '../..'
 
 describe('@hydrofoil/knossos/lib/settings', () => {
   const log: Debugger = sinon.spy() as any

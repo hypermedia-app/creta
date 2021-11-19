@@ -1,13 +1,21 @@
 import * as express from 'express'
 import { hydraBox } from '@hydrofoil/labyrinth'
 import webAccessControl from 'hydra-box-web-access-control'
+import { Debugger } from 'debug'
 import createApi from '../api'
 import { filterAclByApi } from '../accessControl'
-import type { Context, Options } from '../../server'
+import type { Context } from '../..'
 import { loadMiddlewares, loadAuthorizationPatterns } from '../settings'
 import { systemAuth } from './systemAuth'
 
-export async function createHydraBox({ apiTerm, client, sparql, ...ctx }: Context, options: Options): Promise<express.RequestHandler> {
+interface CreateHydraBox {
+  name: string
+  codePath: string
+  path: string
+  log: Debugger
+}
+
+export async function createHydraBox({ apiTerm, client, sparql, ...ctx }: Context, options: CreateHydraBox): Promise<express.RequestHandler> {
   const { log, name, codePath, path } = options
   const router = express.Router()
 

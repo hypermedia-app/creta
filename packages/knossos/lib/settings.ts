@@ -13,7 +13,7 @@ import { SELECT } from '@tpluscode/sparql-builder'
 import { knossos, code } from '@hydrofoil/vocabularies/builders/strict'
 import { hydra, schema } from '@tpluscode/rdf-ns-builders/strict'
 import { AuthorizationPatterns } from 'rdf-web-access-control'
-import type { Context } from '../server'
+import type { Context } from '..'
 
 /**
  * Creates express middleware to be loaded by knossos

@@ -8,7 +8,7 @@ import asyncMiddleware from 'middleware-async'
 import { DESCRIBE } from '@tpluscode/sparql-builder'
 import { vcard } from '@tpluscode/rdf-ns-builders'
 import type { StreamClient } from 'sparql-http-client/StreamClient'
-import { Authentication } from '@hydrofoil/knossos/server'
+import { Authentication } from '@hydrofoil/knossos'
 
 declare module 'express-serve-static-core' {
   interface Request {
