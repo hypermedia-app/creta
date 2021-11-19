@@ -50,10 +50,18 @@ export interface Context {
   store: ResourceStore
 }
 
-export default function knossosMiddleware(options: Options): express.Router {
+export default function knossosMiddleware({
+  endpointUrl,
+  updateUrl,
+  user,
+  password,
+  resourceBase,
+  name = 'knossos',
+  codePath = '.',
+  path = '/api',
+}: Options): express.Router {
   const router = express.Router()
 
-  const { name = 'knossos', codePath = '.', path = '/api', endpointUrl, updateUrl, user, password, resourceBase } = options
   const log = debug(name)
   const sparql = {
     endpointUrl,
