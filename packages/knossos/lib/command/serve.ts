@@ -1,5 +1,6 @@
 import debug from 'debug'
-import * as server from '../../server'
+import express from 'express'
+import knossos from '../..'
 
 interface Options {
   port: number
@@ -12,8 +13,9 @@ interface Options {
   password?: string
 }
 
-export async function serve(endpointUrl: string, options: Options): Promise<void> {
+export function serve(endpointUrl: string, options: Options): void {
   const {
+    port,
     name,
     api,
     updateUrl,
@@ -25,11 +27,19 @@ export async function serve(endpointUrl: string, options: Options): Promise<void
     workingDir: process.cwd(),
   })
 
-  return server.serve({
-    ...options,
-    path: api,
-    log,
-    endpointUrl,
-    updateUrl,
-  }).catch(log.extend('error'))
+  try {
+    const app = express()
+    app.enable('trust proxy')
+
+    app.use(knossos({
+      ...options,
+      path: api,
+      endpointUrl,
+      updateUrl,
+    }))
+
+    app.listen(port, () => log(`${name} started`))
+  } catch (e) {
+    log.extend('error')(e)
+  }
 }

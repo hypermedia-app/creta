@@ -7,4 +7,5 @@
   * [Configuration](knossos/configuration.md "Configuration | Knossos | Creta")
   * [Resource URLs](knossos/resource-url.md "Resource URLs | Knossos | Creta")
 * [Advanced](knossos/advanced.md "Advanced | Knossos | Creta")
+  * [Middleware](knossos/middleware.md "Middleware | Knossos | Creta")
 * [Talos](talos.md "Talos | Creta")

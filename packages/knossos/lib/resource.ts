@@ -10,7 +10,7 @@ import express from 'express'
 import { Debugger } from 'debug'
 import TermSet from '@rdfjs/term-set'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
-import { Knossos } from '../server'
+import { Knossos } from '..'
 
 export interface BeforeSaveParams {
   /**

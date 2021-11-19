@@ -1,2 +1,2 @@
 #!/usr/bin/env ts-node
-import '..'
+import '../server'

@@ -1,6 +1,6 @@
 import express from 'express'
 import sinon from 'sinon'
-import type { Knossos } from '@hydrofoil/knossos/server'
+import type { Knossos } from '@hydrofoil/knossos'
 import debug, { Debugger } from 'debug'
 import type { Events } from '@hydrofoil/knossos-events'
 
