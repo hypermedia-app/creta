@@ -1,5 +1,11 @@
 # @hydrofoil/knossos
 
+## 0.4.1
+
+### Patch Changes
+
+- 8191e41: Support hosting APIs on subpaths and not only domains
+
 ## 0.4.0
 
 ### Minor Changes
