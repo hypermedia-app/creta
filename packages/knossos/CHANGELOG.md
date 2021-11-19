@@ -1,5 +1,15 @@
 # @hydrofoil/knossos
 
+## 0.4.0
+
+### Minor Changes
+
+- 86e8950: Export a middleware for manual setup
+
+### Patch Changes
+
+- 76e5881: build(deps): bump express-rdf-request from 1.1.0 to 1.1.1
+
 ## 0.3.2
 
 ### Patch Changes
