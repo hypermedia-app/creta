@@ -140,7 +140,7 @@ for (const api of apis) {
       describe('n-triples', () => {
         it('correctly applies absolute URIs to base paths', async () => {
           const hasExpectedType = ASK`
-            ${ns('project/shaperone')} ${schema.related} ${ns('project/roadshow')}
+            ${ns('project/shaperone')} ${schema.related} ${ns('project/roadshow')}, ${ns('project/creta')}
           `
             .FROM(ns('project/shaperone'))
             .execute(client.query)

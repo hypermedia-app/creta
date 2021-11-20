@@ -6,8 +6,8 @@ import replaceStream from 'replacestream'
 import { parsers } from '@rdfjs/formats-common'
 import { log } from './log'
 
-const angleBracketTransform = (basePath: string) => replaceStream(/<\/([^>]+)>/, `<${basePath}/$1>`)
-const jsonTransform = (basePath: string) => replaceStream(/"\/([^"]+)"/, `"${basePath}/$1"`)
+const angleBracketTransform = (basePath: string) => replaceStream(/<\/([^>]+)>/g, `<${basePath}/$1>`)
+const jsonTransform = (basePath: string) => replaceStream(/"\/([^"]+)"/g, `"${basePath}/$1"`)
 
 const filePatchTransforms = new Map([
   ['text/turtle', angleBracketTransform],
