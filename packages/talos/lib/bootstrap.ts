@@ -1,14 +1,12 @@
 import path from 'path'
-import * as fs from 'fs'
 import { DatasetCore, NamedNode } from 'rdf-js'
 import walk from '@fcostarodrigo/walk'
-import * as mime from 'mime-types'
 import StreamClient, { StreamClientOptions } from 'sparql-http-client'
 import $rdf from 'rdf-ext'
-import { parsers } from '@rdfjs/formats-common'
 import clownface from 'clownface'
 import { ResourcePerGraphStore } from '@hydrofoil/knossos/lib/store'
 import { hydra } from '@tpluscode/rdf-ns-builders/strict'
+import { getPatchedStream } from './fileStream'
 import { log } from './log'
 
 type Options = StreamClientOptions & {
@@ -28,23 +26,16 @@ export async function bootstrap({ api, apiUri, cwd, ...options }: Options): Prom
 
     const url = encodeURI(`${api}/${resourcePath}`)
 
-    const mediaType = mime.lookup(file)
-    if (!mediaType) {
-      log('Could not determine media type for file %s', relative)
-      continue
-    }
-
-    const parserStream = parsers.import(mediaType, fs.createReadStream(file), {
-      baseIRI: url,
-    })
+    const parserStream = getPatchedStream(file, cwd, api, url)
     if (!parserStream) {
-      log('Unsupported media type %s from %s', mediaType, relative)
       continue
     }
 
-    let dataset: DatasetCore
+    const dataset: DatasetCore = $rdf.dataset()
     try {
-      dataset = await $rdf.dataset().import(parserStream)
+      for await (const quad of parserStream) {
+        dataset.add(quad)
+      }
     } catch (e: any) {
       log('Failed to parse %s: %s', relative, e.message)
       continue
