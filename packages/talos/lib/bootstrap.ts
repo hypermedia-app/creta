@@ -24,7 +24,9 @@ export async function bootstrap({ api, apiUri, cwd, ...options }: Options): Prom
       .replace(/\.[^.]+$/, '')
       .replace(/\/?index$/, '')
 
-    const url = encodeURI(`${api}/${resourcePath}`)
+    const url = resourcePath === ''
+      ? encodeURI(api)
+      : encodeURI(`${api}/${resourcePath}`)
 
     const parserStream = getPatchedStream(file, cwd, api, url)
     if (!parserStream) {

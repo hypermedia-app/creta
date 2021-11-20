@@ -7,6 +7,7 @@ import { doap, hydra, schema, vcard } from '@tpluscode/rdf-ns-builders'
 import namespace from '@rdfjs/namespace'
 import * as NodeFetch from 'node-fetch'
 import sinon from 'sinon'
+import $rdf from 'rdf-ext'
 
 const apis = [
   'http://example.com',
@@ -102,6 +103,26 @@ for (const api of apis) {
             .execute(client.query)
 
           await expect(hasExpectedType).to.eventually.be.true
+        })
+
+        it('handles index.ttl file as parent path', async () => {
+          const indexCorrectlyInserted = ASK`
+            ${ns('project')} a ${schema.Thing}
+          `
+            .FROM(ns('project'))
+            .execute(client.query)
+
+          await expect(indexCorrectlyInserted).to.eventually.be.true
+        })
+
+        it('does not generated trailing slash for root handles index.ttl', async () => {
+          const indexCorrectlyInserted = ASK`
+            ${$rdf.namedNode(api)} a ${schema.Thing}
+          `
+            .FROM($rdf.namedNode(api))
+            .execute(client.query)
+
+          await expect(indexCorrectlyInserted).to.eventually.be.true
         })
       })
 
