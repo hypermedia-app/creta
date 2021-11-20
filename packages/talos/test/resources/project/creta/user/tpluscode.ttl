@@ -1,3 +1,7 @@
 @prefix schema: <http://schema.org/> .
 
-<> a schema:Person .
+<>
+  a schema:Person, </api/Person> ;
+  schema:knows <Kov%C3%A1cs%20J%C3%A1nos> ;
+  schema:project <../project/creta> ;
+.
