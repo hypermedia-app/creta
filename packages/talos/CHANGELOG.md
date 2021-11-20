@@ -1,5 +1,11 @@
 # @hydrofoil/talos
 
+## 0.3.9
+
+### Patch Changes
+
+- f83a915: `index.ttl` in root resource directory would add a trailing slash to resource URI
+
 ## 0.3.8
 
 ### Patch Changes
