@@ -153,9 +153,7 @@ for (const api of apis) {
 }
 
 describe('@hydrofoil/talos/lib/command/put --resources --token', () => {
-  const fetch = sinon.stub(NodeFetch, 'default').resolves({
-    ok: true,
-  } as any)
+  let fetch: sinon.SinonStub
 
   const params: Put = {
     api: 'http://example.com',
@@ -165,6 +163,9 @@ describe('@hydrofoil/talos/lib/command/put --resources --token', () => {
   }
 
   before(async () => {
+    fetch = sinon.stub(NodeFetch, 'default').resolves({
+      ok: true,
+    } as any)
     await put([dir], {
       ...params,
       token: 'foo-bar',
