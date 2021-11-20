@@ -1,5 +1,11 @@
 # @hydrofoil/talos
 
+## 0.3.7
+
+### Patch Changes
+
+- 4287aa7: Absolute paths were not correctly resolved when base URL had a path
+
 ## 0.3.6
 
 ### Patch Changes
