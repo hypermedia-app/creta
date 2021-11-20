@@ -1,5 +1,11 @@
 # @hydrofoil/talos
 
+## 0.3.8
+
+### Patch Changes
+
+- 3066a74: Only first occurrence of an absolute path URI would hve been correctly rebased
+
 ## 0.3.7
 
 ### Patch Changes
