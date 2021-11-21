@@ -1,5 +1,11 @@
 # @hydrofoil/knossos
 
+## 0.4.2
+
+### Patch Changes
+
+- b5b62f3: ApiDocumentation link should be constructed with `X-Forwarded-Prefix` header when set
+
 ## 0.4.1
 
 ### Patch Changes
