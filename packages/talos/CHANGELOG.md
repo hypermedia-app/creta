@@ -1,5 +1,11 @@
 # @hydrofoil/talos
 
+## 0.3.10
+
+### Patch Changes
+
+- b51f8bf: Improvements in resolving relative paths in resources
+
 ## 0.3.9
 
 ### Patch Changes

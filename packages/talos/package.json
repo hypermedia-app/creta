@@ -1,6 +1,6 @@
 {
   "name": "@hydrofoil/talos",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "main": "index.js",
   "bin": {
     "talos": "bin/talos.js"
