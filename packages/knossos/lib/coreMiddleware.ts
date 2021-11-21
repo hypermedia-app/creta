@@ -23,12 +23,14 @@ export const coreMiddleware = ({ name, path, codePath, client, sparql, store, lo
   return async (req, res, next) => {
     absoluteUrl.attach(req)
 
-    const apiKey = req.hostname + req.baseUrl
+    const proxyPrefix = req.header('X-Forwarded-Prefix') || ''
+    const basePath = proxyPrefix + req.baseUrl
+    const apiKey = req.hostname + basePath
 
     let hydraMiddleware = apisMiddlewares.get(apiKey)
     if (!hydraMiddleware) {
       const iri = new URL(req.absoluteUrl())
-      const apiIri = new URL(join(req.baseUrl, path), iri)
+      const apiIri = new URL(join(basePath, path), iri)
 
       hydraMiddleware = await createApi({
         apiTerm: $rdf.namedNode(apiIri.toString()),
