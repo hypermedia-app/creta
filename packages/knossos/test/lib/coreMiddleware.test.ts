@@ -51,4 +51,22 @@ describe('@hydrofoil/knossos/lib/coreMiddleware', () => {
       apiTerm: $rdf.namedNode('http://example.com/projects/api'),
     })
   })
+
+  it('includes proxy prefix in API URI', async () => {
+    // given
+    app.use('/people', coreMiddleware({
+      ...options,
+    }, createMockApi))
+
+    // when
+    await request(app)
+      .get('/people/john-doe')
+      .set('Host', 'example.com')
+      .set('X-Forwarded-Prefix', '/org-api')
+
+    // then
+    expect(createMockApi).to.have.been.calledWithMatch({
+      apiTerm: $rdf.namedNode('http://example.com/org-api/people/api'),
+    })
+  })
 })
