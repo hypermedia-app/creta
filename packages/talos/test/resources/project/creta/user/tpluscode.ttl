@@ -4,4 +4,5 @@
   a schema:Person, </api/Person> ;
   schema:knows <Kov%C3%A1cs%20J%C3%A1nos> ;
   schema:project <../project/creta> ;
+  schema:parentItem <../> ;
 .

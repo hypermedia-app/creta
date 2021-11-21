@@ -124,6 +124,26 @@ for (const api of apis) {
 
           await expect(indexCorrectlyInserted).to.eventually.be.true
         })
+
+        it('removes trailing slash from relative paths resulting in root URI', async () => {
+          const indexCorrectlyInserted = ASK`
+            ${ns('project')} ${schema.parentItem} <${api}>
+          `
+            .FROM(ns('project'))
+            .execute(client.query)
+
+          await expect(indexCorrectlyInserted).to.eventually.be.true
+        })
+
+        it('preserves trailing slash if present in path', async () => {
+          const indexCorrectlyInserted = ASK`
+            ${ns('project/creta/user/tpluscode')} ${schema.parentItem} ${ns('project/creta/')}
+          `
+            .FROM(ns('project/creta/user/tpluscode'))
+            .execute(client.query)
+
+          await expect(indexCorrectlyInserted).to.eventually.be.true
+        })
       })
 
       describe('n-quads', () => {
