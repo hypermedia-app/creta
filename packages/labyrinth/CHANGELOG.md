@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.7.3
+
+### Patch Changes
+
+- 3f2d7e3: build(deps): bump rdf-ext from 1.3.1 to 1.3.5
+
 ## 0.7.2
 
 ### Patch Changes

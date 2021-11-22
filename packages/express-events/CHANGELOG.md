@@ -1,5 +1,11 @@
 # @hydrofoil/knossos-events
 
+## 0.2.4
+
+### Patch Changes
+
+- 3f2d7e3: build(deps): bump rdf-ext from 1.3.1 to 1.3.5
+
 ## 0.2.3
 
 ### Patch Changes
