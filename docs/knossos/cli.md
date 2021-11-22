@@ -30,10 +30,27 @@ Options:
   -n, --name <name>          App name (default: "knossos")
   --user <user>              SPARQL username
   --password <password>      SPARQL password
-  --authModule <authModule>  Authentication module. Must default-export an express handler factory. Can be lazy.
+  --routeRegex <routeRegex>  Base path pattern to apply to prefix the knossos middleware
   -h, --help                 display help for command
-
 ```
 
 > [!TIP]
 > In development environment you might use `knossos-ts` binary instead, which supports TypeScript modules.
+
+#### routeRegex
+
+Use the `--routeRegex` option to serve the API from a sub-path. Because this is a regular expression, it can provide multiple prefixes. For example, to serve multiple APIs on their separate paths as well an API in the root you can call it like:
+
+```
+knossos --routeRegex "/\(clients|projects|employees\)?"
+```
+
+Notice the question mark at the end? This will have knossos serve 4 APIs:
+
+- `/`
+- `/client`
+- `/projects`
+- `/employees`
+
+> [!WARNING]
+> Remember about proper escaping the pattern in shell and scripts
