@@ -1,5 +1,6 @@
 import debug from 'debug'
 import express from 'express'
+import { pathToRegexp } from 'path-to-regexp'
 import knossos from '../..'
 
 interface Options {
@@ -11,7 +12,7 @@ interface Options {
   name: string
   user?: string
   password?: string
-  routeRegex?: string
+  routePath?: string
 }
 
 export function serve(endpointUrl: string, options: Options): void {
@@ -20,7 +21,7 @@ export function serve(endpointUrl: string, options: Options): void {
     name,
     api,
     updateUrl,
-    routeRegex,
+    routePath,
   } = options
   const log = debug(name)
 
@@ -40,8 +41,11 @@ export function serve(endpointUrl: string, options: Options): void {
       updateUrl,
     })
 
-    if (routeRegex) {
-      app.use(new RegExp(routeRegex), knossosHandler)
+    if (routePath) {
+      const routeRegex = pathToRegexp(routePath, [], {
+        end: false,
+      })
+      app.use(routeRegex, knossosHandler)
     } else {
       app.use(knossosHandler)
     }
