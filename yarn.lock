@@ -3823,10 +3823,10 @@ express-jwt@^6.0.0:
     jsonwebtoken "^8.1.0"
     lodash.set "^4.0.0"
 
-express-middleware-shacl@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/express-middleware-shacl/-/express-middleware-shacl-1.1.2.tgz#b874d7f82236d8d5fe92fe150a4ff5079cb495a6"
-  integrity sha512-pMOmg/u8Ghuto00F9l3gd4qGxLq7CH2Q6KSGLbZZ6dsuVnZoxpgBO4p+amz50Irle8g5sbaWxA8ivQ7DUbuFug==
+express-middleware-shacl@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/express-middleware-shacl/-/express-middleware-shacl-1.1.4.tgz#e0e85c200166456574ac7365c88b234e08bfe6e8"
+  integrity sha512-1Br012VrsyikL3DeF+NFz1bvowDlhEj0iBTP4sr00H07i7Q9u/ftHsWH5r569jcHDib+PZyhsL7tvESgjeVeGQ==
   dependencies:
     "@rdfine/shacl" "^0.8.1"
     "@rdfjs/term-set" "^1.0.1"
