@@ -1,5 +1,15 @@
 # @hydrofoil/talos
 
+## 0.3.11
+
+### Patch Changes
+
+- 3f2d7e3: build(deps): bump rdf-ext from 1.3.1 to 1.3.5
+- Updated dependencies [3f2d7e3]
+- Updated dependencies [f1860ff]
+- Updated dependencies [4e070c4]
+  - @hydrofoil/knossos@0.4.3
+
 ## 0.3.10
 
 ### Patch Changes

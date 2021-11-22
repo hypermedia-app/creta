@@ -1,5 +1,16 @@
 # @hydrofoil/knossos
 
+## 0.4.3
+
+### Patch Changes
+
+- 3f2d7e3: build(deps): bump rdf-ext from 1.3.1 to 1.3.5
+- f1860ff: build(deps): bump express-middleware-shacl from 1.1.2 to 1.1.4
+- 4e070c4: Added `--routeRegex` option
+- Updated dependencies [3f2d7e3]
+  - @hydrofoil/knossos-events@0.2.4
+  - @hydrofoil/labyrinth@0.7.3
+
 ## 0.4.2
 
 ### Patch Changes
