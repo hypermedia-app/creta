@@ -1,5 +1,11 @@
 # @hydrofoil/knossos
 
+## 0.4.4
+
+### Patch Changes
+
+- c351927: Route path would not match root even if optional
+
 ## 0.4.3
 
 ### Patch Changes
