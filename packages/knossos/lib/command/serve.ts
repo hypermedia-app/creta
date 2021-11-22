@@ -11,6 +11,7 @@ interface Options {
   name: string
   user?: string
   password?: string
+  routeRegex?: string
 }
 
 export function serve(endpointUrl: string, options: Options): void {
@@ -19,6 +20,7 @@ export function serve(endpointUrl: string, options: Options): void {
     name,
     api,
     updateUrl,
+    routeRegex,
   } = options
   const log = debug(name)
 
@@ -31,12 +33,18 @@ export function serve(endpointUrl: string, options: Options): void {
     const app = express()
     app.enable('trust proxy')
 
-    app.use(knossos({
+    const knossosHandler = knossos({
       ...options,
       path: api,
       endpointUrl,
       updateUrl,
-    }))
+    })
+
+    if (routeRegex) {
+      app.use(new RegExp(routeRegex), knossosHandler)
+    } else {
+      app.use(knossosHandler)
+    }
 
     app.listen(port, () => log(`${name} started`))
   } catch (e) {

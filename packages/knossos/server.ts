@@ -10,6 +10,7 @@ Program.command('serve <endpoint>')
   .option('-n, --name <name>', 'App name', 'knossos')
   .option('--user <user>', 'SPARQL username')
   .option('--password <password>', 'SPARQL password')
+  .option('--routeRegex <routeRegex>', 'Base path pattern used to prefix the knossos middleware')
   .action(serve)
 
 Program.command('init [packages...]')
