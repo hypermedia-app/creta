@@ -13,6 +13,8 @@ import parsePreferHeader from 'parse-prefer-header'
 import express from 'express'
 import { loadLinkedResources } from './lib/query/eagerLinks'
 
+export type { Enrichment } from './lib/middleware/preprocessResource'
+
 export function preferMinimal(req: express.Request): boolean {
   const prefer = parsePreferHeader(req.header('Prefer'))
   return prefer.return === 'minimal'
