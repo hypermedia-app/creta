@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@rdfjs/namespace": "^1.1.0",
-    "@types/mime-types": "^2.1.0",
+    "@types/mime-types": "^2.1.1",
     "@types/replacestream": "^4.0.1",
     "@wikibus/vocabularies": "^0.2.1",
     "chai": "^4.3.4",
