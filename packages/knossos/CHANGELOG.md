@@ -1,5 +1,19 @@
 # @hydrofoil/knossos
 
+## 0.4.5
+
+### Patch Changes
+
+- 3353082: build(deps): bump nanoid from 3.1.25 to 3.1.30
+- af6699c: Updated parsers to use latest JSON-LD
+- Updated dependencies [0245377]
+- Updated dependencies [3353082]
+- Updated dependencies [ebfccd1]
+- Updated dependencies [9a48ab6]
+- Updated dependencies [c7f6a28]
+  - @hydrofoil/labyrinth@0.7.4
+  - @hydrofoil/knossos-events@0.2.5
+
 ## 0.4.4
 
 ### Patch Changes

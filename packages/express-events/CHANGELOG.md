@@ -1,5 +1,13 @@
 # @hydrofoil/knossos-events
 
+## 0.2.5
+
+### Patch Changes
+
+- 3353082: build(deps): bump nanoid from 3.1.25 to 3.1.30
+- 9a48ab6: Bumped @rdfin/as from 0.2.2 to 0.2.3
+- c7f6a28: build(deps): bump @rdfine/hydra from 0.8.1 to 0.8.2
+
 ## 0.2.4
 
 ### Patch Changes
