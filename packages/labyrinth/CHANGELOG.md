@@ -1,5 +1,12 @@
 # @hydrofoil/labyrinth
 
+## 0.7.4
+
+### Patch Changes
+
+- 0245377: Re-export `Enrichment` to simplify usage
+- ebfccd1: Support complex paths in `query:include`
+
 ## 0.7.3
 
 ### Patch Changes
