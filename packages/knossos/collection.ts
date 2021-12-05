@@ -94,7 +94,9 @@ const createResource = asyncMiddleware(async (req, res: CreateMemberResponse, ne
   }
 
   const templateVariables = await applyTransformations(req, resource, iriTemplate.pointer)
-  const memberId = $rdf.namedNode(new URL(iriTemplate.expand(templateVariables), req.absoluteUrl()).toString())
+  const url = new URL(iriTemplate.expand(templateVariables), req.absoluteUrl())
+  url.pathname = `${req.baseUrl}${url.pathname}`
+  const memberId = $rdf.namedNode(url.toString())
 
   if (await req.knossos.store.exists(memberId)) {
     return next(new error.Conflict())
