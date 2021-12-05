@@ -421,6 +421,9 @@ prefix code: <https://code.described.at/>
 > [!TIP]
 > The snippet above proposes to subclass the article collection so that API providers have fine-grained control of which collections can be used to create new resources and which cannot.
 
+> [!TIP]
+> The `knossos:memberTemplate` property can also be set to the collection instance itself. If both are present, the instance template takes precedence.
+
 ### Transforming variables
 
 The above snippet could return long identifiers, riddled with percent-encoded characters which otherwise would not be allowed in URIs.
