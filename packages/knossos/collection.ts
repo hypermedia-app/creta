@@ -71,11 +71,15 @@ const assertMemberAssertions = asyncMiddleware(async (req, res: CreateMemberResp
 
 const prepareMemberIdentifier = asyncMiddleware(async (req, res: CreateMemberResponse, next) => {
   const api = clownface(req.hydra.api)
-  const memberTemplate = api.node(res.locals.collection!.out(rdf.type)).out(knossos.memberTemplate)
+  const collection = res.locals.collection!
+  let memberTemplate = collection.out(knossos.memberTemplate)
+  if (!memberTemplate.term) {
+    memberTemplate = api.node(collection.out(rdf.type)).out(knossos.memberTemplate)
+  }
 
   if (!checkMemberTemplate(memberTemplate)) {
     req.knossos.log.extend('collection')('Found member templates %o', memberTemplate.map(mt => mt.out(hydra.template).value))
-    return next(new error.InternalServerError(`No unique knossos:memberTemplate found for collection ${res.locals.collection!.value}`))
+    return next(new error.InternalServerError(`No unique knossos:memberTemplate found for collection ${collection.value} or its types`))
   }
 
   const resource = await req.resource()

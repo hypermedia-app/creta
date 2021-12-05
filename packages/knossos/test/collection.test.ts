@@ -112,6 +112,37 @@ describe('@hydrofoil/knossos/collection', () => {
       }))
     })
 
+    it('creates identifier from instance template', async () => {
+      // given
+      app.use(async function setInstanceTemplate(req, res, next) {
+        const collection = await req.hydra.resource.clownface()
+        collection
+          .addOut(ns.knossos.memberTemplate, template => {
+            template.addOut(hydra.template, '/bar/{name}')
+              .addOut(hydra.mapping, mapping => {
+                mapping.addOut(hydra.variable, 'name')
+                mapping.addOut(hydra.property, schema.name)
+                mapping.addOut(hydra.required, true)
+              })
+          })
+
+        next()
+      })
+      app.post('/collection', CreateMember)
+
+      // when
+      await request(app)
+        .post('/collection')
+        .send(turtle`<> ${schema.name} "john" .`.toString())
+        .set('content-type', 'text/turtle')
+        .set('host', 'example.com')
+
+      // then
+      expect(knossos.store.save).to.have.been.calledWith(sinon.match({
+        term: ex('bar/john'),
+      }))
+    })
+
     it('includes base path in created identifier', async () => {
       // given
       const route = Router()
