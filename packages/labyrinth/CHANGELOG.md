@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.7.5
+
+### Patch Changes
+
+- 9905aae: Update `@tpluscode/rdf-string`
+
 ## 0.7.4
 
 ### Patch Changes

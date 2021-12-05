@@ -1,5 +1,11 @@
 # @hydrofoil/knossos-events
 
+## 0.2.6
+
+### Patch Changes
+
+- 9905aae: Update `@tpluscode/rdf-string`
+
 ## 0.2.5
 
 ### Patch Changes

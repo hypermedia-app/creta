@@ -1,5 +1,17 @@
 # @hydrofoil/knossos
 
+## 0.4.6
+
+### Patch Changes
+
+- be2ad8d: Support `knossos:memberTemplate` set on collection instance (closes #137)
+- c95cfeb: Use express router's base path when creating new member identifiers (fixes #196)
+- 9905aae: Update `@tpluscode/rdf-string`
+- 30417b2: `hydra:memberAssertion` should be applied before SHACL validation
+- Updated dependencies [9905aae]
+  - @hydrofoil/knossos-events@0.2.6
+  - @hydrofoil/labyrinth@0.7.5
+
 ## 0.4.5
 
 ### Patch Changes
