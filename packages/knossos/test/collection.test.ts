@@ -1,5 +1,5 @@
 import { Term } from 'rdf-js'
-import express from 'express'
+import express, { Router } from 'express'
 import request from 'supertest'
 import { hydraBox } from '@labyrinth/testing/hydra-box'
 import clownface, { GraphPointer } from 'clownface'
@@ -109,6 +109,25 @@ describe('@hydrofoil/knossos/collection', () => {
       // then
       expect(knossos.store.save).to.have.been.calledWith(sinon.match({
         term: ex('foo/john'),
+      }))
+    })
+
+    it('includes base path in created identifier', async () => {
+      // given
+      const route = Router()
+      route.post('/collection', CreateMember)
+      app.use('/base-path', route)
+
+      // when
+      await request(app)
+        .post('/base-path/collection')
+        .send(turtle`<> ${schema.name} "john" .`.toString())
+        .set('content-type', 'text/turtle')
+        .set('host', 'example.com')
+
+      // then
+      expect(knossos.store.save).to.have.been.calledWith(sinon.match({
+        term: ex('base-path/foo/john'),
       }))
     })
 
