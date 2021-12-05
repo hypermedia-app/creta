@@ -1,5 +1,5 @@
 import { NamedNode } from 'rdf-js'
-import { Request, Router, Response } from 'express'
+import express, { Request, Router, Response } from 'express'
 import asyncMiddleware from 'middleware-async'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { created } from '@hydrofoil/knossos-events/activity'
@@ -52,14 +52,13 @@ async function typesToValidate(req: Request) {
 type CreateMemberResponse = Response<any, {
   collection?: GraphPointer
   memberAssertions?: MultiPointer
+  memberId?: NamedNode
 }>
 
 const assertMemberAssertions = asyncMiddleware(async (req, res: CreateMemberResponse, next) => {
   const member = await req.resource()
-  res.locals.collection = await req.hydra.resource.clownface()
-  const memberAssertions = res.locals.collection.out([hydra.manages, hydra.memberAssertion])
 
-  for (const assertion of memberAssertions.toArray()) {
+  for (const assertion of res.locals.memberAssertions!.toArray()) {
     const predicate = assertion.out(hydra.property).term
     const object = assertion.out(hydra.object).term
     if (predicate && object) {
@@ -67,21 +66,13 @@ const assertMemberAssertions = asyncMiddleware(async (req, res: CreateMemberResp
     }
   }
 
-  res.locals.memberAssertions = memberAssertions
-
   next()
 })
 
-const createResource = asyncMiddleware(async (req, res: CreateMemberResponse, next) => {
+const prepareMemberIdentifier = asyncMiddleware(async (req, res: CreateMemberResponse, next) => {
   const api = clownface(req.hydra.api)
-  const types = res.locals.memberAssertions!.has(hydra.property, rdf.type).out(hydra.object)
+  const memberTemplate = api.node(res.locals.collection!.out(rdf.type)).out(knossos.memberTemplate)
 
-  if (!types.terms.length) {
-    return next(new error.InternalServerError('Collection does not have a member assertion with `hydra:property rdf:type`'))
-  }
-
-  const { type } = rdf
-  const memberTemplate = api.node(res.locals.collection!.out(type)).out(knossos.memberTemplate)
   if (!checkMemberTemplate(memberTemplate)) {
     req.knossos.log.extend('collection')('Found member templates %o', memberTemplate.map(mt => mt.out(hydra.template).value))
     return next(new error.InternalServerError(`No unique knossos:memberTemplate found for collection ${res.locals.collection!.value}`))
@@ -96,14 +87,34 @@ const createResource = asyncMiddleware(async (req, res: CreateMemberResponse, ne
   const templateVariables = await applyTransformations(req, resource, iriTemplate.pointer)
   const url = new URL(iriTemplate.expand(templateVariables), req.absoluteUrl())
   url.pathname = `${req.baseUrl}${url.pathname}`
-  const memberId = $rdf.namedNode(url.toString())
+  res.locals.memberId = $rdf.namedNode(url.toString())
+
+  next()
+})
+
+const assertTypeMemberAssertion: express.RequestHandler = asyncMiddleware(async (req, res: CreateMemberResponse, next) => {
+  const collection = await req.hydra.resource.clownface()
+  const memberAssertions = collection.out([hydra.manages, hydra.memberAssertion])
+  const types = memberAssertions.has(hydra.property, rdf.type).out(hydra.object)
+
+  if (!types.terms.length) {
+    return next(new error.InternalServerError('Collection does not have a member assertion with `hydra:property rdf:type`'))
+  }
+
+  res.locals.collection = collection
+  res.locals.memberAssertions = memberAssertions
+  next()
+})
+
+const createResource = asyncMiddleware(async (req, res: CreateMemberResponse, next) => {
+  const memberId = res.locals.memberId!
 
   if (await req.knossos.store.exists(memberId)) {
     return next(new error.Conflict())
   }
 
   req.knossos.log(`Creating resource ${memberId.value}`)
-  const member = rename(resource, memberId)
+  const member = rename(await req.resource(), memberId)
 
   await save({ resource: member, req })
 
@@ -119,7 +130,9 @@ const createResource = asyncMiddleware(async (req, res: CreateMemberResponse, ne
 })
 
 export const CreateMember = Router()
+  .use(assertTypeMemberAssertion)
   .use(rdfRequest.resource())
   .use(assertMemberAssertions)
   .use(shaclValidate({ typesToValidate }))
+  .use(prepareMemberIdentifier)
   .use(createResource)
