@@ -1,5 +1,16 @@
 # @hydrofoil/talos
 
+## 0.3.12
+
+### Patch Changes
+
+- 9905aae: Update `@tpluscode/rdf-string`
+- Updated dependencies [be2ad8d]
+- Updated dependencies [c95cfeb]
+- Updated dependencies [9905aae]
+- Updated dependencies [30417b2]
+  - @hydrofoil/knossos@0.4.6
+
 ## 0.3.11
 
 ### Patch Changes

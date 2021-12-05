@@ -1,5 +1,11 @@
 # @labyrinth/testing
 
+## 0.0.3
+
+### Patch Changes
+
+- 9905aae: Update `@tpluscode/rdf-string`
+
 ## 0.0.2
 
 ### Patch Changes
