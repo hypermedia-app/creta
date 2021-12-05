@@ -12,6 +12,7 @@ import RdfResource, { ResourceIdentifier } from '@tpluscode/rdfine'
 import clownface, { AnyPointer, GraphPointer, MultiPointer } from 'clownface'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
 import { describeResource } from '@hydrofoil/labyrinth/lib/query/describeResource'
+import * as rdfRequest from 'express-rdf-request'
 import { payloadTypes, shaclValidate } from './shacl'
 import { save } from './lib/resource'
 import { applyTransformations, hasAllRequiredVariables } from './lib/template'
@@ -71,7 +72,7 @@ const assertMemberAssertions = asyncMiddleware(async (req, res: CreateMemberResp
   next()
 })
 
-export const CreateMember = Router().use(assertMemberAssertions).use(shaclValidate({ typesToValidate })).use(asyncMiddleware(async (req, res: CreateMemberResponse, next) => {
+const createResource = asyncMiddleware(async (req, res: CreateMemberResponse, next) => {
   const api = clownface(req.hydra.api)
   const types = res.locals.memberAssertions!.has(hydra.property, rdf.type).out(hydra.object)
 
@@ -113,4 +114,10 @@ export const CreateMember = Router().use(assertMemberAssertions).use(shaclValida
   res.status(httpStatus.CREATED)
   res.setHeader('Location', memberId.value)
   return res.quadStream(await describeResource(member.term, req.labyrinth.sparql))
-}))
+})
+
+export const CreateMember = Router()
+  .use(rdfRequest.resource())
+  .use(assertMemberAssertions)
+  .use(shaclValidate({ typesToValidate }))
+  .use(createResource)
