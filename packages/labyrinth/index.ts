@@ -12,7 +12,8 @@ import * as Hydra from '@rdfine/hydra'
 import StreamClient from 'sparql-http-client/StreamClient'
 import type { Api } from 'hydra-box/Api'
 import { logRequest, logRequestError } from './lib/logger'
-import { removeHydraOperations, preprocessResource, disambiguateClassHierarchies } from './lib/middleware'
+import { removeHydraOperations, disambiguateClassHierarchies } from './lib/middleware'
+import { preprocessHydraResource, preprocessPayload } from './lib/middleware/preprocessResource'
 import { SparqlQueryLoader } from './lib/loader'
 import { ensureArray } from './lib/array'
 import { CodeLoader, codeLoader } from './lib/code'
@@ -24,7 +25,7 @@ RdfResource.factory.addMixin(...Object.values(Hydra))
 /**
  * Represents the runtime instance of a Labyrinth API
  *
- * Accessible on the `Request` object of an express handlere
+ * Accessible on the `Request` object of an express handler
  *
  * ```ts
  * import type { Request } from 'express'
@@ -114,7 +115,8 @@ export async function hydraBox(middlewareInit: MiddlewareParams): Promise<Router
           ...ensureArray(params.middleware?.operations),
         ],
         resource: [
-          preprocessResource(),
+          preprocessPayload,
+          preprocessHydraResource,
           ...ensureArray(params.middleware?.resource),
         ],
       },

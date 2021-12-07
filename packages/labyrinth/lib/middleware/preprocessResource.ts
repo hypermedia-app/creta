@@ -1,28 +1,85 @@
-import { NamedNode } from 'rdf-js'
-import { Request, RequestHandler } from 'express'
+import { NamedNode, Term } from 'rdf-js'
+import express, { Request, RequestHandler } from 'express'
 import clownface, { GraphPointer } from 'clownface'
 import asyncMiddleware from 'middleware-async'
-import { rdf } from '@tpluscode/rdf-ns-builders'
-import { hyper_query } from '@hydrofoil/vocabularies/builders/strict'
+import { rdf } from '@tpluscode/rdf-ns-builders/strict'
+import { knossos } from '@hydrofoil/vocabularies/builders/strict'
+import { getPayload, getRepresentation } from '../request'
 
-export interface Enrichment {
-  (req: Request, pointer: GraphPointer<NamedNode>): Promise<void>
+export interface ResourceHook {
+  (req: Request, pointer: GraphPointer<NamedNode>): Promise<void> | void
 }
 
-export function preprocessResource(): RequestHandler {
+interface PreprocessResource {
+  req: express.Request
+  predicate: NamedNode
+  getTypes?(req: express.Request): NamedNode[] | Promise<NamedNode[]>
+  getResource(req: express.Request): Promise<GraphPointer<NamedNode>> | undefined
+}
+
+function notNull<T>(arg: T | null): arg is T {
+  return !!arg
+}
+
+function hydraResourceTypes(req: express.Request) {
+  if (!req.hydra.resource) {
+    return []
+  }
+  return [...req.hydra.resource.types]
+}
+
+async function resourceAndPayloadTypes(req: express.Request) {
+  const types = hydraResourceTypes(req)
+
+  if (typeof req.dataset === 'function') {
+    const payloadTypes: Term[] = (await req.resource())
+      .out(rdf.type)
+      .terms
+
+    return [...types, ...payloadTypes.filter(isNamedNode)]
+  }
+
+  return types
+}
+
+export async function preprocessResource({ req, getTypes = hydraResourceTypes, predicate, getResource }: PreprocessResource): Promise<void> {
+  const types = await getTypes(req)
+  const hooksPromised = clownface(req.hydra.api)
+    .node(types)
+    .out(predicate)
+    .map(pointer => req.loadCode<ResourceHook>(pointer))
+
+  const hooks = (await Promise.all(hooksPromised)).filter(notNull)
+  if (!hooks.length) {
+    return
+  }
+
+  const resourcePointer = await getResource(req)
+
+  if (resourcePointer) {
+    await Promise.all(hooks.map(preprocess => preprocess(req, resourcePointer)))
+  }
+}
+
+export function preprocessMiddleware(arg: Omit<PreprocessResource, 'req'>): RequestHandler {
   return asyncMiddleware(async (req, res, next) => {
-    if (req.hydra.resource) {
-      const resourcePointer = await req.hydra.resource.clownface()
-
-      const enrichmentPromises = clownface(req.hydra.api)
-        .node(resourcePointer.out(rdf.type).terms)
-        .out(hyper_query.preprocess)
-        .map(pointer => req.loadCode<Enrichment>(pointer))
-
-      const enrichment = await Promise.all(enrichmentPromises)
-      await Promise.all(enrichment.map(enrich => enrich && enrich(req, resourcePointer)))
-    }
+    await preprocessResource({ req, ...arg })
 
     next()
   })
 }
+
+function isNamedNode(arg: Term): arg is NamedNode {
+  return arg.termType === 'NamedNode'
+}
+
+export const preprocessPayload = preprocessMiddleware({
+  getResource: getPayload,
+  getTypes: resourceAndPayloadTypes,
+  predicate: knossos.preprocessPayload,
+})
+
+export const preprocessHydraResource = preprocessMiddleware({
+  getResource: getRepresentation,
+  predicate: knossos.preprocessResource,
+})
