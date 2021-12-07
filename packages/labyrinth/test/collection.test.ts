@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import express from 'express'
 import request from 'supertest'
 import $rdf from 'rdf-ext'
-import cf from 'clownface'
+import clownface from 'clownface'
 import sinon, { SinonStub, SinonStubbedInstance } from 'sinon'
 import { hydra, rdf, rdfs, schema, xsd } from '@tpluscode/rdf-ns-builders/strict'
 import RdfResource from '@tpluscode/rdfine'
@@ -15,7 +15,8 @@ import * as ns from '@hydrofoil/vocabularies/builders/strict'
 import { ex } from '@labyrinth/testing/namespace'
 import { fromPointer } from '@rdfine/hydra/lib/IriTemplate'
 import { fromPointer as mapping } from '@rdfine/hydra/lib/IriTemplateMapping'
-import clownface from 'clownface'
+import { knossos } from '@hydrofoil/vocabularies/builders/strict'
+import TermSet from '@rdfjs/term-set'
 import { get } from '../collection'
 import * as collectionQuery from '../lib/query/collection'
 
@@ -85,7 +86,7 @@ describe('@hydrofoil/labyrinth/collection', () => {
 
       // then
       const dataset = await $rdf.dataset().import(parsers.import('application/ld+json', toStream(res.text))!)
-      const views = cf({ dataset })
+      const views = clownface({ dataset })
         .has(hydra.view)
         .values
 
@@ -120,7 +121,7 @@ describe('@hydrofoil/labyrinth/collection', () => {
 
       // then
       const dataset = await $rdf.dataset().import(parsers.import('application/ld+json', toStream(res.text))!)
-      const title = cf({ dataset })
+      const title = clownface({ dataset })
         .out(ns.hyper_query.templateMappings)
         .out(schema.title)
         .value
@@ -167,7 +168,7 @@ describe('@hydrofoil/labyrinth/collection', () => {
 
         // then
         const dataset = await $rdf.dataset().import(parsers.import('application/ld+json', toStream(res.text))!)
-        const view = cf({ dataset }).out(hydra.view)
+        const view = clownface({ dataset }).out(hydra.view)
 
         expect(view.term).to.deep.eq($rdf.namedNode('?title=Titanic&page=50'))
         expect(view.out(hydra.first).value).to.eq('?title=Titanic')
@@ -186,7 +187,7 @@ describe('@hydrofoil/labyrinth/collection', () => {
 
         // then
         const dataset = await $rdf.dataset().import(parsers.import('application/ld+json', toStream(res.text))!)
-        const view = cf({ dataset }).out(hydra.view)
+        const view = clownface({ dataset }).out(hydra.view)
 
         expect(view.term).to.deep.eq($rdf.namedNode('?title=Titanic'))
         expect(view.out(hydra.first).value).to.eq('?title=Titanic')
@@ -206,7 +207,7 @@ describe('@hydrofoil/labyrinth/collection', () => {
 
         // then
         const dataset = await $rdf.dataset().import(parsers.import('application/ld+json', toStream(res.text))!)
-        const view = cf({ dataset }).out(hydra.view)
+        const view = clownface({ dataset }).out(hydra.view)
 
         expect(view.term).to.deep.eq($rdf.namedNode('?title=Titanic&page=84'))
         expect(view.out(hydra.first).value).to.eq('?title=Titanic')
@@ -244,7 +245,7 @@ describe('@hydrofoil/labyrinth/collection', () => {
       app.use(hydraBox({
         setup: hydraBox => {
           hydraBox.resource.types.add(ex.Collection)
-          cf(hydraBox.api).namedNode(ex.Collection)
+          clownface(hydraBox.api).namedNode(ex.Collection)
             .addOut(hydra.limit, 15)
         },
       }))
@@ -305,7 +306,7 @@ describe('@hydrofoil/labyrinth/collection', () => {
           hydraBox.resource.types.add(ex.Collection);
           (await hydraBox.resource.clownface())
             .addOut(hydra.limit, 10)
-          cf(hydraBox.api).namedNode(ex.Collection)
+          clownface(hydraBox.api).namedNode(ex.Collection)
             .addOut(hydra.limit, 15)
         },
       }))
@@ -333,7 +334,7 @@ describe('@hydrofoil/labyrinth/collection', () => {
           api.resource.term = ex.movies;
           (await api.resource.clownface())
             .addOut(rdf.type, ex.Collection)
-          cf(api.api)
+          clownface(api.api)
             .namedNode(ex.Collection)
             .addOut(hydra.manages,
               m => m.addOut(hydra.property, rdf.type).addOut(hydra.object, ex.Person))
@@ -363,7 +364,7 @@ describe('@hydrofoil/labyrinth/collection', () => {
             .addOut(rdf.type, ex.Collection)
             .addOut(hydra.member, [ex.Titanic, ex.StarWars])
             .addOut(hydra.totalItems, 4)
-          cf(api.api)
+          clownface(api.api)
             .namedNode(ex.Collection)
         },
       }))
@@ -372,13 +373,47 @@ describe('@hydrofoil/labyrinth/collection', () => {
       // when
       const res = await request(app).get('/movies').expect(200)
       const dataset = await $rdf.dataset().import(parsers.import('application/ld+json', toStream(res.text))!)
-      const collection = cf({ dataset }).node(ex.movies)
+      const collection = clownface({ dataset }).node(ex.movies)
 
       // then
       expect(collection.out(hydra.member).terms).to.deep.contain.members([ex.Titanic, ex.StarWars])
       expect(collection.node([ex.Titanic, ex.StarWars]).out(rdfs.label).terms).to.have.length(2)
       expect(collection.out(hydra.totalItems).term).to.deep.eq($rdf.literal('2', xsd.integer))
       expect(collectionQueryMock.getSparqlQuery).not.to.have.been.called
+    })
+
+    it('calls hooks on response representation', async () => {
+      // given
+      const representationHook = sinon.spy()
+      const app = express()
+      collectionQueryMock.getSparqlQuery.resolves(null)
+      app.use(hydraBox({
+        setup: async api => {
+          api.resource.types = new TermSet([ex.Collection])
+          api.resource.term = ex.movies;
+          (await api.resource.clownface())
+            .addOut(rdf.type, ex.Collection)
+          clownface(api.api)
+            .namedNode(ex.Collection)
+            .addOut(knossos.preprocessResponse, null)
+        },
+      }))
+      app.use((req, res, next) => {
+        req.loadCode = sinon.stub().resolves(representationHook)
+        next()
+      })
+      app.use(get)
+
+      // when
+      await request(app).get('/movies')
+
+      // then
+      expect(representationHook).to.have.been.calledWithMatch(
+        sinon.match.any,
+        sinon.match(pointer => {
+          return pointer.term.equals(ex.movies)
+        }),
+      )
     })
   })
 })

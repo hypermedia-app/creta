@@ -11,9 +11,11 @@ import { hyper_query } from '@hydrofoil/vocabularies/builders'
 import { DESCRIBE } from '@tpluscode/sparql-builder'
 import parsePreferHeader from 'parse-prefer-header'
 import express from 'express'
+import { knossos } from '@hydrofoil/vocabularies/builders/strict'
+import { preprocessResource } from './lib/middleware/preprocessResource'
 import { loadLinkedResources } from './lib/query/eagerLinks'
 
-export type { Enrichment } from './lib/middleware/preprocessResource'
+export type { ResourceHook } from './lib/middleware/preprocessResource'
 
 export function preferMinimal(req: express.Request): boolean {
   const prefer = parsePreferHeader(req.header('Prefer'))
@@ -41,5 +43,13 @@ export const get = asyncMiddleware(async (req, res) => {
   }
 
   const pointer = clownface({ dataset, term: req.hydra.resource.term })
-  return res.dataset(dataset.merge(await loadLinkedResources(pointer, types.out(hyper_query.include).toArray(), req.labyrinth.sparql)))
+  dataset.addAll(await loadLinkedResources(pointer, types.out(hyper_query.include).toArray(), req.labyrinth.sparql))
+
+  await preprocessResource({
+    req,
+    getResource: async () => pointer,
+    predicate: knossos.preprocessResponse,
+  })
+
+  return res.dataset(dataset)
 })

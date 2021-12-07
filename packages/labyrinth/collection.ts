@@ -1,6 +1,8 @@
 import asyncMiddleware from 'middleware-async'
 import clownface, { AnyPointer } from 'clownface'
 import { hydra } from '@tpluscode/rdf-ns-builders'
+import { knossos } from '@hydrofoil/vocabularies/builders/strict'
+import { preprocessResource } from './lib/middleware/preprocessResource'
 import * as lib from './lib/collection'
 import * as template from './lib/template'
 import { log } from './lib/logger'
@@ -26,6 +28,14 @@ export const get = asyncMiddleware(async (req, res) => {
     query,
     sparqlClient: req.labyrinth.sparql,
     pageSize,
+  })
+
+  await preprocessResource({
+    req,
+    async getResource() {
+      return clownface({ dataset, term: req.hydra.resource.term })
+    },
+    predicate: knossos.preprocessResponse,
   })
 
   res.setLink(req.hydra.resource.term.value, 'canonical')
