@@ -4,6 +4,7 @@ import clownface, { GraphPointer } from 'clownface'
 import asyncMiddleware from 'middleware-async'
 import { rdf } from '@tpluscode/rdf-ns-builders/strict'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
+import TermSet from '@rdfjs/term-set'
 import { getPayload, getRepresentation } from '../request'
 
 export interface ResourceHook {
@@ -45,7 +46,7 @@ async function resourceAndPayloadTypes(req: express.Request) {
 export async function preprocessResource({ req, getTypes = hydraResourceTypes, predicate, getResource }: PreprocessResource): Promise<void> {
   const types = await getTypes(req)
   const hooksPromised = clownface(req.hydra.api)
-    .node(types)
+    .node([...new TermSet(types)])
     .out(predicate)
     .map(pointer => req.loadCode<ResourceHook>(pointer))
 
