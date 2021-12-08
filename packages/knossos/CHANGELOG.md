@@ -1,5 +1,19 @@
 # @hydrofoil/knossos
 
+## 0.5.0
+
+### Minor Changes
+
+- c226b3b: Update @hydrofoil/vocabularies
+
+### Patch Changes
+
+- Updated dependencies [c226b3b]
+- Updated dependencies [a5124b8]
+- Updated dependencies [c226b3b]
+  - @hydrofoil/labyrinth@0.8.0
+  - @hydrofoil/knossos-events@0.3.0
+
 ## 0.4.6
 
 ### Patch Changes

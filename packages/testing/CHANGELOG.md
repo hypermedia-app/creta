@@ -1,5 +1,11 @@
 # @labyrinth/testing
 
+## 0.0.4
+
+### Patch Changes
+
+- c226b3b: Update @hydrofoil/vocabularies
+
 ## 0.0.3
 
 ### Patch Changes

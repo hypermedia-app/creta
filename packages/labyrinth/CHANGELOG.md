@@ -1,5 +1,17 @@
 # @hydrofoil/labyrinth
 
+## 0.8.0
+
+### Minor Changes
+
+- c226b3b: - Remove interface `Enrichment`
+  - Introduce three kinds of hooks to modify the payload, resource, and response
+- c226b3b: Update @hydrofoil/vocabularies
+
+### Patch Changes
+
+- a5124b8: build(deps): bump clownface-shacl-path from 1.2.2 to 1.3.0
+
 ## 0.7.5
 
 ### Patch Changes
