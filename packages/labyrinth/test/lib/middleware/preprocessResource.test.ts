@@ -60,7 +60,7 @@ describe('@hydrofoil/labyrinth/lib/middleware/preprocessResource', () => {
     app.use((req, res, next) => {
       clownface(req.hydra.api)
         .namedNode(ex.Agent)
-        .addOut(knossos.preprocessPayload, ex.TestHookAgent)
+        .addOut(knossos.preprocessResource, ex.TestHookAgent)
       next()
     })
     app.use(preprocessMiddleware({
