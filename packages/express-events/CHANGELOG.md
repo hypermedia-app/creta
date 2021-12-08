@@ -1,5 +1,11 @@
 # @hydrofoil/knossos-events
 
+## 0.3.0
+
+### Minor Changes
+
+- c226b3b: Update @hydrofoil/vocabularies
+
 ## 0.2.6
 
 ### Patch Changes
