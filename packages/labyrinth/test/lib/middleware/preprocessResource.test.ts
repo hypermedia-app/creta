@@ -1,7 +1,7 @@
 import { describe, it, beforeEach } from 'mocha'
 import { expect } from 'chai'
 import express from 'express'
-import cf from 'clownface'
+import clownface from 'clownface'
 import sinon from 'sinon'
 import * as ns from '@tpluscode/rdf-ns-builders'
 import { literal } from '@rdfjs/data-model'
@@ -9,30 +9,36 @@ import request from 'supertest'
 import { hydraBox } from '@labyrinth/testing/hydra-box'
 import { ex } from '@labyrinth/testing/namespace'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
-import { preprocessMiddleware } from '../../../lib/middleware/preprocessResource'
+import $rdf from 'rdf-ext'
+import { rdf } from '@tpluscode/rdf-ns-builders/strict'
+import { CodeLoader } from 'labyrinth/lib/code'
+import TermSet from '@rdfjs/term-set'
+import { preprocessMiddleware, preprocessPayload } from '../../../lib/middleware/preprocessResource'
 
 describe('@hydrofoil/labyrinth/lib/middleware/preprocessResource', () => {
   let preprocessHook: sinon.SinonSpy
   let app: express.Express
+  let loadCode: CodeLoader
 
   beforeEach(() => {
     preprocessHook = sinon.spy()
     app = express()
     app.use(hydraBox({
       setup: async hydra => {
-        cf(hydra.api)
+        clownface(hydra.api)
           .addOut(ns.hydra.supportedClass, ex.Person, clas => {
-            clas.addOut(knossos.preprocessResource, literal('loads and call enrichment function', ex.TestEnrichment))
+            clas.addOut(knossos.preprocessResource, literal('loads and call enrichment function', ex.TestHook))
           })
       },
     }))
+    loadCode = sinon.stub().resolves(preprocessHook)
     app.use((req, res, next) => {
-      req.loadCode = sinon.stub().resolves(preprocessHook)
+      req.loadCode = loadCode
       next()
     })
   })
 
-  it('loads and calls enrichment function', async () => {
+  it('loads and calls hook function', async () => {
     // given
     app.use(preprocessMiddleware({
       getTypes() {
@@ -47,6 +53,30 @@ describe('@hydrofoil/labyrinth/lib/middleware/preprocessResource', () => {
 
     // then
     expect(preprocessHook).to.have.been.called
+  })
+
+  it('loads and calls hook function uniquely', async () => {
+    // given
+    app.use((req, res, next) => {
+      clownface(req.hydra.api)
+        .namedNode(ex.Agent)
+        .addOut(knossos.preprocessPayload, ex.TestHookAgent)
+      next()
+    })
+    app.use(preprocessMiddleware({
+      getTypes() {
+        return [ex.Person, ex.Person, ex.Agent]
+      },
+      getResource: req => req.hydra.resource.clownface(),
+      predicate: knossos.preprocessResource,
+    }))
+
+    // when
+    await request(app).get('/')
+
+    // then
+    expect(loadCode).to.have.been.calledTwice
+    expect(preprocessHook).to.have.been.calledTwice
   })
 
   it('does not call resource getter if no hooks are found', async () => {
@@ -85,5 +115,39 @@ describe('@hydrofoil/labyrinth/lib/middleware/preprocessResource', () => {
 
     // then
     expect(preprocessHook).not.to.have.been.called
+  })
+
+  describe('preprocessPayload', () => {
+    it('loads hooks for the sum of resource and payload types', async () => {
+      // given
+      app.use(async function fakePayload(req, res, next) {
+        req.dataset = async () => $rdf.dataset()
+        req.resource = async () => {
+          return clownface({ dataset: $rdf.dataset() })
+            .namedNode('')
+            .addOut(rdf.type, ex.Person)
+        }
+        req.hydra.resource.types = new TermSet([ex.Agent])
+        clownface(req.hydra.api)
+          .namedNode(ex.Person)
+          .addOut(knossos.preprocessPayload, $rdf.blankNode('person-hook'))
+          .namedNode(ex.Agent)
+          .addOut(knossos.preprocessPayload, $rdf.blankNode('agent-hook'))
+        next()
+      })
+      app.use(preprocessPayload)
+
+      // when
+      await request(app).post('/')
+
+      // then
+      expect(loadCode).to.have.been.calledTwice
+      expect(loadCode).to.have.been.calledWithMatch(
+        sinon.match(pointer => pointer.term.equals($rdf.blankNode('person-hook'))),
+      )
+      expect(loadCode).to.have.been.calledWithMatch(
+        sinon.match(pointer => pointer.term.equals($rdf.blankNode('agent-hook'))),
+      )
+    })
   })
 })
