@@ -302,5 +302,42 @@ describe('@hydrofoil/knossos/collection', () => {
         return value.any().has(foaf.knows).terms.length === 0
       }))
     })
+
+    it('runs payload hooks on types from member assertions but not those on payload', async () => {
+      // given
+      const hook = sinon.spy()
+      app.use((req, res, next) => {
+        req.loadCode = sinon.stub().resolves(hook)
+        next()
+      })
+      app.use(async (req, res, next) => {
+        const collection = await req.hydra.resource.clownface()
+        collection.addOut(hydra.memberAssertion, assert => {
+          assert.addOut(hydra.property, rdf.type)
+          assert.addOut(hydra.object, foaf.Agent)
+        }).addOut(hydra.memberAssertion, assert => {
+          assert.addOut(hydra.property, rdf.type)
+          assert.addOut(hydra.object, foaf.Person)
+        })
+
+        clownface(req.hydra.api)
+          .node(foaf.Person)
+          .addOut(ns.knossos.preprocessPayload, ex.PersonHook)
+          .node(foaf.Agent)
+          .addOut(ns.knossos.preprocessPayload, ex.AgentHook)
+        next()
+      })
+      app.post('/collection', CreateMember)
+
+      // when
+      await request(app)
+        .post('/collection')
+        .send(turtle`<> ${schema.name} "john" ; a ${foaf.Person} .`.toString())
+        .set('content-type', 'text/turtle')
+        .set('host', 'example.com')
+
+      // then
+      expect(hook).to.have.been.calledOnce
+    })
   })
 })

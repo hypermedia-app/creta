@@ -19,8 +19,9 @@ export interface ResourceHook {
 
 interface PreprocessResource {
   req: express.Request
+  res: express.Response
   predicate: NamedNode
-  getTypes?(req: express.Request): NamedNode[] | Promise<NamedNode[]>
+  getTypes?(req: express.Request, res: express.Response): Iterable<NamedNode> | Promise<Iterable<NamedNode>>
   getResource(req: express.Request): Promise<GraphPointer<NamedNode>> | undefined
 }
 
@@ -49,10 +50,10 @@ async function resourceAndPayloadTypes(req: express.Request) {
   return types
 }
 
-export async function preprocessResource({ req, getTypes = hydraResourceTypes, predicate, getResource }: PreprocessResource): Promise<void> {
-  const types = await getTypes(req)
+export async function preprocessResource({ req, res, getTypes = hydraResourceTypes, predicate, getResource }: PreprocessResource): Promise<void> {
+  const types = await getTypes(req, res)
   const hooksPromised = clownface(req.hydra.api)
-    .node([...new TermSet(types)])
+    .node([...new TermSet([...types])])
     .out(predicate)
     .map(pointer => req.loadCode<ResourceHook>(pointer))
 
@@ -68,9 +69,9 @@ export async function preprocessResource({ req, getTypes = hydraResourceTypes, p
   }
 }
 
-export function preprocessMiddleware(arg: Omit<PreprocessResource, 'req'>): RequestHandler {
+export function preprocessMiddleware(arg: Omit<PreprocessResource, 'req' | 'res'>): RequestHandler {
   return asyncMiddleware(async (req, res, next) => {
-    await preprocessResource({ req, ...arg })
+    await preprocessResource({ req, res, ...arg })
 
     next()
   })

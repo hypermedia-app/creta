@@ -47,6 +47,7 @@ export const get = asyncMiddleware(async (req, res) => {
 
   await preprocessResource({
     req,
+    res,
     getResource: async () => pointer,
     predicate: knossos.preprocessResponse,
   })
