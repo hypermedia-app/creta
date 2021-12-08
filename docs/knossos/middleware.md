@@ -1,4 +1,4 @@
-# Using Knossos middleware
+# Using Knossos as middleware
 
 It is possible to manually set up knossos in a larger express setup.
 

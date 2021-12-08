@@ -6,6 +6,8 @@
   * [Security](knossos/auth.md "Security | Knossos | Creta")
   * [Configuration](knossos/configuration.md "Configuration | Knossos | Creta")
   * [Resource URLs](knossos/resource-url.md "Resource URLs | Knossos | Creta")
-* [Advanced](knossos/advanced.md "Advanced | Knossos | Creta")
-  * [Middleware](knossos/middleware.md "Middleware | Knossos | Creta")
+* Advanced
+  * [Multi-tenancy](advanced/multi-tenancy.md "Multi-tenancy | Knossos | Creta")
+  * [Resource hooks](advanced/hooks.md "Resource hooks | Knossos | Creta")
+  * [Setup from code](knossos/middleware.md "Setup from code | Knossos | Creta")
 * [Talos](talos.md "Talos | Creta")

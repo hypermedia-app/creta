@@ -8,6 +8,12 @@ import TermSet from '@rdfjs/term-set'
 import { getPayload, getRepresentation } from '../request'
 
 export interface ResourceHook {
+  /**
+   * Delegate for hooks which allow modifying request payloads, loaded resource representation and response representations
+   *
+   * @param req current express Request
+   * @param pointer resource to modify (depends on kind of hook)
+   */
   (req: Request, pointer: GraphPointer<NamedNode>): Promise<void> | void
 }
 
