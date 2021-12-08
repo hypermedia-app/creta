@@ -32,6 +32,7 @@ export const get = asyncMiddleware(async (req, res) => {
 
   await preprocessResource({
     req,
+    res,
     async getResource() {
       return clownface({ dataset, term: req.hydra.resource.term })
     },

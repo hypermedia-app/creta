@@ -1,4 +1,4 @@
-import { NamedNode } from 'rdf-js'
+import { NamedNode, Term } from 'rdf-js'
 import express, { Request, Router, Response } from 'express'
 import asyncMiddleware from 'middleware-async'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
@@ -13,6 +13,9 @@ import clownface, { AnyPointer, GraphPointer, MultiPointer } from 'clownface'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
 import { describeResource } from '@hydrofoil/labyrinth/lib/query/describeResource'
 import * as rdfRequest from 'express-rdf-request'
+import { preprocessMiddleware } from '@hydrofoil/labyrinth/lib/middleware'
+import { getPayload } from '@hydrofoil/labyrinth/lib/request'
+import TermSet from '@rdfjs/term-set'
 import { payloadTypes, shaclValidate } from './shacl'
 import { save } from './lib/resource'
 import { applyTransformations, hasAllRequiredVariables } from './lib/template'
@@ -136,6 +139,23 @@ const createResource = asyncMiddleware(async (req, res: CreateMemberResponse, ne
 export const CreateMember = Router()
   .use(assertTypeMemberAssertion)
   .use(rdfRequest.resource())
+  .use(preprocessMiddleware({
+    predicate: knossos.preprocessPayload,
+    getResource: getPayload,
+    async getTypes(req, res: CreateMemberResponse) {
+      const typeTerms: Term[] = res.locals.memberAssertions!
+        .has(hydra.property, rdf.type)
+        .out(hydra.object).terms
+      const implicitTypes = new TermSet(typeTerms.filter((value): value is NamedNode => value.termType === 'NamedNode'))
+      const explicitTypes = (await req.resource()).out(rdf.type).terms
+
+      for (const explicitType of explicitTypes) {
+        implicitTypes.delete(explicitType as any)
+      }
+
+      return implicitTypes
+    },
+  }))
   .use(assertMemberAssertions)
   .use(shaclValidate({ typesToValidate }))
   .use(prepareMemberIdentifier)
