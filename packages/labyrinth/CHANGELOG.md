@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.8.1
+
+### Patch Changes
+
+- 70842bc: Apply `knossos:preprocessPayload` hooks when creating collection members based on `hydra:memberAssertion`
+
 ## 0.8.0
 
 ### Minor Changes
