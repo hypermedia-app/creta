@@ -15,7 +15,7 @@
     "@hydrofoil/vocabularies": "^0.3.0",
     "@rdfjs/namespace": "^1.1.0",
     "@rdfine/as": "^0.2.3",
-    "@tpluscode/rdf-ns-builders": "^1.0.0",
+    "@tpluscode/rdf-ns-builders": "^1.1.0",
     "@tpluscode/rdf-string": "^0.2.25",
     "@tpluscode/sparql-builder": "^0.3.11",
     "clownface": "^1.2.0",

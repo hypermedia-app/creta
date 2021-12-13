@@ -18,7 +18,7 @@
     "@hydrofoil/knossos": "^0.5.0",
     "@hydrofoil/vocabularies": "^0.3",
     "@rdfjs/formats-common": "^2.2.0",
-    "@tpluscode/rdf-ns-builders": "^1.0.0",
+    "@tpluscode/rdf-ns-builders": "^1.1.0",
     "@tpluscode/rdf-string": "^0.2.25",
     "@tpluscode/sparql-builder": "^0.3.12",
     "@zazuko/rdf-vocabularies": "*",
