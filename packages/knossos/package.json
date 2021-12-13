@@ -37,7 +37,7 @@
     "express": "^4.17.1",
     "express-middleware-shacl": "^1.1.4",
     "express-rdf-request": "^1.1.1",
-    "http-errors": "^1.8.0",
+    "http-errors": "^1.8.1",
     "http-status": "^1.5.0",
     "hydra-box": "^0.6.3",
     "hydra-box-web-access-control": "^1.1.4",
