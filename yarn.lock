@@ -2852,10 +2852,10 @@ clownface-shacl-path@^1.2.2, clownface-shacl-path@^1.3.0:
     "@tpluscode/rdf-ns-builders" "^1.0.0"
     "@tpluscode/rdf-string" "^0.2.24"
 
-clownface@^1, clownface@^1.0.0, clownface@^1.1.0, clownface@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/clownface/-/clownface-1.2.0.tgz#a53139e3c2bcc8638d7eb0c339ac31fa3ed12255"
-  integrity sha512-01iluBG+GPzFFFvFPhZxuWf8gU8mQVdm6gkvI71xl4fJyJSX7VpX3US4LbMC+0D6+KK75C+Q9AFtYpzv3fKvmg==
+clownface@^1, clownface@^1.0.0, clownface@^1.1.0, clownface@^1.2.0, clownface@^1.3.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/clownface/-/clownface-1.4.0.tgz#fc6018bd50459164c55d0f5916f8614fbdda11f2"
+  integrity sha512-zunn16e/qZYBqJX4N+0Jq3mmNohGveEog1/cTWHmfL+z9rL9CrzlU1MlBnU46a9+0ZiLAefRieSf4/TKGYssFg==
   dependencies:
     "@rdfjs/data-model" "^1.1.0"
     "@rdfjs/namespace" "^1.0.0"
@@ -6338,13 +6338,13 @@ rdf-literal@^1.3.0:
     "@rdfjs/types" "*"
     rdf-data-factory "^1.1.0"
 
-rdf-loader-code@^0.3.0, rdf-loader-code@^0.3.2:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/rdf-loader-code/-/rdf-loader-code-0.3.2.tgz#94e5ef5396b1280b03cebe872a2d6945f21527d2"
-  integrity sha512-VPuE4fGBGLS+clNrG95sqJJDQm+zpw+qCko4/csxMAu07b/Vtz9n1Z82XAwHEa+Bscv9eGFB8laldl3QC2gVhA==
+rdf-loader-code@^0.3.0, rdf-loader-code@^0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/rdf-loader-code/-/rdf-loader-code-0.3.3.tgz#c8abf53329f577b502fac261df0cd44816133cfb"
+  integrity sha512-5uLQOLn2YrPO9YxPpMqVqtX3SmCALH+97u2Tj8NA33baYgMMczam6G2EOm0kYRbIk3n5wgBCs2Z4Y6jkgPwRMg==
   dependencies:
     "@rdfjs/namespace" "^1.1.0"
-    clownface "^1.0.0"
+    clownface "^1.3.0"
 
 rdf-loaders-registry@^0.2.0:
   version "0.2.0"
