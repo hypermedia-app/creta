@@ -30,7 +30,7 @@
     "debug": "^4.1.1",
     "express": "^4.17.1",
     "express-rdf-problem-details": "^1.0.1",
-    "http-errors": "^1.8.0",
+    "http-errors": "^2.0.0",
     "http-problem-details": "^0.1.5",
     "http-problem-details-mapper": "^0.1.7",
     "middleware-async": "^1.2.7",
