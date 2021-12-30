@@ -1,5 +1,17 @@
 # @hydrofoil/talos
 
+## 0.4.1
+
+### Patch Changes
+
+- fadb644: build(deps): bump sparql-http-client from 2.2.3 to 2.4.0
+- 1692ad1: build(deps): bump @tpluscode/rdf-ns-builders from 1.0.0 to 1.1.0
+- Updated dependencies [fdc6d68]
+- Updated dependencies [fadb644]
+- Updated dependencies [ff74df9]
+- Updated dependencies [1692ad1]
+  - @hydrofoil/knossos@0.5.2
+
 ## 0.4.0
 
 ### Minor Changes

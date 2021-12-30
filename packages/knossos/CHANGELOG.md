@@ -1,5 +1,19 @@
 # @hydrofoil/knossos
 
+## 0.5.2
+
+### Patch Changes
+
+- fdc6d68: SHACL middleware did not validated against nested shapes
+- fadb644: build(deps): bump sparql-http-client from 2.2.3 to 2.4.0
+- ff74df9: Updated http-errors to v2.0.0
+- 1692ad1: build(deps): bump @tpluscode/rdf-ns-builders from 1.0.0 to 1.1.0
+- Updated dependencies [fadb644]
+- Updated dependencies [ff74df9]
+- Updated dependencies [1692ad1]
+  - @hydrofoil/labyrinth@0.8.2
+  - @hydrofoil/knossos-events@0.3.1
+
 ## 0.5.1
 
 ### Patch Changes
