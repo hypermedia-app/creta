@@ -4,7 +4,7 @@ import * as error from 'express-rdf-problem-details'
 import { NotFoundErrorMapper } from './lib/error/NotFound'
 import { ForbiddenErrorMapper } from './lib/error/ForbiddenError'
 import { UnauthorizedErrorMapper } from './lib/error/UnauthorizedError'
-import { AnyErrorMapper, NotFoundError } from './lib/error'
+import { FallbackErrorMapper, NotFoundError } from './lib/error'
 
 interface Options {
   errorMappers?: IErrorMapper[]
@@ -25,7 +25,7 @@ export function problemJson({ errorMappers = [], captureNotFound = false }: Opti
         new ForbiddenErrorMapper(),
         new UnauthorizedErrorMapper(),
         ...errorMappers,
-        new AnyErrorMapper(),
+        new FallbackErrorMapper(),
       ],
     }),
   ]

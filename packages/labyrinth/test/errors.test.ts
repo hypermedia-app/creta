@@ -79,5 +79,22 @@ describe('errors', () => {
         .expect('content-type', /application\/problem\+json/)
       expect(body.body).to.have.property('detail', 'NOPE!')
     })
+
+    it('handles any error', async () => {
+      // given
+      const app = express()
+      app.use((req, res, next) => next(new error.BadRequest('foobar')))
+      app.use(problemJson())
+
+      // when
+      const response = request(app).get('/')
+
+      // then
+      const body = await response
+        .expect(400)
+        .expect('content-type', /application\/problem\+json/)
+      expect(body.body).to.have.property('status', 400)
+      expect(body.body).to.have.property('detail', 'foobar')
+    })
   })
 })

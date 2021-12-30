@@ -5,7 +5,7 @@ import { hydra } from '@tpluscode/rdf-ns-builders/strict'
 
 export { NotFoundError } from './NotFound'
 
-export class AnyErrorMapper extends ErrorMapper {
+export class FallbackErrorMapper extends ErrorMapper {
   public constructor() {
     super(Error)
   }
