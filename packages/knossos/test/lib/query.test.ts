@@ -3,7 +3,6 @@ import $rdf from 'rdf-ext'
 import clownface from 'clownface'
 import { client, testData } from '@labyrinth/testing/client'
 import { ex } from '@labyrinth/testing/namespace'
-import { sparql } from '@tpluscode/rdf-string'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { loadClasses } from '../../lib/query'
 
@@ -11,9 +10,9 @@ describe('@hydrofoil/knossos/lib/query', () => {
   describe('loadClasses', () => {
     it('finds all classes for the given API', async () => {
       // given
-      await testData(sparql`
+      await testData`
         ${ex.Class} a ${hydra.Class} ; ${hydra.apiDocumentation} ${ex.api} .
-      `)
+      `
 
       // when
       const dataset = await $rdf.dataset().import(await loadClasses(ex.api, client))
@@ -25,14 +24,14 @@ describe('@hydrofoil/knossos/lib/query', () => {
 
     it('finds non-Hydra classes which have operations', async () => {
       // given
-      await testData(sparql`
+      await testData`
         ${ex.Class} ${hydra.supportedOperation} [
           ${hydra.apiDocumentation} ${ex.api}
         ] .
        
         ${ex.Class2} ${hydra.apiDocumentation} ${ex.api} .
         ${ex.Class2} ${hydra.supportedOperation} [] .
-      `)
+      `
 
       // when
       const dataset = await $rdf.dataset().import(await loadClasses(ex.api, client))
@@ -46,14 +45,14 @@ describe('@hydrofoil/knossos/lib/query', () => {
 
     it('loads operations supported by properties', async () => {
       // given
-      await testData(sparql`
+      await testData`
         ${ex.Class} a ${hydra.Class} ; ${hydra.apiDocumentation} ${ex.api} .
         ${ex.Class} ${hydra.supportedProperty} [
           ${hydra.property} ${ex.property} ;
         ] .
         ${ex.property} ${hydra.supportedOperation} ${ex.doStuff} .
         ${ex.doStuff} a ${hydra.Operation} .
-      `)
+      `
 
       // when
       const dataset = await $rdf.dataset().import(await loadClasses(ex.api, client))
@@ -68,7 +67,7 @@ describe('@hydrofoil/knossos/lib/query', () => {
     describe('database shared between APIs', () => {
       it('returns only classes from the correct API', async () => {
         // given
-        await testData(sparql`
+        await testData`
           # API 1
           ${ex.Api1Class} a ${hydra.Class} ; ${hydra.apiDocumentation} ${ex.api1} .
           ${ex.Api1Class2} a ${hydra.Class} ; ${hydra.supportedOperation} [ ${hydra.apiDocumentation} ${ex.api1} ] .
@@ -86,7 +85,7 @@ describe('@hydrofoil/knossos/lib/query', () => {
               ${hydra.supportedOperation} [ ${hydra.apiDocumentation} ${ex.api2} ] ;
             ] ;
           ] .
-        `)
+        `
 
         // when
         const dataset = await $rdf.dataset().import(await loadClasses(ex.api1, client))

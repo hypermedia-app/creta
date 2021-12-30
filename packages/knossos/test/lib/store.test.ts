@@ -1,5 +1,4 @@
 import { client, testData } from '@labyrinth/testing/client'
-import { sparql } from '@tpluscode/rdf-string'
 import { expect } from 'chai'
 import { ex } from '@labyrinth/testing/namespace'
 import { foaf, rdf, schema } from '@tpluscode/rdf-ns-builders'
@@ -14,11 +13,11 @@ describe('@hydrofoil/knossos/lib/store', () => {
     const store = new ResourcePerGraphStore(client)
 
     beforeEach(async () => {
-      await testData(sparql`
+      await testData`
         GRAPH ${ex.john} {
           ${ex.john} a ${foaf.Person}
         }
-      `)
+      `
     })
 
     describe('exists', () => {
