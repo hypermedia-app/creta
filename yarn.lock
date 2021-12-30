@@ -4851,7 +4851,7 @@ istanbul-reports@^3.0.2:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
 
-jose@^2.0.2:
+jose@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/jose/-/jose-2.0.5.tgz#29746a18d9fff7dcf9d5d2a6f62cb0c7cd27abd3"
   integrity sha512-BAiDNeDKTMgk4tvD0BbxJ8xHEHBZgpeRZ1zGPPsitSyMgjoMWiLGYAE7H7NpP5h0lPppQajQs871E8NHUrzVPA==
@@ -5015,16 +5015,16 @@ jwa@^1.4.1:
     ecdsa-sig-formatter "1.0.11"
     safe-buffer "^5.0.1"
 
-jwks-rsa@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/jwks-rsa/-/jwks-rsa-2.0.1.tgz#f00407fe77396db6c6fd0942d60df698a909934a"
-  integrity sha512-ueT2sQm6eB9D0N3GTE9GU7Mt8UsMWDsNSpEFfqE/NxT+euRDHhaJHql5AddieiHNzSqZxeDREK1yHb8IiwrGGw==
+jwks-rsa@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/jwks-rsa/-/jwks-rsa-2.0.5.tgz#5dc911cdade803a149b7d4d41404a7c1bf2c221a"
+  integrity sha512-fliHfsiBRzEU0nXzSvwnh0hynzGB0WihF+CinKbSRlaqRxbqqKf2xbBPgwc8mzf18/WgwlG8e5eTpfSTBcU4DQ==
   dependencies:
     "@types/express-jwt" "0.0.42"
-    debug "^4.1.0"
-    jose "^2.0.2"
+    debug "^4.3.2"
+    jose "^2.0.5"
     limiter "^1.1.5"
-    lru-memoizer "^2.1.2"
+    lru-memoizer "^2.1.4"
 
 jws@^3.2.2:
   version "3.2.2"
@@ -5349,7 +5349,7 @@ lru-cache@~4.0.0:
     pseudomap "^1.0.1"
     yallist "^2.0.0"
 
-lru-memoizer@^2.1.2:
+lru-memoizer@^2.1.4:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/lru-memoizer/-/lru-memoizer-2.1.4.tgz#b864d92b557f00b1eeb322156a0409cb06dafac6"
   integrity sha512-IXAq50s4qwrOBrXJklY+KhgZF+5y98PDaNo0gi/v2KQBFLyWr+JyFvijZXkGKjQj/h9c0OwoE+JZbwUXce76hQ==
