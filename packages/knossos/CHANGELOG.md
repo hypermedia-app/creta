@@ -1,5 +1,15 @@
 # @hydrofoil/knossos
 
+## 0.5.3
+
+### Patch Changes
+
+- ec30d0b: build(deps): bump express from 4.17.1 to 4.17.2
+- Updated dependencies [ec30d0b]
+- Updated dependencies [87aa7a6]
+  - @hydrofoil/knossos-events@0.3.2
+  - @hydrofoil/labyrinth@0.8.3
+
 ## 0.5.2
 
 ### Patch Changes

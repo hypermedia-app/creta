@@ -1,6 +1,6 @@
 {
   "name": "@hydrofoil/knossos-events",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "main": "index.js",
   "scripts": {
     "prepare": "tsc"
@@ -25,7 +25,7 @@
     "rdf-express-node-factory": "^1.1"
   },
   "devDependencies": {
-    "@labyrinth/testing": "^0.0.5",
+    "@labyrinth/testing": "^0.0.6",
     "@types/once": "^1.4.0",
     "chai": "^4.3.4",
     "express": "^4.17.2",
