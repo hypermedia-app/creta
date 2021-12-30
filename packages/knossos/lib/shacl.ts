@@ -1,4 +1,5 @@
-import { NamedNode, Stream, Term } from 'rdf-js'
+import { NamedNode, Stream, Term, Variable } from 'rdf-js'
+import $rdf from 'rdf-ext'
 import { DESCRIBE } from '@tpluscode/sparql-builder'
 import { rdf, rdfs, sh, hydra } from '@tpluscode/rdf-ns-builders/strict'
 import { StreamClient } from 'sparql-http-client/StreamClient'
@@ -11,46 +12,69 @@ interface ShapesQuery {
   api: NamedNode
 }
 
-function subClassShapesPatterns(api: NamedNode, parentPattern: SparqlTemplateResult) {
-  return sparql`
-  OPTIONAL {
-    ${parentPattern}
-
-    {
-      ?parent a ${sh.NodeShape}, ${rdfs.Class} ; ${hydra.apiDocumentation} ${api} .
-    }
-    UNION 
-    {
-      ?parentShape ${sh.targetClass} ?parent ; ${hydra.apiDocumentation} ${api} .
-    }
-  }`
-}
-
 export function shapesQuery({ term, types, api, ...arg }: ShapesQuery): Promise<Stream> {
-  const describe = DESCRIBE`?shape ?parent ?parentShape`
+  const shape = $rdf.variable('shape')
+  const parent = $rdf.variable('parent')
+  const parentShape = $rdf.variable('parentShape')
+  const nested = $rdf.variable('nested')
+
+  function nestedShapesPattern(shape: Variable) {
+    return sparql`OPTIONAL { { 
+      ${shape} (!<>*/(${sh.and}|${sh.xone}|${sh.or}|${sh.not}))/${rdf.rest}*/${rdf.first} ${nested}
+    } UNION {
+      ${shape} !<>*/${sh.node} ${nested}
+    } }`
+  }
+
+  function subClassShapesPatterns(parentPattern: SparqlTemplateResult) {
+    return sparql`
+    OPTIONAL {
+      ${parentPattern}
+  
+      {
+        ${parent} a ${sh.NodeShape}, ${rdfs.Class} ; ${hydra.apiDocumentation} ${api} .
+        ${nestedShapesPattern(parent)}
+      }
+      UNION 
+      {
+        ${parentShape} ${sh.targetClass} ${parent} ; ${hydra.apiDocumentation} ${api} .
+        ${nestedShapesPattern(parentShape)}
+      }
+    }`
+  }
+
+  const describe = DESCRIBE`${shape} ${parent} ${parentShape} ${nested}`
     .WHERE`
       {
-        VALUES ?shape { ${types} }
+        # implicit target
+        VALUES ${shape} { ${types} }
 
-        ?shape a ${rdfs.Class}, ${sh.NodeShape} ; ${hydra.apiDocumentation} ${api} .
+        ${shape} a ${rdfs.Class}, ${sh.NodeShape} ; ${hydra.apiDocumentation} ${api} .
 
-        ${subClassShapesPatterns(api, sparql`
-          ?shape ${rdf.type}?/${rdfs.subClassOf}* ?parent .
+        ${nestedShapesPattern(shape)}
+        
+        ${subClassShapesPatterns(sparql`
+          ${shape} ${rdf.type}?/${rdfs.subClassOf}* ${parent} .
         `)}
       }
       UNION
       {
+        # class target
         VALUES ?class { ${types} }
 
-        ?shape a ${sh.NodeShape} ; ${sh.targetClass} ?class ; ${hydra.apiDocumentation} ${api} .
+        ${shape} a ${sh.NodeShape} ; ${sh.targetClass} ?class ; ${hydra.apiDocumentation} ${api} .
+        
+        ${nestedShapesPattern(shape)}
 
-        ${subClassShapesPatterns(api, sparql`
-          ?class ${rdfs.subClassOf}+ ?parent .
+        ${subClassShapesPatterns(sparql`
+          ?class ${rdfs.subClassOf}+ ${parent} .
         `)}
       }
       UNION
       {
-        ?shape ${sh.targetNode} ${term} ; ${hydra.apiDocumentation} ${api} .
+        # node target
+        ${shape} ${sh.targetNode} ${term} ; ${hydra.apiDocumentation} ${api} .
+        ${nestedShapesPattern(shape)}
       }
       `
 
