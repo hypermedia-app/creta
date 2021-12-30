@@ -1,5 +1,12 @@
 # @labyrinth/testing
 
+## 0.0.5
+
+### Patch Changes
+
+- fadb644: build(deps): bump sparql-http-client from 2.2.3 to 2.4.0
+- 1692ad1: build(deps): bump @tpluscode/rdf-ns-builders from 1.0.0 to 1.1.0
+
 ## 0.0.4
 
 ### Patch Changes

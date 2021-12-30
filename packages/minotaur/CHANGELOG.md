@@ -1,5 +1,11 @@
 # @hydrofoil/minotaur
 
+## 0.2.1
+
+### Patch Changes
+
+- 1692ad1: build(deps): bump @tpluscode/rdf-ns-builders from 1.0.0 to 1.1.0
+
 ## 0.2.0
 
 ### Minor Changes

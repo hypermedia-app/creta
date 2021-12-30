@@ -1,5 +1,13 @@
 # @hydrofoil/labyrinth
 
+## 0.8.2
+
+### Patch Changes
+
+- fadb644: build(deps): bump sparql-http-client from 2.2.3 to 2.4.0
+- ff74df9: Updated http-errors to v2.0.0
+- 1692ad1: build(deps): bump @tpluscode/rdf-ns-builders from 1.0.0 to 1.1.0
+
 ## 0.8.1
 
 ### Patch Changes
