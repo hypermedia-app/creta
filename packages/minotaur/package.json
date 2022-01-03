@@ -16,7 +16,7 @@
     "@rdfjs/namespace": "^1.1.0",
     "@tpluscode/rdf-ns-builders": "^1.1.0",
     "chai": "^4.3.4",
-    "clownface": "^1.2.0",
+    "clownface": "^1.4.0",
     "mocha": "^9.1.3"
   }
 }
