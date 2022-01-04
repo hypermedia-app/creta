@@ -36,7 +36,7 @@ describe('@hydrofoil/knossos/collection', () => {
       })
 
       sinon.stub(describeResource, 'describeResource')
-        .resolves(namedNode(ex.Foo).addOut(rdf.type, schema.Person).dataset.toStream())
+        .callsFake(async term => namedNode(term || ex.Foo).addOut(rdf.type, schema.Person).dataset.toStream())
 
       next()
     })
@@ -338,6 +338,38 @@ describe('@hydrofoil/knossos/collection', () => {
 
       // then
       expect(hook).to.have.been.calledOnce
+    })
+
+    it('runs response representation hooks on created member', async () => {
+      // given
+      const hook = sinon.spy()
+      app.use((req, res, next) => {
+        req.loadCode = sinon.stub().resolves(hook)
+        next()
+      })
+      app.use(async (req, res, next) => {
+        const collection = await req.hydra.resource.clownface()
+        collection.addOut(hydra.memberAssertion, assert => {
+          assert.addOut(hydra.property, rdf.type)
+          assert.addOut(hydra.object, schema.Person)
+        })
+
+        clownface(req.hydra.api)
+          .node(schema.Person)
+          .addOut(ns.knossos.preprocessResponse, ex.PersonHook)
+        next()
+      })
+      app.post('/collection', CreateMember)
+
+      // when
+      await request(app)
+        .post('/collection')
+        .send(turtle`<> ${schema.name} "john" ; a ${schema.Person} .`.toString())
+        .set('content-type', 'text/turtle')
+        .set('host', 'example.com')
+
+      // then
+      expect(hook).to.have.been.called
     })
   })
 })
