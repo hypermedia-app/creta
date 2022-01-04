@@ -1,5 +1,13 @@
 # @hydrofoil/knossos
 
+## 0.5.4
+
+### Patch Changes
+
+- 81648a7: Creating collection members should call `knossos:preprocessResponse` hooks
+- Updated dependencies [81648a7]
+  - @hydrofoil/labyrinth@0.8.4
+
 ## 0.5.3
 
 ### Patch Changes
