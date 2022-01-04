@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.8.4
+
+### Patch Changes
+
+- 81648a7: Creating collection members should call `knossos:preprocessResponse` hooks
+
 ## 0.8.3
 
 ### Patch Changes
