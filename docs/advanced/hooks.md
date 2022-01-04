@@ -119,4 +119,4 @@ Use `knossos:preprocessResource` to modify the representation of the current res
 > [!WARNING]
 > This hook will not modify responses. It should be used to alter the behaviour of the operation handler itself if it performs conditional logic based on stored resource representation.
 
-Finally, `knossos:preprocessResponse` can be used to modify the final contents of the response just before sending it to the client. It is by default only called when executing the generic `GET` handlers `@hydrofoil/knossos/resource#get` and `@hydrofoil/knossos/collection#get`.
+Finally, `knossos:preprocessResponse` can be used to modify the final contents of the response just before sending it to the client. It is by called when executing the generic `GET` handlers `@hydrofoil/knossos/resource#get` and `@hydrofoil/knossos/collection#get`, and when creating collection members with `@hydrofoil/knossos/collection#CreateMember`.

@@ -21,8 +21,8 @@ interface PreprocessResource {
   req: express.Request
   res: express.Response
   predicate: NamedNode
-  getTypes?(req: express.Request, res: express.Response): Iterable<NamedNode> | Promise<Iterable<NamedNode>>
-  getResource(req: express.Request): Promise<GraphPointer<NamedNode>> | undefined
+  getTypes?(req: express.Request, res: express.Response): Iterable<Term> | Promise<Iterable<Term>>
+  getResource(req: express.Request, res: express.Response): Promise<GraphPointer<NamedNode>> | undefined
 }
 
 function notNull<T>(arg: T | null): arg is T {
@@ -40,11 +40,11 @@ async function resourceAndPayloadTypes(req: express.Request) {
   const types = hydraResourceTypes(req)
 
   if (typeof req.dataset === 'function') {
-    const payloadTypes: Term[] = (await req.resource())
+    const payloadTypes = (await req.resource())
       .out(rdf.type)
       .terms
 
-    return [...types, ...payloadTypes.filter(isNamedNode)]
+    return [...types, ...payloadTypes]
   }
 
   return types
@@ -53,7 +53,7 @@ async function resourceAndPayloadTypes(req: express.Request) {
 export async function preprocessResource({ req, res, getTypes = hydraResourceTypes, predicate, getResource }: PreprocessResource): Promise<void> {
   const types = await getTypes(req, res)
   const hooksPromised = clownface(req.hydra.api)
-    .node([...new TermSet([...types])])
+    .node([...new TermSet([...types].filter(isNamedNode))])
     .out(predicate)
     .map(pointer => req.loadCode<ResourceHook>(pointer))
 
@@ -62,7 +62,7 @@ export async function preprocessResource({ req, res, getTypes = hydraResourceTyp
     return
   }
 
-  const resourcePointer = await getResource(req)
+  const resourcePointer = await getResource(req, res)
 
   if (resourcePointer) {
     await Promise.all(hooks.map(preprocess => preprocess(req, resourcePointer)))

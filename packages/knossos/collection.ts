@@ -56,6 +56,7 @@ type CreateMemberResponse = Response<any, {
   collection?: GraphPointer
   memberAssertions?: MultiPointer
   memberId?: NamedNode
+  member?: GraphPointer<NamedNode>
 }>
 
 const assertMemberAssertions = asyncMiddleware(async (req, res: CreateMemberResponse, next) => {
@@ -133,8 +134,23 @@ const createResource = asyncMiddleware(async (req, res: CreateMemberResponse, ne
 
   res.status(httpStatus.CREATED)
   res.setHeader('Location', memberId.value)
-  return res.quadStream(await describeResource(member.term, req.labyrinth.sparql))
+  return next()
 })
+
+const dereferenceNewMember = asyncMiddleware(async (req, res: CreateMemberResponse, next) => {
+  const term = res.locals.memberId!
+  const describeStream = await describeResource(term, req.labyrinth.sparql)
+
+  res.locals.member = clownface({
+    dataset: await $rdf.dataset().import(describeStream),
+    term,
+  })
+  next()
+})
+
+const setResponse: express.RequestHandler = (req, res: CreateMemberResponse) => {
+  return res.dataset(res.locals.member!.dataset)
+}
 
 export const CreateMember = Router()
   .use(assertTypeMemberAssertion)
@@ -160,3 +176,10 @@ export const CreateMember = Router()
   .use(shaclValidate({ typesToValidate }))
   .use(prepareMemberIdentifier)
   .use(createResource)
+  .use(dereferenceNewMember)
+  .use(preprocessMiddleware({
+    getResource: async (_, res) => res.locals.member,
+    getTypes: async (_, res) => res.locals.member.out(rdf.type).terms,
+    predicate: knossos.preprocessResponse,
+  }))
+  .use(setResponse)
