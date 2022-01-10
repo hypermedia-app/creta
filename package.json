@@ -16,7 +16,7 @@
   "devDependencies": {
     "@babel/core": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
-    "@babel/preset-typescript": "^7.15.0",
+    "@babel/preset-typescript": "^7.16.7",
     "@babel/register": "^7.16.5",
     "@changesets/cli": "^2.10.2",
     "@tpluscode/eslint-config": "^0.3",
