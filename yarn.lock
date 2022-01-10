@@ -1153,13 +1153,13 @@
     "@graphy/core.data.factory" "^4.3.3"
     "@graphy/core.iso.stream" "^4.3.3"
 
-"@graphy/content.trig.read@^4.3.3":
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/@graphy/content.trig.read/-/content.trig.read-4.3.3.tgz#549bf1868dbe85191544f8b1f44b72f2e2be446e"
-  integrity sha512-yzxsbnG+4MAOiaqcd9wrjMBnAopiHmyCKCFVX0e+SMs37bT+rKwZFz93Gdgo1De5xxpNHTB7d3R5Z/CginfewQ==
+"@graphy/content.trig.read@^4.3.3", "@graphy/content.trig.read@^4.3.4":
+  version "4.3.4"
+  resolved "https://registry.yarnpkg.com/@graphy/content.trig.read/-/content.trig.read-4.3.4.tgz#fdfba0e66b8bfb928de82660904bbb0197b3e7db"
+  integrity sha512-kShOOxR/OgK/cX/rlkcAyGtwc2kPdvQv2KBEMrrqGLMwQoRUDZiYOZlwepmRTX84KR3gYXpCh78OsftjuIVAiA==
   dependencies:
-    "@graphy/core.data.factory" "^4.3.3"
-    "@graphy/core.iso.stream" "^4.3.3"
+    "@graphy/core.data.factory" "^4.3.4"
+    "@graphy/core.iso.stream" "^4.3.4"
     uri-js "^4.4.0"
 
 "@graphy/content.trig.write@^4.3.3":
@@ -1204,17 +1204,17 @@
     "@graphy/core.class.scribable" "^4.3.3"
     "@graphy/core.data.factory" "^4.3.3"
 
-"@graphy/core.data.factory@^4.3.3":
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/@graphy/core.data.factory/-/core.data.factory-4.3.3.tgz#432f1938817cf135916574b59b27f194dc2a1bd1"
-  integrity sha512-qEODuBEk8+QvoPPs1FWXUNOOQr2mEZbZBJyAXv3ZIOi4PZ4uxmcKaqB0S4vxFEsfaNXMallMwREokhtfkxixdA==
+"@graphy/core.data.factory@^4.3.3", "@graphy/core.data.factory@^4.3.4":
+  version "4.3.4"
+  resolved "https://registry.yarnpkg.com/@graphy/core.data.factory/-/core.data.factory-4.3.4.tgz#738998f1785e79b245dcb02afafc1c281926100e"
+  integrity sha512-IH/WkKG6kqfqNGgHIAseYXHkQTvWvjQsuDrfy+1IvOhFzJC8hRhqcBlse7ik4Cc7lzoWZWd6alQU3RA89D7nmw==
   dependencies:
     uri-js "^4.4.0"
 
-"@graphy/core.iso.stream@^4.3.3":
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/@graphy/core.iso.stream/-/core.iso.stream-4.3.3.tgz#4a655a3db874d3eccd17ec553f577d73be2dc30e"
-  integrity sha512-XFbJDpgariyXzk14HAm7ce4sqLYxZ3ck8vSYJfrfQoZLVJ64K0o7+dNMOqKs6ukf2MfcRrEYhUB7pxbXhpl/PQ==
+"@graphy/core.iso.stream@^4.3.3", "@graphy/core.iso.stream@^4.3.4":
+  version "4.3.4"
+  resolved "https://registry.yarnpkg.com/@graphy/core.iso.stream/-/core.iso.stream-4.3.4.tgz#f275c123d075ee9cc3a71526553e89658caaafc9"
+  integrity sha512-b66gmPVFC1a6RflI423Joq2gZ1BlIBfr2CiKChSzqlAYgzFWqQSKcI6ECP7gctZdezNc3h54t1+FljxPef3Ufg==
   dependencies:
     readable-stream "^3.6.0"
 
