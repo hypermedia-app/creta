@@ -27,7 +27,7 @@
     "@tpluscode/rdf-ns-builders": "^1.1.0",
     "@tpluscode/rdf-string": "^0.2.25",
     "@tpluscode/rdfine": "^0.5.33",
-    "@tpluscode/sparql-builder": "^0.3.11",
+    "@tpluscode/sparql-builder": "^0.3.18",
     "absolute-url": "^1.2.2",
     "camouflage-rewrite": "^1.2.0",
     "clownface": "^1.4.0",

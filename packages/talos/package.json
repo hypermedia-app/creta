@@ -20,7 +20,7 @@
     "@rdfjs/formats-common": "^2.2.0",
     "@tpluscode/rdf-ns-builders": "^1.1.0",
     "@tpluscode/rdf-string": "^0.2.25",
-    "@tpluscode/sparql-builder": "^0.3.12",
+    "@tpluscode/sparql-builder": "^0.3.18",
     "@zazuko/rdf-vocabularies": "*",
     "clownface": "^1.4.0",
     "commander": "^6.1.0",
