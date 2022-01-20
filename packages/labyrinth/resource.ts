@@ -43,7 +43,7 @@ export const get = asyncMiddleware(async (req, res) => {
   }
 
   const pointer = clownface({ dataset, term: req.hydra.resource.term })
-  dataset.addAll(await loadLinkedResources(pointer, types.out(hyper_query.include).toArray(), req.labyrinth.sparql))
+  dataset.addAll(await loadLinkedResources(pointer, types.out(hyper_query.include), req.labyrinth.sparql))
 
   await preprocessResource({
     req,

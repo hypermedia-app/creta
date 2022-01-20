@@ -25,6 +25,7 @@ RdfResource.factory.addMixin(...Object.values(Hydra))
 
 type ExpectedQuerySetup = SparqlTemplateResult | {
   patterns: SparqlTemplateResult
+  linkPatterns?: SparqlTemplateResult
   limit?: number
   offset?: number
   order?: Array<{ pattern: SparqlTemplateResult; desc?: boolean }>
@@ -32,7 +33,7 @@ type ExpectedQuerySetup = SparqlTemplateResult | {
 
 const expectedQuery = (options: ExpectedQuerySetup) => {
   const patterns = 'patterns' in options ? options.patterns : options
-  let select = SELECT.DISTINCT`?member ?linked`
+  let select = SELECT.DISTINCT`?member`
     .WHERE`
       ${patterns}
       filter(isiri(?member)) 
@@ -48,7 +49,13 @@ const expectedQuery = (options: ExpectedQuerySetup) => {
     }, select)
   }
 
-  return select.build()
+  const linkPatterns = !('linkPatterns' in options) ? '' : sparql`${options.linkPatterns} filter(isiri(?linked))`
+
+  return SELECT`?member ?linked`.WHERE`
+    { ${select} }
+    
+    ${linkPatterns}
+  `.build()
 }
 
 describe('@hydrofoil/labyrinth/lib/query/collection', () => {
@@ -568,16 +575,15 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
           const expected = expectedQuery({
             patterns: sparql`
               ${ex.JohnDoe} ${schema.knows} ?member .
-            
-              optional {
-                ?member ^${schema.parent} ?linked
-                filter (isiri(?linked))
-              }
-              optional {
-                ?member ${schema.spouse} ?linked
-                filter (isiri(?linked))
-              }
             `,
+            linkPatterns: sparql`
+              {
+                ?member ^${schema.parent} ?linked
+              }
+              union
+              {
+                ?member ${schema.spouse} ?linked
+              }`,
           })
           const hydraApi = api()
           const apiNode = cf(hydraApi)
