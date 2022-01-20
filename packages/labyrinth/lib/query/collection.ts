@@ -135,17 +135,25 @@ function linkedResourcePatterns(api: AnyPointer, collection: GraphPointer, subje
   const classIncludes = api.node(collection.out(rdf.type)).out(hyper_query.include).toArray()
   const instanceIncludes = collection.out(hyper_query.include).toArray()
 
-  return [...classIncludes, ...instanceIncludes]
+  const includes = [...classIncludes, ...instanceIncludes].filter(include => {
+    const path = include.out(hyper_query.path)
+    if (!path.values.length) {
+      warn('Skipping include with invalid property path')
+      return false
+    }
+
+    return true
+  })
+
+  if (!includes.length) {
+    return ''
+  }
+
+  const union = includes
     .reduce((previous: SparqlTemplateResult, include, index) => {
       const path = include.out(hyper_query.path)
-      if (path.values.length !== 1) {
-        warn('Skipping include with invalid property path')
-        return previous
-      }
-
       const graphPattern = sparql`{
         ${subject} ${toSparql(path)} ${linked} .
-        FILTER ( isIRI(${linked}) )
       }`
 
       if (index === 0) {
@@ -154,6 +162,8 @@ function linkedResourcePatterns(api: AnyPointer, collection: GraphPointer, subje
 
       return sparql`${previous}\nUNION\n${graphPattern}`
     }, sparql``)
+
+  return sparql`${union}\nFILTER ( isIRI(${linked}) )`
 }
 
 interface CollectionQueryParams {

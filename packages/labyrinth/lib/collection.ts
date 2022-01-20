@@ -177,9 +177,7 @@ export async function collection({ hydraBox, pageSize, sparqlClient, query, ...r
 
   collection.deleteOut(hydra.totalItems).addOut(hydra.totalItems, total)
 
-  const eagerLoadByCollection = api.node([hydraBox.operation.term, ...hydraBox.resource.types]).out(hyper_query.include)
-  const eagerLoadByMembers = api.node(collection.out(hydra.member).out(rdf.type).terms).out(hyper_query.include)
-  const includeLinked = [...eagerLoadByCollection.toArray(), ...eagerLoadByMembers.toArray()]
+  const includeLinked = api.node(collection.out(hydra.member).out(rdf.type).terms).out(hyper_query.include)
   collection.dataset.addAll(await loadLinkedResources(collection.out(hydra.member), includeLinked, sparqlClient))
 
   if (template) {
