@@ -631,13 +631,13 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
           const apiNode = cf(hydraApi)
           apiNode
             .node(ex.Collection)
-            .addOut(hyper_query.include, null)
+            .addOut(hyper_query.memberInclude, null)
           const query = await getSparqlQuery({
             api: hydraApi,
             collection: cf({ dataset: $rdf.dataset() })
               .blankNode()
               .addOut(rdf.type, ex.Collection)
-              .addOut(hyper_query.include, null)
+              .addOut(hyper_query.memberInclude, null)
               .addOut(hydra.memberAssertion, manages => {
                 manages.addOut(hydra.property, schema.knows)
                 manages.addOut(hydra.subject, ex.JohnDoe)
