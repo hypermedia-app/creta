@@ -14,7 +14,7 @@ export async function loadLinkedResources(resource: MultiPointer, links: MultiPo
   const linked = new TermSet(links.toArray()
     .flatMap(link => {
       const path = link.out(hyper_query.path)
-      if (!path.value) {
+      if (path.values.length !== 1) {
         warn('Skipping include with invalid property path')
         return []
       }

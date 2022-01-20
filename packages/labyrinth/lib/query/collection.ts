@@ -137,7 +137,7 @@ function linkedResourcePatterns(api: AnyPointer, collection: GraphPointer, subje
 
   const includes = [...classIncludes, ...instanceIncludes].filter(include => {
     const path = include.out(hyper_query.path)
-    if (!path.values.length) {
+    if (path.values.length !== 1) {
       warn('Skipping include with invalid property path')
       return false
     }
