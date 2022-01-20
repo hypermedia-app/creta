@@ -7,7 +7,7 @@ import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
 import { SELECT } from '@tpluscode/sparql-builder'
 import * as Hydra from '@rdfine/hydra'
 import RdfResource from '@tpluscode/rdfine'
-import { hyper_query, knossos } from '@hydrofoil/vocabularies/builders/strict'
+import { hyper_query, knossos } from '@hydrofoil/vocabularies/builders'
 import { fromPointer } from '@rdfine/hydra/lib/IriTemplate'
 import { ex } from '@labyrinth/testing/namespace'
 import '@labyrinth/testing/sparql'
@@ -589,7 +589,7 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
           const apiNode = cf(hydraApi)
           apiNode
             .node(ex.Collection)
-            .addOut(hyper_query.include, include => {
+            .addOut(hyper_query.memberInclude, include => {
               include.addOut(hyper_query.path, path => {
                 path.addOut(sh.inversePath, schema.parent)
               })
@@ -599,7 +599,7 @@ describe('@hydrofoil/labyrinth/lib/query/collection', () => {
             collection: cf({ dataset: $rdf.dataset() })
               .blankNode()
               .addOut(rdf.type, ex.Collection)
-              .addOut(hyper_query.include, include => {
+              .addOut(hyper_query.memberInclude, include => {
                 include.addOut(hyper_query.path, schema.spouse)
               })
               .addOut(hydra.memberAssertion, manages => {

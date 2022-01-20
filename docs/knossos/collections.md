@@ -22,7 +22,7 @@ prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 </api/ArticleCollection>
   rdfs:subClassOf hydra:Collection ;
-  sh:property 
+  sh:property
   [
     sh:path hydra:memberAssertion ;
     sh:minCount 1 ;
@@ -109,10 +109,10 @@ prefix hydra: <http://www.w3.org/ns/hydra/core#>
 
 ## Eager-loading linked resources
 
-To transclude resources linked to collection members, use the `hyper-query:include` predicate. Its objects must be nodes with the `hyper-query:path` property whose value is a well-formed [SHACL Property Path](https://www.w3.org/TR/shacl/#property-shapes).
+To transclude resources linked to collection members, use the `hyper-query:memberInclude` predicate. Its objects must be nodes with the `hyper-query:path` property whose value is a well-formed [SHACL Property Path](https://www.w3.org/TR/shacl/#property-shapes).
 
 > [!TIP]
-> `hyper-query:include` can be used both on instances, as well as collection classes. The latter apply to all instances and get combined with direct inclusion paths.
+> `hyper-query:memberInclude` can be used both on collection instances, as well as collection classes. The latter apply to all instances and get combined with direct inclusion paths.
 
 The example below shows how to extend all article collections to include authors
 
@@ -121,7 +121,7 @@ PREFIX schema: <http://schema.org/>
 PREFIX hyper-query: <https://hypermedia.app/query#>
 
 </api/ArticleCollection>
-    hyper-query:include 
+    hyper-query:memberInclude
     [
         hyper-query:path schema:author ;
     ] ;
@@ -188,7 +188,7 @@ Finally, the static filter can be narrowed down only to the member's own graph:
   [
     hydra:property rdf:type ;
     hydra:object </api/Article> ;
-+   knossos:ownGraphOnly true ; 
++   knossos:ownGraphOnly true ;
   ] ;
 .
 ```
@@ -214,7 +214,7 @@ prefix query: <https://hypermedia.app/query#>
   a hydra:IriTemplate ;
   hydra:template "{?title}" ;
   hydra:resolveRelativeTo hydra:LinkContext ;
-  hydra:mapping 
+  hydra:mapping
   [
     hydra:variable "title" ;
     hydra:property schema:title ;
@@ -246,7 +246,7 @@ import { sparql } from '@tpluscode/rdf-string'
 * Create a graph pattern to get article title and
 * filter where the title starts with the provided value
 */
-export function startsWith({ subject, predicate, object }) { 
+export function startsWith({ subject, predicate, object }) {
   return sparql`
   ${subject} ${predicate} ?title .
 
@@ -270,7 +270,7 @@ PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
   hydra:limit 20 ;
   hydra:search [
     hydra:template "{?page}" ;
-    hydra:mapping 
+    hydra:mapping
       [
         hydra:variable "page" ;
         hydra:property hydra:pageIndex ;
@@ -320,7 +320,7 @@ PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
   hydra:limit 20 ;
   hydra:search [
     hydra:template "{?page,pageSize}" ;
-    hydra:mapping 
+    hydra:mapping
       [
         hydra:variable "page" ;
         hydra:property hydra:pageIndex ;
@@ -380,10 +380,10 @@ Member assertions which have `hydra:predicate` and `hydra:object` will be implic
 ```turtle
 prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 prefix schema: <http://schema.org/>
-prefix acl: <http://www.w3.org/ns/auth/acl#> 
-prefix hydra: <http://www.w3.org/ns/hydra/core#> 
-prefix knossos: <https://hypermedia.app/knossos#> 
-prefix auth: <https://hypermedia.app/auth#> 
+prefix acl: <http://www.w3.org/ns/auth/acl#>
+prefix hydra: <http://www.w3.org/ns/hydra/core#>
+prefix knossos: <https://hypermedia.app/knossos#>
+prefix auth: <https://hypermedia.app/auth#>
 prefix code: <https://code.described.at/>
 
 </api/WritableArticleCollection>
@@ -436,7 +436,7 @@ For that purpose, knossos allows adding a transformation function to each mappin
 prefix code: <https://code.described.at/>
 prefix schema: <http://schema.org/>
 prefix hydra: <http://www.w3.org/ns/hydra/core#>
-prefix knossos: <https://hypermedia.app/knossos#> 
+prefix knossos: <https://hypermedia.app/knossos#>
 
 </api/WritableArticleCollection>
   knossos:memberTemplate
@@ -465,11 +465,11 @@ import type { TransformVariable } from '@hydrofoil/knossos/collection'
 import $rdf from 'rdf-ext'
 import URLSlugify from 'url-slugify'
 
-const slugify = new URLSlugify() 
+const slugify = new URLSlugify()
 
 export const slugifyTitle: TransformVariable = (term) => {
     const title = term.value
-    
+
     return $rdf.literal(slugify(title.substr(0, 10)))
 }
 ```
@@ -485,7 +485,7 @@ prefix hydra: <http://www.w3.org/ns/hydra/core#>
 
 </articles/new>
   a </api/WritableArticleCollection> ;
-  hydra:memberAssertion 
+  hydra:memberAssertion
   [
     hydra:property rdf:type ;
     hydra:object </api/Article> ;
