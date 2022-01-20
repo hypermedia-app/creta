@@ -164,6 +164,15 @@ export async function collection({ hydraBox, pageSize, sparqlClient, query, ...r
     members = collection.out(hydra.member).terms
     total = members.length
     await collection.dataset.import(await memberData(members, sparqlClient))
+    const eagerLoadByCollection = api.node([hydraBox.operation.term, ...hydraBox.resource.types]).out(hyper_query.memberInclude)
+    const eagerLoadByMembers = api.node(collection.out(hydra.member).out(rdf.type).terms).out(hyper_query.include)
+
+    const included = await Promise.all([
+      loadLinkedResources(collection.out(hydra.member), eagerLoadByCollection, sparqlClient),
+      loadLinkedResources(collection.out(hydra.member), eagerLoadByMembers, sparqlClient),
+    ])
+
+    included.forEach(collection.dataset.addAll)
   } else {
     ({ total, members } = await loadDynamicCollection(collection, template, {
       hydraBox,
@@ -173,12 +182,11 @@ export async function collection({ hydraBox, pageSize, sparqlClient, query, ...r
     }))
 
     collection.namedNode(collection.term).addOut(hydra.member, members)
+    const includeLinked = api.node(collection.out(hydra.member).out(rdf.type).terms).out(hyper_query.include)
+    collection.dataset.addAll(await loadLinkedResources(collection.out(hydra.member), includeLinked, sparqlClient))
   }
 
   collection.deleteOut(hydra.totalItems).addOut(hydra.totalItems, total)
-
-  const includeLinked = api.node(collection.out(hydra.member).out(rdf.type).terms).out(hyper_query.include)
-  collection.dataset.addAll(await loadLinkedResources(collection.out(hydra.member), includeLinked, sparqlClient))
 
   if (template) {
     addTemplateMappings(collection, template, query)

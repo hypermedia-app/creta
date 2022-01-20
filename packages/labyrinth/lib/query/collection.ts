@@ -6,7 +6,7 @@ import cf, { AnyPointer, GraphPointer } from 'clownface'
 import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
 import { IriTemplate, IriTemplateMapping } from '@rdfine/hydra'
 import { Api } from 'hydra-box/Api'
-import { hyper_query, knossos } from '@hydrofoil/vocabularies/builders/strict'
+import { hyper_query, knossos } from '@hydrofoil/vocabularies/builders'
 import type { StreamClient } from 'sparql-http-client/StreamClient'
 import once from 'once'
 import toArray from 'stream-to-array'
@@ -132,8 +132,8 @@ function createOrdering(api: AnyPointer, collection: GraphPointer, subject: Vari
 }
 
 function linkedResourcePatterns(api: AnyPointer, collection: GraphPointer, subject: Variable, linked: Variable) {
-  const classIncludes = api.node(collection.out(rdf.type)).out(hyper_query.include).toArray()
-  const instanceIncludes = collection.out(hyper_query.include).toArray()
+  const classIncludes = api.node(collection.out(rdf.type)).out(hyper_query.memberInclude).toArray()
+  const instanceIncludes = collection.out(hyper_query.memberInclude).toArray()
 
   const includes = [...classIncludes, ...instanceIncludes].filter(include => {
     const path = include.out(hyper_query.path)
