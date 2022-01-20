@@ -136,19 +136,23 @@ function linkedResourcePatterns(api: AnyPointer, collection: GraphPointer, subje
   const instanceIncludes = collection.out(hyper_query.include).toArray()
 
   return [...classIncludes, ...instanceIncludes]
-    .reduce((union: SparqlTemplateResult, include) => {
+    .reduce((previous: SparqlTemplateResult, include, index) => {
       const path = include.out(hyper_query.path)
       if (path.values.length !== 1) {
         warn('Skipping include with invalid property path')
-        return union
+        return previous
       }
 
-      const graphPattern = sparql`OPTIONAL {
+      const graphPattern = sparql`{
         ${subject} ${toSparql(path)} ${linked} .
         FILTER ( isIRI(${linked}) )
       }`
 
-      return sparql`${union}\n${graphPattern}`
+      if (index === 0) {
+        return graphPattern
+      }
+
+      return sparql`${previous}\nUNION\n${graphPattern}`
     }, sparql``)
 }
 
@@ -198,9 +202,8 @@ export async function getSparqlQuery({ api, collection, pageSize, query = cf({ d
 
   const memberPatterns = sparql`${managesBlockPatterns}\n${filterPatters}`
 
-  let memberSelect = SELECT.DISTINCT`${subject} ${linked}`.WHERE` 
+  let innerSelect = SELECT.DISTINCT`${subject}`.WHERE` 
                 ${memberPatterns}
-                ${linkedResourcePatterns(cf(api), collection, subject, linked)}
                 filter (isIRI(${subject}))`
 
   if (variables && variables.mapping.some(mapping => mapping.property?.equals(hydra.pageIndex))) {
@@ -208,9 +211,17 @@ export async function getSparqlQuery({ api, collection, pageSize, query = cf({ d
     const hydraLimit = query.out(hydra.limit).value
     const limit = hydraLimit ? parseInt(hydraLimit) : pageSize
 
-    memberSelect = memberSelect.WHERE`${order.patterns}`.LIMIT(limit).OFFSET((page - 1) * limit)
-    memberSelect = order.addClauses(memberSelect)
+    innerSelect = innerSelect.WHERE`${order.patterns}`.LIMIT(limit).OFFSET((page - 1) * limit)
+    innerSelect = order.addClauses(innerSelect)
   }
+
+  const memberSelect = SELECT`${subject} ${linked}`.WHERE`
+  {
+    ${innerSelect}
+  }
+  
+  ${linkedResourcePatterns(cf(api), collection, subject, linked)}
+  `
 
   const loadIdentifiers = once(async (client: StreamClient) => {
     const results: Array<Record<string, NamedNode>> = await memberSelect.execute(client.query).then(toArray)
