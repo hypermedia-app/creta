@@ -46,7 +46,7 @@ function addCollectionViews({ collection, total, template, query = emptyDataset,
   const viewId = $rdf.namedNode(template.expand(templateParamsForPage(query, pageIndex)))
   collection
     .addOut(hydra.view, viewId, view => {
-      const totalPages = Math.floor(total / pageSize) + 1
+      const totalPages = Math.ceil(total / pageSize)
 
       view.addOut(rdf.type, hydra.PartialCollectionView)
       view.addOut(hydra.first, $rdf.namedNode(template.expand(templateParamsForPage(query, 1))))

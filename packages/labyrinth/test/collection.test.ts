@@ -177,6 +177,25 @@ describe('@hydrofoil/labyrinth/collection', () => {
         expect(view.out(hydra.last).value).to.eq('?title=Titanic&page=84')
       })
 
+      it('adds correct last page link when last page is exactly full', async () => {
+        // given
+        // 10 equal pages of 12 members
+        totals.resolves(120)
+
+        // when
+        const res = await request(app)
+          .get('/')
+          .query({
+            title: 'Titanic',
+          })
+
+        // then
+        const dataset = await $rdf.dataset().import(parsers.import('application/ld+json', toStream(res.text))!)
+        const view = clownface({ dataset }).out(hydra.view)
+
+        expect(view.out(hydra.last).value).to.eq('?title=Titanic&page=10')
+      })
+
       it('adds pages links to first page', async () => {
         // when
         const res = await request(app)
