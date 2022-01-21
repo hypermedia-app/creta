@@ -1,5 +1,17 @@
 # @hydrofoil/labyrinth
 
+## 0.9.0
+
+### Minor Changes
+
+- 49d8416: Eager loading must be defined using `query:path`
+- d97aec5: Rename property used with collections to `query:memberInclude`
+
+### Patch Changes
+
+- b98248d: Getting linked resources did not return all values
+- f6ffb3c: build(deps): bump @tpluscode/sparql-builder from 0.3.14 to 0.3.18
+
 ## 0.8.4
 
 ### Patch Changes

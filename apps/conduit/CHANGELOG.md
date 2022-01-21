@@ -1,5 +1,16 @@
 # @hydrofoil/conduit
 
+## 0.1.26
+
+### Patch Changes
+
+- f6ffb3c: build(deps): bump @tpluscode/sparql-builder from 0.3.14 to 0.3.18
+- Updated dependencies [d1fe287]
+- Updated dependencies [f6ffb3c]
+- Updated dependencies [d289cd9]
+- Updated dependencies [4ecd90a]
+  - @hydrofoil/knossos@0.6.0
+
 ## 0.1.25
 
 ### Patch Changes

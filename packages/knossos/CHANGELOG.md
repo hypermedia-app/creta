@@ -1,5 +1,24 @@
 # @hydrofoil/knossos
 
+## 0.6.0
+
+### Minor Changes
+
+- 4ecd90a: Bump because labyrinth had breaking change
+
+### Patch Changes
+
+- d1fe287: build(deps): bump @rdfjs-elements/formats-pretty from 0.4.0 to 0.4.2
+- f6ffb3c: build(deps): bump @tpluscode/sparql-builder from 0.3.14 to 0.3.18
+- d289cd9: build(deps): bump nanoid from 3.1.30 to 3.2.0
+- Updated dependencies [b98248d]
+- Updated dependencies [f6ffb3c]
+- Updated dependencies [d289cd9]
+- Updated dependencies [49d8416]
+- Updated dependencies [d97aec5]
+  - @hydrofoil/labyrinth@0.9.0
+  - @hydrofoil/knossos-events@0.3.3
+
 ## 0.5.4
 
 ### Patch Changes
