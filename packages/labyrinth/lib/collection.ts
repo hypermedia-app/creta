@@ -30,10 +30,6 @@ function templateParamsForPage(query: AnyPointer, page: number) {
     return clownface({ dataset: $rdf.dataset() }).blankNode().addOut(hydra.pageIndex, page)
   }
 
-  if (page === 1) {
-    return clone.deleteOut(hydra.pageIndex)
-  }
-
   return clone.deleteOut(hydra.pageIndex).addOut(hydra.pageIndex, page)
 }
 
