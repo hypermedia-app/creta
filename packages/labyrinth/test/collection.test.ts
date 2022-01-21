@@ -171,7 +171,7 @@ describe('@hydrofoil/labyrinth/collection', () => {
         const view = clownface({ dataset }).out(hydra.view)
 
         expect(view.term).to.deep.eq($rdf.namedNode('?title=Titanic&page=50'))
-        expect(view.out(hydra.first).value).to.eq('?title=Titanic')
+        expect(view.out(hydra.first).value).to.eq('?title=Titanic&page=1')
         expect(view.out(hydra.previous).value).to.eq('?title=Titanic&page=49')
         expect(view.out(hydra.next).value).to.eq('?title=Titanic&page=51')
         expect(view.out(hydra.last).value).to.eq('?title=Titanic&page=84')
@@ -208,8 +208,8 @@ describe('@hydrofoil/labyrinth/collection', () => {
         const dataset = await $rdf.dataset().import(parsers.import('application/ld+json', toStream(res.text))!)
         const view = clownface({ dataset }).out(hydra.view)
 
-        expect(view.term).to.deep.eq($rdf.namedNode('?title=Titanic'))
-        expect(view.out(hydra.first).value).to.eq('?title=Titanic')
+        expect(view.term).to.deep.eq($rdf.namedNode('?title=Titanic&page=1'))
+        expect(view.out(hydra.first).value).to.eq('?title=Titanic&page=1')
         expect(view.out(hydra.previous).value).to.be.undefined
         expect(view.out(hydra.next).value).to.eq('?title=Titanic&page=2')
         expect(view.out(hydra.last).value).to.eq('?title=Titanic&page=84')
@@ -229,7 +229,7 @@ describe('@hydrofoil/labyrinth/collection', () => {
         const view = clownface({ dataset }).out(hydra.view)
 
         expect(view.term).to.deep.eq($rdf.namedNode('?title=Titanic&page=84'))
-        expect(view.out(hydra.first).value).to.eq('?title=Titanic')
+        expect(view.out(hydra.first).value).to.eq('?title=Titanic&page=1')
         expect(view.out(hydra.next).value).to.be.undefined
         expect(view.out(hydra.last).value).to.eq('?title=Titanic&page=84')
       })
