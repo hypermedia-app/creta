@@ -1,5 +1,12 @@
 # @hydrofoil/knossos-events
 
+## 0.3.3
+
+### Patch Changes
+
+- f6ffb3c: build(deps): bump @tpluscode/sparql-builder from 0.3.14 to 0.3.18
+- d289cd9: build(deps): bump nanoid from 3.1.30 to 3.2.0
+
 ## 0.3.2
 
 ### Patch Changes
