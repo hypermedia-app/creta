@@ -2163,10 +2163,10 @@
   resolved "https://registry.yarnpkg.com/@ungap/promise-all-settled/-/promise-all-settled-1.1.2.tgz#aa58042711d6e3275dd37dc597e5d31e8c290a44"
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
-"@wikibus/vocabularies@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@wikibus/vocabularies/-/vocabularies-0.2.1.tgz#bd6840b884c79f2ef2ea72aecfe4c6f9a2231b1f"
-  integrity sha512-QKb6JjXDv8KVgEjAmXRUuMwUULIc03DLkaRaKjoZl76ObAUBRbgGPigG/FbEG6iAT415hkL6R+2/yFt+znKEsg==
+"@wikibus/vocabularies@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@wikibus/vocabularies/-/vocabularies-0.2.2.tgz#827029bc34a030f938e558e25e11b8924daba893"
+  integrity sha512-BNvaejsy+dSUPVV2z1o30qqS4Yla5/VwmxGUmAUcAg9if4zTKFeZJHJYU0p6FirEGMICOJ0y2oQ+6f7inA68xA==
   dependencies:
     "@rdf-esm/namespace" "^0.5.3"
     "@rdfjs/parser-n3" "^1.1.4"
