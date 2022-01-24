@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
-    "@babel/preset-env": "^7.15.8",
+    "@babel/preset-env": "^7.16.11",
     "@babel/preset-typescript": "^7.15.0",
     "@babel/register": "^7.16.5",
     "@changesets/cli": "^2.10.2",
