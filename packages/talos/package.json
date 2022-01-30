@@ -38,6 +38,8 @@
     "@types/replacestream": "^4.0.1",
     "@wikibus/vocabularies": "^0.2.2",
     "chai": "^4.3.4",
+    "get-stream": "^5",
+    "into-stream": "^6.0.0",
     "mocha": "^9.1.4",
     "rdf-ext": "^1.3.5",
     "sinon": "^11"

@@ -1,6 +1,6 @@
 import * as path from 'path'
 import { put, Put } from 'talos/lib/command/put'
-import { ASK, DELETE, SELECT } from '@tpluscode/sparql-builder'
+import { ASK, DELETE, INSERT, SELECT } from '@tpluscode/sparql-builder'
 import ParsingClient from 'sparql-http-client/ParsingClient'
 import { expect } from 'chai'
 import { doap, hydra, schema, vcard } from '@tpluscode/rdf-ns-builders'
@@ -35,6 +35,12 @@ for (const api of apis) {
 
     before(async () => {
       await DELETE`?s ?p ?o`.WHERE`?s ?p ?o`.execute(client.query)
+
+      await INSERT.DATA`
+        GRAPH ${ns('project/creta/user.group/admins')} {
+          ${ns('project/creta/user.group/admins')} ${vcard.hasMember} ${ns('project/creta/user/tpluscode')}
+        }
+      `.execute(client.query)
     })
 
     it('ignores paths which do not exist', async () => {
@@ -140,6 +146,19 @@ for (const api of apis) {
             ${ns('project/creta/user/tpluscode')} ${schema.parentItem} ${ns('project/creta/')}
           `
             .FROM(ns('project/creta/user/tpluscode'))
+            .execute(client.query)
+
+          await expect(indexCorrectlyInserted).to.eventually.be.true
+        })
+
+        it('merges with existing resource representation when option is set', async () => {
+          const group = ns('project/creta/user.group/admins')
+
+          const indexCorrectlyInserted = ASK`
+            ${group} ${vcard.n} "Administrators" .
+            ${group} ${vcard.hasMember} ${ns('project/creta/user/tpluscode')} .
+          `
+            .FROM(group)
             .execute(client.query)
 
           await expect(indexCorrectlyInserted).to.eventually.be.true
