@@ -1,5 +1,11 @@
 # @hydrofoil/talos
 
+## 0.4.3
+
+### Patch Changes
+
+- 804bd2e: Per-resource option to merge with existing resource graph
+
 ## 0.4.2
 
 ### Patch Changes
