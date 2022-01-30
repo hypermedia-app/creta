@@ -1,5 +1,12 @@
 # @hydrofoil/labyrinth
 
+## 0.9.1
+
+### Patch Changes
+
+- dabaac9: Last page was incorrectly caluclated when collection had even nuber of members
+- 3ea2ce7: Preserve `page=1` when calculating first page URI (fixes #247)
+
 ## 0.9.0
 
 ### Minor Changes
