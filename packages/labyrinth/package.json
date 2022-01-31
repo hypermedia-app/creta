@@ -22,7 +22,7 @@
     "@rdfjs/term-set": "^1.1.0",
     "@tpluscode/rdf-ns-builders": "^1.1.0",
     "@tpluscode/rdf-string": "^0.2.25",
-    "@tpluscode/rdfine": "^0.5.33",
+    "@tpluscode/rdfine": "^0.5.37",
     "@tpluscode/sparql-builder": "^0.3.18",
     "@types/hydra-box": "^0.6.4",
     "clownface": "^1.4.0",
