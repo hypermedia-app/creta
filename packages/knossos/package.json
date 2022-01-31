@@ -21,7 +21,7 @@
     "@hydrofoil/vocabularies": "^0.3",
     "@rdfine/hydra": "^0.8",
     "@graphy/content.trig.read": "^4.3.3",
-    "@rdfjs/namespace": "^1.1.0",
+    "@rdfjs/namespace": "^2.0.0",
     "@rdfjs/term-set": "^1.1.0",
     "@rdfjs-elements/formats-pretty": "^0.4.2",
     "@tpluscode/rdf-ns-builders": "^1.1.0",

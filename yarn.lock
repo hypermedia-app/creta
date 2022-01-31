@@ -1445,6 +1445,11 @@
   dependencies:
     "@rdfjs/types" ">=1.0.1"
 
+"@rdfjs/data-model@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@rdfjs/data-model/-/data-model-2.0.0.tgz#0e366aa0a1f9b2311413b874c63de324f4cd907f"
+  integrity sha512-MTnXulGDlglImAszhX44SB4uo3X0K8XcUs7BXBjrAYmempbQ7zh04nInDE83BhK76ILnZcZUtnjETorG/Ss73A==
+
 "@rdfjs/dataset@^1.0.0", "@rdfjs/dataset@^1.0.1", "@rdfjs/dataset@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@rdfjs/dataset/-/dataset-1.1.1.tgz#0a91746284c517eba360a966939161f500392107"
@@ -1485,6 +1490,13 @@
   integrity sha512-utO5rtaOKxk8B90qzaQ0N+J5WrCI28DtfAY/zExCmXE7cOfC5uRI/oMKbLaVEPj2P7uArekt/T4IPATtj7Tjug==
   dependencies:
     "@rdfjs/data-model" "^1.1.0"
+
+"@rdfjs/namespace@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@rdfjs/namespace/-/namespace-2.0.0.tgz#e6ca090f253505d95544c6482400c89e55fc9e1c"
+  integrity sha512-cBBvNrlSOah4z7u2vS74Lxng/ivELy6tNPjx+G/Ag14up8z5xmX8njn+U/mJ+nlcXO7nDGK4rgaAq7jtl9S3CQ==
+  dependencies:
+    "@rdfjs/data-model" "^2.0.0"
 
 "@rdfjs/parser-jsonld@^1.2.1":
   version "1.2.2"
@@ -4139,7 +4151,7 @@ get-stream@^4.1.0:
   dependencies:
     pump "^3.0.0"
 
-get-stream@^5.1.0:
+get-stream@^5, get-stream@^5.1.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/get-stream/-/get-stream-5.2.0.tgz#4966a1795ee5ace65e706c4b7beb71257d6e22d3"
   integrity sha512-nBF+F1rAZVCu/p7rjzgA+Yb4lfYXrpl7a6VmJrU8wF9I1CKvP/QwPNZHnOlwbTkY6dvtFIzFMSyQXbLoTQPRpA==

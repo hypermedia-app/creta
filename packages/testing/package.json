@@ -5,7 +5,7 @@
   "dependencies": {
     "@hydrofoil/vocabularies": "^0.3.0",
     "@rdfjs/express-handler": "^1.2.1",
-    "@rdfjs/namespace": "^1.1.0",
+    "@rdfjs/namespace": "^2.0.0",
     "@rdfjs/term-set": "^1.1.0",
     "@tpluscode/rdf-ns-builders": "^1.1.0",
     "@tpluscode/rdf-string": "^0.2.25",
