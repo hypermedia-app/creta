@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.10.0-alpha.0
+
+### Minor Changes
+
+- a703a72: Significant refactoring of collection GET handler
+
 ## 0.9.1
 
 ### Patch Changes

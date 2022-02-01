@@ -1,5 +1,11 @@
 # @hydrofoil/conduit
 
+## 0.1.27-alpha.0
+
+### Patch Changes
+
+- @hydrofoil/knossos@0.6.1-alpha.0
+
 ## 0.1.26
 
 ### Patch Changes
