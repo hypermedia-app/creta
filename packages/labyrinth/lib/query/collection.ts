@@ -1,4 +1,4 @@
-import { NamedNode, Stream, Term, Variable } from 'rdf-js'
+import { NamedNode, Term, Variable } from 'rdf-js'
 import { DESCRIBE, SELECT } from '@tpluscode/sparql-builder'
 import { hydra, ldp, rdf } from '@tpluscode/rdf-ns-builders'
 import $rdf from 'rdf-ext'
@@ -8,11 +8,9 @@ import { IriTemplate, IriTemplateMapping } from '@rdfine/hydra'
 import { Api } from 'hydra-box/Api'
 import { hyper_query, knossos } from '@hydrofoil/vocabularies/builders'
 import type { StreamClient } from 'sparql-http-client/StreamClient'
-import once from 'once'
 import toArray from 'stream-to-array'
 import { toSparql } from 'clownface-shacl-path'
 import { toRdf } from 'rdf-literal'
-import TermSet from '@rdfjs/term-set'
 import { log, warn } from '../logger'
 import { ToSparqlPatterns } from './index'
 
@@ -166,29 +164,16 @@ function linkedResourcePatterns(api: AnyPointer, collection: GraphPointer, subje
   return sparql`${union}\nFILTER ( isIRI(${linked}) )`
 }
 
-interface CollectionQueryParams {
+interface DynamicCollection {
   api: Api
   collection: GraphPointer
   query?: AnyPointer
   variables: IriTemplate | null
   pageSize: number
+  client: StreamClient
 }
 
-export interface SparqlQueries {
-  members(client: StreamClient): Promise<NamedNode[]>
-  memberData(client: StreamClient): Promise<Stream>
-  totals(client: StreamClient): Promise<number>
-}
-
-export async function memberData(ids: Term[], client: StreamClient): Promise<Stream> {
-  if (ids.length === 0) {
-    return $rdf.dataset().toStream()
-  }
-
-  return DESCRIBE`${ids}`.execute(client.query)
-}
-
-export async function getSparqlQuery({ api, collection, pageSize, query = cf({ dataset: $rdf.dataset() }), variables } : CollectionQueryParams): Promise<SparqlQueries | null> {
+export default async function ({ api, collection, client, pageSize, query = cf({ dataset: $rdf.dataset() }), variables }: DynamicCollection) {
   const subject = $rdf.variable('member')
   const linked = $rdf.variable('linked')
 
@@ -196,11 +181,6 @@ export async function getSparqlQuery({ api, collection, pageSize, query = cf({ d
     .out([hydra.manages, hydra.memberAssertion])
     .toArray()
     .reduce(toSparqlPattern(subject), [])
-
-  if (!memberAssertions.length) {
-    warn(`Collection ${collection.value} has no valid manages block and will always return empty`)
-    return null
-  }
 
   const managesBlockPatterns = memberAssertions.reduce((combined, next) => sparql`${combined}\n${next}`, sparql``)
   let filterPatters: Array<string | SparqlTemplateResult> = []
@@ -212,56 +192,45 @@ export async function getSparqlQuery({ api, collection, pageSize, query = cf({ d
 
   const memberPatterns = sparql`${managesBlockPatterns}\n${filterPatters}`
 
-  let innerSelect = SELECT.DISTINCT`${subject}`.WHERE` 
-                ${memberPatterns}
-                filter (isIRI(${subject}))`
-
-  if (variables && variables.mapping.some(mapping => mapping.property?.equals(hydra.pageIndex))) {
-    const page = Number.parseInt(query.out(hydra.pageIndex).value || '1')
-    const hydraLimit = query.out(hydra.limit).value
-    const limit = hydraLimit ? parseInt(hydraLimit) : pageSize
-
-    innerSelect = innerSelect.WHERE`${order.patterns}`.LIMIT(limit).OFFSET((page - 1) * limit)
-    innerSelect = order.addClauses(innerSelect)
-  }
-
-  const memberSelect = SELECT`${subject} ${linked}`.WHERE`
-  {
-    ${innerSelect}
-  }
-  
-  ${linkedResourcePatterns(cf(api), collection, subject, linked)}
-  `
-
-  const loadIdentifiers = once(async (client: StreamClient) => {
-    const results: Array<Record<string, NamedNode>> = await memberSelect.execute(client.query).then(toArray)
-    return results.reduce((sets, row) => {
-      sets.members.add(row.member)
-      if (row.linked) {
-        sets.linked.add(row.linked)
+  return {
+    async members() {
+      if (!memberAssertions.length) {
+        warn(`Collection ${collection.value} has no valid manages block and will always return empty`)
+        return []
       }
 
-      return sets
-    }, {
-      members: new TermSet<NamedNode>(),
-      linked: new TermSet<NamedNode>(),
-    })
-  })
+      let select = SELECT.DISTINCT`${subject}`
+        .WHERE` 
+          ${memberPatterns}
+          filter (isIRI(${subject}))
+        `
 
-  return {
-    async members(client) {
-      const { members } = await loadIdentifiers(client)
-      return [...members]
+      if (variables && variables.mapping.some(mapping => mapping.property?.equals(hydra.pageIndex))) {
+        const page = Number.parseInt(query.out(hydra.pageIndex).value || '1')
+        const hydraLimit = query.out(hydra.limit).value
+        const limit = hydraLimit ? parseInt(hydraLimit) : pageSize
+
+        select = select.WHERE`${order.patterns}`.LIMIT(limit).OFFSET((page - 1) * limit)
+        select = order.addClauses(select)
+      }
+
+      const results = await select.execute(client.query).then(toArray)
+      return results.map(({ subject }) => subject)
     },
-    async memberData(client) {
-      const ids = await loadIdentifiers(client)
-      return memberData([...ids.members, ...ids.linked], client)
-    },
-    async totals(client) {
+    async totals() {
       const stream = await SELECT`(count(distinct ${subject}) as ?count)`.WHERE`${memberPatterns}`.execute(client.query)
       const [result] = await toArray(stream)
 
       return Number.parseInt(result.count.value)
+    },
+    async memberData(members: NamedNode[]) {
+      return DESCRIBE`${subject} ${linked}`.WHERE`
+        VALUES ?member {
+          ${members}
+        }
+      
+        ${linkedResourcePatterns(cf(api), collection, subject, linked)}
+      `.execute(client.query)
     },
   }
 }

@@ -1,26 +1,119 @@
-import { NamedNode, Term } from 'rdf-js'
+import { NamedNode, Stream, Term } from 'rdf-js'
+import { Response } from 'express'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
-import { fromPointer, IriTemplate } from '@rdfine/hydra/lib/IriTemplate'
+import asyncMiddleware from 'middleware-async'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import $rdf from 'rdf-ext'
-import StreamClient from 'sparql-http-client/StreamClient'
+import { DESCRIBE } from '@tpluscode/sparql-builder'
 import { ResourceIdentifier } from '@tpluscode/rdfine'
-import { HydraBox } from 'hydra-box'
+import { IriTemplate } from '@rdfine/hydra'
+import { fromPointer } from '@rdfine/hydra/lib/IriTemplate'
+import TermSet from '@rdfjs/term-set'
 import DatasetExt from 'rdf-ext/lib/Dataset'
 import { hyper_query } from '@hydrofoil/vocabularies/builders'
-import { DESCRIBE } from '@tpluscode/sparql-builder'
-import { getSparqlQuery, memberData } from './query/collection'
-import { loadLinkedResources } from './query/eagerLinks'
+import { toPointer } from './template'
+import { log } from './logger'
+import { isGraphPointer } from './clownface'
+import staticCollection from './query/staticCollection'
+import dynamicCollection from './query/collection'
 
-const emptyDataset = clownface({ dataset: $rdf.dataset() })
+export type CollectionResponse = Response<any, {
+  collection?: GraphPointer<NamedNode, DatasetExt>
+  search?: GraphPointer<ResourceIdentifier>
+  searchTemplate?: IriTemplate
+  total?: number
+  pageSize?: number
+  queryParams?: AnyPointer
+  queries?: {
+    members(): Promise<Term[]>
+    totals(): Promise<number>
+    memberData(members: NamedNode[]): Promise<Stream>
+  }
+  members?: TermSet<NamedNode>
+}>
 
-interface AddCollectionViewsParams {
-  collection: GraphPointer
-  total: number
-  template: IriTemplate
-  query?: AnyPointer
-  pageSize: number
+export const loadCollection = asyncMiddleware(async (req, res: CollectionResponse, next) => {
+  res.locals.collection = await req.hydra.resource.clownface()
+  next()
+})
+
+export const loadSearch = asyncMiddleware(async (req, res: CollectionResponse, next) => {
+  const { collection } = res.locals
+  const search = collection?.out(hydra.search)
+  if (isGraphPointer(search)) {
+    res.locals.search = search
+
+    if (search.term.termType === 'NamedNode') {
+      const dataset = await $rdf.dataset().import(await DESCRIBE`${search.term}`.execute(req.labyrinth.sparql.query))
+      res.locals.search = clownface({ dataset }).node(search.term)
+    }
+  }
+
+  if (res.locals.search) {
+    const query = toPointer(res.locals.search, req.query)
+    const template = fromPointer(res.locals.search)
+    log('Search params %s', query.dataset.toString())
+    res.locals.queryParams = query
+    res.locals.searchTemplate = template
+
+    collection?.addOut(hyper_query.templateMappings, currMappings => {
+      template.mapping.forEach(mapping => {
+        if (mapping.property) {
+          const property = mapping.property.id
+          currMappings.addOut(property, query.out(property))
+        }
+      })
+    })
+  }
+
+  return next()
+})
+
+export const initSettings = asyncMiddleware(async (req, res: CollectionResponse, next) => {
+  const types = clownface(req.hydra.api).node([...req.hydra.resource.types])
+  const collection = res.locals.collection!
+  const searchTemplate = res.locals.searchTemplate!
+  const queryParams = res.locals.queryParams!
+
+  const hydraLimit = queryParams?.out(hydra.limit).value || collection?.out(hydra.limit).value || types.out(hydra.limit).value
+  const pageSize = hydraLimit ? parseInt(hydraLimit) : req.labyrinth.collection.pageSize
+
+  res.locals.pageSize = pageSize
+
+  if (collection?.has(hydra.member).terms.length) {
+    res.locals.queries = staticCollection(req, collection)
+  } else {
+    res.locals.queries = await dynamicCollection({
+      api: req.hydra.api,
+      collection,
+      pageSize,
+      variables: searchTemplate,
+      query: queryParams,
+      client: req.labyrinth.sparql,
+    })
+  }
+
+  next()
+})
+
+function isNamedNode(arg: Term): arg is NamedNode {
+  return arg.termType === 'NamedNode'
 }
+
+export const runQueries = asyncMiddleware(async (req, res: CollectionResponse, next) => {
+  const { collection } = res.locals
+
+  const members = await res.locals.queries!.members()
+  const memberData = await res.locals.queries!.memberData(members.filter(isNamedNode))
+  const total = await res.locals.queries!.totals()
+
+  await collection?.dataset.import(memberData)
+  collection?.deleteOut(hydra.totalItems).addOut(hydra.totalItems, total)
+
+  res.locals.total = total
+
+  next()
+})
 
 function templateParamsForPage(query: AnyPointer, page: number) {
   const clone = clownface({ dataset: $rdf.dataset([...query.dataset]) })
@@ -33,9 +126,19 @@ function templateParamsForPage(query: AnyPointer, page: number) {
   return clone.deleteOut(hydra.pageIndex).addOut(hydra.pageIndex, page)
 }
 
-function addCollectionViews({ collection, total, template, query = emptyDataset, pageSize }: AddCollectionViewsParams): void {
-  if (!template.mapping.some(m => m.property?.equals(hydra.pageIndex))) {
-    return
+export const populatePartialViews = asyncMiddleware((req, res: CollectionResponse, next) => {
+  const template = res.locals.searchTemplate
+  const query = res.locals.queryParams
+  const collection = res.locals.collection
+  const total = res.locals.total!
+  const pageSize = res.locals.pageSize!
+
+  if (!template || !collection || !query) {
+    return next()
+  }
+
+  if (!template?.mapping.some(m => m.property?.equals(hydra.pageIndex))) {
+    return next()
   }
 
   const pageIndex = Number.parseInt(query.out(hydra.pageIndex).value || '1')
@@ -54,146 +157,6 @@ function addCollectionViews({ collection, total, template, query = emptyDataset,
         view.addOut(hydra.next, $rdf.namedNode(template.expand(templateParamsForPage(query, pageIndex + 1))))
       }
     })
-}
 
-function addTemplateMappings(collection: GraphPointer, template: IriTemplate, request: AnyPointer = emptyDataset): void {
-  collection.addOut(hyper_query.templateMappings, currMappings => {
-    template.mapping.forEach(mapping => {
-      if (mapping.property) {
-        const property = mapping.property.id
-        currMappings.addOut(property, request.out(property))
-      }
-    })
-  })
-}
-
-function isGraphPointer(pointer: AnyPointer): pointer is GraphPointer<ResourceIdentifier> {
-  return pointer.term?.termType === 'NamedNode' || pointer.term?.termType === 'BlankNode'
-}
-
-export async function loadSearch(resource: GraphPointer, client: StreamClient): Promise<GraphPointer<ResourceIdentifier> | null> {
-  const search = resource.out(hydra.search)
-  if (isGraphPointer(search)) {
-    if (search.term.termType === 'NamedNode') {
-      const dataset = await $rdf.dataset().import(await DESCRIBE`${search.term}`.execute(client.query))
-
-      return clownface({ dataset }).node(search.term)
-    }
-
-    return search
-  }
-
-  return null
-}
-
-async function getTemplate(resource: GraphPointer, client: StreamClient): Promise<IriTemplate | null> {
-  const templateVariables = await loadSearch(resource, client)
-  if (templateVariables) {
-    return fromPointer(templateVariables)
-  }
-
-  return null
-}
-
-interface CollectionParams {
-  collection: GraphPointer<NamedNode>
-  query?: AnyPointer
-  pageSize: number
-  hydraBox: HydraBox
-  sparqlClient: StreamClient
-}
-
-function assertApiTerm(api: AnyPointer): asserts api is GraphPointer<NamedNode> {
-  if (api.term?.termType !== 'NamedNode') {
-    throw new Error('ApiDocumentation was not initialised')
-  }
-}
-
-async function loadDynamicCollection(
-  collection: GraphPointer<NamedNode, DatasetExt>,
-  template: IriTemplate | null,
-  { hydraBox, sparqlClient, pageSize, query }: Pick<CollectionParams, 'hydraBox' | 'sparqlClient' | 'pageSize' | 'query'>) {
-  const pageQuery = await getSparqlQuery({
-    api: hydraBox.api,
-    collection,
-    query,
-    variables: template,
-    pageSize,
-  })
-
-  let total = 0
-  let members: NamedNode[] = []
-  if (pageQuery) {
-    const getMembers = pageQuery.members(sparqlClient).then(result => {
-      members = result
-    })
-
-    const getTotal = pageQuery.totals(sparqlClient)
-      .then(result => {
-        total = result
-      })
-
-    const getData = pageQuery.memberData(sparqlClient)
-      .then(async stream => {
-        await collection.dataset.import(stream)
-      })
-
-    await Promise.all([getMembers, getTotal, getData])
-  }
-
-  return { total, members }
-}
-
-export async function collection({ hydraBox, pageSize, sparqlClient, query, ...rest }: CollectionParams): Promise<GraphPointer<NamedNode, DatasetExt>> {
-  const api = clownface(hydraBox.api)
-  assertApiTerm(api)
-
-  const collection = clownface({
-    dataset: $rdf.dataset([...rest.collection.dataset]),
-    term: rest.collection.term,
-  })
-  const template = await getTemplate(await hydraBox.resource.clownface(), sparqlClient)
-
-  let total: number
-  let members: Term[]
-  if (collection.has(hydra.member).terms.length) {
-    members = collection.out(hydra.member).terms
-    total = members.length
-    await collection.dataset.import(await memberData(members, sparqlClient))
-    const eagerLoadByCollection = api.node([hydraBox.operation.term, ...hydraBox.resource.types]).out(hyper_query.memberInclude)
-    const eagerLoadByMembers = api.node(collection.out(hydra.member).out(rdf.type).terms).out(hyper_query.include)
-
-    const included = await Promise.all([
-      loadLinkedResources(collection.out(hydra.member), eagerLoadByCollection, sparqlClient),
-      loadLinkedResources(collection.out(hydra.member), eagerLoadByMembers, sparqlClient),
-    ])
-
-    included.forEach(collection.dataset.addAll)
-  } else {
-    ({ total, members } = await loadDynamicCollection(collection, template, {
-      hydraBox,
-      pageSize,
-      query,
-      sparqlClient,
-    }))
-
-    collection.namedNode(collection.term).addOut(hydra.member, members)
-    const includeLinked = api.node(collection.out(hydra.member).out(rdf.type).terms).out(hyper_query.include)
-    collection.dataset.addAll(await loadLinkedResources(collection.out(hydra.member), includeLinked, sparqlClient))
-  }
-
-  collection.deleteOut(hydra.totalItems).addOut(hydra.totalItems, total)
-
-  if (template) {
-    addTemplateMappings(collection, template, query)
-    addCollectionViews({
-      collection,
-      total,
-      template,
-      query,
-      pageSize,
-    })
-  }
-
-  return collection
-}
+  return next()
+})
