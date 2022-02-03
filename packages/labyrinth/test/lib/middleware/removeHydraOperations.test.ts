@@ -5,7 +5,7 @@ import * as ns from '@tpluscode/rdf-ns-builders'
 import request from 'supertest'
 import { Resource } from 'hydra-box'
 import clownface from 'clownface'
-import { hydraBox } from '@labyrinth/testing/hydra-box'
+import { handler as hydraBox } from '@labyrinth/testing/hydra-box'
 import { ex } from '@labyrinth/testing/namespace'
 import { removeHydraOperations } from '../../../lib/middleware'
 

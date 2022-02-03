@@ -1,7 +1,6 @@
-import { NamedNode, Stream, Term } from 'rdf-js'
-import { Response } from 'express'
+import { BlankNode, NamedNode, Stream, Term } from 'rdf-js'
+import { Request } from 'express'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
-import asyncMiddleware from 'middleware-async'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import $rdf from 'rdf-ext'
 import { DESCRIBE } from '@tpluscode/sparql-builder'
@@ -17,73 +16,93 @@ import { isGraphPointer } from './clownface'
 import staticCollection from './query/staticCollection'
 import dynamicCollection from './query/collection'
 
-export type CollectionResponse = Response<any, {
-  collection?: GraphPointer<NamedNode, DatasetExt>
-  search?: GraphPointer<ResourceIdentifier>
-  searchTemplate?: IriTemplate
-  total?: number
-  pageSize?: number
-  queryParams?: AnyPointer
-  queries?: {
+interface CollectionLoaded {
+  collection: GraphPointer<NamedNode, DatasetExt>
+  search: GraphPointer<ResourceIdentifier> | undefined
+  searchTemplate: IriTemplate | null
+  queryParams: AnyPointer
+  pageSize: number
+}
+
+interface QueriesInitialized {
+  queries: {
     members(): Promise<Term[]>
     totals(): Promise<number>
     memberData(members: NamedNode[]): Promise<Stream>
   }
-  members?: TermSet<NamedNode>
-}>
+}
 
-export const loadCollection = asyncMiddleware(async (req, res: CollectionResponse, next) => {
-  res.locals.collection = await req.hydra.resource.clownface()
-  next()
-})
+interface MembersLoaded {
+  total: number
+  members: Array<Term>
+  memberData: Stream
+}
 
-export const loadSearch = asyncMiddleware(async (req, res: CollectionResponse, next) => {
-  const { collection } = res.locals
-  const search = collection?.out(hydra.search)
-  if (isGraphPointer(search)) {
-    res.locals.search = search
+export type CollectionLocals = CollectionLoaded & QueriesInitialized & MembersLoaded
+
+export const loadCollection = async (
+  req: Pick<Request, 'hydra' | 'labyrinth' | 'query'>,
+): Promise<CollectionLoaded> => {
+  const collection = await req.hydra.resource.clownface()
+  const searchPtr = collection.out(hydra.search)
+  const types = clownface(req.hydra.api).node([...req.hydra.resource.types])
+
+  let search: GraphPointer<NamedNode | BlankNode> | undefined
+  let queryParams = clownface({ dataset: $rdf.dataset() })
+  let searchTemplate: IriTemplate | null = null
+
+  if (isGraphPointer(searchPtr)) {
+    search = searchPtr
 
     if (search.term.termType === 'NamedNode') {
       const dataset = await $rdf.dataset().import(await DESCRIBE`${search.term}`.execute(req.labyrinth.sparql.query))
-      res.locals.search = clownface({ dataset }).node(search.term)
+      search = clownface({ dataset }).node(search.term)
     }
   }
 
-  if (res.locals.search) {
-    const query = toPointer(res.locals.search, req.query)
-    const template = fromPointer(res.locals.search)
-    log('Search params %s', query.dataset.toString())
-    res.locals.queryParams = query
-    res.locals.searchTemplate = template
+  if (search) {
+    queryParams = toPointer(search, req.query)
+    searchTemplate = fromPointer(search)
+    log('Search params %s', queryParams.dataset.toString())
 
-    collection?.addOut(hyper_query.templateMappings, currMappings => {
-      template.mapping.forEach(mapping => {
+    collection.addOut(hyper_query.templateMappings, currMappings => {
+      searchTemplate?.mapping.forEach(mapping => {
         if (mapping.property) {
           const property = mapping.property.id
-          currMappings.addOut(property, query.out(property))
+          currMappings.addOut(property, queryParams.out(property))
         }
       })
     })
   }
 
-  return next()
-})
-
-export const initSettings = asyncMiddleware(async (req, res: CollectionResponse, next) => {
-  const types = clownface(req.hydra.api).node([...req.hydra.resource.types])
-  const collection = res.locals.collection!
-  const searchTemplate = res.locals.searchTemplate!
-  const queryParams = res.locals.queryParams!
-
-  const hydraLimit = queryParams?.out(hydra.limit).value || collection?.out(hydra.limit).value || types.out(hydra.limit).value
+  const hydraLimit = queryParams?.out(hydra.limit).value || collection.out(hydra.limit).value || types.out(hydra.limit).value
   const pageSize = hydraLimit ? parseInt(hydraLimit) : req.labyrinth.collection.pageSize
 
-  res.locals.pageSize = pageSize
+  return {
+    collection,
+    search,
+    searchTemplate,
+    queryParams,
+    pageSize,
+  }
+}
 
-  if (collection?.has(hydra.member).terms.length) {
-    res.locals.queries = staticCollection(req, collection)
+export const initQueries = async (
+  locals: CollectionLoaded,
+  req: Pick<Request, 'hydra' | 'labyrinth'>,
+): Promise<QueriesInitialized> => {
+  const {
+    collection,
+    searchTemplate,
+    queryParams,
+    pageSize,
+  } = locals
+
+  let queries: CollectionLocals['queries']
+  if (collection.has(hydra.member).terms.length) {
+    queries = staticCollection(req, collection)
   } else {
-    res.locals.queries = await dynamicCollection({
+    queries = await dynamicCollection({
       api: req.hydra.api,
       collection,
       pageSize,
@@ -93,27 +112,26 @@ export const initSettings = asyncMiddleware(async (req, res: CollectionResponse,
     })
   }
 
-  next()
-})
+  return {
+    queries,
+  }
+}
 
 function isNamedNode(arg: Term): arg is NamedNode {
   return arg.termType === 'NamedNode'
 }
 
-export const runQueries = asyncMiddleware(async (req, res: CollectionResponse, next) => {
-  const { collection } = res.locals
+export const runQueries = async (locals: QueriesInitialized): Promise<MembersLoaded> => {
+  const members = [...new TermSet(await locals.queries.members())]
+  const memberData = await locals.queries.memberData(members.filter(isNamedNode))
+  const total = await locals.queries.totals()
 
-  const members = await res.locals.queries!.members()
-  const memberData = await res.locals.queries!.memberData(members.filter(isNamedNode))
-  const total = await res.locals.queries!.totals()
-
-  await collection?.dataset.import(memberData)
-  collection?.deleteOut(hydra.totalItems).addOut(hydra.totalItems, total)
-
-  res.locals.total = total
-
-  next()
-})
+  return {
+    total,
+    members,
+    memberData,
+  }
+}
 
 function templateParamsForPage(query: AnyPointer, page: number) {
   const clone = clownface({ dataset: $rdf.dataset([...query.dataset]) })
@@ -126,37 +144,32 @@ function templateParamsForPage(query: AnyPointer, page: number) {
   return clone.deleteOut(hydra.pageIndex).addOut(hydra.pageIndex, page)
 }
 
-export const populatePartialViews = asyncMiddleware((req, res: CollectionResponse, next) => {
-  const template = res.locals.searchTemplate
-  const query = res.locals.queryParams
-  const collection = res.locals.collection
-  const total = res.locals.total!
-  const pageSize = res.locals.pageSize!
-
-  if (!template || !collection || !query) {
-    return next()
-  }
+export const createViews = (locals: Pick<CollectionLoaded & MembersLoaded, 'searchTemplate' | 'queryParams' | 'total' | 'pageSize'>): GraphPointer | null => {
+  const template = locals.searchTemplate
+  const query = locals.queryParams
+  const total = locals.total
+  const pageSize = locals.pageSize
 
   if (!template?.mapping.some(m => m.property?.equals(hydra.pageIndex))) {
-    return next()
+    return null
   }
 
   const pageIndex = Number.parseInt(query.out(hydra.pageIndex).value || '1')
-  const viewId = $rdf.namedNode(template.expand(templateParamsForPage(query, pageIndex)))
-  collection
-    .addOut(hydra.view, viewId, view => {
-      const totalPages = Math.ceil(total / pageSize)
 
-      view.addOut(rdf.type, hydra.PartialCollectionView)
-      view.addOut(hydra.first, $rdf.namedNode(template.expand(templateParamsForPage(query, 1))))
-      view.addOut(hydra.last, $rdf.namedNode(template.expand(templateParamsForPage(query, totalPages))))
-      if (pageIndex > 1) {
-        view.addOut(hydra.previous, $rdf.namedNode(template.expand(templateParamsForPage(query, pageIndex - 1))))
-      }
-      if (pageIndex < totalPages) {
-        view.addOut(hydra.next, $rdf.namedNode(template.expand(templateParamsForPage(query, pageIndex + 1))))
-      }
-    })
+  const view = clownface({ dataset: $rdf.dataset() })
+    .namedNode(template.expand(templateParamsForPage(query, pageIndex)))
 
-  return next()
-})
+  const totalPages = Math.ceil(total / pageSize)
+
+  view.addOut(rdf.type, hydra.PartialCollectionView)
+  view.addOut(hydra.first, $rdf.namedNode(template.expand(templateParamsForPage(query, 1))))
+  view.addOut(hydra.last, $rdf.namedNode(template.expand(templateParamsForPage(query, totalPages))))
+  if (pageIndex > 1) {
+    view.addOut(hydra.previous, $rdf.namedNode(template.expand(templateParamsForPage(query, pageIndex - 1))))
+  }
+  if (pageIndex < totalPages) {
+    view.addOut(hydra.next, $rdf.namedNode(template.expand(templateParamsForPage(query, pageIndex + 1))))
+  }
+
+  return view
+}

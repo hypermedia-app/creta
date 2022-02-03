@@ -7,12 +7,11 @@ import TermSet from '@rdfjs/term-set'
 import rdfHandler from '@rdfjs/express-handler'
 import sinon from 'sinon'
 import setLink from 'set-link'
-import StreamStore from 'sparql-http-client/StreamStore'
-import Endpoint from 'sparql-http-client/Endpoint'
 import { Api } from 'hydra-box/Api'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { namedNode } from './nodeFactory'
 import { ex } from './namespace'
+import { client } from './sparql'
 
 interface MiddlewareOptions {
   setup?: (hydra: HydraBox) => Promise<void> | void
@@ -62,10 +61,9 @@ export function testApi<Code>(opts?: ApiSetup<Code>): Api {
   return copy
 }
 
-export function hydraBox({ setup, query }: MiddlewareOptions = {}): RequestHandler {
+export async function hydraBox(setup?: MiddlewareOptions['setup']): Promise<HydraBox> {
   const dataset = $rdf.dataset()
-
-  const hydra: HydraBox = {
+  const hydraBox: HydraBox = {
     operation: clownface({ dataset: $rdf.dataset() }).blankNode(),
     operations: [],
     term: $rdf.namedNode('request'),
@@ -87,25 +85,21 @@ export function hydraBox({ setup, query }: MiddlewareOptions = {}): RequestHandl
     api: api(),
   }
 
+  setup && await setup(hydraBox)
+
+  return hydraBox
+}
+
+export function handler({ setup, query }: MiddlewareOptions = {}): RequestHandler {
   return async (req, res, next) => {
     await rdfHandler.attach(req, res)
     setLink.attach(res)
 
-    setup && await setup(hydra)
-    req.hydra = hydra
+    req.hydra = await hydraBox(setup)
     req.agent = namedNode('agent')
     req.loadCode = sinon.stub()
     req.labyrinth = {
-      sparql: {
-        store: sinon.createStubInstance(StreamStore) as any,
-        query: {
-          endpoint: sinon.createStubInstance(Endpoint),
-          ask: sinon.stub().resolves(true),
-          construct: sinon.stub().resolves($rdf.dataset().toStream()),
-          select: sinon.stub().resolves([]),
-          update: sinon.stub(),
-        },
-      },
+      sparql: client(),
       collection: {
         pageSize: 12,
       },

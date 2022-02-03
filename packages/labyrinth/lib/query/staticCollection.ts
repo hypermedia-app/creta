@@ -7,7 +7,7 @@ import { DESCRIBE } from '@tpluscode/sparql-builder'
 import { hyper_query } from '@hydrofoil/vocabularies/builders'
 import { loadLinkedResources } from './eagerLinks'
 
-export default function (req: Request, collection: GraphPointer) {
+export default function (req: Pick<Request, 'hydra' | 'labyrinth'>, collection: GraphPointer) {
   const members = collection.out(hydra.member).terms
   const api = clownface(req.hydra.api)
   const client = req.labyrinth.sparql

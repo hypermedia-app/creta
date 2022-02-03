@@ -1,7 +1,7 @@
 import { Term } from 'rdf-js'
 import express, { Router } from 'express'
 import request from 'supertest'
-import { hydraBox } from '@labyrinth/testing/hydra-box'
+import * as hydraBox from '@labyrinth/testing/hydra-box'
 import clownface, { GraphPointer } from 'clownface'
 import { foaf, hydra, rdf, rdfs, schema } from '@tpluscode/rdf-ns-builders'
 import { ex } from '@labyrinth/testing/namespace'
@@ -24,7 +24,7 @@ describe('@hydrofoil/knossos/collection', () => {
   beforeEach(() => {
     app = express()
     knossos = knossosMock(app)
-    app.use(hydraBox())
+    app.use(hydraBox.handler())
     app.use(eventMocks)
     app.use(async (req, res, next) => {
       const collection = await req.hydra.resource.clownface()
