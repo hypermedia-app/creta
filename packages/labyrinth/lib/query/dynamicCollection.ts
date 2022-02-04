@@ -222,7 +222,7 @@ export default async function ({ api, collection, client, pageSize, query, varia
       }
 
       const results = await select.execute(client.query).then(toArray)
-      return results.map(({ subject }) => subject)
+      return results.map(({ member }) => member)
     },
     async total(): Promise<number> {
       const stream = await SELECT`(count(distinct ${subject}) as ?count)`.WHERE`${memberPatterns}`.execute(client.query)

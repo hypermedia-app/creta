@@ -235,6 +235,21 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
       }))
     })
 
+    it('returns member identifiers as returned by query', async () => {
+      // given
+      client.query.select.resolves(toStream.object([
+        { member: ex.Foo },
+        { member: ex.Bar },
+      ]))
+      const queries = await testInstance()
+
+      // when
+      const members = await queries.members()
+
+      // then
+      expect(members).to.deep.contain.members([ex.Foo, ex.Bar])
+    })
+
     describe('order', () => {
       it('does not apply order when collection is not paged', async () => {
         // given
