@@ -8,8 +8,11 @@ import * as lib from './lib/collection'
 
 export type CollectionResponse = Response<any, Partial<lib.CollectionLocals>>
 
-function assertLocals<T extends keyof lib.CollectionLocals>(locals: Partial<lib.CollectionLocals>, ...keys: T[]): locals is Pick<lib.CollectionLocals, T> {
-  return keys.every(key => key in locals)
+function assertLocals<T extends keyof lib.CollectionLocals>(locals: Partial<lib.CollectionLocals>, ...keys: T[]): asserts locals is Pick<lib.CollectionLocals, T> & Partial<lib.CollectionLocals> {
+  const missingKeys = keys.filter(key => !(key in locals))
+  if (missingKeys.length) {
+    throw new Error(`Missing values for ${missingKeys.join(', ')} in response locals`)
+  }
 }
 
 const sendResponse: RequestHandler = (req, res) => {
@@ -18,55 +21,60 @@ const sendResponse: RequestHandler = (req, res) => {
   return res.dataset(dataset)
 }
 
-export const get = Router()
-  .use(asyncMiddleware(async (req, res: CollectionResponse, next) => {
-    res.locals = await lib.loadCollection(req)
-    next()
-  }))
-  .use(asyncMiddleware(async (req, res: CollectionResponse, next) => {
-    if (!assertLocals(res.locals, 'collection', 'queryParams', 'pageSize', 'search', 'searchTemplate')) {
-      return next(new Error('Collection not loaded'))
-    }
+export function createGetHandler({
+  loadCollection = lib.loadCollection,
+  initQueries = lib.initQueries,
+  runQueries = lib.runQueries,
+  createViews = lib.createViews,
+}: Partial<typeof lib> = {}): RequestHandler {
+  return Router()
+    .use(asyncMiddleware(async (req, res: CollectionResponse, next) => {
+      res.locals = await loadCollection(req)
+      next()
+    }))
+    .use(asyncMiddleware(async (req, res: CollectionResponse, next) => {
+      assertLocals(res.locals, 'collection', 'queryParams', 'pageSize', 'search', 'searchTemplate')
 
-    res.locals = {
-      ...res.locals,
-      ...await lib.initQueries(res.locals, req),
-    }
-    next()
-  }))
-  .use(asyncMiddleware(async (req, res: CollectionResponse, next) => {
-    if (!assertLocals(res.locals, 'collection', 'queries')) {
-      return next(new Error('Collection not loaded'))
-    }
+      res.locals = {
+        ...res.locals,
+        ...await initQueries(res.locals, req),
+      }
+      next()
+    }))
+    .use(asyncMiddleware(async (req, res: CollectionResponse, next) => {
+      assertLocals(res.locals, 'collection', 'queries')
 
-    const {
-      members, total, memberData,
-    } = await lib.runQueries(res.locals)
+      const {
+        members, total, memberData,
+      } = await runQueries(res.locals)
 
-    await res.locals.collection.dataset.import(memberData)
-    res.locals.collection.addOut(hydra.member, [...members.values()])
-    res.locals.collection.deleteOut(hydra.totalItems).addOut(hydra.totalItems, total)
+      res.locals.total = total
 
-    next()
-  }))
-  .use((req, res: CollectionResponse, next) => {
-    if (!assertLocals(res.locals, 'collection', 'searchTemplate', 'queryParams', 'pageSize', 'total')) {
-      return next(new Error('Collection not loaded'))
-    }
+      await res.locals.collection.dataset.import(memberData)
+      res.locals.collection.addOut(hydra.member, [...members.values()])
+      res.locals.collection.deleteOut(hydra.totalItems).addOut(hydra.totalItems, total)
 
-    const views = lib.createViews(res.locals)
+      next()
+    }))
+    .use((req, res: CollectionResponse, next) => {
+      assertLocals(res.locals, 'collection', 'searchTemplate', 'queryParams', 'pageSize', 'total')
 
-    if (views) {
-      res.locals.collection.addOut(hydra.view, [...views.terms])
-      res.locals.collection.dataset.addAll([...views.dataset])
-    }
-    next()
-  })
-  .use(preprocessMiddleware({
-    async getResource(req, res: CollectionResponse) {
-      const { dataset } = res.locals.collection!
-      return clownface({ dataset, term: req.hydra.resource.term })
-    },
-    predicate: knossos.preprocessResponse,
-  }))
-  .use(sendResponse)
+      const views = createViews(res.locals)
+
+      if (views) {
+        res.locals.collection.addOut(hydra.view, [...views.terms])
+        res.locals.collection.dataset.addAll([...views.dataset])
+      }
+      next()
+    })
+    .use(preprocessMiddleware({
+      async getResource(req, res: CollectionResponse) {
+        const { dataset } = res.locals.collection!
+        return clownface({ dataset, term: req.hydra.resource.term })
+      },
+      predicate: knossos.preprocessResponse,
+    }))
+    .use(sendResponse)
+}
+
+export const get = createGetHandler()

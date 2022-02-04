@@ -17,7 +17,7 @@ import { CollectionLocals, createViews, loadCollection, runQueries } from '../..
 
 RdfResource.factory.addMixin(...Object.values(Hydra))
 
-describe('@hydrofoil/labyrinth/lib/collection', () => {
+describe('@hydrofoil/labyrinth/collection', () => {
   let req: Pick<express.Request, 'hydra' | 'labyrinth' | 'query'>
 
   beforeEach(async () => {
