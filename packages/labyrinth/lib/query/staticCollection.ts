@@ -13,10 +13,10 @@ export default function (req: Pick<Request, 'hydra' | 'labyrinth'>, collection: 
   const client = req.labyrinth.sparql
 
   return {
-    async members() {
+    members() {
       return members
     },
-    async totals() {
+    total() {
       return members.length
     },
     async memberData(ids: NamedNode[]) {

@@ -14,20 +14,20 @@ import { toPointer } from './template'
 import { log } from './logger'
 import { isGraphPointer } from './clownface'
 import staticCollection from './query/staticCollection'
-import dynamicCollection from './query/collection'
+import dynamicCollection from './query/dynamicCollection'
 
 interface CollectionLoaded {
   collection: GraphPointer<NamedNode, DatasetExt>
   search: GraphPointer<ResourceIdentifier> | undefined
   searchTemplate: IriTemplate | null
-  queryParams: AnyPointer
+  queryParams: GraphPointer
   pageSize: number
 }
 
 interface QueriesInitialized {
   queries: {
-    members(): Promise<Term[]>
-    totals(): Promise<number>
+    members(): Promise<Term[]> | Term[]
+    total(): Promise<number> | number
     memberData(members: NamedNode[]): Promise<Stream>
   }
 }
@@ -48,7 +48,7 @@ export const loadCollection = async (
   const types = clownface(req.hydra.api).node([...req.hydra.resource.types])
 
   let search: GraphPointer<NamedNode | BlankNode> | undefined
-  let queryParams = clownface({ dataset: $rdf.dataset() })
+  let queryParams = clownface({ dataset: $rdf.dataset() }).blankNode()
   let searchTemplate: IriTemplate | null = null
 
   if (isGraphPointer(searchPtr)) {
@@ -123,8 +123,10 @@ function isNamedNode(arg: Term): arg is NamedNode {
 
 export const runQueries = async (locals: QueriesInitialized): Promise<MembersLoaded> => {
   const members = [...new TermSet(await locals.queries.members())]
-  const memberData = await locals.queries.memberData(members.filter(isNamedNode))
-  const total = await locals.queries.totals()
+  const [memberData, total] = await Promise.all([
+    locals.queries.memberData(members.filter(isNamedNode)),
+    locals.queries.total(),
+  ])
 
   return {
     total,
