@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.10.0-alpha.1
+
+### Patch Changes
+
+- 4651a19: Collection query would have same pattern multiple times when declared multiple times
+
 ## 0.10.0-alpha.0
 
 ### Minor Changes

@@ -12,6 +12,7 @@
     "@labyrinth/testing": "0.0.7"
   },
   "changesets": [
-    "lovely-knives-dream"
+    "lovely-knives-dream",
+    "thirty-pianos-drop"
   ]
 }
