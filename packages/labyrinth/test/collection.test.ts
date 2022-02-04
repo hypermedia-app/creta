@@ -1,12 +1,16 @@
 import { Term } from 'rdf-js'
+import { expect } from 'chai'
 import express from 'express'
 import request from 'supertest'
+import $rdf from 'rdf-ext'
+import DatasetExt from 'rdf-ext/lib/Dataset'
+import clownface, { AnyContext, AnyPointer } from 'clownface'
+import sinon from 'sinon'
+import { rdf } from '@tpluscode/rdf-ns-builders/strict'
 import { handler as hydraBox } from '@labyrinth/testing/hydra-box'
 import { ex } from '@labyrinth/testing/namespace'
-import clownface, { AnyContext, AnyPointer } from 'clownface'
-import DatasetExt from 'rdf-ext/lib/Dataset'
-import $rdf from 'rdf-ext'
-import { rdf } from '@tpluscode/rdf-ns-builders/strict'
+import { knossos } from '@hydrofoil/vocabularies/builders/strict'
+import TermSet from '@rdfjs/term-set'
 import { createGetHandler } from '../collection'
 
 describe('@hydrofoil/labyrinth/collection', () => {
@@ -48,6 +52,41 @@ describe('@hydrofoil/labyrinth/collection', () => {
       // then
       // eslint-disable-next-line prefer-regex-literals
       await response.expect('link', new RegExp('<http://example.com/people>; rel="canonical"'))
+    })
+
+    it('calls hooks on response representation', async () => {
+      // given
+      const representationHook = sinon.spy()
+      const app = express()
+      app.use(hydraBox({
+        setup: async api => {
+          api.resource.types = new TermSet([ex.Collection])
+          api.resource.term = ex.movies;
+          (await api.resource.clownface())
+            .addOut(rdf.type, ex.Collection)
+          clownface(api.api)
+            .namedNode(ex.Collection)
+            .addOut(knossos.preprocessResponse, null)
+        },
+      }))
+      app.use((req, res, next) => {
+        req.loadCode = sinon.stub().resolves(representationHook)
+        next()
+      })
+      app.use(createGetHandler({
+        initQueries,
+      }))
+
+      // when
+      await request(app).get('/movies')
+
+      // then
+      expect(representationHook).to.have.been.calledWithMatch(
+        sinon.match.any,
+        sinon.match(pointer => {
+          return pointer.term.equals(ex.movies)
+        }),
+      )
     })
   })
 })
