@@ -76,6 +76,27 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
       }`)
     })
 
+    it('does not generate duplicate patterns for same assertion', async () => {
+      // given
+      collection.addOut(hydra.memberAssertion, ma => {
+        ma.addOut(hydra.property, vcard.hasMember)
+          .addOut(hydra.subject, ex.Group)
+      })
+      collection.addOut(hydra.manages, collection.out(hydra.memberAssertion))
+      const queries = await testInstance()
+
+      // when
+      await queries.members()
+
+      // then
+      expect(client.query.select).to.have.been.calledOnce
+      expect(client.query.select.firstCall.firstArg).to.be.a.query(sparql`SELECT distinct ?member {
+        ?member ${rdf.type} ${ex.Person} .
+        ${ex.Group} ${vcard.hasMember} ?member .
+        filter(isiri(?member))
+      }`)
+    })
+
     it('allows member assertions with multiple objects', async () => {
       // given
       collection.addOut(hydra.memberAssertion, ma => {

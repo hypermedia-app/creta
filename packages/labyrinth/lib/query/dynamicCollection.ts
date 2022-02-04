@@ -67,7 +67,14 @@ function * createPatterns(subs: Term[], preds: Term[], objs: Term[], { graph }: 
 }
 
 function toSparqlPattern(member: Variable) {
+  const seen = new TermSet()
+
   return function (previous: SparqlTemplateResult[], memberAssertion: GraphPointer): SparqlTemplateResult[] {
+    if (seen.has(memberAssertion.term)) {
+      return previous
+    }
+
+    seen.add(memberAssertion.term)
     const subject = memberAssertion.out(hydra.subject).terms
     const predicate = memberAssertion.out(hydra.property).terms
     const object = memberAssertion.out(hydra.object).terms
