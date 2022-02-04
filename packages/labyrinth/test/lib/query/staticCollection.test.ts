@@ -8,6 +8,8 @@ import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
 import { HydraBox } from 'hydra-box'
 import { Labyrinth } from 'labyrinth/index'
+import { client } from '@labyrinth/testing/sparql'
+import $rdf from 'rdf-ext'
 import staticCollection from '../../../lib/query/staticCollection'
 
 RdfResource.factory.addMixin(...Object.values(Hydra))
@@ -19,6 +21,9 @@ describe('@hydrofoil/labyrinth/lib/query/staticCollection', () => {
 
   beforeEach(async () => {
     hydra = await hydraBox()
+    labyrinth = {
+      sparql: client(),
+    } as any
     collection = namedNode(ex.people)
       .addOut(ns.hydra.member, [ex.Foo, ex.Bar, ex.Baz])
   })
@@ -39,7 +44,7 @@ describe('@hydrofoil/labyrinth/lib/query/staticCollection', () => {
       const members = queries.members()
 
       // then
-      expect(members).to.deep.contain([ex.Foo, ex.Bar, ex.Baz])
+      expect(members).to.deep.contain.members([ex.Foo, ex.Bar, ex.Baz])
     })
   })
 
@@ -62,10 +67,10 @@ describe('@hydrofoil/labyrinth/lib/query/staticCollection', () => {
       const queries = testInstance()
 
       // when
-      const members = await queries.memberData([])
+      const members = await $rdf.dataset().import(await queries.memberData([]))
 
       // then
-      expect(members).to.be.empty
+      expect(members.size).to.be.eq(0)
     })
   })
 })
