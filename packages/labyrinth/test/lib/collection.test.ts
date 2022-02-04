@@ -154,7 +154,7 @@ describe('@hydrofoil/labyrinth/lib/collection', () => {
       // given
       const queries = {
         members: sinon.mock().resolves([ex.foo, ex.bar, ex.baz, ex.baz]),
-        totals: sinon.mock().resolves(1014),
+        total: sinon.mock().resolves(1014),
         memberData: sinon.mock(),
       }
 
@@ -170,7 +170,7 @@ describe('@hydrofoil/labyrinth/lib/collection', () => {
       // given
       const queries = {
         members: sinon.mock().resolves([ex.foo, $rdf.blankNode(), $rdf.literal('foo')]),
-        totals: sinon.mock(),
+        total: sinon.mock(),
         memberData: sinon.mock(),
       }
 
@@ -185,7 +185,7 @@ describe('@hydrofoil/labyrinth/lib/collection', () => {
       // given
       const queries = {
         members: sinon.mock().resolves([ex.foo, ex.foo, ex.bar, ex.bar]),
-        totals: sinon.mock(),
+        total: sinon.mock(),
         memberData: sinon.mock(),
       }
 
