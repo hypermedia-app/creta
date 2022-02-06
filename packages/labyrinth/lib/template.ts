@@ -5,6 +5,7 @@ import $rdf from 'rdf-ext'
 import DatasetExt from 'rdf-ext/lib/Dataset'
 import type { ParsedQs } from 'qs'
 import httpError from 'http-errors'
+import { isUri } from 'valid-url'
 
 const literalValueRegex = /^"(?<value>.+)"(@|\^\^)?((?<=@)(?<language>.*))?((?<=\^\^)(?<datatype>.*))?$/
 const TRUE = $rdf.literal('true', xsd.boolean)
@@ -24,7 +25,7 @@ function createTermFromVariable({ template, value }: {template: GraphPointer; va
     return $rdf.literal(matches.groups.value, datatypeOrLanguage)
   }
 
-  return $rdf.namedNode(value)
+  return $rdf.namedNode(isUri(value) || encodeURI(value))
 }
 
 export function toPointer(template: GraphPointer, queryParams: ParsedQs): GraphPointer<BlankNode, DatasetExt> {

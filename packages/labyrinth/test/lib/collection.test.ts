@@ -17,7 +17,7 @@ import { CollectionLocals, createViews, loadCollection, runQueries } from '../..
 
 RdfResource.factory.addMixin(...Object.values(Hydra))
 
-describe('@hydrofoil/labyrinth/collection', () => {
+describe('@hydrofoil/labyrinth/lib/collection', () => {
   let req: Pick<express.Request, 'hydra' | 'labyrinth' | 'query'>
 
   beforeEach(async () => {
@@ -74,6 +74,50 @@ describe('@hydrofoil/labyrinth/collection', () => {
       expect(result.searchTemplate?.id).to.deep.eq($rdf.blankNode('search'))
       expect(result.queryParams?.out(schema.name).value).to.deep.eq('john')
       expect(result.collection.out(hyper_query.templateMappings).out(schema.name).value).to.deep.eq('john')
+    })
+
+    it('handles unescaped characters in URIs in explicitly represented query', async () => {
+      // given
+      const collection = await req.hydra.resource.clownface()
+      const search = fromPointer(collection.blankNode('search'), {
+        variableRepresentation: hydra.ExplicitRepresentation,
+        mapping: [{
+          variable: 'category',
+          property: schema.category,
+        }],
+      })
+      collection.addOut(hydra.search, search.id)
+      req.query.category = 'https://jmk.lndo.site/park/weight-range/>16-ton'
+
+      // when
+      const result = await loadCollection(req)
+
+      // then
+      const expected = $rdf.namedNode('https://jmk.lndo.site/park/weight-range/%3E16-ton')
+      expect(result.queryParams?.out(schema.category).term).to.deep.eq(expected)
+      expect(result.collection.out(hyper_query.templateMappings).out(schema.category).term).to.deep.eq(expected)
+    })
+
+    it('does not double escape URIs in explicitly represented templates', async () => {
+      // given
+      const collection = await req.hydra.resource.clownface()
+      const search = fromPointer(collection.blankNode('search'), {
+        variableRepresentation: hydra.ExplicitRepresentation,
+        mapping: [{
+          variable: 'category',
+          property: schema.category,
+        }],
+      })
+      collection.addOut(hydra.search, search.id)
+      req.query.category = 'https://jmk.lndo.site/park/weight-range/%3E16-ton'
+
+      // when
+      const result = await loadCollection(req)
+
+      // then
+      const expected = $rdf.namedNode('https://jmk.lndo.site/park/weight-range/%3E16-ton')
+      expect(result.queryParams?.out(schema.category).term).to.deep.eq(expected)
+      expect(result.collection.out(hyper_query.templateMappings).out(schema.category).term).to.deep.eq(expected)
     })
 
     it('dereferences search if it is a URI', async () => {
