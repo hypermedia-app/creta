@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.10.0-alpha.2
+
+### Patch Changes
+
+- 81fd1ce: Explicitly represented template would produce invalid URIs when the query values contained reserved characters
+
 ## 0.10.0-alpha.1
 
 ### Patch Changes
