@@ -22,7 +22,7 @@
     "@rdfine/hydra": "^0.8",
     "@graphy/content.trig.read": "^4.3.3",
     "@rdfjs/namespace": "^1.1.0",
-    "@rdfjs/term-set": "^1.1.0",
+    "@rdfjs/term-set": "^2.0.0",
     "@rdfjs-elements/formats-pretty": "^0.4.2",
     "@tpluscode/rdf-ns-builders": "^1.1.0",
     "@tpluscode/rdf-string": "^0.2.25",
