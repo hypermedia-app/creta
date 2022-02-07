@@ -3800,10 +3800,10 @@ express-rdf-problem-details@^1.0.1:
     http-problem-details-mapper "^0.1.7"
     set-link "^1.0.0"
 
-express-rdf-request@^1.1.0, express-rdf-request@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/express-rdf-request/-/express-rdf-request-1.1.1.tgz#28da5c34603a50ee84cb4ce5f84914eb8ee1d9c6"
-  integrity sha512-UMvnH0NrFn5+DYLXd3iQfHnG7mKVLkrhaCHr5s5tAAj6X3rMHospYxbALjjVGJJUQba7RqnzQ8zBTP7XA3ygiw==
+express-rdf-request@^1.1.0, express-rdf-request@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/express-rdf-request/-/express-rdf-request-1.1.2.tgz#6dd36edea03164567371fff5d55aa46d430f09a3"
+  integrity sha512-U2AisaPsSlPpiHz1gFGFWrWhKcrwS6ivXh6l/2gm6JRxnutJxISwRsaY21trAbON9725h/wzP5nJq4vnhNJijg==
   dependencies:
     "@rdfjs/express-handler" "^1.2.1"
     absolute-url "^1.2.2"
