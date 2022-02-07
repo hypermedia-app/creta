@@ -6308,10 +6308,10 @@ rdf-validate-shacl@^0.2.6:
     debug "^4.0.0"
     rdf-validate-datatype "^0.1.1"
 
-rdf-web-access-control@^1.0.1, rdf-web-access-control@^1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/rdf-web-access-control/-/rdf-web-access-control-1.2.2.tgz#f3db82ee2e0fe014d7996bbd4476e09805f8f3e5"
-  integrity sha512-fj7lOIs/fj/YvY87DFGP9JqFQUG4Y/RGQKrwuPEzBli7gqdyb1xX0vLKsWqp6u8A0/3A1m+AADqXtsrV9n2xSA==
+rdf-web-access-control@^1.2.2, rdf-web-access-control@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/rdf-web-access-control/-/rdf-web-access-control-1.2.3.tgz#0d63854b3930b9485a4948f02f60cdb23a656c38"
+  integrity sha512-S1wPqIoWJ24eHzaBkDntYUKSAHshLdLzhN/SPEatLXm1/jqF83Y3ogBcQkILS9FLwHfj84I9kOzhQcSy5cZy2g==
   dependencies:
     "@rdfjs/data-model" "^1.2.0"
     "@rdfjs/types" "*"
