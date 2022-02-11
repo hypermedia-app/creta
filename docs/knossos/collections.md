@@ -143,7 +143,7 @@ prefix hydra: <http://www.w3.org/ns/hydra/core#>
   hydra:memberAssertion
   [
     hydra:property schema:creativeWorkStatus ;
-    hydra:object "Published" ;
+    hydra:object schema:Published ;
   ] ;
 .
 ```
