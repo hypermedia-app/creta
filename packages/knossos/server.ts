@@ -1,7 +1,7 @@
-import Program from 'commander'
+import { program } from 'commander'
 import { init, serve } from './lib/command'
 
-Program.command('serve <endpoint>')
+program.command('serve <endpoint>')
   .option('-p, --port <port>', 'Port', value => parseInt(value), 8888)
   .option('--api <api>', 'Api Documentation path', '/api')
   .option('--base')
@@ -13,10 +13,9 @@ Program.command('serve <endpoint>')
   .option('--routePath <routePath>', 'Base path pattern used to prefix the knossos middleware')
   .action(serve)
 
-Program.command('init [packages...]')
-  .description('Populates the initial directory structure of resource files in turtle format', {
-    packages: 'Additional package names to source initial resources',
-  })
+program.command('init')
+  .description('Populates the initial directory structure of resource files in turtle format')
+  .argument('[packages...]', 'Additional package names to source initial resources')
   .action(async (packages) => {
     const result = await init({
       dest: process.cwd(),
@@ -29,4 +28,4 @@ Program.command('init [packages...]')
     process.exit(result)
   })
 
-Program.parse(process.argv)
+program.parse(process.argv)

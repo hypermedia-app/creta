@@ -1,9 +1,9 @@
-import Program from 'commander'
+import { program } from 'commander'
 import { put, putVocabs } from './lib/command'
 import { parseExtraVocabs } from './lib/command/extraVocabs'
 import { log } from './lib/log'
 
-Program.command('put [dirs...]')
+program.command('put [dirs...]')
   .description('Initializes the database from local resource files')
   .requiredOption('--api <api>')
   .requiredOption('--endpoint <endpoint>')
@@ -19,7 +19,7 @@ Program.command('put [dirs...]')
       })
   })
 
-Program.command('put-vocabs')
+program.command('put-vocabs')
   .description('Inserts vocabulary graphs into the database')
   .requiredOption('--apiDoc <apiDoc>')
   .requiredOption('--endpoint <endpoint>')
@@ -35,4 +35,4 @@ Program.command('put-vocabs')
       })
   })
 
-Program.parse(process.argv)
+program.parse(process.argv)

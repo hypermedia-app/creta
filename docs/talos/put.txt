@@ -3,11 +3,11 @@ Usage: talos put [options] [dirs...]
 Initializes the database from local resource files
 
 Options:
-  --api <api>                
-  --endpoint <endpoint>      
+  --api <api>
+  --endpoint <endpoint>
   --token <token>            System authentication token
-  -u, --user <user>          
-  -p, --password <password>  
+  -u, --user <user>
+  -p, --password <password>
   --apiPath <apiPath>        The path of the API Documentation resource
                              (default: "/api")
   -h, --help                 display help for command
