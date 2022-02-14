@@ -1977,10 +1977,10 @@
     "@types/rdf-js" "*"
     "@types/rdfjs__sink-map" "*"
 
-"@types/rdfjs__namespace@*", "@types/rdfjs__namespace@^1.1.3":
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/@types/rdfjs__namespace/-/rdfjs__namespace-1.1.5.tgz#c7bffd0edf489ba73ce7ceb901a27cd357651aa0"
-  integrity sha512-g6oZJzFNdR5W8yMrhLHtwguenwLEZuqHH8xbnybhMwYABZABCLhcY9tt9xZsVHrzLm3SujVR4OYvb8M0OfU3qw==
+"@types/rdfjs__namespace@*", "@types/rdfjs__namespace@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/rdfjs__namespace/-/rdfjs__namespace-2.0.0.tgz#8830386855f07fee87d6316f0f7af9365725160a"
+  integrity sha512-bpVmmBrwg4plwfSNtwbwIYtZEpGFPWHTlfa1iftSY03+V+2wq+pfZxYkZwrhZwyh/Dxy5usIrVt04Rvigc4uXg==
   dependencies:
     rdf-js "^4.0.2"
 
