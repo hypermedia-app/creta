@@ -1367,9 +1367,9 @@
     "@tpluscode/rdfine" "^0.5.34"
 
 "@rdfine/hydra@^0.8":
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/@rdfine/hydra/-/hydra-0.8.2.tgz#3c2ab6449495265725a8039e68dabdeac2b887e6"
-  integrity sha512-Gijtp1HJvRFhOnRgtw7Rn6MjG6U7yhhH0nw2cz2Sp4B5LhjGZG1JxcwzrFhNqO56J0Db/kxBmTZbiWHCf+5xew==
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@rdfine/hydra/-/hydra-0.8.3.tgz#c2f2a4e3fc828962db526170717efda7b15464a6"
+  integrity sha512-UYIE34cie+acg2GLPlTpwZxQBMyC1gjBJ0cGpbA0/BdZRwBHNvnUA9ysAD2IbMcRHs1B9jdm+LFBeLYw6iUmnA==
   dependencies:
     "@rdf-esm/data-model" "^0.5.3"
     "@rdfine/rdf" "^0.5.6"
@@ -1724,10 +1724,10 @@
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.2.22.tgz#47020d7e4cf19194d43b5202f35f75bd2ad35ce7"
   integrity sha512-tFfcE+DSTzWAgifkjik9AySNqIyNoYwmR+uecPwwD/XRNfvOjmC/FjCxpiUGDkDVDphPfCUecSQVFw+lN3M3kQ==
 
-"@types/clownface@*", "@types/clownface@^1.0.3":
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/@types/clownface/-/clownface-1.2.5.tgz#5c1098ae8232b8018f14dde4259283c0e64cfca6"
-  integrity sha512-5IQHgyqWZz1Jv8cEb8sVC/Da2N+UTBJiQPLQiurOzOVbyxD95aB59o1MEGr9hJ9HLYFR8EAKiIeYP4vfAsaXtw==
+"@types/clownface@*", "@types/clownface@^1.2.6":
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/@types/clownface/-/clownface-1.2.6.tgz#506d88d7b5be1387b131fc19c83d1c5f899d3fdb"
+  integrity sha512-AAHs2y+BOjnUV8ffyo0be1JMYqfn2Li/pboBNVTF+Y8S69faw/+JTKATPFho6lgCMP3ZV3BMBWOoCyZ8C8TJaA==
   dependencies:
     rdf-js "^4.0.2"
 
