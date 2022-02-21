@@ -57,7 +57,7 @@
     "@types/fs-extra": "^9.0.13",
     "@types/nanoid": "^2.1.0",
     "@types/stream-to-promise": "^2.2.1",
-    "chai": "^4.3.3",
+    "chai": "^4.3.6",
     "mocha": "^9.1.4",
     "sinon": "^11.1.2",
     "supertest": "^6.1.6",

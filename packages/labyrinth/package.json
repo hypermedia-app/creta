@@ -48,7 +48,7 @@
     "@types/parse-prefer-header": "^1.0.1",
     "@types/stream-to-array": "^2.3.0",
     "@zazuko/rdf-vocabularies": "*",
-    "chai": "^4.2.0",
+    "chai": "^4.3.6",
     "hydra-box": "^0.6.3",
     "into-stream": "^6.0.0",
     "mocha": "^9.1.4",
