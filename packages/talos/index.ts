@@ -21,7 +21,7 @@ program.command('put [dirs...]')
 
 program.command('put-vocabs')
   .description('Inserts vocabulary graphs into the database')
-  .requiredOption('--apiDoc <apiDoc>')
+  .option('--apiDoc <apiDoc>')
   .requiredOption('--endpoint <endpoint>')
   .option('--token <token>', 'System authentication token')
   .option('-u, --user <user>')
