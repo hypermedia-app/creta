@@ -1,5 +1,11 @@
 # @hydrofoil/talos
 
+## 0.4.4-alpha.0
+
+### Patch Changes
+
+- @hydrofoil/knossos@0.6.1-alpha.0
+
 ## 0.4.3
 
 ### Patch Changes

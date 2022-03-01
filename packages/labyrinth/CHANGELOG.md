@@ -1,5 +1,23 @@
 # @hydrofoil/labyrinth
 
+## 0.10.0-alpha.2
+
+### Patch Changes
+
+- 81fd1ce: Explicitly represented template would produce invalid URIs when the query values contained reserved characters
+
+## 0.10.0-alpha.1
+
+### Patch Changes
+
+- 4651a19: Collection query would have same pattern multiple times when declared multiple times
+
+## 0.10.0-alpha.0
+
+### Minor Changes
+
+- a703a72: Significant refactoring of collection GET handler
+
 ## 0.9.1
 
 ### Patch Changes

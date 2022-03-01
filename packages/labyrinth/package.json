@@ -1,6 +1,6 @@
 {
   "name": "@hydrofoil/labyrinth",
-  "version": "0.9.1",
+  "version": "0.10.0-alpha.2",
   "description": "Build Hydra APIs on top of hydra-box",
   "scripts": {
     "prepare": "tsc"
@@ -40,13 +40,15 @@
     "rdf-ext": "^1.3.5",
     "rdf-literal": "^1.3.0",
     "sparql-http-client": "^2.4.0",
-    "stream-to-array": "^2.3.0"
+    "stream-to-array": "^2.3.0",
+    "valid-url": "^1.0.9"
   },
   "devDependencies": {
     "@labyrinth/testing": "^0.0.7",
     "@rdfjs/formats-common": "^2.2.0",
     "@types/parse-prefer-header": "^1.0.1",
     "@types/stream-to-array": "^2.3.0",
+    "@types/valid-url": "^1",
     "@zazuko/rdf-vocabularies": "*",
     "chai": "^4.3.6",
     "hydra-box": "^0.6.3",

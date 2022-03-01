@@ -1,44 +1,80 @@
-import asyncMiddleware from 'middleware-async'
-import clownface, { AnyPointer } from 'clownface'
-import { hydra } from '@tpluscode/rdf-ns-builders'
+import { RequestHandler, Router, Response } from 'express'
+import clownface from 'clownface'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
-import { preprocessResource } from './lib/middleware/preprocessResource'
+import asyncMiddleware from 'middleware-async'
+import { hydra } from '@tpluscode/rdf-ns-builders'
+import { preprocessMiddleware } from './lib/middleware/preprocessResource'
 import * as lib from './lib/collection'
-import * as template from './lib/template'
-import { log } from './lib/logger'
 
-export const get = asyncMiddleware(async (req, res) => {
-  const types = clownface(req.hydra.api).node([...req.hydra.resource.types])
+export type CollectionResponse = Response<any, Partial<lib.CollectionLocals>>
 
-  const collection = await req.hydra.resource.clownface()
-  let query: AnyPointer | undefined
-  const search = await lib.loadSearch(collection, req.labyrinth.sparql)
-  if (search) {
-    query = template.toPointer(search, req.query)
-
-    log('Search params %s', query.dataset.toString())
+function assertLocals<T extends keyof lib.CollectionLocals>(locals: Partial<lib.CollectionLocals>, ...keys: T[]): asserts locals is Pick<lib.CollectionLocals, T> & Partial<lib.CollectionLocals> {
+  const missingKeys = keys.filter(key => !(key in locals))
+  if (missingKeys.length) {
+    throw new Error(`Missing values for ${missingKeys.join(', ')} in response locals`)
   }
+}
 
-  const hydraLimit = query?.out(hydra.limit).value || collection.out(hydra.limit).value || types.out(hydra.limit).value
-  const pageSize = hydraLimit ? parseInt(hydraLimit) : req.labyrinth.collection.pageSize
-
-  const { dataset } = await lib.collection({
-    hydraBox: req.hydra,
-    collection,
-    query,
-    sparqlClient: req.labyrinth.sparql,
-    pageSize,
-  })
-
-  await preprocessResource({
-    req,
-    res,
-    async getResource() {
-      return clownface({ dataset, term: req.hydra.resource.term })
-    },
-    predicate: knossos.preprocessResponse,
-  })
-
+const sendResponse: RequestHandler = (req, res) => {
+  const { dataset } = res.locals.collection
   res.setLink(req.hydra.resource.term.value, 'canonical')
   return res.dataset(dataset)
-})
+}
+
+export function createGetHandler({
+  loadCollection = lib.loadCollection,
+  initQueries = lib.initQueries,
+  runQueries = lib.runQueries,
+  createViews = lib.createViews,
+}: Partial<typeof lib> = {}): RequestHandler {
+  return Router()
+    .use(asyncMiddleware(async (req, res: CollectionResponse, next) => {
+      res.locals = await loadCollection(req)
+      next()
+    }))
+    .use(asyncMiddleware(async (req, res: CollectionResponse, next) => {
+      assertLocals(res.locals, 'collection', 'queryParams', 'pageSize', 'search', 'searchTemplate')
+
+      res.locals = {
+        ...res.locals,
+        ...await initQueries(res.locals, req),
+      }
+      next()
+    }))
+    .use(asyncMiddleware(async (req, res: CollectionResponse, next) => {
+      assertLocals(res.locals, 'collection', 'queries')
+
+      const {
+        members, total, memberData,
+      } = await runQueries(res.locals)
+
+      res.locals.total = total
+
+      await res.locals.collection.dataset.import(memberData)
+      res.locals.collection.addOut(hydra.member, [...members.values()])
+      res.locals.collection.deleteOut(hydra.totalItems).addOut(hydra.totalItems, total)
+
+      next()
+    }))
+    .use((req, res: CollectionResponse, next) => {
+      assertLocals(res.locals, 'collection', 'searchTemplate', 'queryParams', 'pageSize', 'total')
+
+      const views = createViews(res.locals)
+
+      if (views) {
+        res.locals.collection.addOut(hydra.view, [...views.terms])
+        res.locals.collection.dataset.addAll([...views.dataset])
+      }
+      next()
+    })
+    .use(preprocessMiddleware({
+      async getResource(req, res: CollectionResponse) {
+        const { dataset } = res.locals.collection!
+        return clownface({ dataset, term: req.hydra.resource.term })
+      },
+      predicate: knossos.preprocessResponse,
+    }))
+    .use(sendResponse)
+}
+
+export const get = createGetHandler()

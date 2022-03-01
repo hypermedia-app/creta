@@ -1,0 +1,19 @@
+{
+  "mode": "exit",
+  "tag": "alpha",
+  "initialVersions": {
+    "@hydrofoil/conduit": "0.1.26",
+    "@hydrofoil/knossos-events": "0.3.3",
+    "@hydrofoil/knossos": "0.6.0",
+    "@hydrofoil/labyrinth": "0.9.1",
+    "@hydrofoil/minotaur": "0.2.1",
+    "@hydrofoil/talos": "0.4.3",
+    "@hydrofoil/test-package": "0.0.0",
+    "@labyrinth/testing": "0.0.7"
+  },
+  "changesets": [
+    "lovely-knives-dream",
+    "rich-peas-kick",
+    "thirty-pianos-drop"
+  ]
+}
