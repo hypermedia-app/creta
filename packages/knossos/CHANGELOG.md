@@ -1,5 +1,19 @@
 # @hydrofoil/knossos
 
+## 0.6.1
+
+### Patch Changes
+
+- 2fd978f: build(deps): bump express from 4.17.2 to 4.17.3
+- 8b7192c: build(deps): bump commander from 7.2.0 to 9.0.0
+- 09b0f72: build(deps): bump hydra-box-web-access-control from 1.1.4 to 1.1.5
+- Updated dependencies [2fd978f]
+- Updated dependencies [a703a72]
+- Updated dependencies [81fd1ce]
+- Updated dependencies [4651a19]
+  - @hydrofoil/knossos-events@0.3.4
+  - @hydrofoil/labyrinth@0.10.0
+
 ## 0.6.1-alpha.0
 
 ### Patch Changes

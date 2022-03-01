@@ -1,5 +1,17 @@
 # @hydrofoil/conduit
 
+## 0.1.27
+
+### Patch Changes
+
+- 2fd978f: build(deps): bump express from 4.17.2 to 4.17.3
+- 2fc5612: Bump node-fetch to 2.6.7
+- ebfe668: build(deps): bump express-jwt from 6.1.0 to 6.1.1
+- Updated dependencies [2fd978f]
+- Updated dependencies [8b7192c]
+- Updated dependencies [09b0f72]
+  - @hydrofoil/knossos@0.6.1
+
 ## 0.1.27-alpha.0
 
 ### Patch Changes

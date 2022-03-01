@@ -1,5 +1,17 @@
 # @hydrofoil/talos
 
+## 0.4.4
+
+### Patch Changes
+
+- 8b7192c: build(deps): bump commander from 7.2.0 to 9.0.0
+- 2fc5612: Bump node-fetch to 2.6.7
+- 9d61d92: `--apiDoc` option should be optional
+- Updated dependencies [2fd978f]
+- Updated dependencies [8b7192c]
+- Updated dependencies [09b0f72]
+  - @hydrofoil/knossos@0.6.1
+
 ## 0.4.4-alpha.0
 
 ### Patch Changes
