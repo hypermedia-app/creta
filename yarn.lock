@@ -1420,10 +1420,10 @@
     "@tpluscode/rdf-ns-builders" "^1.0.0"
     "@tpluscode/rdfine" "^0.5.27"
 
-"@rdfjs-elements/formats-pretty@^0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@rdfjs-elements/formats-pretty/-/formats-pretty-0.4.2.tgz#7fd15c2fd679590e959c84c66d4ef5b8da36acd3"
-  integrity sha512-YvJr+1SC/E2oaVnOzgnUObP4sMqrSXXc8+8J9H6/xIzGiYyqZsN5z+uMHRFk9+fZMB5ucgGnXmRv0iGSswMrlw==
+"@rdfjs-elements/formats-pretty@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@rdfjs-elements/formats-pretty/-/formats-pretty-0.4.3.tgz#bf784740b44a64f27e61ce5aac27c1c6b1c568fb"
+  integrity sha512-zSvobUHMqSpdbYKhPCknDxsPgGf9TNMpikqNQp9ka1MpRprATenFVaBX6gLrd8wWGcHcTvTAjJ1BnsbK0wAtnQ==
   dependencies:
     "@graphy/content.nq.read" "^4.3.3"
     "@graphy/content.trig.read" "^4.3.3"
