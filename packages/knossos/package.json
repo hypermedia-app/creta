@@ -32,7 +32,7 @@
     "camouflage-rewrite": "^1.2.0",
     "clownface": "^1.4.0",
     "commander": "^9.0.0",
-    "fs-extra": "^10.0.0",
+    "fs-extra": "^10.0.1",
     "debug": "^4.1.1",
     "express": "^4.17.3",
     "express-middleware-shacl": "^1.1.4",
