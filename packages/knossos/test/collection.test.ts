@@ -274,6 +274,45 @@ describe('@hydrofoil/knossos/collection', () => {
       }))
     })
 
+    it('adds property/object member assertions from class', async () => {
+      // given
+      app.use(async (req, res, next) => {
+        const collection = await req.hydra.resource.clownface()
+        collection.addOut(rdf.type, ex.Collection)
+        clownface(req.hydra.api)
+          .node(ex.Collection)
+          .addOut(hydra.memberAssertion, assert => {
+            assert.addOut(hydra.property, rdf.type)
+            assert.addOut(hydra.object, foaf.Person)
+          })
+        collection.addOut(hydra.memberAssertion, assert => {
+          assert.addOut(hydra.property, foaf.knows)
+          assert.addOut(hydra.object, ex.Jane)
+        })
+        next()
+      })
+      app.post('/collection', CreateMember)
+
+      // when
+      await request(app)
+        .post('/collection')
+        .send(turtle`<> ${schema.name} "john" .`.toString())
+        .set('content-type', 'text/turtle')
+        .set('host', 'example.com')
+
+      // then
+      expect(knossos.store.save).to.have.been.calledWith(sinon.match((value: GraphPointer) => {
+        expect(value.out(rdf.type).terms).to.deep.contain.members([
+          schema.Person,
+          foaf.Person,
+        ])
+        expect(value.out(foaf.knows).terms).to.deep.contain.members([
+          ex.Jane,
+        ])
+        return true
+      }))
+    })
+
     it('does not add member assertions other than property/object', async () => {
       // given
       app.use(async (req, res, next) => {
