@@ -19,6 +19,7 @@ import TermSet from '@rdfjs/term-set'
 import { payloadTypes, shaclValidate } from './shacl'
 import { save } from './lib/resource'
 import { applyTransformations, hasAllRequiredVariables } from './lib/template'
+import { combinePointers } from './lib/clownface'
 
 export type { TransformVariable } from './lib/template'
 
@@ -100,9 +101,12 @@ const prepareMemberIdentifier = asyncMiddleware(async (req, res: CreateMemberRes
   next()
 })
 
+const memberAssertionPredicates = [hydra.manages, hydra.memberAssertion]
 const assertTypeMemberAssertion: express.RequestHandler = asyncMiddleware(async (req, res: CreateMemberResponse, next) => {
   const collection = await req.hydra.resource.clownface()
-  const memberAssertions = collection.out([hydra.manages, hydra.memberAssertion])
+  const collectionTypes = clownface(req.hydra.api).node(collection.out(rdf.type))
+
+  const memberAssertions = combinePointers(collection, collectionTypes).out(memberAssertionPredicates)
   const types = memberAssertions.has(hydra.property, rdf.type).out(hydra.object)
 
   if (!types.terms.length) {
