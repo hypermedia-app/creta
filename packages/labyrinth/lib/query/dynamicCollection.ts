@@ -2,7 +2,7 @@ import { NamedNode, Stream, Term, Variable } from 'rdf-js'
 import { DESCRIBE, SELECT } from '@tpluscode/sparql-builder'
 import { hydra, ldp, rdf } from '@tpluscode/rdf-ns-builders'
 import $rdf from 'rdf-ext'
-import cf, { AnyPointer, GraphPointer } from 'clownface'
+import cf, { AnyPointer, GraphPointer, MultiPointer } from 'clownface'
 import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
 import { IriTemplate, IriTemplateMapping } from '@rdfine/hydra'
 import { Api } from 'hydra-box/Api'
@@ -98,9 +98,9 @@ function toSparqlPattern(member: Variable) {
 
 type SelectBuilder = ReturnType<typeof SELECT>
 
-function createOrdering(api: AnyPointer, collection: GraphPointer, subject: Variable): { patterns: SparqlTemplateResult; addClauses(q: SelectBuilder): SelectBuilder } {
+function createOrdering(collectionTypes: MultiPointer, collection: GraphPointer, subject: Variable): { patterns: SparqlTemplateResult; addClauses(q: SelectBuilder): SelectBuilder } {
   const [instanceOrders] = collection.out(hyper_query.order).toArray()
-  const [typeOrders] = api.node(collection.out(rdf.type)).out(hyper_query.order).toArray()
+  const [typeOrders] = collectionTypes.out(hyper_query.order).toArray()
   const orders = instanceOrders?.list() || typeOrders?.list()
 
   if (!orders) {
@@ -181,14 +181,17 @@ interface DynamicCollection {
   client: StreamClient
 }
 
+const memberAssertionPredicates = [hydra.manages, hydra.memberAssertion]
 export default async function ({ api, collection, client, pageSize, query, variables }: DynamicCollection) {
   const subject = $rdf.variable('member')
   const linked = $rdf.variable('linked')
+  const apiPointer = cf(api)
+  const collectionTypes = apiPointer.node(collection.out(rdf.type))
 
-  const memberAssertions = collection
-    .out([hydra.manages, hydra.memberAssertion])
-    .toArray()
-    .reduce(toSparqlPattern(subject), [])
+  const memberAssertions = [
+    ...collectionTypes.out(memberAssertionPredicates).toArray().reduce(toSparqlPattern(subject), []),
+    ...collection.out(memberAssertionPredicates).toArray().reduce(toSparqlPattern(subject), []),
+  ]
 
   const managesBlockPatterns = memberAssertions.reduce((combined, next) => sparql`${combined}\n${next}`, sparql``)
   let filterPatters: Array<string | SparqlTemplateResult> = []
@@ -196,7 +199,7 @@ export default async function ({ api, collection, client, pageSize, query, varia
     filterPatters = await Promise.all(variables.mapping.map(createTemplateVariablePatterns(subject, query, api)))
   }
 
-  const order = createOrdering(cf(api), collection, subject)
+  const order = createOrdering(collectionTypes, collection, subject)
 
   const memberPatterns = sparql`${managesBlockPatterns}\n${filterPatters}`
 
@@ -243,7 +246,7 @@ export default async function ({ api, collection, client, pageSize, query, varia
       }
 
       const ids = [...new TermSet(members)]
-      const linkPatterns = linkedResourcePatterns(cf(api), collection, subject, linked)
+      const linkPatterns = linkedResourcePatterns(apiPointer, collection, subject, linked)
 
       if (linkPatterns) {
         return DESCRIBE`${subject} ${linked}`.WHERE`

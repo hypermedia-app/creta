@@ -76,6 +76,30 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
       }`)
     })
 
+    it('queries with member assertion patterns combined from instance and class', async () => {
+      // given
+      collection
+        .addOut(rdf.type, ex.Collection)
+      clownface(api)
+        .node(ex.Collection)
+        .addOut(hydra.memberAssertion, ma => {
+          ma.addOut(hydra.property, rdf.type)
+            .addOut(hydra.object, foaf.Person)
+        })
+      const queries = await testInstance()
+
+      // when
+      await queries.members()
+
+      // then
+      expect(client.query.select).to.have.been.calledOnce
+      expect(client.query.select.firstCall.firstArg).to.be.a.query(sparql`SELECT distinct ?member {
+        ?member ${rdf.type} ${foaf.Person} .
+        ?member ${rdf.type} ${ex.Person} .
+        filter(isiri(?member))
+      }`)
+    })
+
     it('does not generate duplicate patterns for same assertion', async () => {
       // given
       collection.addOut(hydra.memberAssertion, ma => {
