@@ -1622,13 +1622,6 @@
   resolved "https://registry.yarnpkg.com/@tpluscode/eslint-config/-/eslint-config-0.3.0.tgz#73c71b4fd6ea3d9a91bc500142f35370026b0103"
   integrity sha512-hpGHFJx21NZEXqgHNfym55plvVByqaggPDJ0r5xG3Zv3FOCzVIkH+6r8JeFmn1MWExIXgyYrdtkzbXtDtUQ/2w==
 
-"@tpluscode/rdf-ns-builders@^0.4.0":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@tpluscode/rdf-ns-builders/-/rdf-ns-builders-0.4.2.tgz#c9b7733b85b1529a6258a98c5bc6e8ec87120c0a"
-  integrity sha512-c9SdFVGBvCf4yCUuqOHs7GqAyWtvR8avvYey3wFlKd61EqrdaIZAa/YivG9p+bu2wJcgqjijkN+ASlhnBosZqw==
-  dependencies:
-    "@rdf-esm/namespace" "^0.5.1"
-
 "@tpluscode/rdf-ns-builders@^1", "@tpluscode/rdf-ns-builders@^1.0.0", "@tpluscode/rdf-ns-builders@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@tpluscode/rdf-ns-builders/-/rdf-ns-builders-1.1.0.tgz#92baf7c2c08c080396161c7944081804507c9490"
@@ -4398,17 +4391,17 @@ hydra-box-web-access-control@^1.1.5:
     middleware-async "^1.3.1"
     rdf-web-access-control "^1.2.3"
 
-hydra-box@^0.6, hydra-box@^0.6.2, hydra-box@^0.6.3:
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/hydra-box/-/hydra-box-0.6.3.tgz#09f1014693395c663c18b58fbaeff7df9ad4fa33"
-  integrity sha512-hhMk3lCRhe9LJlJtTLKgq51/5mmZwELkZTyKmay6VggbgDl4du7lHS79WCbupNNARYNkRLHWZCW4TOetD7/P+Q==
+hydra-box@^0.6, hydra-box@^0.6.4:
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/hydra-box/-/hydra-box-0.6.4.tgz#b67f29b0b7d5928dd3cb5b4a71f844261903cbf6"
+  integrity sha512-ECxDlqgAZxzLU0etDmNns267K6aDWLG5Q4Yt2OGF4iKwh7tuv+KMbuCwlBOA30AzPzp+xQajmAVa+M67IePDig==
   dependencies:
     "@rdfjs/data-model" "^1.1.2"
     "@rdfjs/dataset" "^1.0.1"
     "@rdfjs/express-handler" "^1.2.0"
     "@rdfjs/namespace" "^1.1.0"
     "@rdfjs/term-set" "^1.0.0"
-    "@tpluscode/rdf-ns-builders" "^0.4.0"
+    "@tpluscode/rdf-ns-builders" "^1.0.0"
     absolute-url "^1.2.2"
     clownface "^1"
     debug "^4.1.1"
@@ -4418,7 +4411,7 @@ hydra-box@^0.6, hydra-box@^0.6.2, hydra-box@^0.6.3:
     promise-the-world "^1.0.1"
     rdf-dataset-ext "^1.0.0"
     rdf-loader-code "^0.3.0"
-    rdf-loaders-registry "^0.2.0"
+    rdf-loaders-registry "^0.3.0"
     rdf-utils-fs "^2.1.0"
     set-link "^1.0.0"
     uri-template-route "^1.0.0"
@@ -6250,10 +6243,10 @@ rdf-loader-code@^0.3.0, rdf-loader-code@^0.3.2:
     "@rdfjs/namespace" "^1.1.0"
     clownface "^1.0.0"
 
-rdf-loaders-registry@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/rdf-loaders-registry/-/rdf-loaders-registry-0.2.0.tgz#5c9576df9cac896fa1bfa3def30b8117aae93dc1"
-  integrity sha512-dkoZwQgXi2LTiULiyagEuM8X249UnGb6epJSy+upfkebarNj6XfvIzwuAcwMGHuNv8kr+ZWt0xwpCjgnpk3lfw==
+rdf-loaders-registry@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/rdf-loaders-registry/-/rdf-loaders-registry-0.3.0.tgz#050af3b6b4afd1152d6a3d6f3204a0111b1f1405"
+  integrity sha512-rd7a4mT3ERDW9NJrNpdvS6yexn0oBQyBeTnQwQAyC6k8eef4o/DzRIR3ezsW0KiaohfiVSaeqsDetjhlCHpvng==
   dependencies:
     "@rdfjs/data-model" "^1.1.2"
 
