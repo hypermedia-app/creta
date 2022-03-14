@@ -1991,10 +1991,10 @@
   dependencies:
     rdf-js "^4.0.2"
 
-"@types/rdfjs__term-set@^1.0.1":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@types/rdfjs__term-set/-/rdfjs__term-set-1.0.3.tgz#d44c222d9f12642274e68a7b42673209cab70366"
-  integrity sha512-+BNhhBuDeYwR7yNDetqkaTbHIZ1Tt++vSfuzOdFGORxSLs1bxSl6Ae31jA2E+ePgZGbKRSGjLlWyUv1k7krjww==
+"@types/rdfjs__term-set@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/rdfjs__term-set/-/rdfjs__term-set-2.0.0.tgz#1904ca9c335f16a4bb86fc6d85ff3b9658324f5c"
+  integrity sha512-ocpJP5Q7sezYva9VK/7U/azK1AlZwRg6Ah6YHYmjASYroCU/7jZ1ZejlOfSokbSjKS9EWerf3D9DhLlQmvyvKA==
   dependencies:
     rdf-js "^4.0.2"
 
@@ -5384,11 +5384,6 @@ middleware-async@^1.2.6, middleware-async@^1.2.7, middleware-async@^1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/middleware-async/-/middleware-async-1.3.1.tgz#ac1043e6f173048c82dd5fb6683eecca096034d3"
   integrity sha512-vFlOr3D3GIvv9FeoDRrqHEetFPkJCJmHerf8j1aFDL/SyyJk3f6GCT2mKZHH+iEIWB4PszFTjJuwipMZjjmZAQ==
-
-mime-db@1.50.0:
-  version "1.50.0"
-  resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.50.0.tgz#abd4ac94e98d3c0e185016c67ab45d5fde40c11f"
-  integrity sha512-9tMZCDlYHqeERXEHO9f/hKfNXhre5dK2eE/krIvUjZbS2KPcqGDfNShIWS1uW9XOTKQKqK6qbeOci18rbfW77A==
 
 mime-db@1.51.0:
   version "1.51.0"

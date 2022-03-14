@@ -39,7 +39,7 @@
     "@types/rdfjs__express-handler": "^1.1.5",
     "@types/rdfjs__namespace": "^1.1.3",
     "@types/rdfjs__term-map": "^1",
-    "@types/rdfjs__term-set": "^1.0.1",
+    "@types/rdfjs__term-set": "^2.0.0",
     "@types/set-link": "^1.0.1",
     "@types/sinon": "^10.0.11",
     "@types/sinon-chai": "^3.2.8",
