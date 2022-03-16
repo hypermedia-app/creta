@@ -1,5 +1,17 @@
 # @hydrofoil/knossos
 
+## 0.6.2
+
+### Patch Changes
+
+- c41a049: build(deps): bump @rdfjs-elements/formats-pretty from 0.4.2 to 0.4.3
+- f62fe40: build(deps): bump fs-extra from 10.0.0 to 10.0.1
+- 722af56: build(deps): bump hydra-box from 0.6.3 to 0.6.4
+- 3d1af89: Support member assertions on collection types when creating collections members (closes #74)
+- Updated dependencies [cb26eaa]
+- Updated dependencies [722af56]
+  - @hydrofoil/labyrinth@0.10.1
+
 ## 0.6.1
 
 ### Patch Changes

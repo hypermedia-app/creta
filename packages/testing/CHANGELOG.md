@@ -1,5 +1,11 @@
 # @labyrinth/testing
 
+## 0.0.9
+
+### Patch Changes
+
+- 722af56: build(deps): bump hydra-box from 0.6.3 to 0.6.4
+
 ## 0.0.8
 
 ### Patch Changes

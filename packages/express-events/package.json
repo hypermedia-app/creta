@@ -25,7 +25,7 @@
     "rdf-express-node-factory": "^1.1"
   },
   "devDependencies": {
-    "@labyrinth/testing": "^0.0.8",
+    "@labyrinth/testing": "^0.0.9",
     "@types/once": "^1.4.0",
     "chai": "^4.3.6",
     "express": "^4.17.3",
