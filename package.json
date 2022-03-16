@@ -65,7 +65,7 @@
     "sinon-chai": "^3.7.0",
     "standard": "^16.0.3",
     "ts-node": "^9.1.1",
-    "tsconfig-paths": "^3.9.0",
+    "tsconfig-paths": "^3.14.0",
     "typedoc": "^0.22.13",
     "typescript": "^4.5.5"
   },
