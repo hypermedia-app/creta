@@ -33,7 +33,7 @@ function replacer(basePath: string, resourceUrl: string, s: string, e = s) {
   }
 }
 
-const angleBracketTransform = (basePath: string, resourceUrl: string) => replaceStream(/<([^>]+)>/g, replacer(basePath, resourceUrl, '<', '>'))
+const angleBracketTransform = (basePath: string, resourceUrl: string) => replaceStream(/<([^>]+)>(?=([^"\\]*(\\.|"([^"\\]*\\.)*[^"\\]*"))*[^"]*$)/g, replacer(basePath, resourceUrl, '<', '>'))
 const jsonTransform = (basePath: string, resourceUrl: string) => replaceStream(/"([./][^"]+)"/g, replacer(basePath, resourceUrl, '"'))
 
 const filePatchTransforms = new Map([

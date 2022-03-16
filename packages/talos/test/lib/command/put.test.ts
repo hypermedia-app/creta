@@ -3,7 +3,7 @@ import { put, Put } from 'talos/lib/command/put'
 import { ASK, DELETE, INSERT, SELECT } from '@tpluscode/sparql-builder'
 import ParsingClient from 'sparql-http-client/ParsingClient'
 import { expect } from 'chai'
-import { doap, hydra, schema, vcard } from '@tpluscode/rdf-ns-builders'
+import { dash, doap, hydra, schema, vcard, sh } from '@tpluscode/rdf-ns-builders'
 import namespace from '@rdfjs/namespace'
 import * as NodeFetch from 'node-fetch'
 import sinon from 'sinon'
@@ -109,6 +109,39 @@ for (const api of apis) {
             .execute(client.query)
 
           await expect(hasExpectedType).to.eventually.be.true
+        })
+
+        it('leaves angle brackets inside single line string literals intact', async () => {
+          const [{ value }] = await SELECT`?value`.WHERE`
+            ${ns('project/creta/shape')} ${sh.property} ?property .
+            
+            ?property ${sh.name} "single" ;
+                      ${sh.values}/${dash.js} ?value ;
+            .
+          `
+            .FROM(ns('project/creta/shape'))
+            .execute(client.query)
+
+          expect(value.value).to.eq('<span>single line template</span>')
+        })
+
+        it('leaves angle brackets inside multi line string literals intact', async () => {
+          const [{ value }] = await SELECT`?value`.WHERE`
+            ${ns('project/creta/shape')} ${sh.property} ?property .
+            
+            ?property ${sh.name} "multi" ;
+                      ${sh.values}/${dash.js} ?value ;
+            .
+          `
+            .FROM(ns('project/creta/shape'))
+            .execute(client.query)
+
+          expect(value.value).to.eq(`<span>
+multi
+line
+template
+</span>
+`)
         })
 
         it('handles index.ttl file as parent path', async () => {

@@ -1,0 +1,26 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dash: <http://datashapes.org/dash#>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+
+<>
+  sh:property
+    [
+      sh:name "single" ;
+      sh:values
+        [
+          dash:js "<span>single line template</span>" ;
+        ] ;
+    ],
+    [
+      sh:name "multi" ;
+      sh:values
+        [
+          dash:js """<span>
+multi
+line
+template
+</span>
+""" ;
+        ] ;
+    ] ;
+.
