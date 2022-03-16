@@ -1,5 +1,16 @@
 # @hydrofoil/talos
 
+## 0.4.5
+
+### Patch Changes
+
+- 95bc5f9: HTML tags inside string literals would be modified as if they were URI references
+- Updated dependencies [c41a049]
+- Updated dependencies [f62fe40]
+- Updated dependencies [722af56]
+- Updated dependencies [3d1af89]
+  - @hydrofoil/knossos@0.6.2
+
 ## 0.4.4
 
 ### Patch Changes

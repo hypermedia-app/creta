@@ -1,5 +1,12 @@
 # @hydrofoil/labyrinth
 
+## 0.10.1
+
+### Patch Changes
+
+- cb26eaa: Support member assertions on collection types when dereferencing collections (closes #74)
+- 722af56: build(deps): bump hydra-box from 0.6.3 to 0.6.4
+
 ## 0.10.0
 
 ### Minor Changes
