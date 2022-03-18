@@ -169,7 +169,7 @@ function linkedResourcePatterns(api: AnyPointer, collection: GraphPointer, subje
       return sparql`${previous}\nUNION\n${graphPattern}`
     }, sparql``)
 
-  return sparql`${union}\nFILTER ( isIRI(${linked}) )`
+  return sparql`optional { ${union} }\nFILTER ( isIRI(${linked}) )`
 }
 
 interface DynamicCollection {
