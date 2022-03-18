@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.10.2
+
+### Patch Changes
+
+- 0531189: If a `memberInclude` matches nothing, collection may be returned incomplete
+
 ## 0.10.1
 
 ### Patch Changes
