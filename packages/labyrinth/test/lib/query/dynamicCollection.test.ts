@@ -478,12 +478,14 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
       expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`DESCRIBE ?member ?linked {
         VALUES ?member { ${ex.foo} ${ex.bar} }
         
-        {
-          ?member ^${schema.parent} ?linked
-        }
-        union
-        {
-          ?member ${schema.spouse} ?linked
+        optional {
+          {
+            ?member ^${schema.parent} ?linked
+          }
+          union
+          {
+            ?member ${schema.spouse} ?linked
+          }
         }
         
         filter(isiri(?linked))
