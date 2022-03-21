@@ -1445,6 +1445,11 @@
   dependencies:
     "@rdfjs/types" ">=1.0.1"
 
+"@rdfjs/data-model@^2.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@rdfjs/data-model/-/data-model-2.0.0.tgz#0e366aa0a1f9b2311413b874c63de324f4cd907f"
+  integrity sha512-MTnXulGDlglImAszhX44SB4uo3X0K8XcUs7BXBjrAYmempbQ7zh04nInDE83BhK76ILnZcZUtnjETorG/Ss73A==
+
 "@rdfjs/dataset@^1.0.0", "@rdfjs/dataset@^1.0.1", "@rdfjs/dataset@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@rdfjs/dataset/-/dataset-1.1.1.tgz#0a91746284c517eba360a966939161f500392107"
