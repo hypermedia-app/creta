@@ -1,5 +1,14 @@
 # @hydrofoil/knossos
 
+## 0.6.3
+
+### Patch Changes
+
+- 3c096fc: build(deps): bump express-middleware-shacl from 1.1.4 to 1.1.5
+- Updated dependencies [522dba6]
+- Updated dependencies [100becd]
+  - @hydrofoil/labyrinth@0.10.3
+
 ## 0.6.2
 
 ### Patch Changes
