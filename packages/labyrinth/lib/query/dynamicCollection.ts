@@ -137,37 +137,30 @@ function createOrdering(collectionTypes: MultiPointer, collection: GraphPointer,
   }
 }
 
+const pathsToUnion = (subject: Variable, linked: Variable) => (previous: SparqlTemplateResult, path: GraphPointer, index: number) => {
+  const graphPattern = sparql`{
+        ${subject} ${toSparql(path)} ${linked} .
+      }`
+
+  if (index === 0) {
+    return graphPattern
+  }
+
+  return sparql`${previous}\nUNION\n${graphPattern}`
+}
+
 function linkedResourcePatterns(api: AnyPointer, collection: GraphPointer, subject: Variable, linked: Variable) {
   const classIncludes = api.node(collection.out(rdf.type)).out(hyper_query.memberInclude).toArray()
   const instanceIncludes = collection.out(hyper_query.memberInclude).toArray()
 
-  const includes = [...classIncludes, ...instanceIncludes].filter(include => {
-    const path = include.out(hyper_query.path)
-    if (path.values.length !== 1) {
-      warn('Skipping include with invalid property path')
-      return false
-    }
+  const includePaths = [...classIncludes, ...instanceIncludes]
+    .flatMap(include => include.out(hyper_query.path).toArray())
 
-    return true
-  })
-
-  if (!includes.length) {
+  if (!includePaths.length) {
     return ''
   }
 
-  const union = includes
-    .reduce((previous: SparqlTemplateResult, include, index) => {
-      const path = include.out(hyper_query.path)
-      const graphPattern = sparql`{
-        ${subject} ${toSparql(path)} ${linked} .
-      }`
-
-      if (index === 0) {
-        return graphPattern
-      }
-
-      return sparql`${previous}\nUNION\n${graphPattern}`
-    }, sparql``)
+  const union = includePaths.reduce(pathsToUnion(subject, linked), sparql``)
 
   return sparql`optional { ${union} }\nFILTER ( isIRI(${linked}) )`
 }
