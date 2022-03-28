@@ -11,6 +11,7 @@ import { warn } from '../logger'
 export async function loadLinkedResources(resource: MultiPointer, links: MultiPointer, sparql: StreamClient): Promise<DatasetExt> {
   const dataset = $rdf.dataset()
 
+  const parent = new TermSet(resource.terms)
   const linked = new TermSet(links.toArray()
     .flatMap(link => {
       const path = link.out(hyper_query.path)
@@ -21,7 +22,7 @@ export async function loadLinkedResources(resource: MultiPointer, links: MultiPo
 
       return findNodes(resource, path).terms
     })
-    .filter(term => term.termType === 'NamedNode'))
+    .filter(term => term.termType === 'NamedNode' && !parent.has(term)))
 
   if (linked.size) {
     const stream = await DESCRIBE`${linked}`.execute(sparql.query)
