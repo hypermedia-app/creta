@@ -254,7 +254,7 @@ export default async function ({ api, collection, client, pageSize, query, varia
             ${ids}
           }
         
-          ${linkedResourcePatterns(cf(api), collection, subject, linked)}
+          ${linkPatterns}
         `.execute(client.query)
       }
 
