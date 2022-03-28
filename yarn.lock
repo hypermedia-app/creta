@@ -1984,10 +1984,10 @@
   dependencies:
     "@types/rdf-js" "*"
 
-"@types/rdfjs__term-map@^1":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@types/rdfjs__term-map/-/rdfjs__term-map-1.0.2.tgz#c135bf857888e0516c7ec1b3dc2b82e0f5ad1a3a"
-  integrity sha512-Ae674zmrAHh9zl4uLL9cGdYt77ugUOMIvn0z+uA6RHOwBQZn1LrXcjGK37cBwbxvw7bZ0NYPtcDbn5Vs8f/+ZQ==
+"@types/rdfjs__term-map@^2":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/rdfjs__term-map/-/rdfjs__term-map-2.0.0.tgz#e09797e7c64bf5ab7ef0e1b130b9f125d7994663"
+  integrity sha512-6guPNzPIEwPdpSpwDvuhcawvAu+aCIkiLxOdJMb3ymPltywes/ItPBcs1L4xPQyae4nqYgc4NhcsgUIBjt1XPQ==
   dependencies:
     rdf-js "^4.0.2"
 
