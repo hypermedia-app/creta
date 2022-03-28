@@ -1,5 +1,12 @@
 # @hydrofoil/labyrinth
 
+## 0.10.3
+
+### Patch Changes
+
+- 522dba6: Linked resources: it is now possible to have multiple `query:path` on `query:include` and `query:memberInclude`
+- 100becd: Resource#GET: In case of some `query:include` paths, resources would be `DESCRIBE`-d twice, causing duplicate blank nodes
+
 ## 0.10.2
 
 ### Patch Changes
