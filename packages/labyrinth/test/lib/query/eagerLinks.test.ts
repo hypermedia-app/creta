@@ -28,7 +28,7 @@ describe('@hydrofoil/labyrinth/lib/query/eagerLinks', () => {
       expect(client.query.construct).not.to.have.been.called
     })
 
-    it('ignores includes without invalud query:path', async () => {
+    it('ignores includes with invalid query:path', async () => {
       // given
       const resource = blankNode()
       const include = blankNode()
