@@ -8,19 +8,20 @@ import { findNodes } from 'clownface-shacl-path'
 import { hyper_query } from '@hydrofoil/vocabularies/builders/strict'
 import { warn } from '../logger'
 
-export async function loadLinkedResources(resource: MultiPointer, links: MultiPointer, sparql: StreamClient): Promise<DatasetExt> {
+export async function loadLinkedResources(resource: MultiPointer, includes: MultiPointer, sparql: StreamClient): Promise<DatasetExt> {
   const dataset = $rdf.dataset()
 
   const parent = new TermSet(resource.terms)
-  const linked = new TermSet(links.toArray()
-    .flatMap(link => {
-      const path = link.out(hyper_query.path)
-      if (path.values.length !== 1) {
+  const paths = includes.toArray().flatMap(include => include.out(hyper_query.path).toArray())
+
+  const linked = new TermSet(paths
+    .flatMap(path => {
+      try {
+        return findNodes(resource, path).terms
+      } catch {
         warn('Skipping include with invalid property path')
         return []
       }
-
-      return findNodes(resource, path).terms
     })
     .filter(term => term.termType === 'NamedNode' && !parent.has(term)))
 

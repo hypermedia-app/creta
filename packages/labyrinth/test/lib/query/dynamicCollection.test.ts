@@ -492,6 +492,37 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
       }`)
     })
 
+    it('combines multiple include paths', async () => {
+      // give
+      collection.addOut(rdf.type, ex.Collection)
+        .addOut(hyper_query.memberInclude, include => {
+          include.addOut(hyper_query.path, schema.spouse)
+          include.addOut(hyper_query.path, schema.knows)
+        })
+      const queries = await testInstance()
+
+      // when
+      await queries.memberData([ex.foo, ex.bar])
+
+      // then
+      expect(client.query.construct).to.have.been.calledOnce
+      expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`DESCRIBE ?member ?linked {
+        VALUES ?member { ${ex.foo} ${ex.bar} }
+        
+        optional {
+          {
+            ?member ${schema.spouse} ?linked
+          }
+          union
+          {
+            ?member ${schema.knows} ?linked
+          }
+        }
+        
+        filter(isiri(?linked))
+      }`)
+    })
+
     it('ignores includes without path', async () => {
       // give
       const apiNode = clownface(api)
