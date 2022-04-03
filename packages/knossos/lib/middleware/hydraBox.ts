@@ -1,5 +1,5 @@
 import * as express from 'express'
-import { hydraBox } from '@hydrofoil/labyrinth'
+import { hydraBox, labyrinthInit } from '@hydrofoil/labyrinth'
 import webAccessControl from 'hydra-box-web-access-control'
 import { Debugger } from 'debug'
 import createApi from '../api'
@@ -24,6 +24,8 @@ export async function createHydraBox({ apiTerm, client, sparql, ...ctx }: Contex
   const loadContext = { apiTerm, client, sparql, ...ctx }
   const middleware = await loadMiddlewares(api, log, loadContext)
   const authorizationPatterns = await loadAuthorizationPatterns(api, log, loadContext)
+
+  router.use(labyrinthInit(sparql, undefined))
 
   if (middleware.before) {
     router.use(middleware.before)
