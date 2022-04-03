@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.10.4
+
+### Patch Changes
+
+- bdaad8b: `req.labyrinth` was undefined when `before` middlewares were executed
+
 ## 0.10.3
 
 ### Patch Changes

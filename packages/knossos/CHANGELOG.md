@@ -1,5 +1,13 @@
 # @hydrofoil/knossos
 
+## 0.6.4
+
+### Patch Changes
+
+- bdaad8b: `req.labyrinth` was undefined when `before` middlewares were executed
+- Updated dependencies [bdaad8b]
+  - @hydrofoil/labyrinth@0.10.4
+
 ## 0.6.3
 
 ### Patch Changes
