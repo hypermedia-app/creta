@@ -5,7 +5,7 @@
 
 import { HydraBox, middleware, ResourceLoader } from 'hydra-box'
 import { HydraBoxMiddleware } from 'hydra-box/middleware'
-import { Router } from 'express'
+import { RequestHandler, Router } from 'express'
 import rdfFactory from 'rdf-express-node-factory'
 import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
@@ -60,6 +60,12 @@ declare module 'express-serve-static-core' {
   }
 }
 
+interface Options {
+  collection?: {
+    pageSize?: number
+  }
+}
+
 /**
  * Parameters to configure labyrinth middleware
  */
@@ -70,11 +76,23 @@ export type MiddlewareParams = {
   path: string
   sparql: StreamClient.StreamClientOptions
   middleware?: HydraBoxMiddleware
-  options?: {
-    collection?: {
-      pageSize?: number
-    }
+  options?: Options
+}
+
+export const labyrinthInit = (sparql: StreamClient.StreamClientOptions, options: Options | undefined): RequestHandler => (req, res, next) => {
+  const labyrinth = {
+    sparql: new StreamClient(sparql),
+    collection: {
+      pageSize: options?.collection?.pageSize || 10,
+    },
   }
+
+  if (!req.labyrinth) {
+    req.labyrinth = labyrinth
+    req.loadCode = (...args) => codeLoader(req.hydra.api)(...args)
+  }
+
+  next()
 }
 
 /**
@@ -89,18 +107,8 @@ export async function hydraBox(middlewareInit: MiddlewareParams): Promise<Router
 
   const app = Router()
 
-  const labyrinth = {
-    sparql: new StreamClient(sparql),
-    collection: {
-      pageSize: options?.collection?.pageSize || 10,
-    },
-  }
   app.use(rdfFactory())
-  app.use((req, res, next) => {
-    req.labyrinth = labyrinth
-    req.loadCode = (...args) => codeLoader(req.hydra.api)(...args)
-    next()
-  })
+  app.use(labyrinthInit(sparql, options))
 
   app.use(logRequest)
   app.use(middleware(
