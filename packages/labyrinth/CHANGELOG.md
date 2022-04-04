@@ -1,5 +1,12 @@
 # @hydrofoil/labyrinth
 
+## 0.10.5
+
+### Patch Changes
+
+- 593b209: build(deps): bump debug from 4.3.3 to 4.3.4
+- 2dee5cd: build(deps): bump @tpluscode/rdfine from 0.5.37 to 0.5.38
+
 ## 0.10.4
 
 ### Patch Changes

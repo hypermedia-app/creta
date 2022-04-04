@@ -1,5 +1,15 @@
 # @hydrofoil/talos
 
+## 0.4.6
+
+### Patch Changes
+
+- 593b209: build(deps): bump debug from 4.3.3 to 4.3.4
+- Updated dependencies [593b209]
+- Updated dependencies [2dee5cd]
+- Updated dependencies [b1b5f81]
+  - @hydrofoil/knossos@0.6.5
+
 ## 0.4.5
 
 ### Patch Changes

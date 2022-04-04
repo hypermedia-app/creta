@@ -1,5 +1,11 @@
 # @labyrinth/testing
 
+## 0.0.10
+
+### Patch Changes
+
+- 593b209: build(deps): bump debug from 4.3.3 to 4.3.4
+
 ## 0.0.9
 
 ### Patch Changes
