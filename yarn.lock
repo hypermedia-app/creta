@@ -1657,16 +1657,17 @@
     "@tpluscode/rdf-ns-builders" "^1"
     "@zazuko/rdf-vocabularies" "*"
 
-"@tpluscode/rdfine@^0.5.27", "@tpluscode/rdfine@^0.5.34", "@tpluscode/rdfine@^0.5.37":
-  version "0.5.37"
-  resolved "https://registry.yarnpkg.com/@tpluscode/rdfine/-/rdfine-0.5.37.tgz#9dff6bee906b609a8763e0c932cc10bc24a3dd8c"
-  integrity sha512-7h1AYPHyqqpoWTRqmVkT77xOJq8tM2GQwcC1F6KYYT/2bpFa6IoHUry8d91JPnMryithftG4nAFKkiF3XSb9sg==
+"@tpluscode/rdfine@^0.5.27", "@tpluscode/rdfine@^0.5.34", "@tpluscode/rdfine@^0.5.38":
+  version "0.5.38"
+  resolved "https://registry.yarnpkg.com/@tpluscode/rdfine/-/rdfine-0.5.38.tgz#d79b3d108badff48984e97a85a2456d4ef7549f2"
+  integrity sha512-29pAXu2b5lLdH/EV+yP4gI1qR6AsjR0kgYmlcDB4jBjkx+mp9/tcL38/XFGJEeI+yyTzTv3D4HQFQozntW3dCQ==
   dependencies:
     "@rdf-esm/data-model" "^0.5.3"
     "@rdf-esm/namespace" "^0.5.2"
     "@rdf-esm/term-map" "^0.5.0"
     "@rdf-esm/term-set" "^0.5.0"
     "@tpluscode/rdf-ns-builders" "^1.0.0"
+    "@types/clownface" "^1.2.6"
     clownface "^1"
     once "^1.4.0"
 
