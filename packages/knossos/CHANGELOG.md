@@ -1,5 +1,16 @@
 # @hydrofoil/knossos
 
+## 0.6.5
+
+### Patch Changes
+
+- 593b209: build(deps): bump debug from 4.3.3 to 4.3.4
+- 2dee5cd: build(deps): bump @tpluscode/rdfine from 0.5.37 to 0.5.38
+- b1b5f81: SHACL middleware will load types to validate `sh:class` constraints
+- Updated dependencies [593b209]
+- Updated dependencies [2dee5cd]
+  - @hydrofoil/labyrinth@0.10.5
+
 ## 0.6.4
 
 ### Patch Changes
