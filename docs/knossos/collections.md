@@ -409,7 +409,7 @@ prefix code: <https://code.described.at/>
         [
           hydra:variable "title" ;
           hydra:property schema:title ;
-          hydra:require true ;
+          hydra:required true ;
         ] ;
     ] ;
 .
@@ -447,7 +447,7 @@ prefix knossos: <https://hypermedia.app/knossos#>
         [
           hydra:variable "title" ;
           hydra:property schema:title ;
-          hydra:require true ;
+          hydra:required true ;
           knossos:transformVariable
             [
                 a code:EcmaScript ;
