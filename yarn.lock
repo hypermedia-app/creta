@@ -3790,10 +3790,10 @@ express-jwt@^6.1.1:
     jsonwebtoken "^8.1.0"
     lodash "^4.17.21"
 
-express-middleware-shacl@^1.1.5:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/express-middleware-shacl/-/express-middleware-shacl-1.1.5.tgz#bee09ecdcb69a16b15e89f6ac908208601d3a794"
-  integrity sha512-aq1QEeVRKHuHtqzo4iuB0D/vjEf1WiNE19rTdHoRJ/nX6zF/CyoAKeHAThIPWxsB2St9aN5izG93w0xET48utw==
+express-middleware-shacl@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/express-middleware-shacl/-/express-middleware-shacl-1.2.0.tgz#04d012127105a5ba2757283eb846de8736729b66"
+  integrity sha512-Y6IhvU6Mo/3CjMOlvB69LQDuu+Br/dJIbQDEouesz/oSsJZsXJwOlbxw4Pi4XXgrPXHitRP3+993kogtBc+6sg==
   dependencies:
     "@rdfine/shacl" "^0.8.1"
     "@rdfjs/term-set" "^1.0.1"
@@ -3803,8 +3803,8 @@ express-middleware-shacl@^1.1.5:
     absolute-url "^1.2.2"
     clownface "^1.2.0"
     clownface-shacl-path "^1.2.2"
-    express "^4.17.1"
-    express-rdf-request "^1.1.0"
+    express "^4.17.3"
+    express-rdf-request "^1.1.2"
     http-problem-details "^0.1.5"
     middleware-async "^1.3.1"
     rdf-ext "^1.3.1"
@@ -3820,7 +3820,7 @@ express-rdf-problem-details@^1.0.1:
     http-problem-details-mapper "^0.1.7"
     set-link "^1.0.0"
 
-express-rdf-request@^1.1.0, express-rdf-request@^1.1.2:
+express-rdf-request@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/express-rdf-request/-/express-rdf-request-1.1.2.tgz#6dd36edea03164567371fff5d55aa46d430f09a3"
   integrity sha512-U2AisaPsSlPpiHz1gFGFWrWhKcrwS6ivXh6l/2gm6JRxnutJxISwRsaY21trAbON9725h/wzP5nJq4vnhNJijg==
