@@ -10,6 +10,7 @@ import { shaclMiddleware } from 'express-middleware-shacl'
 import $rdf from 'rdf-ext'
 import clownface from 'clownface'
 import { RequestHandler, Request } from 'express'
+import { CONSTRUCT } from '@tpluscode/sparql-builder'
 import { shapesQuery } from './lib/shacl'
 
 export interface Options {
@@ -58,5 +59,18 @@ export const shaclValidate = ({ typesToValidate = payloadAndResourceTypes }: Opt
     }
 
     return dataset
+  },
+  async loadTypes(resources, req) {
+    const types = await CONSTRUCT`?instance a ?type`
+      .WHERE`
+        VALUES ?instance {
+          ${resources}
+        }
+        
+        ?instance a ?type .
+      `
+      .execute(req.labyrinth.sparql.query)
+
+    return $rdf.dataset().import(types)
   },
 })
