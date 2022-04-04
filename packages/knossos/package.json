@@ -26,7 +26,7 @@
     "@rdfjs-elements/formats-pretty": "^0.4.3",
     "@tpluscode/rdf-ns-builders": "^1.1.0",
     "@tpluscode/rdf-string": "^0.2.25",
-    "@tpluscode/rdfine": "^0.5.37",
+    "@tpluscode/rdfine": "^0.5.38",
     "@tpluscode/sparql-builder": "^0.3.18",
     "absolute-url": "^1.2.2",
     "camouflage-rewrite": "^1.2.0",
