@@ -24,7 +24,7 @@
     "@zazuko/rdf-vocabularies": "*",
     "clownface": "^1.4.0",
     "commander": "^9.0.0",
-    "debug": "^4.3.1",
+    "debug": "^4.3.4",
     "is-absolute-url": "^3",
     "mime-types": "^2.1.33",
     "node-fetch": "^2.6.7",
