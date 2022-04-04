@@ -29,7 +29,7 @@
     "@types/once": "^1.4.0",
     "chai": "^4.3.6",
     "express": "^4.17.3",
-    "mocha": "^9.2.0",
+    "mocha": "^9.2.2",
     "sinon": "^13",
     "supertest": "^6.1.6"
   }
