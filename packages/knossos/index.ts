@@ -13,6 +13,8 @@ import camo from 'camouflage-rewrite'
 import { problemJson } from '@hydrofoil/labyrinth/errors'
 import asyncMiddleware from 'middleware-async'
 import absoluteUrl from 'absolute-url'
+import clownface, { GraphPointer } from 'clownface'
+import $rdf from 'rdf-ext'
 import { coreMiddleware } from './lib/coreMiddleware'
 import { ResourcePerGraphStore, ResourceStore } from './lib/store'
 import { create } from './resource'
@@ -20,6 +22,7 @@ import { create } from './resource'
 export interface Knossos {
   store: ResourceStore
   log: Debugger
+  config: GraphPointer
 }
 
 declare module 'express-serve-static-core' {
@@ -87,6 +90,7 @@ export default function knossosMiddleware({
     req.knossos = {
       store,
       log,
+      config: clownface({ dataset: $rdf.dataset() }).blankNode(),
     }
     next()
   })

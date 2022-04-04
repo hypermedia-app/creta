@@ -12,12 +12,10 @@ import { Context } from '../..'
 
 describe('@hydrofoil/knossos/lib/settings', () => {
   const log: Debugger = sinon.spy() as any
-  let getConfigurationId: sinon.SinonStub
   let context: Context
   let store: sinon.SinonStubbedInstance<ResourceStore>
 
   beforeEach(() => {
-    getConfigurationId = sinon.stub().resolves($rdf.namedNode('/config'))
     store = sinon.createStubInstance(ResourcePerGraphStore)
     context = {
       apiTerm: $rdf.namedNode('/api'),
@@ -29,15 +27,12 @@ describe('@hydrofoil/knossos/lib/settings', () => {
 
   describe('loadMiddlewares', () => {
     it('returns empty when not config is found', async () => {
-      // given
-      getConfigurationId.resolves(undefined)
-
       // when
       const result = await loadMiddlewares(
         testApi(),
         log,
         context,
-        { getConfigurationId },
+        { config: undefined },
       )
 
       // then
@@ -46,14 +41,14 @@ describe('@hydrofoil/knossos/lib/settings', () => {
 
     it('returns empty when there are no middlewares', async () => {
       // given
-      store.load.resolves(namedNode('/config'))
+      const config = namedNode('/config')
 
       // when
       const result = await loadMiddlewares(
         testApi(),
         log,
         context,
-        { getConfigurationId },
+        { config },
       )
 
       // then
@@ -90,7 +85,6 @@ describe('@hydrofoil/knossos/lib/settings', () => {
                 .addOut(code.link, $rdf.namedNode('node:cors'))
             })
         })
-      store.load.resolves(config)
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       function middleware() {}
 
@@ -101,7 +95,7 @@ describe('@hydrofoil/knossos/lib/settings', () => {
         }),
         log,
         context,
-        { getConfigurationId },
+        { config },
       )
 
       // then
@@ -123,7 +117,6 @@ describe('@hydrofoil/knossos/lib/settings', () => {
                 .addOut(code.link, $rdf.namedNode('foo:bar'))
             })
         })
-      store.load.resolves(config)
 
       // when
       const result = loadMiddlewares(
@@ -132,7 +125,7 @@ describe('@hydrofoil/knossos/lib/settings', () => {
         }),
         log,
         context,
-        { getConfigurationId },
+        { config },
       )
 
       // then
@@ -145,14 +138,13 @@ describe('@hydrofoil/knossos/lib/settings', () => {
         .addOut(knossos.middleware, middleware => {
           middleware.addOut(schema.name, 'before')
         })
-      store.load.resolves(config)
 
       // when
       const result = loadMiddlewares(
         testApi(),
         log,
         context,
-        { getConfigurationId },
+        { config },
       )
 
       // then
@@ -162,15 +154,11 @@ describe('@hydrofoil/knossos/lib/settings', () => {
 
   describe('loadAuthorizationPatterns', () => {
     it('returns empty when not config is found', async () => {
-      // given
-      getConfigurationId.resolves(undefined)
-
       // when
       const result = await loadAuthorizationPatterns(
         testApi(),
         log,
-        context,
-        { getConfigurationId },
+        { config: undefined },
       )
 
       // then
@@ -189,7 +177,6 @@ describe('@hydrofoil/knossos/lib/settings', () => {
                 .addOut(code.link, $rdf.namedNode('foo:bar'))
             })
         })
-      store.load.resolves(config)
       const authRule = () => ({})
 
       // when
@@ -198,8 +185,7 @@ describe('@hydrofoil/knossos/lib/settings', () => {
           code: authRule,
         }),
         log,
-        context,
-        { getConfigurationId },
+        { config },
       )
 
       // then
@@ -218,7 +204,6 @@ describe('@hydrofoil/knossos/lib/settings', () => {
                 .addOut(code.link, $rdf.namedNode('foo:bar'))
             })
         })
-      store.load.resolves(config)
 
       // when
       const result = loadAuthorizationPatterns(
@@ -226,8 +211,7 @@ describe('@hydrofoil/knossos/lib/settings', () => {
           code: null,
         }),
         log,
-        context,
-        { getConfigurationId },
+        { config },
       )
 
       // then

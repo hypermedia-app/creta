@@ -2,10 +2,10 @@ import * as express from 'express'
 import { hydraBox, labyrinthInit } from '@hydrofoil/labyrinth'
 import webAccessControl from 'hydra-box-web-access-control'
 import { Debugger } from 'debug'
+import { loadConfiguration, loadMiddlewares, loadAuthorizationPatterns } from '../settings'
 import createApi from '../api'
 import { filterAclByApi } from '../accessControl'
 import type { Context } from '../..'
-import { loadMiddlewares, loadAuthorizationPatterns } from '../settings'
 import { systemAuth } from './systemAuth'
 
 interface CreateHydraBox {
@@ -22,10 +22,21 @@ export async function createHydraBox({ apiTerm, client, sparql, ...ctx }: Contex
   const api = createApi({ apiTerm, log, sparql, codePath, path })
 
   const loadContext = { apiTerm, client, sparql, ...ctx }
-  const middleware = await loadMiddlewares(api, log, loadContext)
-  const authorizationPatterns = await loadAuthorizationPatterns(api, log, loadContext)
+  const config = await loadConfiguration(api, loadContext)
+  if (!config) {
+    log('No configuration resource found')
+  }
+
+  const middleware = await loadMiddlewares(api, log, loadContext, { config })
+  const authorizationPatterns = await loadAuthorizationPatterns(api, log, { config })
 
   router.use(labyrinthInit(sparql, undefined))
+  router.use((req, res, next) => {
+    if (config) {
+      req.knossos.config = config
+    }
+    next()
+  })
 
   if (middleware.before) {
     router.use(middleware.before)

@@ -8,11 +8,12 @@ import * as express from 'express'
 import { Api } from 'hydra-box/Api'
 import { Debugger } from 'debug'
 import { codeLoader } from '@hydrofoil/labyrinth/lib/code'
-import toArray from 'stream-to-array'
-import { SELECT } from '@tpluscode/sparql-builder'
 import { knossos, code } from '@hydrofoil/vocabularies/builders/strict'
 import { hydra, schema } from '@tpluscode/rdf-ns-builders/strict'
 import { AuthorizationPatterns } from 'rdf-web-access-control'
+import { GraphPointer } from 'clownface'
+import toArray from 'stream-to-array'
+import { SELECT } from '@tpluscode/sparql-builder'
 import type { Context } from '..'
 
 /**
@@ -22,7 +23,7 @@ export interface MiddlewareFactory {
   (context: Context): express.RequestHandler | Promise<express.RequestHandler>
 }
 
-async function defaultConfigurationQuery(api: Api, context: Context): Promise<Term | undefined> {
+async function getConfigurationId(api: Api, context: Context): Promise<Term | undefined> {
   const [match] = await toArray(await SELECT`?config`.WHERE`
     ?config a ${knossos.Configuration} ; ${hydra.apiDocumentation} ${api.term}
   `.execute(context.client.query))
@@ -30,23 +31,24 @@ async function defaultConfigurationQuery(api: Api, context: Context): Promise<Te
   return match.config
 }
 
+export async function loadConfiguration(api: Api, context: Context): Promise<GraphPointer | undefined> {
+  const configUri = await getConfigurationId(api, context)
+  if (!configUri) {
+    return undefined
+  }
+
+  return context.store.load(configUri)
+}
+
 export async function loadMiddlewares(
   api: Api,
   log: Debugger,
   context: Context,
-  { getConfigurationId = defaultConfigurationQuery }: { getConfigurationId?: typeof defaultConfigurationQuery } = {},
+  { config }: { config?: GraphPointer },
 ): Promise<Record<string, express.RequestHandler[]>> {
   const loadCode = codeLoader(api)
 
-  const configUri = await getConfigurationId(api, context)
-
-  if (!configUri) {
-    log('No configuration resource found')
-    return {}
-  }
-
-  const config = await context.store.load(configUri)
-  const middlewares = config.out(knossos.middleware).toArray()
+  const middlewares = config?.out(knossos.middleware).toArray() || []
 
   return middlewares.reduce(async (previous, next) => {
     const map = await previous
@@ -75,20 +77,11 @@ export async function loadMiddlewares(
 export async function loadAuthorizationPatterns(
   api: Api,
   log: Debugger,
-  context: Context,
-  { getConfigurationId = defaultConfigurationQuery }: { getConfigurationId?: typeof defaultConfigurationQuery } = {},
+  { config }: { config?: GraphPointer },
 ): Promise<AuthorizationPatterns[]> {
   const loadCode = codeLoader(api)
 
-  const configUri = await getConfigurationId(api, context)
-
-  if (!configUri) {
-    log('No configuration resource found')
-    return []
-  }
-
-  const config = await context.store.load(configUri)
-  const authorizationPattern = config.out(knossos.authorizationRule).toArray()
+  const authorizationPattern = config?.out(knossos.authorizationRule).toArray() || []
 
   return authorizationPattern.reduce(async (previous, next) => {
     const arr = await previous
