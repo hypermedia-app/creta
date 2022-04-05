@@ -313,6 +313,38 @@ describe('@hydrofoil/knossos/collection', () => {
       }))
     })
 
+    it('does not mistake self reference in member assertion for new item id', async () => {
+      // given
+      app.use(async (req, res, next) => {
+        req.hydra.resource.term = $rdf.namedNode('http://example.com/collection')
+        const collection = await req.hydra.resource.clownface()
+        collection.addOut(rdf.type, ex.Collection)
+          .addOut(hydra.memberAssertion, assert => {
+            assert.addOut(hydra.property, rdf.type)
+            assert.addOut(hydra.object, ex.TodoItem)
+          })
+          .addOut(hydra.memberAssertion, assert => {
+            assert.addOut(hydra.property, schema.isPartOf)
+            assert.addOut(hydra.object, collection)
+          })
+        next()
+      })
+      app.post('/collection', CreateMember)
+
+      // when
+      await request(app)
+        .post('/collection')
+        .send(turtle`<> ${schema.name} "todo item" .`.toString())
+        .set('content-type', 'text/turtle')
+        .set('host', 'example.com')
+
+      // then
+      expect(knossos.store.save).to.have.been.calledWith(sinon.match((value: GraphPointer) => {
+        expect(value.out(schema.isPartOf).term).to.deep.eq($rdf.namedNode('http://example.com/collection'))
+        return true
+      }))
+    })
+
     it('does not add member assertions other than property/object', async () => {
       // given
       app.use(async (req, res, next) => {

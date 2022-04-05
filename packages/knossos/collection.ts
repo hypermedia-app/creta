@@ -56,12 +56,11 @@ async function typesToValidate(req: Request) {
 type CreateMemberResponse = Response<any, {
   collection?: GraphPointer
   memberAssertions?: MultiPointer
-  memberId?: NamedNode
   member?: GraphPointer<NamedNode>
 }>
 
 const assertMemberAssertions = asyncMiddleware(async (req, res: CreateMemberResponse, next) => {
-  const member = await req.resource()
+  const member = res.locals.member!
 
   for (const assertion of res.locals.memberAssertions!.toArray()) {
     const predicate = assertion.out(hydra.property).term
@@ -74,7 +73,12 @@ const assertMemberAssertions = asyncMiddleware(async (req, res: CreateMemberResp
   next()
 })
 
-const prepareMemberIdentifier = asyncMiddleware(async (req, res: CreateMemberResponse, next) => {
+const loadCollection = asyncMiddleware(async (req, res, next) => {
+  res.locals.collection = await req.hydra.resource.clownface()
+  next()
+})
+
+const prepareMemberPointer = asyncMiddleware(async (req, res: CreateMemberResponse, next) => {
   const api = clownface(req.hydra.api)
   const collection = res.locals.collection!
   let memberTemplate = collection.out(knossos.memberTemplate)
@@ -96,14 +100,14 @@ const prepareMemberIdentifier = asyncMiddleware(async (req, res: CreateMemberRes
   const templateVariables = await applyTransformations(req, resource, iriTemplate.pointer)
   const url = new URL(iriTemplate.expand(templateVariables), req.absoluteUrl())
   url.pathname = `${req.baseUrl}${url.pathname}`
-  res.locals.memberId = $rdf.namedNode(url.toString())
+  res.locals.member = rename(resource, $rdf.namedNode(url.toString()))
 
   next()
 })
 
 const memberAssertionPredicates = [hydra.manages, hydra.memberAssertion]
 const assertTypeMemberAssertion: express.RequestHandler = asyncMiddleware(async (req, res: CreateMemberResponse, next) => {
-  const collection = await req.hydra.resource.clownface()
+  const collection = res.locals.collection!
   const collectionTypes = clownface(req.hydra.api).node(collection.out(rdf.type))
 
   const memberAssertions = combinePointers(collection, collectionTypes).out(memberAssertionPredicates)
@@ -113,20 +117,18 @@ const assertTypeMemberAssertion: express.RequestHandler = asyncMiddleware(async 
     return next(new error.InternalServerError('Collection does not have a member assertion with `hydra:property rdf:type`'))
   }
 
-  res.locals.collection = collection
   res.locals.memberAssertions = memberAssertions
   next()
 })
 
 const createResource = asyncMiddleware(async (req, res: CreateMemberResponse, next) => {
-  const memberId = res.locals.memberId!
+  const member = res.locals.member!
 
-  if (await req.knossos.store.exists(memberId)) {
+  if (await req.knossos.store.exists(member.term)) {
     return next(new error.Conflict())
   }
 
-  req.knossos.log(`Creating resource ${memberId.value}`)
-  const member = rename(await req.resource(), memberId)
+  req.knossos.log(`Creating resource ${member.value}`)
 
   await save({ resource: member, req })
 
@@ -137,12 +139,12 @@ const createResource = asyncMiddleware(async (req, res: CreateMemberResponse, ne
   await res.event.handleImmediate()
 
   res.status(httpStatus.CREATED)
-  res.setHeader('Location', memberId.value)
+  res.setHeader('Location', member.value)
   return next()
 })
 
 const dereferenceNewMember = asyncMiddleware(async (req, res: CreateMemberResponse, next) => {
-  const term = res.locals.memberId!
+  const term = res.locals.member!.term
   const describeStream = await describeResource(term, req.labyrinth.sparql)
 
   res.locals.member = clownface({
@@ -157,17 +159,21 @@ const setResponse: express.RequestHandler = (req, res: CreateMemberResponse) => 
 }
 
 export const CreateMember = Router()
-  .use(assertTypeMemberAssertion)
   .use(rdfRequest.resource())
+  .use(loadCollection)
+  .use(prepareMemberPointer)
+  .use(assertTypeMemberAssertion)
   .use(preprocessMiddleware({
     predicate: knossos.preprocessPayload,
     getResource: getPayload,
     async getTypes(req, res: CreateMemberResponse) {
+      const member = res.locals.member!
+
       const typeTerms: Term[] = res.locals.memberAssertions!
         .has(hydra.property, rdf.type)
         .out(hydra.object).terms
       const implicitTypes = new TermSet(typeTerms.filter((value): value is NamedNode => value.termType === 'NamedNode'))
-      const explicitTypes = (await req.resource()).out(rdf.type).terms
+      const explicitTypes = member.out(rdf.type).terms
 
       for (const explicitType of explicitTypes) {
         implicitTypes.delete(explicitType as any)
@@ -178,7 +184,6 @@ export const CreateMember = Router()
   }))
   .use(assertMemberAssertions)
   .use(shaclValidate({ typesToValidate }))
-  .use(prepareMemberIdentifier)
   .use(createResource)
   .use(dereferenceNewMember)
   .use(preprocessMiddleware({
