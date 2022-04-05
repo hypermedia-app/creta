@@ -1,5 +1,12 @@
 # @hydrofoil/knossos
 
+## 0.6.6
+
+### Patch Changes
+
+- 1123ced: Correctly handle collection referencing itself in a member assertion (fixes #331)
+- 0554ce3: Configuration resource added to `req.knossos.config` as `GraphPointer`
+
 ## 0.6.5
 
 ### Patch Changes
