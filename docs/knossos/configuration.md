@@ -62,3 +62,83 @@ export const middleware: MiddlewareFactory = (ctx) => {
 ```
 
 And link as `code:link <file:lib/cors.js#middleware>`.
+
+## Authorization rules
+
+[Authorization](./auth.md) can be customized by providing additional SPARQL patterns to match against the ACL resources. 
+They are declared as code links, which must export a function producing a partial SPARQL result.
+
+```turtle
+PREFIX knossos: <https://hypermedia.app/knossos#>
+PREFIX code: <https://code.described.at/>
+
+<>
+  a knossos:Configuration ;
+  knossos:authorizationRule [
+    code:implementedBy
+    [ 
+      a code:EcmaScript ;
+      code:link <file:path/to/module.js#customAuth> ;
+    ] ;
+  ] ;  
+.
+```
+
+### Example: Authorizing groups
+
+Here's an example implementation which would grant access to resources to members of `vcard:Group`.
+
+```typescript
+import { sparql } from '@tpluscode/sparql-builder'
+import { acl, vcard } from '@tpluscode/rdf-ns-builders/strict'
+
+export const customAuth: AuthorizationPatterns = 
+  ({
+     authorization, // {RDF/JS variable} representing an ACL resoource
+     agent,         // {RDF/JS Term} Authenticated agent's identifier
+     agentClass     // {RDF/JS Term} Authenticated agent's class
+  }) => {
+    return sparql`${authorization} ${acl.agentGroup}/${vcard.hasMember} ${agent} .`
+  }
+```
+
+[!TIP]
+Support for `vcard:Group` is already provided by the [rdf-web-access-control](https://npm.im/rdf-web-access-control) package
+and can be imported as `code:link <node:rdf-web-access-control/checks#agentGroup>`. 
+
+Another
+
+
+## Accessing configuration
+
+The configuration resource loaded by knossos gets attached as a `GraphPointer` to  a `req.knossos.config` property. 
+It can be used throughout the express middlewares to, such as those defined as shown [above][#middleware].
+
+```turtle
+PREFIX schema: <http://schema.org/>
+PREFIX my: <http://example.com/my#>
+PREFIX knossos: <https://hypermedia.app/knossos#>
+
+<> a knossos:Configuration ;
+   my:setting [ schema:name "foo" ; schema:value "bar" ].
+```
+
+Use [clownface][http://zazuko.github.io/clownface/] to access the configuration graph:
+
+```javascript
+import { schema } from '@tpluscode/rdf-ns-builders/strict'
+import namespace from '@rdfjs/namespace'
+
+const my = namespace('http://example.com/my#')
+
+function middleware(req, res, next) {
+  const mySetting = req.knossos.config.out(my.setting)
+  const key = mySetting.out(schema.name).value
+  const value = mySetting.out(schema.value).value
+    
+  if (key && value) {
+    res.setHeader(`x-${key}`, value)
+  }  
+  next()
+}
+```
