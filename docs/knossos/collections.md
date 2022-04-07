@@ -4,12 +4,6 @@ Collections are a special kind of resource, which act as containers for other re
 
 Knossos provides all necessary modules for working with collections and their members (elements).
 
-## Creating a collection
-
-An instance of `hydra:Collection` needs to be first [created as any other resource](knossos/resources.md#creating-resources). By default, however, the base class would not be used directly. The `knossos init` commend generates a type `/api/Collection` which should be used a base class for more specific collection types.
-
-Unless customized, instances of `/api/Collection` will respond to `GET` requests, supporting paging and filtering, and require at least one [member assertion](http://www.hydra-cg.com/spec/latest/core/#member-assertions).
-
 ### Read-only collection of articles
 
 While not strictly necessary, it is a good practice to extends the base collection class and add SHACL constraints on the member assertion, to ensure that collection instances' integrity.

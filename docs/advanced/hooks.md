@@ -100,7 +100,9 @@ The snippet below shows the `Article` class with all available preprocess hooks 
 
 `knossos:preprocessPayload` and `knossos:preprocessResource` are implemented in knossos as [`resource` middleware](../knossos/configuration#middleware). Thus, both will run before the operation handler.
 
-Use `knossos:preprocessPayload` to modify the request body. This cane be useful to set default values for optional properties or populate computed properties on resource creation.
+### preprocessPayload
+
+Use `knossos:preprocessPayload` to modify the request body. This can be useful to set default values for optional properties or populate computed properties on resource creation.
 
 ```typescript
 import type { ResourceHook } from '@hydrofoil/labyrinth/resource' 
@@ -114,9 +116,29 @@ export const draftByDefault: ResourceHook = (req, pointer) => {
 }
 ```
 
+> [!WARNING]
+> Be careful when using this hook with collections. Every `knossos:preprocessPayload` runs when
+> [collection members are created](../knossos/collections.md#Creating-members) but also when a collection itself 
+> [is created](../knossos/resources.md#creating-resources) using `PUT`. This means that appropriate guards may be necessary
+> to separate the modifications done to collections and their respective members. 
+> ```javascript
+> function collectionHook(req, pointer) {
+>   if (req.methods === 'PUT') { 
+>     // creating a collection
+>   }
+>   if (req.method === 'POST') {
+>     // creating a member
+>   }
+> }
+> ```
+
+### preprocessResource
+
 Use `knossos:preprocessResource` to modify the representation of the current resource loaded by hydra-box.
 
 > [!WARNING]
 > This hook will not modify responses. It should be used to alter the behaviour of the operation handler itself if it performs conditional logic based on stored resource representation.
+
+### preprocessResponse
 
 Finally, `knossos:preprocessResponse` can be used to modify the final contents of the response just before sending it to the client. It is by called when executing the generic `GET` handlers `@hydrofoil/knossos/resource#get` and `@hydrofoil/knossos/collection#get`, and when creating collection members with `@hydrofoil/knossos/collection#CreateMember`.
