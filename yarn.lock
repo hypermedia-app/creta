@@ -1567,10 +1567,17 @@
   dependencies:
     "@rdfjs/to-ntriples" "^1.0.2"
 
-"@rdfjs/term-set@^1.0.0", "@rdfjs/term-set@^1.0.1", "@rdfjs/term-set@^1.1.0":
+"@rdfjs/term-set@^1.0.0", "@rdfjs/term-set@^1.0.1":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@rdfjs/term-set/-/term-set-1.1.0.tgz#36adb73683262e94f135f0bb0cdf71d983e70960"
   integrity sha512-QQ4yzVe1Rvae/GN9SnOhweHNpaxQtnAjeOVciP/yJ0Gfxtbphy2tM56ZsRLV04Qq5qMcSclZIe6irYyEzx/UwQ==
+  dependencies:
+    "@rdfjs/to-ntriples" "^2.0.0"
+
+"@rdfjs/term-set@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@rdfjs/term-set/-/term-set-2.0.1.tgz#bbf406e0477c226e65753da2da0089cbbe847ab5"
+  integrity sha512-ZD8IwSY7tPpevs2iaQEsesAu8c7TO4GKHQHObbehUE4odKa9BuhuimdNuYwBoyVprTtHARaW6VW+0Jsu7ehD+Q==
   dependencies:
     "@rdfjs/to-ntriples" "^2.0.0"
 
