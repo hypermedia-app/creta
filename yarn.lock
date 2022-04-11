@@ -2058,10 +2058,10 @@
   resolved "https://registry.yarnpkg.com/@types/sinonjs__fake-timers/-/sinonjs__fake-timers-8.1.1.tgz#b49c2c70150141a15e0fa7e79cf1f92a72934ce3"
   integrity sha512-0kSuKjAS0TrGLJ0M/+8MaFkGsQhZpB6pxOmvS3K8FYI72K//YmdfoW9X2qPsAKh1mkwxGD5zib9s1FIFed6E8g==
 
-"@types/sparql-http-client@^2.2.5":
-  version "2.2.7"
-  resolved "https://registry.yarnpkg.com/@types/sparql-http-client/-/sparql-http-client-2.2.7.tgz#b8c19e07d46c892998c9953c0f1b0990a950d8bb"
-  integrity sha512-XTGiM3M8fKuvsLP4Ykx28Oltya2Ztfc7XZxmAOJkRG/yFqU0GM7AVXtjF/q/Xtkrio8c/TuNsmQWmoA3I2eIZg==
+"@types/sparql-http-client@^2.2.8":
+  version "2.2.8"
+  resolved "https://registry.yarnpkg.com/@types/sparql-http-client/-/sparql-http-client-2.2.8.tgz#c7b12eea9dbda1f539d0b415ea67532ecbe3ec6a"
+  integrity sha512-l6kcSp57s0K4kGEWqjGR/LEe/Fya11Kd5S9Ta8gfIiRyESmvvA8JePPaTnq4r0MT6FKvNMJ7/KS15B85Fxm5ng==
   dependencies:
     rdf-js "^4.0.2"
 
