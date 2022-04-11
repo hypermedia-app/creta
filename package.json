@@ -43,7 +43,7 @@
     "@types/set-link": "^1.0.1",
     "@types/sinon": "^10.0.11",
     "@types/sinon-chai": "^3.2.8",
-    "@types/sparql-http-client": "^2.2.5",
+    "@types/sparql-http-client": "^2.2.8",
     "@types/sparqljs": "^3.0.1",
     "@types/supertest": "^2.0.11",
     "@types/wait-on": "^5.2.0",
