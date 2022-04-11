@@ -1968,10 +1968,10 @@
     "@types/clownface" "*"
     rdf-js "^4.0.2"
 
-"@types/rdfjs__express-handler@*", "@types/rdfjs__express-handler@^1.1.5":
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/@types/rdfjs__express-handler/-/rdfjs__express-handler-1.1.5.tgz#fdb0c93305698df19bb9355e09ac0e4902689fc7"
-  integrity sha512-wcNTP6UB8bX5z67YopA6K+8QF5oKTluUttr/0X1QtcbHzVonMfjkY+BpMGAcRMTWonN5HmYSgYODd0jveOYxPw==
+"@types/rdfjs__express-handler@*", "@types/rdfjs__express-handler@^1.1.6":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@types/rdfjs__express-handler/-/rdfjs__express-handler-1.1.6.tgz#3e7faa1f762f21d9cfd69eab2ece1313442ec90f"
+  integrity sha512-5KytElzybmGpalqliPeR3hOwrCEL4ZxipRIeSXC2gGV4u51pYE/hbLAodbF1bxLFa+WFSV7UiZsejCv6qFYeIA==
   dependencies:
     "@types/express" "*"
     "@types/rdfjs__formats-common" "*"
