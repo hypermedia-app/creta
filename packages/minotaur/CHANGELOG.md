@@ -1,5 +1,11 @@
 # @hydrofoil/minotaur
 
+## 0.2.2
+
+### Patch Changes
+
+- 6eb5d10: Updated hydra-box (now with support for `code:EcmaScriptModule`)
+
 ## 0.2.1
 
 ### Patch Changes

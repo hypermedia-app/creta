@@ -1,5 +1,20 @@
 # @hydrofoil/knossos
 
+## 0.6.7
+
+### Patch Changes
+
+- 2fbddfc: Reimplemented `@hydrofoil/knossos-events` using [queue](https://npm.im/queue)
+
+  This implements a missing feature where cascading events were not being handled and saved
+
+- 6eb5d10: Updated hydra-box (now with support for `code:EcmaScriptModule`)
+- Updated dependencies [2fbddfc]
+- Updated dependencies [6eb5d10]
+- Updated dependencies [11a6f89]
+  - @hydrofoil/knossos-events@0.3.5
+  - @hydrofoil/labyrinth@0.10.6
+
 ## 0.6.7-queues.0
 
 ### Patch Changes
