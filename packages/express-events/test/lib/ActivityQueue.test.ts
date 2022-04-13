@@ -31,6 +31,18 @@ describe('@hydrofoil/express-events/lib/ActivityQueue', () => {
     })
   })
 
+  it('does nothing when there are no activities', async () => {
+    // when
+    await queue.runImmediateHandlers()
+    await queue.runRemainingHandlers()
+    await queue.saveEvents()
+
+    // then
+    expect(loader).not.to.have.been.called
+    expect(runner).not.to.have.been.called
+    expect(store).not.to.have.been.called
+  })
+
   describe('when immediate handler returns more immediate handlers', () => {
     it('runs them all immediately', async () => {
       // given
