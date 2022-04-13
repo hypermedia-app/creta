@@ -1,5 +1,5 @@
 {
-  "mode": "pre",
+  "mode": "exit",
   "tag": "queues",
   "initialVersions": {
     "@hydrofoil/conduit": "0.1.32",
