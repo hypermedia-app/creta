@@ -12,6 +12,7 @@
     "@labyrinth/testing": "0.0.10"
   },
   "changesets": [
-    "dull-avocados-cry"
+    "dull-avocados-cry",
+    "thirty-pumpkins-tap"
   ]
 }

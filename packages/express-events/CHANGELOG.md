@@ -1,5 +1,11 @@
 # @hydrofoil/knossos-events
 
+## 0.3.5-queues.1
+
+### Patch Changes
+
+- 11a6f89: Allow handlers to return a single event
+
 ## 0.3.5-queues.0
 
 ### Patch Changes
