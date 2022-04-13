@@ -75,7 +75,6 @@ export const knossosEvents = ({ path = '_activity' }: KnossosEvents = {}): expre
   res.once('finish', async function runRemainingHandlers() {
     req.knossos.log('Running remaining event handlers')
     await queue.runRemainingHandlers()
-    req.knossos.log('Saving events')
     await queue.saveEvents()
   })
 
