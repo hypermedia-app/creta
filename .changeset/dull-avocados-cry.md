@@ -1,6 +1,6 @@
 ---
-"@hydrofoil/knossos-events": minor
-"@hydrofoil/knossos": minor
+"@hydrofoil/knossos-events": patch
+"@hydrofoil/knossos": patch
 ---
 
 Reimplemented `@hydrofoil/knossos-events` using [queue](https://npm.im/queue)
