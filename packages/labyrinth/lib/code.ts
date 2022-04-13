@@ -2,7 +2,7 @@ import { Api } from 'hydra-box/Api'
 import { GraphPointer } from 'clownface'
 
 export interface CodeLoader {
-  <T extends any = unknown>(node: GraphPointer, options?: Record<any, any>): T | Promise<T> | null
+  <T = unknown>(node: GraphPointer, options?: Record<any, any>): T | Promise<T> | null
 }
 
 export function codeLoader(api: Api): CodeLoader {

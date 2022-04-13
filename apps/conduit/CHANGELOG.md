@@ -1,5 +1,12 @@
 # @hydrofoil/conduit
 
+## 0.1.33-queues.0
+
+### Patch Changes
+
+- Updated dependencies [2fbddfc]
+  - @hydrofoil/knossos@0.6.7-queues.0
+
 ## 0.1.32
 
 ### Patch Changes

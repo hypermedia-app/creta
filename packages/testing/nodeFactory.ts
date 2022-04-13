@@ -7,6 +7,6 @@ export function namedNode<Iri extends string = string>(term: Iri | NamedNode<Iri
   return clownface({ dataset: $rdf.dataset() }).namedNode(term)
 }
 
-export function blankNode(): GraphPointer<BlankNode, DatasetExt> {
-  return clownface({ dataset: $rdf.dataset() }).blankNode()
+export function blankNode(label?: string): GraphPointer<BlankNode, DatasetExt> {
+  return clownface({ dataset: $rdf.dataset() }).blankNode(label)
 }

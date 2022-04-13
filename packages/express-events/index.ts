@@ -1,15 +1,12 @@
+import { NamedNode } from 'rdf-js'
 import { Activity } from '@rdfine/as'
 import type express from 'express'
-import { fromPointer } from '@rdfine/as/lib/Activity'
-import clownface, { GraphPointer } from 'clownface'
-import $rdf from 'rdf-ext'
+import { GraphPointer } from 'clownface'
 import { nanoid } from 'nanoid'
-import { hyper_events } from '@hydrofoil/vocabularies/builders/strict'
 import { attach } from 'rdf-express-node-factory'
-import once from 'once'
-import { isNamedNode } from './lib'
 import { loadHandlers } from './lib/loadHandlers'
 import { runHandler } from './lib/runHandler'
+import { ActivityQueue } from './lib/ActivityQueue'
 
 export { hyper_events as ns } from '@hydrofoil/vocabularies/builders/strict'
 
@@ -18,8 +15,10 @@ interface HandlerParams {
   req: express.Request
 }
 
+type MaybeAsync<T> = T | Promise<T>
+
 export interface Handler {
-  (arg: HandlerParams): Promise<Activity[]> | Activity[] | void | Promise<void>
+  (arg: HandlerParams): MaybeAsync<Activity[] | Activity | void>
 }
 
 export interface Events {
@@ -33,89 +32,50 @@ declare module 'express-serve-static-core' {
   }
 }
 
-interface PendingEvent {
-  activity: Activity
-  handlers: () => Promise<Array<{ handler: GraphPointer; impl: Handler; handled?: boolean }>>
-}
-
 interface KnossosEvents {
   path?: string
 }
 
 export const knossosEvents = ({ path = '_activity' }: KnossosEvents = {}): express.RequestHandler => (req, res, next) => {
-  const pendingEvents: PendingEvent[] = []
-  let immediateHandled = false
+  const logger = req.knossos.log.extend('event')
+
+  function store(pointer: GraphPointer<NamedNode>) {
+    return req.knossos.store.save(pointer).catch(req.knossos.log.extend('event'))
+  }
+
+  const queue = new ActivityQueue({
+    logger,
+    loader: loadHandlers.bind(null, req),
+    runner: runHandler.bind(null, req),
+    store,
+    activityId: () => req.rdf.namedNode(`/${path}/${nanoid()}`),
+  })
 
   attach(req)
 
   const emit: Events = function emit(...events) {
     for (const init of events) {
-      const pointer = clownface({ dataset: $rdf.dataset() })
-        .namedNode(req.rdf.namedNode(`/${path}/${nanoid()}`))
-
-      const activity = fromPointer(pointer, {
+      const activity = {
         ...init,
         actor: req.agent,
-      })
-      pendingEvents.push({
-        activity,
-        handlers: once(() => loadHandlers(req, activity)),
-      })
+        published: new Date(),
+      }
+
+      queue.addActivity(activity)
     }
   }
 
-  emit.handleImmediate = (): Promise<any> => {
-    if (immediateHandled) {
-      return Promise.resolve()
-    }
-
-    const immediate = pendingEvents.map((item) => {
-      return item.handlers()
-        .then(handlers => {
-          const immediatePromises = handlers.map(async (entry) => {
-            if (!entry.handler.has(hyper_events.immediate, true).terms.length) {
-              req.knossos.log('Not immediate handler %s', entry.handler.value)
-              return
-            }
-
-            await runHandler(entry, item.activity, req)
-            entry.handled = true
-          })
-
-          return Promise.all(immediatePromises)
-        })
-    })
-
-    immediateHandled = true
-    return Promise.all(immediate)
+  emit.handleImmediate = (): Promise<void> => {
+    req.knossos.log('Running immediate event handlers')
+    return queue.runImmediateHandlers()
   }
 
   res.event = emit
 
-  res.once('finish', function runRemainingHandlers() {
-    if (pendingEvents.length === 0) return
-
+  res.once('finish', async function runRemainingHandlers() {
     req.knossos.log('Running remaining event handlers')
-    for (const { activity, handlers } of pendingEvents) {
-      handlers().then((arr) => {
-        for (const entry of arr) {
-          runHandler(entry, activity, req).catch(req.knossos.log.extend('event'))
-        }
-      }).catch(req.knossos.log.extend('event'))
-    }
-  })
-  res.once('finish', async function saveActivities() {
-    if (pendingEvents.length === 0) return
-
-    req.knossos.log('Saving events')
-    for (const { activity } of pendingEvents) {
-      if (!isNamedNode(activity.pointer)) {
-        continue
-      }
-
-      activity.published = new Date()
-      req.knossos.store.save(activity.pointer).catch(req.knossos.log.extend('event'))
-    }
+    await queue.runRemainingHandlers()
+    await queue.saveEvents()
   })
 
   next()

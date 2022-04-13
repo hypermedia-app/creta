@@ -1,21 +1,14 @@
-import { GraphPointer } from 'clownface'
 import { Activity } from '@rdfine/as'
 import type * as express from 'express'
-import { Handler } from '../index'
+import { RuntimeHandler } from './'
 
-export interface RuntimeHandler {
-  handler: GraphPointer
-  impl: Handler | undefined
-  handled?: boolean
-}
-
-export async function runHandler({ impl, handler, handled }: RuntimeHandler, event: Activity, req: express.Request) {
+export async function runHandler(req: express.Request, { impl, pointer, handled }: RuntimeHandler, event: Activity) {
   if (handled) {
     return
   }
 
   if (!impl) {
-    req.knossos.log('Failed to load implementation of handler %s', handler.value)
+    req.knossos.log('Failed to load implementation of handler %s', pointer.value)
     return
   }
 

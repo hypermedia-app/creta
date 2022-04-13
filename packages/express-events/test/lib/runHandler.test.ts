@@ -21,12 +21,12 @@ describe('@hydrofoil/express-events/lib/runHandler', () => {
     const handler = {
       impl: sinon.spy(),
       handled: true,
-      handler: blankNode(),
+      pointer: blankNode(),
     }
     const activity = fromPointer(blankNode())
 
     // when
-    await runHandler(handler, activity, req)
+    await runHandler(req, handler, activity)
 
     // then
     expect(handler.impl).not.to.have.been.called
@@ -36,12 +36,12 @@ describe('@hydrofoil/express-events/lib/runHandler', () => {
     // given
     const handler = {
       impl: sinon.spy(),
-      handler: blankNode(),
+      pointer: blankNode(),
     }
     const activity = fromPointer(blankNode())
 
     // when
-    await runHandler(handler, activity, req)
+    await runHandler(req, handler, activity)
 
     // then
     expect(handler.impl).to.have.been.calledWith(sinon.match({

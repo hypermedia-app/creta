@@ -1,6 +1,8 @@
-import { NamedNode } from 'rdf-js'
 import { GraphPointer } from 'clownface'
+import { Handler } from '..'
 
-export function isNamedNode(pointer: GraphPointer): pointer is GraphPointer<NamedNode> {
-  return pointer.term.termType === 'NamedNode'
+export interface RuntimeHandler {
+  pointer: GraphPointer
+  impl: Handler | undefined
+  handled?: boolean
 }
