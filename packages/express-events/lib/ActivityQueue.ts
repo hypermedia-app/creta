@@ -124,7 +124,11 @@ export class ActivityQueue {
     return async () => {
       const moreEvents = await this.options.runner(handler, activity)
       this.options.logger(`Finished handler ${handler.pointer.value}`)
-      moreEvents?.forEach(this.addActivity.bind(this))
+      if (Array.isArray(moreEvents)) {
+        moreEvents.forEach(this.addActivity.bind(this))
+      } else if (moreEvents) {
+        this.addActivity(moreEvents)
+      }
     }
   }
 }

@@ -15,8 +15,10 @@ interface HandlerParams {
   req: express.Request
 }
 
+type MaybeAsync<T> = T | Promise<T>
+
 export interface Handler {
-  (arg: HandlerParams): Promise<Activity[]> | Activity[] | void | Promise<void>
+  (arg: HandlerParams): MaybeAsync<Activity[] | Activity | void>
 }
 
 export interface Events {
