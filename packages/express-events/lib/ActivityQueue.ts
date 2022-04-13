@@ -1,3 +1,4 @@
+import { NamedNode } from 'rdf-js'
 import Queue from 'queue'
 import { Activity } from '@rdfine/as'
 import clownface, { GraphPointer } from 'clownface'
@@ -18,7 +19,7 @@ export interface Runner {
 }
 
 export interface StoreEvent {
-  (event: Activity): Promise<void>
+  (event: GraphPointer<NamedNode>): Promise<void>
 }
 
 interface Options {
@@ -26,6 +27,7 @@ interface Options {
   runner: Runner
   store: StoreEvent
   logger: Debugger
+  activityId(): NamedNode
 }
 
 export class ActivityQueue {
@@ -33,33 +35,28 @@ export class ActivityQueue {
   private readonly immediateQueue: Queue
   private readonly asyncQueue: Queue
   private readonly storeQueue: Queue
-  private readonly loader: Loader
-  private readonly runner: Runner
-  private readonly logger: Debugger
-  private readonly store: StoreEvent
+  private readonly options: Options
   private immediateHandled = false
 
-  constructor({ loader, logger, runner, store }: Options) {
-    this.logger = logger
-    this.loader = loader
-    this.store = store
+  constructor(options: Options) {
+    this.options = options
     this.activities = new Queue({ autostart: true })
     this.immediateQueue = new Queue()
-      .on('end', () => logger('Finished immediate handlers'))
+      .on('end', () => options.logger('Finished immediate handlers'))
     this.asyncQueue = new Queue()
-      .on('end', () => logger('Finished async handlers'))
+      .on('end', () => options.logger('Finished async handlers'))
     this.storeQueue = new Queue()
-      .on('end', () => logger('Saved activities'))
-      .on('error', err => logger(err))
-    this.runner = runner
+      .on('end', () => options.logger('Saved activities'))
+      .on('error', err => options.logger(err))
   }
 
   addActivity(activityInit: Initializer<Activity>) {
-    const pointer = clownface({ dataset: $rdf.dataset() }).blankNode()
+    const pointer = clownface({ dataset: $rdf.dataset() })
+      .namedNode(this.options.activityId())
     const activity = fromPointer(pointer, activityInit)
 
     this.activities.push(async () => {
-      const handlers = await this.loader(activity)
+      const handlers = await this.options.loader(activity)
       for (const handler of handlers) {
         if (isImmediate(handler.pointer) && !this.immediateHandled) {
           this.immediateQueue.push(this.createJob(handler, activity))
@@ -68,7 +65,7 @@ export class ActivityQueue {
         }
       }
     })
-    this.storeQueue.push(this.store.bind(null, activity))
+    this.storeQueue.push(this.options.store.bind(null, pointer))
   }
 
   async runImmediateHandlers(): Promise<void> {
@@ -125,8 +122,8 @@ export class ActivityQueue {
 
   private createJob(handler: RuntimeHandler, activity: Activity) {
     return async () => {
-      const moreEvents = await this.runner(handler, activity)
-      this.logger(`Finished handler ${handler.pointer.value}`)
+      const moreEvents = await this.options.runner(handler, activity)
+      this.options.logger(`Finished handler ${handler.pointer.value}`)
       moreEvents?.forEach(this.addActivity.bind(this))
     }
   }

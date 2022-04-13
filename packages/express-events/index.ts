@@ -1,8 +1,7 @@
+import { NamedNode } from 'rdf-js'
 import { Activity } from '@rdfine/as'
 import type express from 'express'
-import { fromPointer } from '@rdfine/as/lib/Activity'
-import clownface from 'clownface'
-import $rdf from 'rdf-ext'
+import { GraphPointer } from 'clownface'
 import { nanoid } from 'nanoid'
 import { attach } from 'rdf-express-node-factory'
 import { loadHandlers } from './lib/loadHandlers'
@@ -38,14 +37,7 @@ interface KnossosEvents {
 export const knossosEvents = ({ path = '_activity' }: KnossosEvents = {}): express.RequestHandler => (req, res, next) => {
   const logger = req.knossos.log.extend('event')
 
-  function store(activity: Activity) {
-    const pointer = clownface({ dataset: $rdf.dataset() })
-      .namedNode(req.rdf.namedNode(`/${path}/${nanoid()}`))
-    fromPointer(pointer, {
-      ...activity,
-      published: new Date(),
-    })
-
+  function store(pointer: GraphPointer<NamedNode>) {
     return req.knossos.store.save(pointer).catch(req.knossos.log.extend('event'))
   }
 
@@ -54,6 +46,7 @@ export const knossosEvents = ({ path = '_activity' }: KnossosEvents = {}): expre
     loader: loadHandlers.bind(null, req),
     runner: runHandler.bind(null, req),
     store,
+    activityId: () => req.rdf.namedNode(`/${path}/${nanoid()}`),
   })
 
   attach(req)
@@ -63,6 +56,7 @@ export const knossosEvents = ({ path = '_activity' }: KnossosEvents = {}): expre
       const activity = {
         ...init,
         actor: req.agent,
+        published: new Date(),
       }
 
       queue.addActivity(activity)
@@ -70,6 +64,7 @@ export const knossosEvents = ({ path = '_activity' }: KnossosEvents = {}): expre
   }
 
   emit.handleImmediate = (): Promise<void> => {
+    req.knossos.log('Running immediate event handlers')
     return queue.runImmediateHandlers()
   }
 

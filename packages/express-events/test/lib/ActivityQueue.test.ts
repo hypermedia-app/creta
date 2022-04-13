@@ -4,6 +4,8 @@ import { blankNode } from '@labyrinth/testing/nodeFactory'
 import { expect } from 'chai'
 import { hyper_events } from '@hydrofoil/vocabularies/builders/strict'
 import debug from 'debug'
+import { nanoid } from 'nanoid'
+import $rdf from 'rdf-ext'
 import { ActivityQueue, Loader, Runner } from '../../lib/ActivityQueue'
 
 describe('@hydrofoil/express-events/lib/ActivityQueue', () => {
@@ -25,6 +27,7 @@ describe('@hydrofoil/express-events/lib/ActivityQueue', () => {
       loader,
       runner,
       store,
+      activityId: () => $rdf.namedNode(nanoid()),
     })
   })
 
