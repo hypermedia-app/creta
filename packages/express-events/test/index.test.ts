@@ -32,6 +32,11 @@ describe('@hydrofoil/express-events', () => {
     describe('emit', () => {
       it('save an event with correct identifier', async () => {
         // given
+        const loadHandlers = sinon.stub(lib, 'loadHandlers')
+        loadHandlers.resolves([{
+          pointer: blankNode(),
+          impl: sinon.spy(),
+        }])
         app.use('/my/app', Router().get('*', (req, res) => {
           res.event({
             types: [as.Create],
@@ -59,7 +64,7 @@ describe('@hydrofoil/express-events', () => {
         const handler = sinon.spy()
         const loadHandlers = sinon.stub(lib, 'loadHandlers')
         loadHandlers.resolves([{
-          handler: blankNode(),
+          pointer: blankNode(),
           impl: handler,
         }])
 
@@ -88,10 +93,10 @@ describe('@hydrofoil/express-events', () => {
         const otherHandler = sinon.spy()
         const loadHandlers = sinon.stub(lib, 'loadHandlers')
         loadHandlers.resolves([{
-          handler: blankNode().addOut(hyper_events.immediate, true),
+          pointer: blankNode().addOut(hyper_events.immediate, true),
           impl: immediateHandler,
         }, {
-          handler: blankNode(),
+          pointer: blankNode(),
           impl: otherHandler,
         }])
 
@@ -128,7 +133,7 @@ describe('@hydrofoil/express-events', () => {
         const immediateHandler = sinon.spy()
         const loadHandlers = sinon.stub(lib, 'loadHandlers')
         loadHandlers.resolves([{
-          handler: blankNode().addOut(hyper_events.immediate, true),
+          pointer: blankNode().addOut(hyper_events.immediate, true),
           impl: immediateHandler,
         }])
 
@@ -156,7 +161,7 @@ describe('@hydrofoil/express-events', () => {
         const immediateHandler = sinon.spy()
         const loadHandlers = sinon.stub(lib, 'loadHandlers')
         loadHandlers.resolves([{
-          handler: blankNode().addOut(hyper_events.immediate, true),
+          pointer: blankNode().addOut(hyper_events.immediate, true),
           impl: immediateHandler,
         }])
 
@@ -192,10 +197,10 @@ describe('@hydrofoil/express-events', () => {
         const otherHandler = sinon.spy()
         const loadHandlers = sinon.stub(lib, 'loadHandlers')
         loadHandlers.resolves([{
-          handler: blankNode().addOut(hyper_events.immediate, true),
+          pointer: blankNode().addOut(hyper_events.immediate, true),
           impl: sinon.spy(),
         }, {
-          handler: blankNode(),
+          pointer: blankNode(),
           impl: otherHandler,
         }])
 

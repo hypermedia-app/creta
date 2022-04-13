@@ -8,12 +8,7 @@ import { hyper_events, code } from '@hydrofoil/vocabularies/builders/strict'
 import type * as express from 'express'
 import $rdf from 'rdf-ext'
 import { Handler } from '../index'
-
-export interface RuntimeHandler {
-  handler: GraphPointer
-  impl: Handler
-  handled?: boolean
-}
+import { RuntimeHandler } from './index'
 
 function hasOneImplementation(pointer: MultiPointer): pointer is GraphPointer {
   return !!pointer.term
@@ -47,21 +42,21 @@ export async function loadHandlers(req: express.Request, event: Activity) {
   return Promise.all(clownface({ dataset })
     .has(code.implementedBy)
     .toArray()
-    .reduce((promises, handler) => {
-      const implementedBy = handler.out(code.implementedBy)
+    .reduce((promises, pointer) => {
+      const implementedBy = pointer.out(code.implementedBy)
       if (hasOneImplementation(implementedBy)) {
         const impl = req.loadCode<Handler>(implementedBy)
         if (!impl) {
           return promises
         }
-        const promise = Promise.resolve().then(() => impl).then(impl => ({ handler, impl }))
+        const promise = Promise.resolve().then(() => impl).then(impl => ({ pointer, impl }))
         return [
           ...promises,
           promise,
         ]
       }
 
-      req.knossos.log('Multiple implementations found for handler %s', handler.value)
+      req.knossos.log('Multiple implementations found for handler %s', pointer.value)
       return promises
     }, [] as Array<Promise<RuntimeHandler>>))
 }
