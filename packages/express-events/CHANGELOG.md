@@ -1,5 +1,13 @@
 # @hydrofoil/knossos-events
 
+## 0.3.5-queues.0
+
+### Patch Changes
+
+- 2fbddfc: Reimplemented `@hydrofoil/knossos-events` using [queue](https://npm.im/queue)
+
+  This implements a missing feature where cascading events were not being handled and saved
+
 ## 0.3.4
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @hydrofoil/talos
 
+## 0.4.7-queues.0
+
+### Patch Changes
+
+- Updated dependencies [2fbddfc]
+  - @hydrofoil/knossos@0.6.7-queues.0
+
 ## 0.4.6
 
 ### Patch Changes
