@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.10.6
+
+### Patch Changes
+
+- 6eb5d10: Updated hydra-box (now with support for `code:EcmaScriptModule`)
+
 ## 0.10.5
 
 ### Patch Changes
