@@ -10,6 +10,7 @@ import httpError from 'http-errors'
 import { attach } from 'express-rdf-request'
 import { shaclValidate } from './shacl'
 import { canBeCreatedWithPut, save } from './lib/resource'
+import './types'
 
 const saveResource = ({ create }: { create: boolean }) => asyncMiddleware(async (req, res) => {
   const resource = await req.resource()
