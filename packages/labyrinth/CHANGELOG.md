@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.10.7
+
+### Patch Changes
+
+- dd38eb1: Log executed resource hooks
+
 ## 0.10.6
 
 ### Patch Changes

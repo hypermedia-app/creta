@@ -1,5 +1,13 @@
 # @hydrofoil/knossos
 
+## 0.6.9
+
+### Patch Changes
+
+- c2f881d: When posting a collection member, it would not be correctly validated by shacl
+- Updated dependencies [dd38eb1]
+  - @hydrofoil/labyrinth@0.10.7
+
 ## 0.6.8
 
 ### Patch Changes
