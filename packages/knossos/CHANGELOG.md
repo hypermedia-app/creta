@@ -1,5 +1,13 @@
 # @hydrofoil/knossos
 
+## 0.6.8
+
+### Patch Changes
+
+- 5120e5b: `tsc` would fail on missing declarations for `debug`
+- 13d814a: Ensure that labyrinth's extension to `express.Request` are import from knossos
+- 8fd760f: App would fail to start when there was no config, again
+
 ## 0.6.7
 
 ### Patch Changes
