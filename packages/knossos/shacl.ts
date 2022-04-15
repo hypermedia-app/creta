@@ -9,7 +9,7 @@ import { rdf, rdfs, sh } from '@tpluscode/rdf-ns-builders'
 import { shaclMiddleware } from 'express-middleware-shacl'
 import $rdf from 'rdf-ext'
 import clownface from 'clownface'
-import { RequestHandler, Request } from 'express'
+import { RequestHandler, Request, Response } from 'express'
 import { CONSTRUCT } from '@tpluscode/sparql-builder'
 import { shapesQuery } from './lib/shacl'
 import '@hydrofoil/labyrinth'
@@ -19,7 +19,7 @@ export interface Options {
    * Function to select identifiers of types which should be validated.
    * Defaults to the sum of existing resource types and payload types.
    */
-  typesToValidate?: (req: Request) => Term[] | Promise<Term[]>
+  typesToValidate?: (req: Request, res: Response) => Term[] | Promise<Term[]>
 }
 
 /**
@@ -43,8 +43,8 @@ export function payloadTypes(req: Request): Term[] {
  * Middleware which runs SHACL validation of request payload
  */
 export const shaclValidate = ({ typesToValidate = payloadAndResourceTypes }: Options = {}): RequestHandler => shaclMiddleware({
-  async loadShapes(req) {
-    const types = new TermSet(await typesToValidate(req))
+  async loadShapes(req, res) {
+    const types = new TermSet(await typesToValidate(req, res))
 
     const dataset = await $rdf.dataset().import(await shapesQuery({
       term: req.hydra.term,

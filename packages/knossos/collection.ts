@@ -24,6 +24,12 @@ import '@hydrofoil/labyrinth'
 
 export type { TransformVariable } from './lib/template'
 
+type CreateMemberResponse = Response<any, {
+  collection?: GraphPointer
+  memberAssertions?: MultiPointer
+  member?: GraphPointer<NamedNode>
+}>
+
 RdfResource.factory.addMixin(...IriTemplateBundle)
 
 function checkMemberTemplate(ptr: AnyPointer): ptr is GraphPointer<ResourceIdentifier> {
@@ -43,22 +49,16 @@ function rename(member: GraphPointer, id: NamedNode): GraphPointer<NamedNode> {
   return member.node(id)
 }
 
-async function typesToValidate(req: Request) {
-  const collection = await req.hydra.resource.clownface()
-  const memberAssertions = collection.out([hydra.manages, hydra.memberAssertion])
-  const types = memberAssertions.has(hydra.property, rdf.type).out(hydra.object)
+async function typesToValidate(req: Request, res: CreateMemberResponse) {
+  const collectionAssertedTypes = res.locals.memberAssertions!
+    .has(hydra.property, rdf.type)
+    .out(hydra.object)
 
   return [
     ...payloadTypes(req),
-    ...types.terms,
+    ...collectionAssertedTypes.terms,
   ]
 }
-
-type CreateMemberResponse = Response<any, {
-  collection?: GraphPointer
-  memberAssertions?: MultiPointer
-  member?: GraphPointer<NamedNode>
-}>
 
 const assertMemberAssertions = asyncMiddleware(async (req, res: CreateMemberResponse, next) => {
   const member = res.locals.member!
@@ -101,7 +101,10 @@ const prepareMemberPointer = asyncMiddleware(async (req, res: CreateMemberRespon
   const templateVariables = await applyTransformations(req, resource, iriTemplate.pointer)
   const url = new URL(iriTemplate.expand(templateVariables), req.absoluteUrl())
   url.pathname = `${req.baseUrl}${url.pathname}`
-  res.locals.member = rename(resource, $rdf.namedNode(url.toString()))
+
+  const member = rename(resource, $rdf.namedNode(url.toString()))
+  res.locals.member = member
+  req.resource = async () => member
 
   next()
 })
