@@ -1,4 +1,4 @@
-import { NamedNode } from 'rdf-js'
+import { NamedNode, Term } from 'rdf-js'
 import Queue from 'queue'
 import { Activity } from '@rdfine/as'
 import clownface, { GraphPointer } from 'clownface'
@@ -23,6 +23,7 @@ export interface StoreEvent {
 }
 
 interface Options {
+  actor: Term | undefined
   loader: Loader
   runner: Runner
   store: StoreEvent
@@ -53,7 +54,11 @@ export class ActivityQueue {
   addActivity(activityInit: Initializer<Activity>) {
     const pointer = clownface({ dataset: $rdf.dataset() })
       .namedNode(this.options.activityId())
-    const activity = fromPointer(pointer, activityInit)
+    const activity = fromPointer(pointer, {
+      ...activityInit,
+      actor: this.options.actor,
+      published: new Date(),
+    })
 
     this.activities.push(async () => {
       const handlers = await this.options.loader(activity)
