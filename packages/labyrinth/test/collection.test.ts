@@ -11,6 +11,7 @@ import { handler as hydraBox } from '@labyrinth/testing/hydra-box'
 import { ex } from '@labyrinth/testing/namespace'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
 import TermSet from '@rdfjs/term-set'
+import { knossosMock } from '@labyrinth/testing/knossos'
 import { createGetHandler } from '../collection'
 
 describe('@hydrofoil/labyrinth/collection', () => {
@@ -69,6 +70,7 @@ describe('@hydrofoil/labyrinth/collection', () => {
             .addOut(knossos.preprocessResponse, null)
         },
       }))
+      knossosMock(app)
       app.use((req, res, next) => {
         req.loadCode = sinon.stub().resolves(representationHook)
         next()

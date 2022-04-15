@@ -65,7 +65,10 @@ export async function preprocessResource({ req, res, getTypes = hydraResourceTyp
   const resourcePointer = await getResource(req, res)
 
   if (resourcePointer) {
-    await Promise.all(hooks.map(preprocess => preprocess(req, resourcePointer)))
+    await Promise.all(hooks.map(preprocess => {
+      req.knossos.log(`Running resource hook ${preprocess.name} <${predicate.value}>`)
+      return preprocess(req, resourcePointer)
+    }))
   }
 }
 
