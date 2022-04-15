@@ -12,6 +12,7 @@ import clownface from 'clownface'
 import { RequestHandler, Request } from 'express'
 import { CONSTRUCT } from '@tpluscode/sparql-builder'
 import { shapesQuery } from './lib/shacl'
+import '@hydrofoil/labyrinth'
 
 export interface Options {
   /**
