@@ -1,5 +1,12 @@
 # @hydrofoil/knossos-events
 
+## 0.3.6
+
+### Patch Changes
+
+- fd0009e: Additional events returned from handkers did not have `as:actor` and `as:published` set
+- e904454: Event handler show TS error when returning `Initializer<Activity>`
+
 ## 0.3.5
 
 ### Patch Changes
