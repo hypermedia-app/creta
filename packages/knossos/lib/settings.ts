@@ -28,7 +28,7 @@ async function getConfigurationId(api: Api, context: Context): Promise<Term | un
     ?config a ${knossos.Configuration} ; ${hydra.apiDocumentation} ${api.term}
   `.execute(context.client.query))
 
-  return match.config
+  return match?.config
 }
 
 export async function loadConfiguration(api: Api, context: Context): Promise<GraphPointer | undefined> {
