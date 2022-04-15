@@ -3,6 +3,6 @@
  * @module @hydrofoil/knossos/configuration
  */
 
-import './types'
+import '@hydrofoil/labyrinth'
 
 export type { MiddlewareFactory } from './lib/settings'

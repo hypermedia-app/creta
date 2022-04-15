@@ -18,6 +18,7 @@ import $rdf from 'rdf-ext'
 import { coreMiddleware } from './lib/coreMiddleware'
 import { ResourcePerGraphStore, ResourceStore } from './lib/store'
 import { create } from './resource'
+import '@hydrofoil/labyrinth'
 
 export interface Knossos {
   store: ResourceStore

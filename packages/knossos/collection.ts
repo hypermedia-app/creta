@@ -20,7 +20,7 @@ import { payloadTypes, shaclValidate } from './shacl'
 import { save } from './lib/resource'
 import { applyTransformations, hasAllRequiredVariables } from './lib/template'
 import { combinePointers } from './lib/clownface'
-import './types'
+import '@hydrofoil/labyrinth'
 
 export type { TransformVariable } from './lib/template'
 
