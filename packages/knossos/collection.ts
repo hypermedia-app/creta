@@ -104,6 +104,8 @@ const prepareMemberPointer = asyncMiddleware(async (req, res: CreateMemberRespon
 
   const member = rename(resource, $rdf.namedNode(url.toString()))
   res.locals.member = member
+  // replace getter to have downstream middlewares
+  // use the rewritten member representation
   req.resource = async () => member
 
   next()
