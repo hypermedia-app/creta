@@ -4,6 +4,7 @@ import type express from 'express'
 import { GraphPointer } from 'clownface'
 import { nanoid } from 'nanoid'
 import { attach } from 'rdf-express-node-factory'
+import type { Initializer } from '@tpluscode/rdfine/RdfResource'
 import { loadHandlers } from './lib/loadHandlers'
 import { runHandler } from './lib/runHandler'
 import { ActivityQueue } from './lib/ActivityQueue'
@@ -16,9 +17,10 @@ interface HandlerParams {
 }
 
 type MaybeAsync<T> = T | Promise<T>
+type ArrayOrSingle<T> = T | T[]
 
 export interface Handler {
-  (arg: HandlerParams): MaybeAsync<Activity[] | Activity | void>
+  (arg: HandlerParams): MaybeAsync<ArrayOrSingle<Initializer<Activity>> | void>
 }
 
 export interface Events {
