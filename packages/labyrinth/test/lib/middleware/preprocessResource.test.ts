@@ -13,6 +13,7 @@ import $rdf from 'rdf-ext'
 import { rdf } from '@tpluscode/rdf-ns-builders/strict'
 import { CodeLoader } from 'labyrinth/lib/code'
 import TermSet from '@rdfjs/term-set'
+import { knossosMock } from '@labyrinth/testing/knossos'
 import { preprocessMiddleware, preprocessPayload } from '../../../lib/middleware/preprocessResource'
 
 describe('@hydrofoil/labyrinth/lib/middleware/preprocessResource', () => {
@@ -32,6 +33,7 @@ describe('@hydrofoil/labyrinth/lib/middleware/preprocessResource', () => {
       },
     }))
     loadCode = sinon.stub().resolves(preprocessHook)
+    knossosMock(app)
     app.use((req, res, next) => {
       req.loadCode = loadCode
       next()

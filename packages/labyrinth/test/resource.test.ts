@@ -9,6 +9,7 @@ import TermSet from '@rdfjs/term-set'
 import { rdf } from '@tpluscode/rdf-ns-builders/strict'
 import clownface from 'clownface'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
+import { knossosMock } from '@labyrinth/testing/knossos'
 import { ex } from '../../testing/namespace'
 import { get } from '../resource'
 
@@ -75,6 +76,7 @@ describe('@hydrofoil/labyrinth/resource', () => {
             .addOut(knossos.preprocessResponse, null)
         },
       }))
+      knossosMock(app)
       app.use((req, res, next) => {
         req.loadCode = sinon.stub().resolves(representationHook)
         next()
