@@ -1,4 +1,4 @@
-import { NamedNode, Term } from 'rdf-js'
+import { NamedNode } from 'rdf-js'
 import Queue from 'queue'
 import { Activity } from '@rdfine/as'
 import clownface, { GraphPointer } from 'clownface'
@@ -23,7 +23,6 @@ export interface StoreEvent {
 }
 
 interface Options {
-  actor: Term | undefined
   loader: Loader
   runner: Runner
   store: StoreEvent
@@ -56,7 +55,6 @@ export class ActivityQueue {
       .namedNode(this.options.activityId())
     const activity = fromPointer(pointer, {
       ...activityInit,
-      actor: this.options.actor,
       published: new Date(),
     })
 
@@ -126,13 +124,20 @@ export class ActivityQueue {
   }
 
   private createJob(handler: RuntimeHandler, activity: Activity) {
+    const addChildActivity = (childActivity: Initializer<Activity>) => {
+      this.addActivity({
+        ...childActivity,
+        actor: childActivity.actor || activity.actor,
+      })
+    }
+
     return async () => {
       const moreEvents = await this.options.runner(handler, activity)
       this.options.logger(`Finished handler ${handler.pointer.value}`)
       if (Array.isArray(moreEvents)) {
-        moreEvents.forEach(this.addActivity.bind(this))
+        moreEvents.forEach(addChildActivity)
       } else if (moreEvents) {
-        this.addActivity(moreEvents)
+        addChildActivity(moreEvents)
       }
     }
   }
