@@ -46,7 +46,6 @@ export const knossosEvents = ({ path = '_activity' }: KnossosEvents = {}): expre
   }
 
   const queue = new ActivityQueue({
-    actor: req.agent?.term,
     logger,
     loader: loadHandlers.bind(null, req),
     runner: runHandler.bind(null, req),
@@ -57,8 +56,11 @@ export const knossosEvents = ({ path = '_activity' }: KnossosEvents = {}): expre
   attach(req)
 
   const emit: Events = function emit(...events) {
-    for (const activity of events) {
-      queue.addActivity(activity)
+    for (const init of events) {
+      queue.addActivity({
+        ...init,
+        actor: req.agent,
+      })
     }
   }
 

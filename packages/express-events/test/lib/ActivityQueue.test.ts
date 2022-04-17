@@ -14,8 +14,6 @@ describe('@hydrofoil/express-events/lib/ActivityQueue', () => {
   const logger = debug('test')
   logger.enabled = true
 
-  const actor = $rdf.namedNode('actor')
-
   let queue: ActivityQueue
   let loader: sinon.SinonStub<Parameters<Loader>, ReturnType<Loader>>
   let runner: sinon.SinonStub<Parameters<Runner>, ReturnType<Runner>>
@@ -27,7 +25,6 @@ describe('@hydrofoil/express-events/lib/ActivityQueue', () => {
     runner = sinon.stub()
     store = sinon.stub().resolves(undefined)
     queue = new ActivityQueue({
-      actor,
       logger,
       loader,
       runner,
@@ -48,7 +45,7 @@ describe('@hydrofoil/express-events/lib/ActivityQueue', () => {
     expect(store).not.to.have.been.called
   })
 
-  it('sets as:actor and as:published of events', async () => {
+  it('sets as:published of events', async () => {
     // given
     queue.addActivity({})
 
@@ -57,7 +54,7 @@ describe('@hydrofoil/express-events/lib/ActivityQueue', () => {
 
     // then
     expect(store).to.have.been.calledWith(sinon.match((value: GraphPointer) => {
-      return value.out(as.actor).term?.equals(actor) && !!value.out(as.published).term
+      return !!value.out(as.published).term
     }))
   })
 
@@ -85,6 +82,53 @@ describe('@hydrofoil/express-events/lib/ActivityQueue', () => {
       // then
       expect(runner).to.have.been.calledTwice
       expect(store).to.have.been.calledThrice
+    })
+
+    it('copies actor', async () => {
+      // given
+      loader.onFirstCall().resolves([{
+        pointer: blankNode().addOut(hyper_events.immediate, true),
+        impl: sinon.spy(),
+      }])
+      runner.resolves([{
+        summary: 'second',
+      }])
+
+      // when
+      queue.addActivity({
+        actor: $rdf.namedNode('actor'),
+      })
+      await queue.runImmediateHandlers()
+      await queue.saveEvents()
+
+      // then
+      expect(store).to.have.been.calledWith(sinon.match((value: GraphPointer) => {
+        return value.has(as.summary).out(as.actor).term?.equals($rdf.namedNode('actor'))
+      }))
+    })
+
+    it('preserves explicit actor', async () => {
+      // given
+      loader.onFirstCall().resolves([{
+        pointer: blankNode().addOut(hyper_events.immediate, true),
+        impl: sinon.spy(),
+      }])
+      runner.resolves([{
+        summary: 'second',
+        actor: $rdf.namedNode('different'),
+      }])
+
+      // when
+      queue.addActivity({
+        actor: $rdf.namedNode('actor'),
+      })
+      await queue.runImmediateHandlers()
+      await queue.saveEvents()
+
+      // then
+      expect(store).to.have.been.calledWith(sinon.match((value: GraphPointer) => {
+        return value.has(as.summary).out(as.actor).term?.equals($rdf.namedNode('different'))
+      }))
     })
   })
 })
