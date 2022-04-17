@@ -1,5 +1,13 @@
 # @hydrofoil/knossos
 
+## 0.6.10
+
+### Patch Changes
+
+- 6816b4b: Update `express-middleware-shacl` to 1.3.1
+- Updated dependencies [483a852]
+  - @hydrofoil/knossos-events@0.3.7
+
 ## 0.6.9
 
 ### Patch Changes

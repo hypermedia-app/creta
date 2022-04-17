@@ -1,6 +1,6 @@
 {
   "name": "@hydrofoil/knossos-events",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "main": "index.js",
   "scripts": {
     "prepare": "tsc"

@@ -1,5 +1,11 @@
 # @hydrofoil/knossos-events
 
+## 0.3.7
+
+### Patch Changes
+
+- 483a852: When pushing more events from handlers, `as:actor` should be reused from the parent event automatically
+
 ## 0.3.6
 
 ### Patch Changes
