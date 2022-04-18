@@ -13,7 +13,7 @@
     "@hydrofoil/knossos": "0.6.10",
     "@rdfjs/term-set": "^1.1.0",
     "@tpluscode/rdf-ns-builders": "^1",
-    "@tpluscode/sparql-builder": "^0.3.18",
+    "@tpluscode/sparql-builder": "^0.3.19",
     "clownface": "^1.4.0",
     "cors": "^2.8.5",
     "express": "^4.17.3",
