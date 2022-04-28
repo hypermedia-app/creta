@@ -1,5 +1,16 @@
 # @hydrofoil/conduit
 
+## 0.1.37
+
+### Patch Changes
+
+- 6d8f891: build(deps): bump clownface from 1.4.0 to 1.5.1
+- 4caf075: build(deps): bump @tpluscode/sparql-builder from 0.3.18 to 0.3.21
+- Updated dependencies [d0720ea]
+- Updated dependencies [6d8f891]
+- Updated dependencies [4caf075]
+  - @hydrofoil/knossos@0.6.11
+
 ## 0.1.36
 
 ### Patch Changes
