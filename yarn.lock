@@ -1664,10 +1664,10 @@
     clownface "^1"
     once "^1.4.0"
 
-"@tpluscode/sparql-builder@^0.3.14", "@tpluscode/sparql-builder@^0.3.21":
-  version "0.3.21"
-  resolved "https://registry.yarnpkg.com/@tpluscode/sparql-builder/-/sparql-builder-0.3.21.tgz#d094f4476d2f982d41b57cded3987b9f9609f25e"
-  integrity sha512-cbKPB1lqD6D9MeHMLET9bQSmqA5d2hCjE2i5tsWfKPelhefveYrfAtJyVjTH1RQPpzFQddqGgU+fMEtiEVwxHA==
+"@tpluscode/sparql-builder@^0.3.14", "@tpluscode/sparql-builder@^0.3.18":
+  version "0.3.18"
+  resolved "https://registry.yarnpkg.com/@tpluscode/sparql-builder/-/sparql-builder-0.3.18.tgz#8b0d881b530c9836a49f3f915f2f7070a60404d6"
+  integrity sha512-jAsXLZ3vbWDnnkZeptogYPniHJWPNFRcUPj0N5I5w2grtIZg1gMNYSWUpgO7GNgCBe24p98xs1NBeO8x159j1w==
   dependencies:
     "@rdf-esm/data-model" "^0.5.4"
     "@rdf-esm/term-set" "^0.5.0"
