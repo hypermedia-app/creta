@@ -33,7 +33,10 @@ export const get = asyncMiddleware(async (req, res) => {
 
   if (preferMinimal(req)) {
     res.setHeader('Preference-Applied', 'return=minimal')
-    return res.quadStream(req.hydra.resource.quadStream())
+    return res.quadStream(
+      await DESCRIBE`${req.hydra.resource.term}`
+        .FROM(req.hydra.resource.term)
+        .execute(req.labyrinth.sparql.query))
   }
 
   let dataset = await $rdf.dataset().import(await DESCRIBE`${req.hydra.resource.term}`.execute(req.labyrinth.sparql.query))
