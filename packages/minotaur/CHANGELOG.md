@@ -1,5 +1,11 @@
 # @hydrofoil/minotaur
 
+## 0.2.3
+
+### Patch Changes
+
+- 6d8f891: build(deps): bump clownface from 1.4.0 to 1.5.1
+
 ## 0.2.2
 
 ### Patch Changes

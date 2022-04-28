@@ -1,5 +1,13 @@
 # @hydrofoil/labyrinth
 
+## 0.10.8
+
+### Patch Changes
+
+- a62012a: `Prefer: return=minimal` should only use resource's own graph as query context
+- 6d8f891: build(deps): bump clownface from 1.4.0 to 1.5.1
+- 4caf075: build(deps): bump @tpluscode/sparql-builder from 0.3.18 to 0.3.21
+
 ## 0.10.7
 
 ### Patch Changes
