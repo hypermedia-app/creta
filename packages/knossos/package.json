@@ -31,7 +31,7 @@
     "@types/debug": "^4",
     "absolute-url": "^1.2.2",
     "camouflage-rewrite": "^1.2.0",
-    "clownface": "^1.4.0",
+    "clownface": "^1.5.1",
     "commander": "^9.0.0",
     "fs-extra": "^10.0.1",
     "debug": "^4.3.4",

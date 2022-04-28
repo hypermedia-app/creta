@@ -14,7 +14,7 @@
     "@rdfjs/term-set": "^1.1.0",
     "@tpluscode/rdf-ns-builders": "^1",
     "@tpluscode/sparql-builder": "^0.3.21",
-    "clownface": "^1.4.0",
+    "clownface": "^1.5.1",
     "cors": "^2.8.5",
     "express": "^4.17.3",
     "express-jwt": "^6.1.1",

@@ -11,7 +11,7 @@
     "@tpluscode/rdf-string": "^0.2.25",
     "@tpluscode/sparql-builder": "^0.3.21",
     "chai": "^4.3.6",
-    "clownface": "^1.4.0",
+    "clownface": "^1.5.1",
     "debug": "^4.3.4",
     "express": "^4.17.3",
     "hydra-box": "^0.6.4",
