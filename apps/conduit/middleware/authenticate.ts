@@ -1,6 +1,6 @@
 import fetch from 'node-fetch'
 import express, { Router } from 'express'
-import jwt from 'express-jwt'
+import { expressjwt as jwt, GetVerificationKey } from 'express-jwt'
 import jwksRsa from 'jwks-rsa'
 import clownface from 'clownface'
 import $rdf from 'rdf-ext'
@@ -47,7 +47,7 @@ const createJwtHandler = (jwksUri: string, client: StreamClient) => {
       rateLimit: true,
       jwksRequestsPerMinute: 5,
       jwksUri,
-    }),
+    }) as GetVerificationKey,
 
     // Validate the audience and the issuer.
     audience: process.env.AUTH_AUDIENCE,
