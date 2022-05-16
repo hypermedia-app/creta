@@ -1936,10 +1936,10 @@
     "@types/rdf-loaders-registry" "*"
     rdf-js "^4.0.2"
 
-"@types/rdf-loaders-registry@*", "@types/rdf-loaders-registry@^0.3.0":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@types/rdf-loaders-registry/-/rdf-loaders-registry-0.3.1.tgz#4c99757b3a90dc5f3b6a1177545b5a0e1184702c"
-  integrity sha512-emPaZgYsHTDHlHnnHpb8Yk8PXt1rYsV3Y0kf5UgTPaQJh8vS3GgOgl4UHpicUDMGLOHhY8D3Q6S0jnrI1+806w==
+"@types/rdf-loaders-registry@*", "@types/rdf-loaders-registry@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@types/rdf-loaders-registry/-/rdf-loaders-registry-0.3.2.tgz#609b2f42700fd2a5644193b4bce7c21944475870"
+  integrity sha512-FPy2TvZWNhuGt6MKT7h6rC4mvKRfmUXncxCl3D+3ER52xN6l4N/Fmv0yOItNr1d+5Hl7YAW+VXj2sq7scOinMA==
   dependencies:
     "@types/clownface" "*"
     rdf-js "^4.0.2"
