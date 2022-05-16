@@ -2215,7 +2215,7 @@ abort-controller@^3.0.0:
   dependencies:
     event-target-shim "^5.0.0"
 
-absolute-url@^1.2.1, absolute-url@^1.2.2:
+absolute-url@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/absolute-url/-/absolute-url-1.2.2.tgz#b92859eaf75a46fd84fc3dab5ce243516a4e24fc"
   integrity sha1-uShZ6vdaRv2E/D2rXOJDUWpOJPw=
@@ -2623,13 +2623,13 @@ camelcase@^6.0.0:
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-6.2.0.tgz#924af881c9d525ac9d87f40d964e5cea982a1809"
   integrity sha512-c7wVvbw3f37nuobQNtgsgG9POC9qMbNuMQmTCqZv23b6MIz0fcYpBiOlv9gEN/hdLdnZTDQhg6e9Dq5M1vKvfg==
 
-camouflage-rewrite@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/camouflage-rewrite/-/camouflage-rewrite-1.2.0.tgz#011603994978b88cdd51147fd4b7ad068169016c"
-  integrity sha512-3ll6Z03tn/LHisp1cWryw/+uIWaMFHL3xJkTsgVLL4SBXJ0kW2H0+BYhPM72zI/M4RWqphRLoz96EREdjX/uYQ==
+camouflage-rewrite@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/camouflage-rewrite/-/camouflage-rewrite-1.3.0.tgz#128b3dcc5d58811bcd653f4d45168af8d8915903"
+  integrity sha512-+LTIBajPPAHaLZFAdzpkxO1dC/mCMIuNaJL76Iddzuib21Dn3CDIJcsClgWEckqYNTsOC9nNmCzQavGKkMxgLw==
   dependencies:
-    absolute-url "^1.2.1"
-    hijackresponse "^2.0.0"
+    absolute-url "^1.2.2"
+    hijackresponse "^4.0.1"
     string-replace-stream "0.0.2"
 
 caniuse-lite@^1.0.30001265:
@@ -4310,10 +4310,10 @@ hexoid@1.0.0:
   resolved "https://registry.yarnpkg.com/hexoid/-/hexoid-1.0.0.tgz#ad10c6573fb907de23d9ec63a711267d9dc9bc18"
   integrity sha512-QFLV0taWQOZtvIRIAdBChesmogZrtuXvVWsFHZTk2SU+anspqZ2vMnoLg7IE1+Uk16N19APic1BuF8bC8c2m5g==
 
-hijackresponse@^2.0.0:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/hijackresponse/-/hijackresponse-2.0.1.tgz#45f5e0c9b87d73bad858f66021bec377c736b8b3"
-  integrity sha1-RfXgybh9c7rYWPZgIb7Dd8c2uLM=
+hijackresponse@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/hijackresponse/-/hijackresponse-4.0.1.tgz#951f49d3fff7e244157bc3037403bc8f73602e62"
+  integrity sha512-NO2PArOaX30m+FpvR9gi7ESUL+TfsFL2MlmWfDE5p2gXdV7XGAb+UkdB6Pw7twKwI8B6DssHleyI3edggGW6sA==
 
 hosted-git-info@^2.1.4:
   version "2.8.9"
