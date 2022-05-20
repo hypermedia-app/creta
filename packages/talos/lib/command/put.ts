@@ -11,7 +11,7 @@ export interface Put extends Command {
   apiPath?: string
 }
 
-export async function put(directories: string[], { token, api, endpoint, user, password, apiPath = '/api' }: Put) {
+export async function put(directories: string[], { token, api, endpoint, updateEndpoint, user, password, apiPath = '/api' }: Put) {
   const apiUri = $rdf.namedNode(`${api}${apiPath}`)
   for (const dir of directories) {
     const cwd = path.resolve(process.cwd(), dir)
@@ -30,7 +30,7 @@ export async function put(directories: string[], { token, api, endpoint, user, p
       apiUri,
       cwd,
       endpointUrl: endpoint,
-      updateUrl: endpoint,
+      updateUrl: updateEndpoint || endpoint,
       user,
       password,
     })
