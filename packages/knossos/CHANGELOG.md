@@ -1,5 +1,11 @@
 # @hydrofoil/knossos
 
+## 0.6.12
+
+### Patch Changes
+
+- b022341: build(deps): bump commander from 9.0.0 to 9.2.0
+
 ## 0.6.11
 
 ### Patch Changes
