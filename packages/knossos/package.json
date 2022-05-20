@@ -1,6 +1,6 @@
 {
   "name": "@hydrofoil/knossos",
-  "version": "0.6.11",
+  "version": "0.6.12",
   "bin": {
     "knossos": "bin/knossos.js",
     "knossos-ts": "bin/knossos-ts.js"

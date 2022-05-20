@@ -1,5 +1,13 @@
 # @hydrofoil/conduit
 
+## 0.1.38
+
+### Patch Changes
+
+- af019f0: build(deps): bump express-jwt from 6.1.1 to 7.7.0
+- Updated dependencies [b022341]
+  - @hydrofoil/knossos@0.6.12
+
 ## 0.1.37
 
 ### Patch Changes

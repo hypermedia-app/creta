@@ -1,5 +1,14 @@
 # @hydrofoil/talos
 
+## 0.4.9
+
+### Patch Changes
+
+- b022341: build(deps): bump commander from 9.0.0 to 9.2.0
+- d338aec: Separate option for SPARQL Update endpoint
+- Updated dependencies [b022341]
+  - @hydrofoil/knossos@0.6.12
+
 ## 0.4.8
 
 ### Patch Changes
