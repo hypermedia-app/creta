@@ -1,7 +1,6 @@
-import { Variable } from 'rdf-js'
-import { GraphPointer, MultiPointer } from 'clownface'
+import { Variable, Stream, Term } from 'rdf-js'
+import { GraphPointer } from 'clownface'
 import { DESCRIBE, sparql } from '@tpluscode/sparql-builder'
-import DatasetExt from 'rdf-ext/lib/Dataset'
 import $rdf from 'rdf-ext'
 import type StreamClient from 'sparql-http-client/StreamClient'
 import TermSet from '@rdfjs/term-set'
@@ -11,7 +10,7 @@ import { SparqlTemplateResult } from '@tpluscode/rdf-string'
 import { VALUES } from '@tpluscode/sparql-builder/expressions'
 import { warn } from '../logger'
 
-export function reduceToValidPaths(arr: SparqlTemplateResult[], path: GraphPointer) {
+function reduceToValidPaths(arr: SparqlTemplateResult[], path: GraphPointer) {
   try {
     return [...arr, toSparql(path)]
   } catch {
@@ -20,7 +19,7 @@ export function reduceToValidPaths(arr: SparqlTemplateResult[], path: GraphPoint
   }
 }
 
-export const pathsToUnion = (subject: Variable, linked: Variable) => (previous: SparqlTemplateResult, path: SparqlTemplateResult, index: number): SparqlTemplateResult => {
+const pathsToUnion = (subject: Variable, linked: Variable) => (previous: SparqlTemplateResult, path: SparqlTemplateResult, index: number): SparqlTemplateResult => {
   const graphPattern = sparql`{
         ${subject} ${path} ${linked} .
       }`
@@ -32,31 +31,33 @@ export const pathsToUnion = (subject: Variable, linked: Variable) => (previous: 
   return sparql`${previous}\nUNION\n${graphPattern}`
 }
 
-export async function loadLinkedResources(resource: MultiPointer, includes: MultiPointer, client: StreamClient): Promise<DatasetExt> {
-  const dataset = $rdf.dataset()
-  const parentVar = $rdf.variable('parent')
+export async function loadResourceWithLinks(terms: Term[], includes: GraphPointer[], client: StreamClient): Promise<Stream> {
+  const subject = $rdf.variable('resource')
   const linkedVar = $rdf.variable('linked')
 
-  const parents = [...new TermSet(resource.terms)].map(parent => ({ parent }))
-  const paths = includes.toArray()
+  const resources = [...new TermSet(terms)].map(resource => ({ resource }))
+  if (!resources.length) {
+    return $rdf.dataset().toStream()
+  }
+
+  const paths = includes
     .flatMap(include => include.out(hyper_query.path).toArray())
     .reduce(reduceToValidPaths, [])
 
-  if (paths.length && parents.length) {
+  if (paths.length) {
     const patterns = paths
-      .reduce(pathsToUnion(parentVar, linkedVar), sparql``)
+      .reduce(pathsToUnion(subject, linkedVar), sparql``)
 
-    const stream = await DESCRIBE`${linkedVar}`
+    return DESCRIBE`${linkedVar}`
       .WHERE`
-        ${VALUES(...parents)}
+        ${VALUES(...resources)}
       
         ${patterns}
         
         FILTER ( isIRI(${linkedVar}) )
       `
       .execute(client.query)
-    await dataset.import(stream)
   }
 
-  return dataset
+  return DESCRIBE`${subject}`.WHERE`VALUES ${VALUES(...resources)}`.execute(client.query)
 }
