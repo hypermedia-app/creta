@@ -22,7 +22,7 @@ describe('@hydrofoil/labyrinth/lib/query/eagerLinks', () => {
       const include = blankNode()
 
       // when
-      await loadLinkedResources(resource, include, client)
+      await loadLinkedResources(resource.terms, include.toArray(), client)
 
       // expect
       expect(client.query.construct).not.to.have.been.called
@@ -35,7 +35,7 @@ describe('@hydrofoil/labyrinth/lib/query/eagerLinks', () => {
         .addOut(hyper_query.path, null)
 
       // when
-      await loadLinkedResources(resource, include, client)
+      await loadLinkedResources(resource.terms, include.toArray(), client)
 
       // expect
       expect(client.query.construct).not.to.have.been.called
@@ -52,7 +52,7 @@ describe('@hydrofoil/labyrinth/lib/query/eagerLinks', () => {
       resource
         .addOut(schema.knows, ex.baz)
         .addOut(foaf.knows, ex.bar)
-      await loadLinkedResources(resource, include, client)
+      await loadLinkedResources(resource.terms, include.toArray(), client)
 
       // expect
       expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`DESCRIBE ${ex.baz} ${ex.bar}`)
@@ -67,7 +67,7 @@ describe('@hydrofoil/labyrinth/lib/query/eagerLinks', () => {
 
       // when
       foo.addOut(schema.knows, [foo, bar])
-      await loadLinkedResources(foo, include, client)
+      await loadLinkedResources(foo.terms, include.toArray(), client)
 
       // expect
       expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`DESCRIBE ${ex.bar}`)

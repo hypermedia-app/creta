@@ -31,33 +31,42 @@ const pathsToUnion = (subject: Variable, linked: Variable) => (previous: SparqlT
   return sparql`${previous}\nUNION\n${graphPattern}`
 }
 
-export async function loadResourceWithLinks(terms: Term[], includes: GraphPointer[], client: StreamClient): Promise<Stream> {
-  const subject = $rdf.variable('resource')
-  const linkedVar = $rdf.variable('linked')
+function createDescribeFunction(linksOnly: boolean) {
+  return async function (terms: Term[], includes: GraphPointer[], client: StreamClient): Promise<Stream> {
+    const resource = $rdf.variable('resource')
+    const linkedVar = $rdf.variable('linked')
 
-  const resources = [...new TermSet(terms)].map(resource => ({ resource }))
-  if (!resources.length) {
+    const resources = [...new TermSet(terms)].map(resource => ({ resource }))
+    if (resources.length) {
+      const paths = includes
+        .flatMap(include => include.out(hyper_query.path).toArray())
+        .reduce(reduceToValidPaths, [])
+
+      if (paths.length) {
+        const patterns = paths
+          .reduce(pathsToUnion(resource, linkedVar), sparql``)
+
+        const toDescribe = linksOnly ? linkedVar : `${resource} ${linkedVar}`
+
+        return DESCRIBE`${toDescribe}`
+          .WHERE`
+            ${VALUES(...resources)}
+          
+            ${patterns}
+            
+            FILTER ( isIRI(${linkedVar}) )
+          `
+          .execute(client.query)
+      }
+
+      if (!linksOnly) {
+        return DESCRIBE`${resource}`.WHERE`${VALUES(...resources)}`.execute(client.query)
+      }
+    }
+
     return $rdf.dataset().toStream()
   }
-
-  const paths = includes
-    .flatMap(include => include.out(hyper_query.path).toArray())
-    .reduce(reduceToValidPaths, [])
-
-  if (paths.length) {
-    const patterns = paths
-      .reduce(pathsToUnion(subject, linkedVar), sparql``)
-
-    return DESCRIBE`${linkedVar}`
-      .WHERE`
-        ${VALUES(...resources)}
-      
-        ${patterns}
-        
-        FILTER ( isIRI(${linkedVar}) )
-      `
-      .execute(client.query)
-  }
-
-  return DESCRIBE`${subject}`.WHERE`VALUES ${VALUES(...resources)}`.execute(client.query)
 }
+
+export const loadLinkedResources = createDescribeFunction(true)
+export const loadResourceWithLinks = createDescribeFunction(false)
