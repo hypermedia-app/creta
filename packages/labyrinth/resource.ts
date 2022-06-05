@@ -39,6 +39,7 @@ export const get = asyncMiddleware(async (req, res) => {
         .execute(req.labyrinth.sparql.query))
   }
 
+  // TODO combine describe of resource and linked resources
   let dataset = await $rdf.dataset().import(await DESCRIBE`${req.hydra.resource.term}`.execute(req.labyrinth.sparql.query))
   if (!req.agent) {
     const restrictedProperties = new TermSet([...types.out(hyper_query.restrict).terms])

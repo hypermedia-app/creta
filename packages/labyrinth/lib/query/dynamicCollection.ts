@@ -13,6 +13,7 @@ import { toSparql } from 'clownface-shacl-path'
 import { toRdf } from 'rdf-literal'
 import TermSet from '@rdfjs/term-set'
 import { log, warn } from '../logger'
+import { pathsToUnion, reduceToValidPaths } from '../query/eagerLinks'
 import { ToSparqlPatterns } from './index'
 
 function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPointer, api: Api) {
@@ -137,24 +138,13 @@ function createOrdering(collectionTypes: MultiPointer, collection: GraphPointer,
   }
 }
 
-const pathsToUnion = (subject: Variable, linked: Variable) => (previous: SparqlTemplateResult, path: GraphPointer, index: number) => {
-  const graphPattern = sparql`{
-        ${subject} ${toSparql(path)} ${linked} .
-      }`
-
-  if (index === 0) {
-    return graphPattern
-  }
-
-  return sparql`${previous}\nUNION\n${graphPattern}`
-}
-
 function linkedResourcePatterns(api: AnyPointer, collection: GraphPointer, subject: Variable, linked: Variable) {
   const classIncludes = api.node(collection.out(rdf.type)).out(hyper_query.memberInclude).toArray()
   const instanceIncludes = collection.out(hyper_query.memberInclude).toArray()
 
   const includePaths = [...classIncludes, ...instanceIncludes]
     .flatMap(include => include.out(hyper_query.path).toArray())
+    .reduce(reduceToValidPaths, [])
 
   if (!includePaths.length) {
     return ''
