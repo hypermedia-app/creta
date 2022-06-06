@@ -36,7 +36,9 @@ function createDescribeFunction(linksOnly: boolean) {
     const resource = $rdf.variable('resource')
     const linkedVar = $rdf.variable('linked')
 
-    const resources = [...new TermSet(terms)].map(resource => ({ resource }))
+    const resources = [...new TermSet(terms)]
+      .filter(term => term.termType === 'NamedNode')
+      .map(resource => ({ resource }))
     if (resources.length) {
       const paths = includes
         .flatMap(include => include.out(hyper_query.path).toArray())

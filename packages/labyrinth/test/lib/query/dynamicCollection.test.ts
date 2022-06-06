@@ -449,8 +449,8 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
 
       // then
       expect(client.query.construct).to.have.been.calledOnce
-      expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`DESCRIBE ?member {
-        VALUES ?member { ${ex.foo} ${ex.bar} }
+      expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`DESCRIBE ?resource {
+        VALUES ?resource { ${ex.foo} ${ex.bar} }
       }`)
     })
 
@@ -475,17 +475,15 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
 
       // then
       expect(client.query.construct).to.have.been.calledOnce
-      expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`DESCRIBE ?member ?linked {
-        VALUES ?member { ${ex.foo} ${ex.bar} }
-        
-        optional {
-          {
-            ?member ^${schema.parent} ?linked
-          }
-          union
-          {
-            ?member ${schema.spouse} ?linked
-          }
+      expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`DESCRIBE ?resource ?linked {
+        VALUES ?resource { ${ex.foo} ${ex.bar} }
+
+        {
+          ?resource ^${schema.parent} ?linked
+        }
+        union
+        {
+          ?resource ${schema.spouse} ?linked
         }
         
         filter(isiri(?linked))
@@ -506,17 +504,15 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
 
       // then
       expect(client.query.construct).to.have.been.calledOnce
-      expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`DESCRIBE ?member ?linked {
-        VALUES ?member { ${ex.foo} ${ex.bar} }
+      expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`DESCRIBE ?resource ?linked {
+        VALUES ?resource { ${ex.foo} ${ex.bar} }
         
-        optional {
-          {
-            ?member ${schema.spouse} ?linked
-          }
-          union
-          {
-            ?member ${schema.knows} ?linked
-          }
+        {
+          ?resource ${schema.spouse} ?linked
+        }
+        union
+        {
+          ?resource ${schema.knows} ?linked
         }
         
         filter(isiri(?linked))
@@ -538,8 +534,8 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
 
       // then
       expect(client.query.construct).to.have.been.calledOnce
-      expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`DESCRIBE ?member {
-        VALUES ?member { ${ex.foo} ${ex.bar} }
+      expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`DESCRIBE ?resource {
+        VALUES ?resource { ${ex.foo} ${ex.bar} }
       }`)
     })
 
