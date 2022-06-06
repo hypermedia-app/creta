@@ -1,5 +1,11 @@
 # @hydrofoil/knossos-events
 
+## 0.3.9
+
+### Patch Changes
+
+- 49223f7: build(deps): bump @hydrofoil/vocabularies from 0.3.0 to 0.3.1
+
 ## 0.3.8
 
 ### Patch Changes

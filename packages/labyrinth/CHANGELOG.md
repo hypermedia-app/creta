@@ -1,5 +1,16 @@
 # @hydrofoil/labyrinth
 
+## 0.11.0
+
+### Minor Changes
+
+- 718e311: Remove support for `query:restrict` from resource `GET` handler
+
+### Patch Changes
+
+- 718e311: Resource and its links retrieved in single `DESCRIBE` query
+- 036a42b: Some linked resources would not have been eager-loaded by `query:include` if they were not present in the current resource's graph
+
 ## 0.10.8
 
 ### Patch Changes

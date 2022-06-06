@@ -1,5 +1,11 @@
 # @labyrinth/testing
 
+## 0.0.12
+
+### Patch Changes
+
+- 49223f7: build(deps): bump @hydrofoil/vocabularies from 0.3.0 to 0.3.1
+
 ## 0.0.11
 
 ### Patch Changes

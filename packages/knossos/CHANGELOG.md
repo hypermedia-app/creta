@@ -1,5 +1,23 @@
 # @hydrofoil/knossos
 
+## 0.7.0
+
+### Minor Changes
+
+- 00713ae: Breaking change upstream - `query:restrict` removed from labyrinth
+
+### Patch Changes
+
+- dbbe731: build(deps): bump http-status from 1.5.0 to 1.5.2
+- 5f8fc38: build(deps): bump fs-extra from 10.0.1 to 10.1.0
+- ee2dfdd: Make `ResourceLoader` configurable from settings resource
+- Updated dependencies [718e311]
+- Updated dependencies [49223f7]
+- Updated dependencies [718e311]
+- Updated dependencies [036a42b]
+  - @hydrofoil/labyrinth@0.11.0
+  - @hydrofoil/knossos-events@0.3.9
+
 ## 0.6.12
 
 ### Patch Changes
