@@ -1,5 +1,5 @@
 import { NamedNode, Stream, Term, Variable } from 'rdf-js'
-import { DESCRIBE, SELECT } from '@tpluscode/sparql-builder'
+import { SELECT } from '@tpluscode/sparql-builder'
 import { hydra, ldp, rdf } from '@tpluscode/rdf-ns-builders'
 import $rdf from 'rdf-ext'
 import cf, { AnyPointer, GraphPointer, MultiPointer } from 'clownface'
@@ -13,6 +13,7 @@ import { toSparql } from 'clownface-shacl-path'
 import { toRdf } from 'rdf-literal'
 import TermSet from '@rdfjs/term-set'
 import { log, warn } from '../logger'
+import { loadResourceWithLinks } from '../query/eagerLinks'
 import { ToSparqlPatterns } from './index'
 
 function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPointer, api: Api) {
@@ -137,32 +138,11 @@ function createOrdering(collectionTypes: MultiPointer, collection: GraphPointer,
   }
 }
 
-const pathsToUnion = (subject: Variable, linked: Variable) => (previous: SparqlTemplateResult, path: GraphPointer, index: number) => {
-  const graphPattern = sparql`{
-        ${subject} ${toSparql(path)} ${linked} .
-      }`
-
-  if (index === 0) {
-    return graphPattern
-  }
-
-  return sparql`${previous}\nUNION\n${graphPattern}`
-}
-
-function linkedResourcePatterns(api: AnyPointer, collection: GraphPointer, subject: Variable, linked: Variable) {
+function resourceIncludePaths(api: AnyPointer, collection: GraphPointer) {
   const classIncludes = api.node(collection.out(rdf.type)).out(hyper_query.memberInclude).toArray()
   const instanceIncludes = collection.out(hyper_query.memberInclude).toArray()
 
-  const includePaths = [...classIncludes, ...instanceIncludes]
-    .flatMap(include => include.out(hyper_query.path).toArray())
-
-  if (!includePaths.length) {
-    return ''
-  }
-
-  const union = includePaths.reduce(pathsToUnion(subject, linked), sparql``)
-
-  return sparql`optional { ${union} }\nFILTER ( isIRI(${linked}) )`
+  return [...classIncludes, ...instanceIncludes]
 }
 
 interface DynamicCollection {
@@ -177,7 +157,6 @@ interface DynamicCollection {
 const memberAssertionPredicates = [hydra.manages, hydra.memberAssertion]
 export default async function ({ api, collection, client, pageSize, query, variables }: DynamicCollection) {
   const subject = $rdf.variable('member')
-  const linked = $rdf.variable('linked')
   const apiPointer = cf(api)
   const collectionTypes = apiPointer.node(collection.out(rdf.type))
 
@@ -238,20 +217,9 @@ export default async function ({ api, collection, client, pageSize, query, varia
         return $rdf.dataset().toStream()
       }
 
-      const ids = [...new TermSet(members)]
-      const linkPatterns = linkedResourcePatterns(apiPointer, collection, subject, linked)
+      const includePaths = resourceIncludePaths(apiPointer, collection)
 
-      if (linkPatterns) {
-        return DESCRIBE`${subject} ${linked}`.WHERE`
-          VALUES ${subject} {
-            ${ids}
-          }
-        
-          ${linkPatterns}
-        `.execute(client.query)
-      }
-
-      return DESCRIBE`${subject}`.WHERE`VALUES ${subject} { ${ids} }`.execute(client.query)
+      return loadResourceWithLinks(members, includePaths, client)
     },
   }
 }

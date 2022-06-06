@@ -22,7 +22,7 @@ describe('@hydrofoil/labyrinth/lib/query/eagerLinks', () => {
       const include = blankNode()
 
       // when
-      await loadLinkedResources(resource, include, client)
+      await loadLinkedResources(resource.terms, include.toArray(), client)
 
       // expect
       expect(client.query.construct).not.to.have.been.called
@@ -35,7 +35,7 @@ describe('@hydrofoil/labyrinth/lib/query/eagerLinks', () => {
         .addOut(hyper_query.path, null)
 
       // when
-      await loadLinkedResources(resource, include, client)
+      await loadLinkedResources(resource.terms, include.toArray(), client)
 
       // expect
       expect(client.query.construct).not.to.have.been.called
@@ -43,7 +43,7 @@ describe('@hydrofoil/labyrinth/lib/query/eagerLinks', () => {
 
     it('combines multiple query:path', async () => {
       // given
-      const resource = blankNode()
+      const resource = namedNode(ex.foo)
       const include = blankNode()
         .addOut(hyper_query.path, schema.knows)
         .addOut(hyper_query.path, foaf.knows)
@@ -52,10 +52,18 @@ describe('@hydrofoil/labyrinth/lib/query/eagerLinks', () => {
       resource
         .addOut(schema.knows, ex.baz)
         .addOut(foaf.knows, ex.bar)
-      await loadLinkedResources(resource, include, client)
+      await loadLinkedResources(resource.terms, include.toArray(), client)
 
       // expect
-      expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`DESCRIBE ${ex.baz} ${ex.bar}`)
+      expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`DESCRIBE ?linked WHERE {
+        VALUES ?resource { ${ex.foo} }
+        
+        { ?resource ${schema.knows} ?linked }
+        union
+        { ?resource ${foaf.knows} ?linked }
+        
+        FILTER ( isIRI(?linked) )
+      }`)
     })
 
     it('does not load resource which is the link parent', async () => {
@@ -67,10 +75,15 @@ describe('@hydrofoil/labyrinth/lib/query/eagerLinks', () => {
 
       // when
       foo.addOut(schema.knows, [foo, bar])
-      await loadLinkedResources(foo, include, client)
+      await loadLinkedResources(foo.terms, include.toArray(), client)
 
       // expect
-      expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`DESCRIBE ${ex.bar}`)
+      expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`DESCRIBE ?linked WHERE {
+        VALUES ?resource { ${ex.foo} }
+        
+        { ?resource ${schema.knows} ?linked }
+        FILTER ( isIRI(?linked) )
+      }`)
     })
   })
 })

@@ -28,12 +28,10 @@ export default function (req: Pick<Request, 'hydra' | 'labyrinth'>, collection: 
       const eagerLoadByCollection = api.node([req.hydra.operation.term, ...req.hydra.resource.types]).out(hyper_query.memberInclude)
       const eagerLoadByMembers = api.node(collection.out(hydra.member).out(rdf.type).terms).out(hyper_query.include)
 
-      const included = await Promise.all([
-        loadLinkedResources(collection.out(hydra.member), eagerLoadByCollection, client),
-        loadLinkedResources(collection.out(hydra.member), eagerLoadByMembers, client),
+      await Promise.all([
+        memberData.import(await loadLinkedResources(collection.out(hydra.member).terms, eagerLoadByCollection.toArray(), client)),
+        memberData.import(await loadLinkedResources(collection.out(hydra.member).terms, eagerLoadByMembers.toArray(), client)),
       ])
-
-      included.forEach(memberData.addAll)
 
       return memberData.toStream()
     },

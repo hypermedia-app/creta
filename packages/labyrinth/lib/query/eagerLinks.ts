@@ -1,34 +1,74 @@
-import { MultiPointer } from 'clownface'
-import { DESCRIBE } from '@tpluscode/sparql-builder'
-import DatasetExt from 'rdf-ext/lib/Dataset'
+import { Variable, Stream, Term } from 'rdf-js'
+import { GraphPointer } from 'clownface'
+import { DESCRIBE, sparql } from '@tpluscode/sparql-builder'
 import $rdf from 'rdf-ext'
 import type StreamClient from 'sparql-http-client/StreamClient'
 import TermSet from '@rdfjs/term-set'
-import { findNodes } from 'clownface-shacl-path'
+import { toSparql } from 'clownface-shacl-path'
 import { hyper_query } from '@hydrofoil/vocabularies/builders/strict'
+import { SparqlTemplateResult } from '@tpluscode/rdf-string'
+import { VALUES } from '@tpluscode/sparql-builder/expressions'
 import { warn } from '../logger'
 
-export async function loadLinkedResources(resource: MultiPointer, includes: MultiPointer, sparql: StreamClient): Promise<DatasetExt> {
-  const dataset = $rdf.dataset()
+function reduceToValidPaths(arr: SparqlTemplateResult[], path: GraphPointer) {
+  try {
+    return [...arr, toSparql(path)]
+  } catch {
+    warn('Skipping include with invalid property path')
+    return arr
+  }
+}
 
-  const parent = new TermSet(resource.terms)
-  const paths = includes.toArray().flatMap(include => include.out(hyper_query.path).toArray())
+const pathsToUnion = (subject: Variable, linked: Variable) => (previous: SparqlTemplateResult, path: SparqlTemplateResult, index: number): SparqlTemplateResult => {
+  const graphPattern = sparql`{
+        ${subject} ${path} ${linked} .
+      }`
 
-  const linked = new TermSet(paths
-    .flatMap(path => {
-      try {
-        return findNodes(resource, path).terms
-      } catch {
-        warn('Skipping include with invalid property path')
-        return []
-      }
-    })
-    .filter(term => term.termType === 'NamedNode' && !parent.has(term)))
-
-  if (linked.size) {
-    const stream = await DESCRIBE`${linked}`.execute(sparql.query)
-    await dataset.import(stream)
+  if (index === 0) {
+    return graphPattern
   }
 
-  return dataset
+  return sparql`${previous}\nUNION\n${graphPattern}`
 }
+
+function createDescribeFunction(linksOnly: boolean) {
+  return async function (terms: Term[], includes: GraphPointer[], client: StreamClient): Promise<Stream> {
+    const resource = $rdf.variable('resource')
+    const linkedVar = $rdf.variable('linked')
+
+    const resources = [...new TermSet(terms)]
+      .filter(term => term.termType === 'NamedNode')
+      .map(resource => ({ resource }))
+    if (resources.length) {
+      const paths = includes
+        .flatMap(include => include.out(hyper_query.path).toArray())
+        .reduce(reduceToValidPaths, [])
+
+      if (paths.length) {
+        const patterns = paths
+          .reduce(pathsToUnion(resource, linkedVar), sparql``)
+
+        const toDescribe = linksOnly ? linkedVar : `${resource} ${linkedVar}`
+
+        return DESCRIBE`${toDescribe}`
+          .WHERE`
+            ${VALUES(...resources)}
+          
+            ${patterns}
+            
+            FILTER ( isIRI(${linkedVar}) )
+          `
+          .execute(client.query)
+      }
+
+      if (!linksOnly) {
+        return DESCRIBE`${resource}`.WHERE`${VALUES(...resources)}`.execute(client.query)
+      }
+    }
+
+    return $rdf.dataset().toStream()
+  }
+}
+
+export const loadLinkedResources = createDescribeFunction(true)
+export const loadResourceWithLinks = createDescribeFunction(false)
