@@ -8,12 +8,13 @@ import * as express from 'express'
 import { Api } from 'hydra-box/Api'
 import { Debugger } from 'debug'
 import { codeLoader } from '@hydrofoil/labyrinth/lib/code'
-import { knossos, code } from '@hydrofoil/vocabularies/builders/strict'
+import { knossos, code } from '@hydrofoil/vocabularies/builders'
 import { hydra, schema } from '@tpluscode/rdf-ns-builders/strict'
 import { AuthorizationPatterns } from 'rdf-web-access-control'
 import { GraphPointer } from 'clownface'
 import toArray from 'stream-to-array'
 import { SELECT } from '@tpluscode/sparql-builder'
+import { ResourceLoader } from 'hydra-box'
 import type { Context } from '..'
 
 /**
@@ -21,6 +22,10 @@ import type { Context } from '..'
  */
 export interface MiddlewareFactory {
   (context: Context): express.RequestHandler | Promise<express.RequestHandler>
+}
+
+export interface ResourceLoaderFactory {
+  (context: Context): ResourceLoader | Promise<ResourceLoader>
 }
 
 async function getConfigurationId(api: Api, context: Context): Promise<Term | undefined> {
@@ -98,4 +103,28 @@ export async function loadAuthorizationPatterns(
       patternFactory,
     ]
   }, Promise.resolve<AuthorizationPatterns[]>([]))
+}
+
+export async function loadLoader(
+  api: Api,
+  log: Debugger,
+  context: Context,
+  { config }: { config?: GraphPointer },
+): Promise<ResourceLoader | undefined> {
+  const loadCode = codeLoader(api)
+
+  const loaderFactoryLoader = config?.out(knossos.resourceLoader).toArray().shift()
+  if (!loaderFactoryLoader) {
+    return undefined
+  }
+
+  const loaderFactory = await loadCode<ResourceLoaderFactory>(loaderFactoryLoader)
+  if (!loaderFactory) {
+    throw new Error(`Failed to load loader factory ${loaderFactoryLoader.out(code.link).value}`)
+  }
+
+  const loader = await loaderFactory(context)
+
+  log(`Loaded resource loader ${loaderFactoryLoader.out(code.link).value}`)
+  return loader
 }
