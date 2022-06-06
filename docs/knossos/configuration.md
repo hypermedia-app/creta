@@ -14,6 +14,11 @@ PREFIX knossos: <https://hypermedia.app/knossos#>
 
 ## Middleware
 
+> [!API]
+> `import type { MiddlewareFactory } from '@hydrofoil/knossos/lib/settings'`
+>
+> [Open API docs](/api/interfaces/_hydrofoil_knossos_lib_settings.middlewarefactory.html)
+
 Additional express request handlers can be linked to be loaded and hooked up on first request to the API. Add them to the configuration resource using a dedicated property.
 
 ```turtle
@@ -65,6 +70,11 @@ And link as `code:link <file:lib/cors.js#middleware>`.
 
 ## Authorization rules
 
+> [!API]
+> `import { AuthorizationPatterns } from 'rdf-web-access-control'`
+>
+> [Open docs](https://github.com/hypermedia-app/web-access-control#custom-authorization-checks)
+
 [Authorization](./auth.md) can be customized by providing additional SPARQL patterns to match against the ACL resources. 
 They are declared as code links, which must export a function producing a partial SPARQL result.
 
@@ -102,12 +112,70 @@ export const customAuth: AuthorizationPatterns =
   }
 ```
 
-[!TIP]
-Support for `vcard:Group` is already provided by the [rdf-web-access-control](https://npm.im/rdf-web-access-control) package
-and can be imported as `code:link <node:rdf-web-access-control/checks#agentGroup>`. 
+> [!TIP]
+> Support for `vcard:Group` is already provided by the [rdf-web-access-control](https://npm.im/rdf-web-access-control) package
+> and can be imported as `code:link <node:rdf-web-access-control/checks#agentGroup>`. 
 
-Another
+## Resource Loader
 
+> [!API]
+> `import type { ResourceLoaderFactory } from '@hydrofoil/knossos/lib/settings'`
+>
+> [Open API docs](/api/interfaces/_hydrofoil_knossos_lib_settings.resourceloaderfactory.html)
+
+At the beginning of every request a [`ResourceLoader`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/hydra-box/index.d.ts#L45-L48)
+is called to determine the basic information about the addressed resource.
+The default implementation is [`SparqlQueryLoader` provided by `@hydrofoil/labyrinth`](https://github.com/hypermedia-app/creta/blob/master/packages/labyrinth/lib/loader.ts#L23)
+
+Use `knossos:resourceLoader` property in configuration resource to provide an alternative implementation.
+
+```turtle
+PREFIX knossos: <https://hypermedia.app/knossos#>
+PREFIX code: <https://code.described.at/>
+
+<>
+  a knossos:Configuration ;
+  knossos:resourceLoader [
+    code:implementedBy
+    [ 
+      a code:EcmaScriptModule ;
+      code:link <file:path/to/loader.js#factory> ;
+    ] ;
+  ] ;  
+.
+```
+
+The `loader.js` module above might extend the default loader (which it needs to construct itself).
+
+```ts
+import type { ResourceLoaderFactory } from '@hydrofoil/knossos/lib/settings'
+import { SparqlQueryLoader } from '@hydrofoil/labyrinth/lib/loader'
+import SlidingExpiryCache from './cache.js'
+
+export const factory: ResourceLoaderFactory = async (context) => {
+  const inner = new SparqlQueryLoader(context.sparql)
+  const classOperationCache = new SlidingExpiryCache()
+  const propertyOperationCache = new SlidingExpiryCache()
+    
+  return {
+    async forClassOperation(term, req) {
+      if (!classOperationCache.has(term)) {
+        classOperationCache.set(term, await inner.forClassOperation(term, req))
+      }
+
+      return classOperationCache.get(term)
+    },
+    async forPropertyOperation(term, req) {
+      if (!propertyOperationCache.has(term)) {
+        propertyOperationCache.set(term, await inner.propertyOperationCache(term, req))
+      }
+
+      return propertyOperationCache.get(term)
+        
+    }
+  }
+}
+```
 
 ## Accessing configuration
 
@@ -123,7 +191,7 @@ PREFIX knossos: <https://hypermedia.app/knossos#>
    my:setting [ schema:name "foo" ; schema:value "bar" ].
 ```
 
-Use [clownface][http://zazuko.github.io/clownface/] to access the configuration graph:
+Use [clownface](http://zazuko.github.io/clownface/) to access the configuration graph:
 
 ```javascript
 import { schema } from '@tpluscode/rdf-ns-builders/strict'

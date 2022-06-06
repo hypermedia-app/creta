@@ -1,6 +1,6 @@
 /**
  * @packageDocumentation
- * @module @hydrofoil/knossos/server
+ * @module @hydrofoil/knossos
  */
 
 import { NamedNode } from 'rdf-js'
