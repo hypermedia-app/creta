@@ -105,7 +105,7 @@ export async function loadAuthorizationPatterns(
   }, Promise.resolve<AuthorizationPatterns[]>([]))
 }
 
-export async function loadLoader(
+export async function loadResourceLoader(
   api: Api,
   log: Debugger,
   context: Context,

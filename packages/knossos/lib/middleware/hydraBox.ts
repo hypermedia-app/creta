@@ -29,7 +29,7 @@ export async function createHydraBox({ apiTerm, client, sparql, ...ctx }: Contex
 
   const middleware = await settings.loadMiddlewares(api, log, loadContext, { config })
   const authorizationPatterns = await settings.loadAuthorizationPatterns(api, log, { config })
-  const loader = await settings.loadLoader(api, log, loadContext, { config })
+  const loader = await settings.loadResourceLoader(api, log, loadContext, { config })
 
   router.use(labyrinthInit(sparql, undefined))
   router.use((req, res, next) => {

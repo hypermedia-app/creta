@@ -4,10 +4,10 @@ import { testApi } from '@labyrinth/testing/hydra-box'
 import { namedNode } from '@labyrinth/testing/nodeFactory'
 import { Debugger } from 'debug'
 import $rdf from 'rdf-ext'
-import { knossos, code } from '@hydrofoil/vocabularies/builders/strict'
+import { knossos, code } from '@hydrofoil/vocabularies/builders'
 import { rdf, schema } from '@tpluscode/rdf-ns-builders/strict'
 import { ResourcePerGraphStore, ResourceStore } from '../../lib/store'
-import { loadAuthorizationPatterns, loadMiddlewares } from '../../lib/settings'
+import { loadAuthorizationPatterns, loadMiddlewares, loadResourceLoader } from '../../lib/settings'
 import { Context } from '../..'
 
 describe('@hydrofoil/knossos/lib/settings', () => {
@@ -216,6 +216,69 @@ describe('@hydrofoil/knossos/lib/settings', () => {
 
       // then
       await expect(result).to.be.eventually.rejectedWith('Failed to load foo:bar')
+    })
+  })
+
+  describe('loadResourceLoader', () => {
+    it('returns undefined when no loader is configured', async () => {
+      // given
+      const config = namedNode('/config')
+
+      // when
+      const loaded = await loadResourceLoader(
+        testApi(),
+        log,
+        context,
+        { config },
+      )
+
+      // then
+      expect(loaded).to.be.undefined
+    })
+
+    it('throws when no loader factory fails to load', async () => {
+      // given
+      const config = namedNode('/config')
+      config.addOut(knossos.resourceLoader, impl => {
+        impl.addOut(code.link, config.blankNode())
+      })
+
+      // when
+      const promise = loadResourceLoader(
+        testApi({
+          code: null,
+        }),
+        log,
+        context,
+        { config },
+      )
+
+      // then
+      await expect(promise).to.be.eventually.rejected
+    })
+
+    it('calls factory, returns created loader', async () => {
+      // given
+      const config = namedNode('/config')
+      config.addOut(knossos.resourceLoader, impl => {
+        impl.addOut(code.link, config.blankNode())
+      })
+      const loader = {}
+      const factory = sinon.stub().resolves(loader)
+
+      // when
+      const loaded = await loadResourceLoader(
+        testApi({
+          code: factory,
+        }),
+        log,
+        context,
+        { config },
+      )
+
+      // then
+      expect(loaded).to.eq(loader)
+      expect(factory).to.have.been.calledWith(context)
     })
   })
 })
