@@ -1251,10 +1251,10 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@hydrofoil/vocabularies@^0.3", "@hydrofoil/vocabularies@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@hydrofoil/vocabularies/-/vocabularies-0.3.0.tgz#b8d223d18c71cce66682699a8aea924924326b2d"
-  integrity sha512-9zx6nC7Hr1EnkaglVroG6f93wvYiIoI2hV18DHJb/WFNY8qWBnpgygbPow96faRX4yXp05AEQNhW87FmDhOx9A==
+"@hydrofoil/vocabularies@^0.3", "@hydrofoil/vocabularies@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@hydrofoil/vocabularies/-/vocabularies-0.3.1.tgz#4529dd7d144dd4990f66d3bb5497b72ddcc285e3"
+  integrity sha512-3OauOEZ8fEHkqCDGYlnCP1+Jaw1xVQE6jLhzpa8B5n+XMt82c8+ySm0Fg8GcfYO75esC0f0F3yxbpn1DRHw1uw==
   dependencies:
     "@rdf-esm/namespace" "^0.5.3"
     "@rdfjs/parser-n3" "^1.1.4"
