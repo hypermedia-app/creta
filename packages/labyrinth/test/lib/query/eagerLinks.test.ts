@@ -58,11 +58,13 @@ describe('@hydrofoil/labyrinth/lib/query/eagerLinks', () => {
       expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`DESCRIBE ?linked WHERE {
         VALUES ?resource { ${ex.foo} }
         
-        { ?resource ${schema.knows} ?linked }
-        union
-        { ?resource ${foaf.knows} ?linked }
-        
-        FILTER ( isIRI(?linked) )
+        optional {
+          { ?resource ${schema.knows} ?linked }
+          union
+          { ?resource ${foaf.knows} ?linked }
+          
+          FILTER ( isIRI(?linked) )
+        }
       }`)
     })
 
@@ -81,8 +83,10 @@ describe('@hydrofoil/labyrinth/lib/query/eagerLinks', () => {
       expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`DESCRIBE ?linked WHERE {
         VALUES ?resource { ${ex.foo} }
         
-        { ?resource ${schema.knows} ?linked }
-        FILTER ( isIRI(?linked) )
+        optional {
+          { ?resource ${schema.knows} ?linked }
+          FILTER ( isIRI(?linked) )
+        }
       }`)
     })
   })

@@ -478,15 +478,17 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
       expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`DESCRIBE ?resource ?linked {
         VALUES ?resource { ${ex.foo} ${ex.bar} }
 
-        {
-          ?resource ^${schema.parent} ?linked
+        optional {
+          {
+            ?resource ^${schema.parent} ?linked
+          }
+          union
+          {
+            ?resource ${schema.spouse} ?linked
+          }
+          
+          filter(isiri(?linked))
         }
-        union
-        {
-          ?resource ${schema.spouse} ?linked
-        }
-        
-        filter(isiri(?linked))
       }`)
     })
 
@@ -507,15 +509,17 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
       expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`DESCRIBE ?resource ?linked {
         VALUES ?resource { ${ex.foo} ${ex.bar} }
         
-        {
-          ?resource ${schema.spouse} ?linked
+        optional {
+          {
+            ?resource ${schema.spouse} ?linked
+          }
+          union
+          {
+            ?resource ${schema.knows} ?linked
+          }
+          
+          filter(isiri(?linked))
         }
-        union
-        {
-          ?resource ${schema.knows} ?linked
-        }
-        
-        filter(isiri(?linked))
       }`)
     })
 

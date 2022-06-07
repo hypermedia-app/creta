@@ -54,9 +54,11 @@ function createDescribeFunction(linksOnly: boolean) {
           .WHERE`
             ${VALUES(...resources)}
           
-            ${patterns}
-            
-            FILTER ( isIRI(${linkedVar}) )
+            OPTIONAL {
+              ${patterns}
+              
+              FILTER ( isIRI(${linkedVar}) )
+            }
           `
           .execute(client.query)
       }
