@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.11.1
+
+### Patch Changes
+
+- b958949: Eager-loading linked resources would inadvertently remove collection members if linked were blank nodes
+
 ## 0.11.0
 
 ### Minor Changes
