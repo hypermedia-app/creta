@@ -11,6 +11,7 @@
     "packages/labyrinth/lib/middleware.ts",
     "packages/labyrinth/lib/middleware/disambiguateClassHierarchies.ts",
     "packages/labyrinth/lib/middleware/removeHydraOperations.ts",
+    "packages/labyrinth/lib/middleware/returnMinimal.ts",
     "packages/labyrinth/resource.ts",
     "packages/minotaur/index.ts"
   ],

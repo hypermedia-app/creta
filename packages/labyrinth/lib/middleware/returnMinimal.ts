@@ -15,7 +15,7 @@ import { prefersMinimal } from '../request'
  * Default implementation does a `DESCRIBE` from the resource's graph. An alternative could be a
  * `CONSTRUCT { ?s ?p ?o }` from said graph.
  */
-export interface MinimalRepresentationFactory {
+export interface MinimalRepresentationLoader {
   (arg: { req: express.Request; term: NamedNode }): Promise<Stream>
 }
 
@@ -30,6 +30,6 @@ export const returnMinimal: express.RequestHandler = asyncMiddleware(async (req,
   return res.quadStream(await minimalRepresentation({ req, term: req.hydra.resource.term }))
 })
 
-function defaultMinimalRepresentation(...[{ req, term }]: Parameters<MinimalRepresentationFactory>) {
+function defaultMinimalRepresentation(...[{ req, term }]: Parameters<MinimalRepresentationLoader>) {
   return DESCRIBE`${term}`.FROM(term).execute(req.labyrinth.sparql.query)
 }

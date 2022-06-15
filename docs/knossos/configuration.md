@@ -177,6 +177,44 @@ export const factory: ResourceLoaderFactory = async (context) => {
 }
 ```
 
+## Minimal representation loader
+
+> [!API]
+> `import type { MinimalRepresentationLoader } from '@hydrofoil/labyrinth/lib/middleware/returnMinimal'`
+>
+> [Open API docs](/api/interfaces/_hydrofoil_labyrinth_lib_middleware_returnMinimal.MinimalRepresentationLoader.html)
+
+The default loader used to apply `Prefer: return=minimal` can be changed using knossos configuration resource. 
+
+```turtle
+PREFIX knossos: <https://hypermedia.app/knossos#>
+PREFIX code: <https://code.described.at/>
+
+<>
+  a knossos:Configuration ;
+  knossos:minimalRepresentationLoader [
+    code:implementedBy
+    [ 
+      a code:EcmaScriptModule ;
+      code:link <file:path/to/loader.js#returnMinimal> ;
+    ] ;
+  ] ;  
+.
+```
+
+To implement, export an async function which will return an RDF/JS Stream. Here's an idea for using `CONSTRUCT` instead of `DESCRIBE`: 
+
+```js
+import { CONSTRUCT } from '@tpluscode/sparql-builder'
+
+export function returnMinimal({ req, term }) {
+  return CONSTRUCT`?s ?p ?o`
+    .FROM(term)
+    .WHERE`?s ?p ?o`
+    .execute(req.labyrinth.sparql.query)
+}
+```
+
 ## Accessing configuration
 
 The configuration resource loaded by knossos gets attached as a `GraphPointer` to  a `req.knossos.config` property. 
