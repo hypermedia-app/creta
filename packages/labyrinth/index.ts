@@ -14,7 +14,7 @@ import type { Api } from 'hydra-box/Api'
 import { logRequest, logRequestError } from './lib/logger'
 import { removeHydraOperations, disambiguateClassHierarchies } from './lib/middleware'
 import { preprocessHydraResource, preprocessPayload } from './lib/middleware/preprocessResource'
-import { MinimalRepresentationFactory } from './lib/middleware/returnMinimal'
+import { MinimalRepresentationLoader } from './lib/middleware/returnMinimal'
 import { SparqlQueryLoader } from './lib/loader'
 import { ensureArray } from './lib/array'
 import { CodeLoader, codeLoader } from './lib/code'
@@ -55,7 +55,7 @@ export interface Labyrinth {
   /**
    * Gets the implementation used to retrieve a resource's minimal representation
    */
-  minimalRepresentation?: MinimalRepresentationFactory
+  minimalRepresentation?: MinimalRepresentationLoader
 }
 
 declare module 'express-serve-static-core' {

@@ -139,6 +139,8 @@ GET /article/rdf-101
 Accept: text/turtle
 Prefer: return=minimal
 > ```
+> 
+> The implementation of how the minimal representation is loaded can be replaced using [knossos configuration](/knossos/configuration.md#minimal-representation-loader).
 
 ## Creating resources
 
