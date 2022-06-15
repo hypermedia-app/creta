@@ -14,6 +14,7 @@ import type { Api } from 'hydra-box/Api'
 import { logRequest, logRequestError } from './lib/logger'
 import { removeHydraOperations, disambiguateClassHierarchies } from './lib/middleware'
 import { preprocessHydraResource, preprocessPayload } from './lib/middleware/preprocessResource'
+import { MinimalRepresentationFactory } from './lib/middleware/returnMinimal'
 import { SparqlQueryLoader } from './lib/loader'
 import { ensureArray } from './lib/array'
 import { CodeLoader, codeLoader } from './lib/code'
@@ -37,7 +38,7 @@ RdfResource.factory.addMixin(...Object.values(Hydra))
  */
 export interface Labyrinth {
   /**
-   * Gets or sets a streaming client to access the databse
+   * Gets or sets a streaming client to access the database
    */
   sparql: StreamClient
 
@@ -50,6 +51,11 @@ export interface Labyrinth {
      */
     pageSize: number
   }
+
+  /**
+   * Gets the implementation used to retrieve a resource's minimal representation
+   */
+  minimalRepresentation?: MinimalRepresentationFactory
 }
 
 declare module 'express-serve-static-core' {
@@ -60,11 +66,7 @@ declare module 'express-serve-static-core' {
   }
 }
 
-interface Options {
-  collection?: {
-    pageSize?: number
-  }
-}
+type Options = Partial<Omit<Labyrinth, 'sparql'>>
 
 /**
  * Parameters to configure labyrinth middleware
@@ -80,15 +82,16 @@ export type MiddlewareParams = {
 }
 
 export const labyrinthInit = (sparql: StreamClient.StreamClientOptions, options: Options | undefined): RequestHandler => (req, res, next) => {
-  const labyrinth = {
+  const labyrinth: Labyrinth = {
     sparql: new StreamClient(sparql),
     collection: {
       pageSize: options?.collection?.pageSize || 10,
     },
+    minimalRepresentation: options?.minimalRepresentation,
   }
 
   if (!req.labyrinth) {
-    req.labyrinth = labyrinth
+    req.labyrinth = Object.freeze(labyrinth)
     req.loadCode = (...args) => codeLoader(req.hydra.api)(...args)
   }
 
