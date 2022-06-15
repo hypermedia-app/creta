@@ -30,8 +30,11 @@ export async function createHydraBox({ apiTerm, client, sparql, ...ctx }: Contex
   const middleware = await settings.loadMiddlewares(api, log, loadContext, { config })
   const authorizationPatterns = await settings.loadAuthorizationPatterns(api, log, { config })
   const loader = await settings.loadResourceLoader(api, log, loadContext, { config })
+  const minimalRepresentation = await settings.loadMinimalRepresentation(api, log, config)
 
-  router.use(labyrinthInit(sparql, undefined))
+  router.use(labyrinthInit(sparql, {
+    minimalRepresentation,
+  }))
   router.use((req, res, next) => {
     if (config) {
       req.knossos.config = config

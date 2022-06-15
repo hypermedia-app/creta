@@ -15,6 +15,7 @@ import { GraphPointer } from 'clownface'
 import toArray from 'stream-to-array'
 import { SELECT } from '@tpluscode/sparql-builder'
 import { ResourceLoader } from 'hydra-box'
+import { MinimalRepresentationFactory } from '@hydrofoil/labyrinth/lib/middleware/returnMinimal'
 import type { Context } from '..'
 
 /**
@@ -127,4 +128,21 @@ export async function loadResourceLoader(
 
   log(`Loaded resource loader ${loaderFactoryLoader.out(code.link).value}`)
   return loader
+}
+
+export async function loadMinimalRepresentation(api: Api, log: Debugger, config?: GraphPointer): Promise<MinimalRepresentationFactory | undefined> {
+  const loadCode = codeLoader(api)
+
+  const loaderFactoryLoader = config?.out(knossos.minimalRepresentation).toArray().shift()
+  if (!loaderFactoryLoader) {
+    return undefined
+  }
+
+  const minimalRepresentation = await loadCode<MinimalRepresentationFactory>(loaderFactoryLoader)
+  if (!minimalRepresentation) {
+    throw new Error(`Failed to load minimal representation factory ${loaderFactoryLoader.out(code.link).value}`)
+  }
+
+  log(`Loaded minimal representation factory ${loaderFactoryLoader.out(code.link).value}`)
+  return minimalRepresentation
 }

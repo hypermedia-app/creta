@@ -3,7 +3,7 @@ import clownface from 'clownface'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
 import asyncMiddleware from 'middleware-async'
 import { hydra } from '@tpluscode/rdf-ns-builders'
-import { preprocessMiddleware } from './lib/middleware/preprocessResource'
+import { preprocessMiddleware, returnMinimal } from './lib/middleware'
 import * as lib from './lib/collection'
 
 export type CollectionResponse = Response<any, Partial<lib.CollectionLocals>>
@@ -28,6 +28,7 @@ export function createGetHandler({
   createViews = lib.createViews,
 }: Partial<typeof lib> = {}): RequestHandler {
   return Router()
+    .use(returnMinimal)
     .use(asyncMiddleware(async (req, res: CollectionResponse, next) => {
       res.locals = await loadCollection(req)
       next()
