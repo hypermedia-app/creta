@@ -10,6 +10,7 @@ import { fromPointer } from '@rdfine/hydra/lib/IriTemplate'
 import TermSet from '@rdfjs/term-set'
 import DatasetExt from 'rdf-ext/lib/Dataset'
 import { hyper_query } from '@hydrofoil/vocabularies/builders'
+import { loadRepresentation } from './resource'
 import { toPointer } from './template'
 import { log } from './logger'
 import { isGraphPointer } from './clownface'
@@ -43,7 +44,7 @@ export type CollectionLocals = CollectionLoaded & QueriesInitialized & MembersLo
 export const loadCollection = async (
   req: Pick<Request, 'hydra' | 'labyrinth' | 'query'>,
 ): Promise<CollectionLoaded> => {
-  const collection = await req.hydra.resource.clownface()
+  const collection = await loadRepresentation(req)
   const searchPtr = collection.out(hydra.search)
   const types = clownface(req.hydra.api).node([...req.hydra.resource.types])
 

@@ -103,7 +103,7 @@ prefix hydra: <http://www.w3.org/ns/hydra/core#>
 
 ## Eager-loading linked resources
 
-To transclude resources linked to collection members, use the `hyper-query:memberInclude` predicate. Its objects must be nodes with the `hyper-query:path` property whose value is a well-formed [SHACL Property Path](https://www.w3.org/TR/shacl/#property-shapes).
+In addition to [`query:include`](/knossos/resources.md#eager-loading-linked-resources), it is possible to transclude resources linked to collection members, using the `hyper-query:memberInclude` predicate. Its objects must be nodes with the `hyper-query:path` property whose value is a well-formed [SHACL Property Path](https://www.w3.org/TR/shacl/#property-shapes).
 
 > [!TIP]
 > `hyper-query:memberInclude` can be used both on collection instances, as well as collection classes. The latter apply to all instances and get combined with direct inclusion paths.
