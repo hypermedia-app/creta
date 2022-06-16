@@ -147,7 +147,7 @@ Prefer: return=minimal
 By annotating classes using `query:include` predicate, it is possible to transclude linked resources in a single request. 
 Its objects must be nodes with the `hyper-query:path` property, whose value is a well-formed [SHACL Property Path](https://www.w3.org/TR/shacl/#property-shapes).
 
-For example, to eager-load a article's author
+For example, to eager-load an article's author
 
 ```turtle
 PREFIX schema: <http://schema.org/>
