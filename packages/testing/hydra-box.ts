@@ -103,6 +103,12 @@ export function handler({ setup, query }: MiddlewareOptions = {}): RequestHandle
       collection: {
         pageSize: 12,
       },
+      async fullRepresentation() {
+        return clownface({
+          dataset: await $rdf.dataset().import(req.hydra.resource.quadStream()),
+          term: req.hydra.resource.term,
+        })
+      },
     }
     if (query) {
       req.dataset = async () => query.dataset

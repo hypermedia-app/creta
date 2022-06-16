@@ -3,7 +3,6 @@ import { expect } from 'chai'
 import express from 'express'
 import request from 'supertest'
 import { handler as hydraBox } from '@labyrinth/testing/hydra-box'
-import { StreamClient } from 'sparql-http-client/StreamClient'
 import sinon from 'sinon'
 import TermSet from '@rdfjs/term-set'
 import { rdf } from '@tpluscode/rdf-ns-builders/strict'
@@ -41,24 +40,6 @@ describe('@hydrofoil/labyrinth/resource', () => {
 
       // then
       await response.expect('Preference-Applied', 'return=minimal')
-    })
-
-    it('calls full DESCRIBE', async () => {
-      // given
-      let client: StreamClient | undefined
-      const app = express()
-      app.use(hydraBox())
-      app.use((req, res, next) => {
-        client = req.labyrinth.sparql
-        next()
-      })
-      app.use(get)
-
-      // when
-      await request(app).get('/')
-
-      // then
-      expect(client?.query.construct).to.have.been.calledWith(sinon.match(/DESCRIBE/))
     })
 
     it('calls hooks on response representation', async () => {
