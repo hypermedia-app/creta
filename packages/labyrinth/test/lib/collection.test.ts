@@ -1,3 +1,4 @@
+import { NamedNode } from 'rdf-js'
 import { describe, it, beforeEach } from 'mocha'
 import express from 'express'
 import { hydraBox } from '@labyrinth/testing/hydra-box'
@@ -12,15 +13,18 @@ import $rdf from 'rdf-ext'
 import { fromPointer } from '@rdfine/hydra/lib/IriTemplate'
 import { hyper_query } from '@hydrofoil/vocabularies/builders/strict'
 import sinon from 'sinon'
-import clownface from 'clownface'
+import clownface, { GraphPointer } from 'clownface'
+import DatasetExt from 'rdf-ext/lib/Dataset'
 import { CollectionLocals, createViews, loadCollection, runQueries } from '../../lib/collection'
 
 RdfResource.factory.addMixin(...Object.values(Hydra))
 
 describe('@hydrofoil/labyrinth/lib/collection', () => {
   let req: Pick<express.Request, 'hydra' | 'labyrinth' | 'query'>
+  let collection: GraphPointer<NamedNode, DatasetExt>
 
   beforeEach(async () => {
+    collection = clownface({ dataset: $rdf.dataset(), term: ex.people })
     req = {
       hydra: await hydraBox(hb => {
         hb.resource.term = ex.people
@@ -29,6 +33,9 @@ describe('@hydrofoil/labyrinth/lib/collection', () => {
         sparql: client(),
         collection: {
           pageSize: 5,
+        },
+        async fullRepresentation() {
+          return collection
         },
       },
       query: {},
@@ -56,7 +63,6 @@ describe('@hydrofoil/labyrinth/lib/collection', () => {
 
     it('processes search template', async () => {
       // given
-      const collection = await req.hydra.resource.clownface()
       const search = fromPointer(collection.blankNode('search'), {
         mapping: [{
           variable: 'name',
@@ -78,7 +84,6 @@ describe('@hydrofoil/labyrinth/lib/collection', () => {
 
     it('handles unescaped characters in URIs in explicitly represented query', async () => {
       // given
-      const collection = await req.hydra.resource.clownface()
       const search = fromPointer(collection.blankNode('search'), {
         variableRepresentation: hydra.ExplicitRepresentation,
         mapping: [{
@@ -100,7 +105,6 @@ describe('@hydrofoil/labyrinth/lib/collection', () => {
 
     it('does not double escape URIs in explicitly represented templates', async () => {
       // given
-      const collection = await req.hydra.resource.clownface()
       const search = fromPointer(collection.blankNode('search'), {
         variableRepresentation: hydra.ExplicitRepresentation,
         mapping: [{
@@ -122,7 +126,6 @@ describe('@hydrofoil/labyrinth/lib/collection', () => {
 
     it('dereferences search if it is a URI', async () => {
       // given
-      const collection = await req.hydra.resource.clownface()
       collection.addOut(hydra.search, ex.searchPeople)
       const { sparql } = req.labyrinth as any
       sparql.query.construct.resolves(
@@ -160,7 +163,6 @@ describe('@hydrofoil/labyrinth/lib/collection', () => {
       // given
       req.hydra.resource.types.add(ex.Collection)
       clownface(req.hydra.api).namedNode(ex.Collection).addOut(hydra.limit, 25)
-      const collection = await req.hydra.resource.clownface()
       collection.addOut(hydra.limit, 30)
 
       // when
@@ -174,7 +176,6 @@ describe('@hydrofoil/labyrinth/lib/collection', () => {
       // given
       req.hydra.resource.types.add(ex.Collection)
       clownface(req.hydra.api).namedNode(ex.Collection).addOut(hydra.limit, 25)
-      const collection = await req.hydra.resource.clownface()
       collection.addOut(hydra.limit, 30)
       const search = fromPointer(collection.blankNode('search'), {
         mapping: [{
