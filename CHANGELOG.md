@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.4.2
+
+### Patch Changes
+
+- ebc4da3: Allow overriding the API term
+
 ## 0.4.1
 
 ### Patch Changes
