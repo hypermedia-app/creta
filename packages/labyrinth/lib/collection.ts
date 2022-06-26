@@ -43,7 +43,7 @@ export type CollectionLocals = CollectionLoaded & QueriesInitialized & MembersLo
 export const loadCollection = async (
   req: Pick<Request, 'hydra' | 'labyrinth' | 'query'>,
 ): Promise<CollectionLoaded> => {
-  const collection = await req.hydra.resource.clownface()
+  const collection = await req.labyrinth.fullRepresentation()
   const searchPtr = collection.out(hydra.search)
   const types = clownface(req.hydra.api).node([...req.hydra.resource.types])
 

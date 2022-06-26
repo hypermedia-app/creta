@@ -142,6 +142,40 @@ Prefer: return=minimal
 > 
 > The implementation of how the minimal representation is loaded can be replaced using [knossos configuration](/knossos/configuration.md#minimal-representation-loader).
 
+## Eager-loading linked resources
+
+By annotating classes using `query:include` predicate, it is possible to transclude linked resources in a single request. 
+Its objects must be nodes with the `hyper-query:path` property, whose value is a well-formed [SHACL Property Path](https://www.w3.org/TR/shacl/#property-shapes).
+
+For example, to eager-load an article's author
+
+```turtle
+PREFIX schema: <http://schema.org/>
+PREFIX query: <https://hypermedia.app/query#>
+
+# ./api/Article.ttl
+<>
+  query:include
+    [
+      query:path schema:author ;
+    ] ;
+.
+```
+
+> [!WARNING]
+> When annotating classes from external namespaces, make sure that the class has property `hydra:apiDocumentation` and type `hydra:Class`
+>
+> ```turtle
+> PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+> PREFIX schema: <http://schema.org/>
+> 
+> schema:Article 
+>   a hydra:Class ; 
+>   hydra:apiDocumentation </api> ;
+>   query:include [ ] ;
+> .
+> ```
+
 ## Creating resources
 
 New resources are created with a `PUT` HTTP request with an RDF body. The request target is assumed to be the base URI for the parser and thus an empty named node can be used to refer to the creates resource.

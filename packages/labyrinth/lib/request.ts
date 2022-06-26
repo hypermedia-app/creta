@@ -6,7 +6,7 @@ export function getPayload(req: express.Request) {
 }
 
 export function getRepresentation(req: express.Request) {
-  return req.hydra.resource ? req.hydra.resource.clownface() : undefined
+  return req.hydra.resource ? req.labyrinth.fullRepresentation() : undefined
 }
 
 export function prefersMinimal(req: express.Request): boolean {

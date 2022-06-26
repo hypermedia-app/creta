@@ -3,6 +3,7 @@
  * @module @hydrofoil/labyrinth
  */
 
+import { NamedNode } from 'rdf-js'
 import { HydraBox, middleware, ResourceLoader } from 'hydra-box'
 import { HydraBoxMiddleware } from 'hydra-box/middleware'
 import { RequestHandler, Router } from 'express'
@@ -11,6 +12,9 @@ import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
 import StreamClient from 'sparql-http-client/StreamClient'
 import type { Api } from 'hydra-box/Api'
+import { GraphPointer } from 'clownface'
+import DatasetExt from 'rdf-ext/lib/Dataset'
+import { loadRepresentation } from './lib/resource'
 import { logRequest, logRequestError } from './lib/logger'
 import { removeHydraOperations, disambiguateClassHierarchies } from './lib/middleware'
 import { preprocessHydraResource, preprocessPayload } from './lib/middleware/preprocessResource'
@@ -56,6 +60,11 @@ export interface Labyrinth {
    * Gets the implementation used to retrieve a resource's minimal representation
    */
   minimalRepresentation?: MinimalRepresentationLoader
+
+  /**
+   * Gets the full representation of the requested resource
+   */
+  fullRepresentation(): Promise<GraphPointer<NamedNode, DatasetExt>>
 }
 
 declare module 'express-serve-static-core' {
@@ -66,7 +75,7 @@ declare module 'express-serve-static-core' {
   }
 }
 
-type Options = Partial<Omit<Labyrinth, 'sparql'>>
+type Options = Partial<Pick<Labyrinth, 'collection' | 'minimalRepresentation'>>
 
 /**
  * Parameters to configure labyrinth middleware
@@ -88,6 +97,7 @@ export const labyrinthInit = (sparql: StreamClient.StreamClientOptions, options:
       pageSize: options?.collection?.pageSize || 10,
     },
     minimalRepresentation: options?.minimalRepresentation,
+    fullRepresentation: loadRepresentation(req),
   }
 
   if (!req.labyrinth) {
