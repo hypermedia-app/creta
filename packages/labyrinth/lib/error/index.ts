@@ -1,7 +1,7 @@
 import { ErrorMapper } from 'http-problem-details-mapper'
 import { HttpError } from 'http-errors'
 import { ProblemDocument } from 'http-problem-details'
-import { hydra } from '@tpluscode/rdf-ns-builders/strict'
+import { hydra } from '@tpluscode/rdf-ns-builders'
 
 export { NotFoundError } from './NotFound'
 

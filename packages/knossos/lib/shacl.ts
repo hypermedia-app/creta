@@ -1,7 +1,7 @@
 import { NamedNode, Stream, Term, Variable } from 'rdf-js'
 import $rdf from 'rdf-ext'
 import { DESCRIBE } from '@tpluscode/sparql-builder'
-import { rdf, rdfs, sh, hydra } from '@tpluscode/rdf-ns-builders/strict'
+import { rdf, rdfs, sh, hydra } from '@tpluscode/rdf-ns-builders'
 import { StreamClient } from 'sparql-http-client/StreamClient'
 import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
 

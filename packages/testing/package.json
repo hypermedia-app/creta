@@ -7,7 +7,7 @@
     "@rdfjs/express-handler": "^1.2.1",
     "@rdfjs/namespace": "^1.1.0",
     "@rdfjs/term-set": "^1.1.0",
-    "@tpluscode/rdf-ns-builders": "^1.1.0",
+    "@tpluscode/rdf-ns-builders": "^2.0.0",
     "@tpluscode/rdf-string": "^0.2.25",
     "@tpluscode/sparql-builder": "^0.3.21",
     "chai": "^4.3.6",

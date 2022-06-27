@@ -1,7 +1,7 @@
 import asyncMiddleware from 'middleware-async'
 import clownface from 'clownface'
 import { created, updated } from '@hydrofoil/knossos-events/activity'
-import { as, acl, rdf } from '@tpluscode/rdf-ns-builders'
+import { as, acl, rdf } from '@tpluscode/rdf-ns-builders/loose'
 import { StreamClient } from 'sparql-http-client/StreamClient'
 import httpStatus from 'http-status'
 import { Router } from 'express'

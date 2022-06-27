@@ -1618,12 +1618,12 @@
   resolved "https://registry.yarnpkg.com/@rdfjs/sink/-/sink-1.0.3.tgz#cdbb4ecf0ff34e6ad6c301a5bc221508c820568c"
   integrity sha512-2KfYa8mAnptRNeogxhQqkWNXqfYVWO04jQThtXKepySrIwYmz83+WlevQtA4VDLFe+kFd2TwgL29ekPe5XVUfA==
 
-"@rdfjs/term-map@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@rdfjs/term-map/-/term-map-1.0.0.tgz#97e8735f4e99c522099fabeacf73b0de94597452"
-  integrity sha512-xv0trp4DVZigpa8CAifrb0Py1pf07h3PjqRXhXEyM9+UPPoQhczQjYPxx5a+j4U1JQzwfD8vfpfFaveVrKJOSw==
+"@rdfjs/term-map@^1", "@rdfjs/term-map@^1.0.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@rdfjs/term-map/-/term-map-1.1.0.tgz#253b863ca3f8c0f8c3b05ec5df301c6a0a05ba58"
+  integrity sha512-utCLVQEZdEL664XoYuBQwMIk0Q5MD6qNPEt12DcmuAlQUS0b0kQ+WL50wyJP1BpWYjOJLokIVTUtphZWnj25BQ==
   dependencies:
-    "@rdfjs/to-ntriples" "^1.0.2"
+    "@rdfjs/to-ntriples" "^2.0.0"
 
 "@rdfjs/term-set@^1.0.0", "@rdfjs/term-set@^1.0.1", "@rdfjs/term-set@^1.1.0":
   version "1.1.0"
@@ -1694,10 +1694,20 @@
   resolved "https://registry.yarnpkg.com/@tpluscode/eslint-config/-/eslint-config-0.3.1.tgz#96de473079feab6884bb1dea829698e3f005fe83"
   integrity sha512-E6ksZoUtT+Ncer18izm2FivjUKM/qq4DsimK9/aRsbAO4q8yldt5iBy4UHGG7EtYPqnqHhwbQ5fA42WSBk2o0A==
 
-"@tpluscode/rdf-ns-builders@^1", "@tpluscode/rdf-ns-builders@^1.0.0", "@tpluscode/rdf-ns-builders@^1.1.0":
+"@tpluscode/rdf-ns-builders@^1", "@tpluscode/rdf-ns-builders@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@tpluscode/rdf-ns-builders/-/rdf-ns-builders-1.1.0.tgz#92baf7c2c08c080396161c7944081804507c9490"
   integrity sha512-/4mH/GL9DXKQLtAw+11DRtu67rsRiqB4XkShnaiNa1UTtyTbNWNOMr8Hxb8VsteuVOs/16wloLzxI1o6TwfS/g==
+  dependencies:
+    "@rdf-esm/namespace" "^0.5.1"
+    "@rdfjs/types" "*"
+    commander "^7.2.0"
+    fs-extra "^10.0.0"
+
+"@tpluscode/rdf-ns-builders@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@tpluscode/rdf-ns-builders/-/rdf-ns-builders-2.0.0.tgz#706112f975fd8459c4db0e4c506bf97dec354a91"
+  integrity sha512-s+pwFo3CYN2UvAskElaeorRh1hX3qs2NYOTXP7Fsc4UdpjMN6L99V4J7iL7oMMXY079Kaz0u3gAB4LwCaTmg0A==
   dependencies:
     "@rdf-esm/namespace" "^0.5.1"
     "@rdfjs/types" "*"

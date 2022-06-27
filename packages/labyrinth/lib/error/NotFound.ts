@@ -1,6 +1,6 @@
 import { ErrorMapper } from 'http-problem-details-mapper'
 import { ProblemDocument } from 'http-problem-details'
-import { hydra } from '@tpluscode/rdf-ns-builders/strict'
+import { hydra } from '@tpluscode/rdf-ns-builders'
 
 export class NotFoundError extends Error {
 }
