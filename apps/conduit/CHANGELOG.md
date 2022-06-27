@@ -1,5 +1,15 @@
 # @hydrofoil/conduit
 
+## 0.1.40
+
+### Patch Changes
+
+- 3f945d2: build(deps): bump express from 4.17.3 to 4.18.1
+- Updated dependencies [0d5fb28]
+- Updated dependencies [017d95b]
+- Updated dependencies [3f945d2]
+  - @hydrofoil/knossos@0.7.1
+
 ## 0.1.39
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @hydrofoil/knossos-events
 
+## 0.3.10
+
+### Patch Changes
+
+- 3f945d2: build(deps): bump express from 4.17.3 to 4.18.1
+
 ## 0.3.9
 
 ### Patch Changes

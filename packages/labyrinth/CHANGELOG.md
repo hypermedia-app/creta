@@ -1,5 +1,17 @@
 # @hydrofoil/labyrinth
 
+## 0.11.2
+
+### Patch Changes
+
+- ca13ab0: Added `req.labyrinth.fullRepresentation()` for loading resource triples, including `query:include` annotations
+- 017d95b: Customizable strategy for header `Prefer: return=minimal`
+- 017d95b: Freeze labyrinth configuration object
+- b29faf8: build(deps): bump clownface-shacl-path from 1.3.0 to 1.3.1
+- 3f945d2: build(deps): bump express from 4.17.3 to 4.18.1
+- a62c7b3: Default collection GET handler now supports eager-loading resources using `query:include`. Fixes #304
+- 017d95b: `Prefer: return=minimal` supoorted by default getter of `hydra:Collection`
+
 ## 0.11.1
 
 ### Patch Changes
