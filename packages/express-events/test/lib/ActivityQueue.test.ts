@@ -7,7 +7,7 @@ import debug from 'debug'
 import { nanoid } from 'nanoid'
 import $rdf from 'rdf-ext'
 import { GraphPointer } from 'clownface'
-import { as } from '@tpluscode/rdf-ns-builders/strict'
+import { as } from '@tpluscode/rdf-ns-builders'
 import { ActivityQueue, Loader, Runner } from '../../lib/ActivityQueue'
 
 describe('@hydrofoil/express-events/lib/ActivityQueue', () => {

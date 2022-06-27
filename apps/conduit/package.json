@@ -12,7 +12,7 @@
   "dependencies": {
     "@hydrofoil/knossos": "0.7.1",
     "@rdfjs/term-set": "^1.1.0",
-    "@tpluscode/rdf-ns-builders": "^1",
+    "@tpluscode/rdf-ns-builders": "^2.0.0",
     "@tpluscode/sparql-builder": "^0.3.21",
     "clownface": "^1.5.1",
     "cors": "^2.8.5",

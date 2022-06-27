@@ -106,7 +106,7 @@ Use `knossos:preprocessPayload` to modify the request body. This can be useful t
 
 ```typescript
 import type { ResourceHook } from '@hydrofoil/labyrinth/resource' 
-import { schema } from '@tpluscode/rdf-ns-builders/strict'
+import { schema } from '@tpluscode/rdf-ns-builders'
 
 export const draftByDefault: ResourceHook = (req, pointer) => {
   const hasStatus = pointer.out(schema.creativeWorkStatus).terms.length > 0
