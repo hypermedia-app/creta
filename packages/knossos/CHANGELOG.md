@@ -1,5 +1,22 @@
 # @hydrofoil/knossos
 
+## 0.7.1
+
+### Patch Changes
+
+- 0d5fb28: build(deps): bump commander from 9.2.0 to 9.3.0
+- 017d95b: Customizable strategy for header `Prefer: return=minimal`
+- 3f945d2: build(deps): bump express from 4.17.3 to 4.18.1
+- Updated dependencies [ca13ab0]
+- Updated dependencies [017d95b]
+- Updated dependencies [017d95b]
+- Updated dependencies [b29faf8]
+- Updated dependencies [3f945d2]
+- Updated dependencies [a62c7b3]
+- Updated dependencies [017d95b]
+  - @hydrofoil/labyrinth@0.11.2
+  - @hydrofoil/knossos-events@0.3.10
+
 ## 0.7.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @labyrinth/testing
 
+## 0.0.13
+
+### Patch Changes
+
+- 3f945d2: build(deps): bump express from 4.17.3 to 4.18.1
+
 ## 0.0.12
 
 ### Patch Changes

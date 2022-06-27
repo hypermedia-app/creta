@@ -1,5 +1,16 @@
 # @hydrofoil/talos
 
+## 0.4.11
+
+### Patch Changes
+
+- 0d5fb28: build(deps): bump commander from 9.2.0 to 9.3.0
+- d2051ea: PUT: support trig sources with multiple resources (closes #92)
+- Updated dependencies [0d5fb28]
+- Updated dependencies [017d95b]
+- Updated dependencies [3f945d2]
+  - @hydrofoil/knossos@0.7.1
+
 ## 0.4.10
 
 ### Patch Changes
