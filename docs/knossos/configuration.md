@@ -100,7 +100,7 @@ Here's an example implementation which would grant access to resources to member
 
 ```typescript
 import { sparql } from '@tpluscode/sparql-builder'
-import { acl, vcard } from '@tpluscode/rdf-ns-builders/strict'
+import { acl, vcard } from '@tpluscode/rdf-ns-builders'
 
 export const customAuth: AuthorizationPatterns = 
   ({
@@ -232,7 +232,7 @@ PREFIX knossos: <https://hypermedia.app/knossos#>
 Use [clownface](http://zazuko.github.io/clownface/) to access the configuration graph:
 
 ```javascript
-import { schema } from '@tpluscode/rdf-ns-builders/strict'
+import { schema } from '@tpluscode/rdf-ns-builders'
 import namespace from '@rdfjs/namespace'
 
 const my = namespace('http://example.com/my#')
