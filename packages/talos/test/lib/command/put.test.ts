@@ -3,7 +3,7 @@ import { put, Put } from 'talos/lib/command/put'
 import { ASK, DELETE, INSERT, SELECT } from '@tpluscode/sparql-builder'
 import ParsingClient from 'sparql-http-client/ParsingClient'
 import { expect } from 'chai'
-import { dash, doap, hydra, schema, vcard, sh } from '@tpluscode/rdf-ns-builders'
+import { dash, doap, hydra, schema, vcard, sh, foaf } from '@tpluscode/rdf-ns-builders'
 import namespace from '@rdfjs/namespace'
 import * as NodeFetch from 'node-fetch'
 import sinon from 'sinon'
@@ -239,6 +239,32 @@ template
             .execute(client.query)
 
           await expect(hasExpectedType).to.eventually.be.true
+        })
+      })
+
+      describe('trig', () => {
+        it('inserts into graphs constructed from path', async () => {
+          const results = await SELECT`?resource ?graph ?type`
+            .WHERE`
+              graph ?graph {
+                ?resource <http://www.w3.org/ns/earl#test> "trig" ; a ?type
+              }
+            `
+            .execute(client.query)
+
+          expect(results).to.deep.contain.members([{
+            resource: ns('trig/users'),
+            graph: ns('trig/users'),
+            type: hydra.Collection,
+          }, {
+            resource: ns('trig/users/john-doe'),
+            graph: ns('trig/users/john-doe'),
+            type: foaf.Person,
+          }, {
+            resource: ns('trig/users/jane-doe'),
+            graph: ns('trig/users/jane-doe'),
+            type: foaf.Person,
+          }])
         })
       })
     })

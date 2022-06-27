@@ -1,0 +1,19 @@
+PREFIX earl: <http://www.w3.org/ns/earl#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+<> {
+  <>
+    a hydra:Collection ;
+    earl:test "trig" ;
+}
+
+<users/john-doe> {
+  <users/john-doe> a foaf:Person ;
+    earl:test "trig" ;
+}
+
+</trig/users/jane-doe> {
+  </trig/users/jane-doe> a foaf:Person ;
+    earl:test "trig" ;
+}
