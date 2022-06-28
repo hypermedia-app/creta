@@ -1,5 +1,11 @@
 # @hydrofoil/knossos-events
 
+## 0.3.11
+
+### Patch Changes
+
+- ddbc61b: Update `@tpluscode/rdf-ns-builders` to v2
+
 ## 0.3.10
 
 ### Patch Changes

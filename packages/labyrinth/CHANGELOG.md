@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.11.3
+
+### Patch Changes
+
+- ddbc61b: Update `@tpluscode/rdf-ns-builders` to v2
+
 ## 0.11.2
 
 ### Patch Changes

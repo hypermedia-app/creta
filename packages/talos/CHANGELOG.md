@@ -1,5 +1,15 @@
 # @hydrofoil/talos
 
+## 0.4.12
+
+### Patch Changes
+
+- ab4c5c3: build(deps): bump mime-types from 2.1.34 to 2.1.35
+- ddbc61b: Update `@tpluscode/rdf-ns-builders` to v2
+- Updated dependencies [a024e38]
+- Updated dependencies [ddbc61b]
+  - @hydrofoil/knossos@0.7.2
+
 ## 0.4.11
 
 ### Patch Changes

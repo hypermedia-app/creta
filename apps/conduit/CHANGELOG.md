@@ -1,5 +1,14 @@
 # @hydrofoil/conduit
 
+## 0.1.41
+
+### Patch Changes
+
+- ddbc61b: Update `@tpluscode/rdf-ns-builders` to v2
+- Updated dependencies [a024e38]
+- Updated dependencies [ddbc61b]
+  - @hydrofoil/knossos@0.7.2
+
 ## 0.1.40
 
 ### Patch Changes
