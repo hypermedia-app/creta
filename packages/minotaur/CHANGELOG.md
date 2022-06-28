@@ -1,5 +1,11 @@
 # @hydrofoil/minotaur
 
+## 0.2.4
+
+### Patch Changes
+
+- ddbc61b: Update `@tpluscode/rdf-ns-builders` to v2
+
 ## 0.2.3
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # @hydrofoil/knossos
 
+## 0.7.2
+
+### Patch Changes
+
+- a024e38: build(deps): bump path-to-regexp from 6.2.0 to 6.2.1
+- ddbc61b: Update `@tpluscode/rdf-ns-builders` to v2
+- Updated dependencies [ddbc61b]
+  - @hydrofoil/knossos-events@0.3.11
+  - @hydrofoil/labyrinth@0.11.3
+
 ## 0.7.1
 
 ### Patch Changes

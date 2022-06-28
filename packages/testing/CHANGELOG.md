@@ -1,5 +1,11 @@
 # @labyrinth/testing
 
+## 0.0.14
+
+### Patch Changes
+
+- ddbc61b: Update `@tpluscode/rdf-ns-builders` to v2
+
 ## 0.0.13
 
 ### Patch Changes
