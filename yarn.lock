@@ -2289,9 +2289,9 @@
     whatwg-url "^5.0.0"
 
 "@zazuko/rdf-vocabularies@*":
-  version "2021.9.22"
-  resolved "https://registry.yarnpkg.com/@zazuko/rdf-vocabularies/-/rdf-vocabularies-2021.9.22.tgz#6d342e663e2a1104f7a53c5ccb3da5b2167850eb"
-  integrity sha512-BHiNfex7Apt0EibtLHrPYv9dimYtsWZfVBKHtv4s58EtONwW2cLODUC8HFrlwre5G4EDq5gDehEHTjWCPFReHw==
+  version "2022.6.29"
+  resolved "https://registry.yarnpkg.com/@zazuko/rdf-vocabularies/-/rdf-vocabularies-2022.6.29.tgz#f81be16f5df6545c87ba0480be30a1ef65f4217c"
+  integrity sha512-E1IyTK3WfeeB0LAPxtDapcBPB+uizhYFGBgjK0z9xMnGIeWWtWb59jpGxLTfVjHMbGbxeTm/HPAKLwtB1gX1xQ==
   dependencies:
     "@rdfjs/parser-n3" "^1.1.4"
     commander "^5.0.0"
