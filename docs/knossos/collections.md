@@ -221,6 +221,10 @@ prefix query: <https://hypermedia.app/query#>
 .
 ```
 
+> [!TIP]
+> The `query:filter` predicate can be omitted, in which case the collection will be filtered by exact pattern. In the above
+> example this would translate to a pattern similar to `?member schema:title "search string"`.
+
 Then, add a `hydra:search` link to a queryable instance. This will instruct the client what are the supported query filters.
 
 ```turtle
@@ -233,14 +237,15 @@ prefix hydra: <http://www.w3.org/ns/hydra/core#>
 
 Finally, implement the `query:filter` code link, which will be loaded when the mapped query params is set. It must be a module exporting a function which returns a string, or a `SparqlTemplateResult`, as shown in the example below.
 
-```js
+```ts
 import { sparql } from '@tpluscode/rdf-string'
+import { Filter } from '@hydrofoil/labyrinth/collection'
 
 /**
 * Create a graph pattern to get article title and
 * filter where the title starts with the provided value
 */
-export function startsWith({ subject, predicate, object }) {
+export const startsWith: Filter = ({ subject, predicate, object }) => {
   return sparql`
   ${subject} ${predicate} ?title .
 
