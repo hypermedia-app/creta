@@ -10,9 +10,9 @@ import { fromPointer } from '@rdfine/hydra/lib/IriTemplate'
 import TermSet from '@rdfjs/term-set'
 import DatasetExt from 'rdf-ext/lib/Dataset'
 import { hyper_query } from '@hydrofoil/vocabularies/builders'
+import { isResource } from 'is-graph-pointer'
 import { toPointer } from './template'
 import { log } from './logger'
-import { isGraphPointer } from './clownface'
 import staticCollection from './query/staticCollection'
 import dynamicCollection from './query/dynamicCollection'
 
@@ -51,7 +51,7 @@ export const loadCollection = async (
   let queryParams = clownface({ dataset: $rdf.dataset() }).blankNode()
   let searchTemplate: IriTemplate | null = null
 
-  if (isGraphPointer(searchPtr)) {
+  if (isResource(searchPtr)) {
     search = searchPtr
 
     if (search.term.termType === 'NamedNode') {
