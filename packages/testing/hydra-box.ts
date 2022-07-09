@@ -9,6 +9,7 @@ import sinon from 'sinon'
 import setLink from 'set-link'
 import { Api } from 'hydra-box/Api'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
+import LoaderRegistry from 'rdf-loaders-registry'
 import { namedNode } from './nodeFactory'
 import { ex } from './namespace'
 import { client } from './sparql'
@@ -41,9 +42,7 @@ export const api = <Code = RequestHandler>({ code }: ApiSetup<Code> = {}): Api =
     initialized: true,
     path: '/api',
     term: $rdf.namedNode('api'),
-    loaderRegistry: {
-      load,
-    } as any,
+    loaderRegistry: sinon.createStubInstance(LoaderRegistry),
   }
 }
 

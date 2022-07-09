@@ -12,6 +12,7 @@ import toArray from 'stream-to-array'
 import { toSparql } from 'clownface-shacl-path'
 import { toRdf } from 'rdf-literal'
 import TermSet from '@rdfjs/term-set'
+import argumentsLoader from 'rdf-loader-code/arguments'
 import { exactMatch } from '../query/filters'
 import { log, warn } from '../logger'
 import { loadResourceWithLinks } from '../query/eagerLinks'
@@ -36,7 +37,7 @@ function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPoin
       return ''
     }
 
-    let createPattern: Promise<ToSparqlPatterns> | ToSparqlPatterns | undefined
+    let createPattern: ToSparqlPatterns<unknown[]> | undefined
     const queryFilters = mapping.pointer.out(hyper_query.filter)
     if (!queryFilters.value) {
       log('Applying implicit exact match filter for %s', property.id.value)
@@ -49,6 +50,10 @@ function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPoin
       }
     }
 
+    const args = await argumentsLoader(mapping.pointer, {
+      loaderRegistry: api.loaderRegistry,
+    })
+
     return createPattern({
       subject,
       predicate: property.id,
@@ -56,7 +61,7 @@ function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPoin
       variable(name) {
         return $rdf.variable(`filter${index + 1}_${name}`)
       },
-    })
+    }, ...args)
   }
 }
 

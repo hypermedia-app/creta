@@ -9,8 +9,9 @@ import { fromPointer as iriTemplate } from '@rdfine/hydra/lib/IriTemplate'
 import { sparql } from '@tpluscode/rdf-string'
 import { hydra, ldp, rdf, rdfs, schema, sh, vcard, foaf } from '@tpluscode/rdf-ns-builders'
 import RdfResource from '@tpluscode/rdfine'
+import { rdfList } from '@tpluscode/rdfine/initializer'
 import * as Hydra from '@rdfine/hydra'
-import { hyper_query, knossos } from '@hydrofoil/vocabularies/builders'
+import { code, hyper_query, knossos } from '@hydrofoil/vocabularies/builders'
 import sinon from 'sinon'
 import type { LoaderRegistry } from 'rdf-loaders-registry'
 import $rdf from 'rdf-ext'
@@ -57,6 +58,12 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
   }
 
   describe('members', () => {
+    let loaderRegistry: sinon.SinonStubbedInstance<LoaderRegistry>
+
+    beforeEach(() => {
+      loaderRegistry = api.loaderRegistry as any
+    })
+
     it('queries with member assertion patterns', async () => {
       // given
       collection.addOut(hydra.memberAssertion, ma => {
@@ -596,6 +603,71 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
         
         ?member ${schema.name} ?filter2_var .
         filter (strlen(?filter2_var) > 10)
+      }`)
+    })
+
+    it('passes named arguments to filter function', async () => {
+      // given
+      query = blankNode()
+      variables = iriTemplate(blankNode(), {
+        mapping: [{
+          variable: 'title',
+          property: schema.title,
+          [hyper_query.filter.value]: {},
+          [code.arguments.value]: {
+            [code.name.value]: 'flags',
+            [code.value.value]: 'i',
+          },
+        }],
+      })
+      const regexFilter: ToSparqlPatterns = ({ subject, predicate, variable, object }, { flags = '' } = {}) => {
+        return sparql`
+          ${subject} ${predicate} ${variable('var')} .
+          filter (regex("${object.value}", ${variable('var')}, "${flags}"))
+        `
+      }
+      loaderRegistry.load.onFirstCall().resolves(sinon.stub().callsFake(regexFilter))
+      query.addOut(schema.title, 'hello world')
+
+      // when
+      const filters = await createFilters({ subject, api, query, variables })
+      const select = SELECT.ALL.WHERE`${filters}`
+
+      // then
+      expect(select).to.be.query(sparql`SELECT * WHERE {
+        ?member ${schema.title} ?filter1_var .
+        filter (regex("hello world", ?filter1_var, "i"))
+      }`)
+    })
+
+    it('passes positional arguments to filter function', async () => {
+      // given
+      query = blankNode()
+      variables = iriTemplate(blankNode(), {
+        mapping: [{
+          variable: 'title',
+          property: schema.title,
+          [hyper_query.filter.value]: {},
+          [code.arguments.value]: rdfList('ig'),
+        }],
+      })
+      const regexFilter: ToSparqlPatterns = ({ subject, predicate, variable, object }, flags = '') => {
+        return sparql`
+          ${subject} ${predicate} ${variable('var')} .
+          filter (regex("${object.value}", ${variable('var')}, "${flags}"))
+        `
+      }
+      loaderRegistry.load.onFirstCall().resolves(sinon.stub().callsFake(regexFilter))
+      query.addOut(schema.title, 'hello world')
+
+      // when
+      const filters = await createFilters({ subject, api, query, variables })
+      const select = SELECT.ALL.WHERE`${filters}`
+
+      // then
+      expect(select).to.be.query(sparql`SELECT * WHERE {
+        ?member ${schema.title} ?filter1_var .
+        filter (regex("hello world", ?filter1_var, "ig"))
       }`)
     })
   })
