@@ -18,7 +18,7 @@ import { loadResourceWithLinks } from '../query/eagerLinks'
 import { ToSparqlPatterns } from './index'
 
 function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPointer, api: Api) {
-  return async (mapping: IriTemplateMapping): Promise<string | SparqlTemplateResult> => {
+  return async (mapping: IriTemplateMapping, index: number): Promise<string | SparqlTemplateResult> => {
     const property = mapping.property
     if (!property) {
       log('Skipping mapping without property')
@@ -53,6 +53,9 @@ function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPoin
       subject,
       predicate: property.id,
       object: value,
+      variable(name) {
+        return $rdf.variable(`filter${index + 1}_${name}`)
+      },
     })
   }
 }
@@ -170,7 +173,7 @@ export default async function ({ api, collection, client, pageSize, query, varia
   const managesBlockPatterns = memberAssertions.reduce((combined, next) => sparql`${combined}\n${next}`, sparql``)
   let filterPatters: Array<string | SparqlTemplateResult> = []
   if (variables) {
-    filterPatters = await Promise.all(variables.mapping.map(createTemplateVariablePatterns(subject, query, api)))
+    filterPatters = await createFilters({ variables, subject, query, api })
   }
 
   const order = createOrdering(collectionTypes, collection, subject)
@@ -224,4 +227,13 @@ export default async function ({ api, collection, client, pageSize, query, varia
       return loadResourceWithLinks(members, includePaths, client)
     },
   }
+}
+
+export async function createFilters({ subject, query, api, variables }: {
+  subject: Variable
+  query: GraphPointer
+  api: Api
+  variables: IriTemplate
+}): Promise<Array<string | SparqlTemplateResult>> {
+  return Promise.all(variables.mapping.map(createTemplateVariablePatterns(subject, query, api)))
 }

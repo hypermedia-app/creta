@@ -45,7 +45,13 @@ ${expected}`)
   }
 
   try {
-    actualQuery = sparqlParser.parse(this._obj)
+    let actualQueryString: string
+    if (typeof this._obj === 'string') {
+      actualQueryString = this._obj
+    } else {
+      actualQueryString = this._obj.build()
+    }
+    actualQuery = sparqlParser.parse(actualQueryString)
   } catch (e: any) {
     throw new AssertionError(`Failed to parse actual query.
 ${e.message}.

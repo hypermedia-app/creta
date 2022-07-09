@@ -245,13 +245,18 @@ import { Filter } from '@hydrofoil/labyrinth/collection'
 * Create a graph pattern to get article title and
 * filter where the title starts with the provided value
 */
-export const startsWith: Filter = ({ subject, predicate, object }) => {
+export const startsWith: Filter = ({ subject, predicate, object, variable }) => {
   return sparql`
-  ${subject} ${predicate} ?title .
+  ${subject} ${predicate} ${variable('title')} .
 
-  FILTER ( REGEX (?title, "^${object.value}", "i") )`
+  FILTER ( REGEX (${variable('title')}, "^${object.value}", "i") )`
 }
 ```
+
+> [!WARNING]
+> Notice that the `title` variable is not created using a standard RDF/JS factory. Doing so could inadvertently lead to
+> name clashes across multiple filters. Instead, the `Filter` delegate is called with a factory method which ensures that
+> every invocation generates unique names. In the above example it would be similar to `?filter1_title`.
 
 > [!TIP]
 > Consult the package [rdf-loader-code](https://npm.im/rdf-loader-code) for more details about loading modules using RDF declarations.
