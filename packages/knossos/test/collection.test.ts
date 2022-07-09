@@ -15,6 +15,7 @@ import httpStatus from 'http-status'
 import * as ns from '@hydrofoil/vocabularies/builders'
 import $rdf from 'rdf-ext'
 import * as describeResource from '@hydrofoil/labyrinth/lib/query/describeResource'
+import { code } from '@hydrofoil/vocabularies/builders'
 import { CreateMember } from '../collection'
 
 describe('@hydrofoil/knossos/collection', () => {
@@ -174,6 +175,42 @@ describe('@hydrofoil/knossos/collection', () => {
 
         ;({ loadCode } = req as any)
         loadCode.resolves((term: Term) => $rdf.literal(`${term.value}-and-jane`))
+
+        next()
+      })
+      app.post('/collection', CreateMember)
+
+      // when
+      await request(app)
+        .post('/collection')
+        .send(turtle`<> ${schema.name} "john" .`.toString())
+        .set('content-type', 'text/turtle')
+        .set('host', 'example.com')
+
+      // then
+      expect(knossos.store.save).to.have.been.calledWith(sinon.match((value: GraphPointer) => {
+        expect(value.term).to.deep.eq(ex('foo/john-and-jane'))
+        expect(value.out(schema.name).value).to.eq('john')
+        return true
+      }))
+      expect(loadCode).to.have.been.calledWith(sinon.match.any, sinon.match({
+        basePath: sinon.match.string,
+      }))
+    })
+
+    it('creates identifier from template with parametrised transforms', async () => {
+      // given
+      let loadCode!: sinon.SinonStub
+      app.use((req, res, next) => {
+        clownface(req.hydra.api)
+          .node(ex.Collection)
+          .out(ns.knossos.memberTemplate)
+          .out(hydra.mapping)
+          .addOut(ns.knossos.transformVariable)
+          .addList(code.arguments, 'jane')
+
+        ;({ loadCode } = req as any)
+        loadCode.resolves((term: Term, jane: string) => $rdf.literal(`${term.value}-and-${jane}`))
 
         next()
       })

@@ -6,9 +6,10 @@ import { knossos } from '@hydrofoil/vocabularies/builders/strict'
 import { Request } from 'express'
 import $rdf from 'rdf-ext'
 import clownface from 'clownface'
+import argumentsLoader from 'rdf-loader-code/arguments'
 
-export interface TransformVariable {
-  (term: Term): Term
+export interface TransformVariable<Args extends unknown[] = []> {
+  (term: Term, ...args: Args): Term
 }
 
 export function hasAllRequiredVariables(template: IriTemplate, variables: GraphPointer): boolean {
@@ -38,9 +39,12 @@ export async function applyTransformations(req: Request, resource: GraphPointer,
       .map(async object => {
         return transformations.reduce((promise, transformation) => {
           return promise.then(async previous => {
-            const transformFunc = await req.loadCode<TransformVariable>(transformation, { basePath: api.codePath })
+            const transformFunc = await req.loadCode<TransformVariable<unknown[]>>(transformation, { basePath: api.codePath })
+            const args = await argumentsLoader(mapping, {
+              loaderRegistry: api.loaderRegistry,
+            })
             if (transformFunc) {
-              return transformFunc(previous)
+              return transformFunc(previous, ...args)
             }
 
             throw new Error('Failed to load transformation ' + transformation.value)
