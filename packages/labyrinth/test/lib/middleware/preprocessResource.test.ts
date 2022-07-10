@@ -14,6 +14,7 @@ import { rdf } from '@tpluscode/rdf-ns-builders'
 import { CodeLoader } from 'labyrinth/lib/code'
 import TermSet from '@rdfjs/term-set'
 import { knossosMock } from '@labyrinth/testing/knossos'
+import { code } from '@hydrofoil/vocabularies/builders'
 import { preprocessMiddleware, preprocessPayload } from '../../../lib/middleware/preprocessResource'
 
 describe('@hydrofoil/labyrinth/lib/middleware/preprocessResource', () => {
@@ -29,6 +30,11 @@ describe('@hydrofoil/labyrinth/lib/middleware/preprocessResource', () => {
         clownface(hydra.api)
           .addOut(ns.hydra.supportedClass, ex.Person, clas => {
             clas.addOut(knossos.preprocessResource, literal('loads and call enrichment function', ex.TestHook))
+          })
+          .addOut(ns.hydra.supportedClass, ex.Project, clas => {
+            clas.addOut(knossos.preprocessResource, parametrisedHook => {
+              parametrisedHook.addList(code.arguments, ['foo', 'bar', 'baz'])
+            })
           })
       },
     }))
@@ -55,6 +61,29 @@ describe('@hydrofoil/labyrinth/lib/middleware/preprocessResource', () => {
 
     // then
     expect(preprocessHook).to.have.been.called
+  })
+
+  it('calls hook function with arguments', async () => {
+    // given
+    app.use(preprocessMiddleware({
+      getTypes() {
+        return [ex.Project]
+      },
+      getResource: req => req.hydra.resource.clownface(),
+      predicate: knossos.preprocessResource,
+    }))
+
+    // when
+    await request(app).get('/')
+
+    // then
+    expect(preprocessHook).to.have.been.calledWith(
+      sinon.match.object,
+      sinon.match.object,
+      'foo',
+      'bar',
+      'baz',
+    )
   })
 
   it('loads and calls hook function uniquely', async () => {
