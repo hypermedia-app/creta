@@ -12,10 +12,8 @@ export interface TransformVariable<Args extends unknown[] = []> {
   (term: Term, ...args: Args): Term
 }
 
-export function hasAllRequiredVariables(template: IriTemplate, variables: GraphPointer): boolean {
-  for (const mapping of template.mapping) {
-    const { property, required } = mapping
-
+export function hasAllRequiredVariables({ mapping }: IriTemplate, variables: GraphPointer): boolean {
+  for (const { property, required } of mapping) {
     if (property && required) {
       if (!variables.out(property.id).terms.length) {
         return false
