@@ -6,7 +6,7 @@ import { knossos } from '@hydrofoil/vocabularies/builders/strict'
 import { Request } from 'express'
 import $rdf from 'rdf-ext'
 import clownface from 'clownface'
-import argumentsLoader from 'rdf-loader-code/arguments'
+import { loadAll } from '@hydrofoil/labyrinth/lib/code'
 
 export interface TransformVariable<Args extends unknown[] = []> {
   (term: Term, ...args: Args): Term
@@ -27,27 +27,20 @@ export function hasAllRequiredVariables(template: IriTemplate, variables: GraphP
 }
 
 export async function applyTransformations(req: Request, resource: GraphPointer, template: GraphPointer): Promise<GraphPointer> {
-  const { api } = req.hydra
   const mappings = template.out(hydra.mapping).toArray()
   const variables = clownface({ dataset: $rdf.dataset() }).blankNode()
 
   for (const mapping of mappings) {
-    const transformations = mapping.out(knossos.transformVariable).toArray()
+    const transformationPtrs = mapping.out(knossos.transformVariable)
     const property = mapping.out(hydra.property)
 
     const transformed = resource.out(property).toArray()
       .map(async object => {
-        return transformations.reduce((promise, transformation) => {
-          return promise.then(async previous => {
-            const transformFunc = await req.loadCode<TransformVariable<unknown[]>>(transformation, { basePath: api.codePath })
-            const args = await argumentsLoader(mapping, {
-              loaderRegistry: api.loaderRegistry,
-            })
-            if (transformFunc) {
-              return transformFunc(previous, ...args)
-            }
+        const transformations = await loadAll<TransformVariable<unknown[]>>(transformationPtrs, req)
 
-            throw new Error('Failed to load transformation ' + transformation.value)
+        return transformations.reduce((promise, [transformFunc, args]) => {
+          return promise.then(async previous => {
+            return transformFunc(previous, ...args)
           })
         }, Promise.resolve(object.term))
       })
