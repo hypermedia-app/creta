@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @hydrofoil/labyrinth/lib/query/filters
+ */
+
 import { sparql } from '@tpluscode/rdf-string'
 import { warn } from '../logger'
 import { ToSparqlPatterns } from '.'

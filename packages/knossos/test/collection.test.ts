@@ -15,7 +15,7 @@ import httpStatus from 'http-status'
 import * as ns from '@hydrofoil/vocabularies/builders'
 import $rdf from 'rdf-ext'
 import * as describeResource from '@hydrofoil/labyrinth/lib/query/describeResource'
-import { code } from '@hydrofoil/vocabularies/builders'
+import { code } from '@hydrofoil/vocabularies/builders/strict'
 import { CreateMember } from '../collection'
 
 describe('@hydrofoil/knossos/collection', () => {
@@ -430,9 +430,9 @@ describe('@hydrofoil/knossos/collection', () => {
 
         clownface(req.hydra.api)
           .node(foaf.Person)
-          .addOut(ns.knossos.preprocessPayload, ex.PersonHook)
+          .addOut(ns.knossos.preprocessPayload, hook => hook.addOut(code.implementedBy, ex.PersonHook))
           .node(foaf.Agent)
-          .addOut(ns.knossos.preprocessPayload, ex.AgentHook)
+          .addOut(ns.knossos.preprocessPayload, hook => hook.addOut(code.implementedBy, ex.AgentHook))
         next()
       })
       app.post('/collection', CreateMember)
@@ -464,7 +464,7 @@ describe('@hydrofoil/knossos/collection', () => {
 
         clownface(req.hydra.api)
           .node(schema.Person)
-          .addOut(ns.knossos.preprocessResponse, ex.PersonHook)
+          .addOut(ns.knossos.preprocessResponse, hook => hook.addOut(code.implementedBy, ex.PersonHook))
         next()
       })
       app.post('/collection', CreateMember)

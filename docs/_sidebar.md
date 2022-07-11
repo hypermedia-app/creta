@@ -10,4 +10,5 @@
   * [Multi-tenancy](advanced/multi-tenancy.md "Multi-tenancy | Knossos | Creta")
   * [Resource hooks](advanced/hooks.md "Resource hooks | Knossos | Creta")
   * [Setup from code](knossos/middleware.md "Setup from code | Knossos | Creta")
+  * [Declarative code arguments](advanced/code-arguments.md "Declarative code arguments | Knossos | Creta")
 * [Talos](talos.md "Talos | Creta")

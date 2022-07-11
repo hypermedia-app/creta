@@ -9,7 +9,7 @@ import sinon from 'sinon'
 import { rdf } from '@tpluscode/rdf-ns-builders'
 import { handler as hydraBox } from '@labyrinth/testing/hydra-box'
 import { ex } from '@labyrinth/testing/namespace'
-import { knossos } from '@hydrofoil/vocabularies/builders/strict'
+import { knossos, code } from '@hydrofoil/vocabularies/builders/strict'
 import TermSet from '@rdfjs/term-set'
 import { knossosMock } from '@labyrinth/testing/knossos'
 import { createGetHandler } from '../collection'
@@ -67,7 +67,7 @@ describe('@hydrofoil/labyrinth/collection', () => {
             .addOut(rdf.type, ex.Collection)
           clownface(api.api)
             .namedNode(ex.Collection)
-            .addOut(knossos.preprocessResponse, null)
+            .addOut(knossos.preprocessResponse, hook => hook.addOut(code.implementedBy, null))
         },
       }))
       knossosMock(app)

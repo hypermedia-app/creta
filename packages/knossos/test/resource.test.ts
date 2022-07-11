@@ -19,9 +19,9 @@ import * as shacl from '../shacl'
 const setBeforeHooks: express.RequestHandler = (req, res, next) => {
   const graph = clownface(req.hydra.api)
   graph.node(schema.Person)
-    .addOut(ns.knossos.beforeSave, graph.blankNode('beforePerson'))
+    .addOut(ns.knossos.beforeSave, hook => hook.addOut(ns.code.implementedBy, graph.blankNode('beforePerson')))
   graph.node(foaf.Agent)
-    .addOut(ns.knossos.beforeSave, graph.blankNode('beforeAgent'))
+    .addOut(ns.knossos.beforeSave, hook => hook.addOut(ns.code.implementedBy, graph.blankNode('beforeAgent')))
   next()
 }
 

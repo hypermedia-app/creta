@@ -10,6 +10,7 @@ import express from 'express'
 import { Debugger } from 'debug'
 import TermSet from '@rdfjs/term-set'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
+import { loadAll } from '@hydrofoil/labyrinth/lib/code'
 import { Knossos } from '..'
 
 export interface BeforeSaveParams {
@@ -42,10 +43,10 @@ export interface BeforeSaveParams {
 
 /**
  * A "before hook" function, called when resources are created and updated, such
- * as when handling PUT requests or POST to a collection
+ * as when handling PUT requests, or POST to a collection
  */
-export interface BeforeSave {
-  (arg: BeforeSaveParams): void | Promise<void>
+export interface BeforeSave<Args extends unknown[] = []> {
+  (beforeSave: BeforeSaveParams, ...args: Args): void | Promise<void>
 }
 
 export interface Save {
@@ -60,17 +61,10 @@ export async function save({ resource, req }: Save): Promise<void> {
   const api = clownface(req.hydra.api)
 
   const before = await req.knossos.store.load(resource.term)
-  const beforeSaveHooks = await Promise.all(api
-    .node(resource.out(rdf.type))
-    .out(knossos.beforeSave)
-    .map<Promise<[GraphPointer, BeforeSave | null]>>(async pointer => [pointer, await req.loadCode<BeforeSave>(pointer)]))
+  const hookPointers = api.node(resource.out(rdf.type)).out(knossos.beforeSave)
+  const beforeSaveHooks = await loadAll<BeforeSave<unknown[]>>(hookPointers, req)
 
-  const promises = beforeSaveHooks.reduce((promises, [node, hook]) => {
-    if (!hook) {
-      req.knossos.log('Failed to load before save hook %s', node.value)
-      return promises
-    }
-
+  const promises = beforeSaveHooks.reduce((promises, [hook, args, node]) => {
     req.knossos.log('Running before save hook %s', hook.name)
     return [
       ...promises,
@@ -81,7 +75,7 @@ export async function save({ resource, req }: Save): Promise<void> {
         before,
         knossos: req.knossos,
         agent: req.agent,
-      }),
+      }, ...args),
     ]
   }, [] as ReturnType<BeforeSave>[])
 

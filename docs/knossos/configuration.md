@@ -85,8 +85,7 @@ PREFIX code: <https://code.described.at/>
 <>
   a knossos:Configuration ;
   knossos:authorizationRule [
-    code:implementedBy
-    [ 
+    code:implementedBy [ 
       a code:EcmaScript ;
       code:link <file:path/to/module.js#customAuth> ;
     ] ;
@@ -136,8 +135,7 @@ PREFIX code: <https://code.described.at/>
 <>
   a knossos:Configuration ;
   knossos:resourceLoader [
-    code:implementedBy
-    [ 
+    code:implementedBy [ 
       a code:EcmaScriptModule ;
       code:link <file:path/to/loader.js#factory> ;
     ] ;
@@ -193,8 +191,7 @@ PREFIX code: <https://code.described.at/>
 <>
   a knossos:Configuration ;
   knossos:minimalRepresentationLoader [
-    code:implementedBy
-    [ 
+    code:implementedBy [ 
       a code:EcmaScriptModule ;
       code:link <file:path/to/loader.js#returnMinimal> ;
     ] ;

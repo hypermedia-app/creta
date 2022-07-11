@@ -8,10 +8,13 @@
     "packages/knossos/index.ts",
     "packages/knossos/shacl.ts",
     "packages/labyrinth/index.ts",
+    "packages/labyrinth/collection/filters.ts",
     "packages/labyrinth/lib/middleware.ts",
     "packages/labyrinth/lib/middleware/disambiguateClassHierarchies.ts",
+    "packages/labyrinth/lib/middleware/preprocessResource.ts",
     "packages/labyrinth/lib/middleware/removeHydraOperations.ts",
     "packages/labyrinth/lib/middleware/returnMinimal.ts",
+    "packages/labyrinth/lib/query/filters.ts",
     "packages/labyrinth/resource.ts",
     "packages/minotaur/index.ts"
   ],

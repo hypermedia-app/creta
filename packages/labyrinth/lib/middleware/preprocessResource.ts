@@ -10,8 +10,8 @@ import asyncMiddleware from 'middleware-async'
 import { rdf } from '@tpluscode/rdf-ns-builders'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
 import TermSet from '@rdfjs/term-set'
-import argumentsLoader from 'rdf-loader-code/arguments'
 import { getPayload, getRepresentation } from '../request'
+import { loadAll } from '@hydrofoil/labyrinth/lib/code'
 
 export interface ResourceHook<Args extends unknown[] = []> {
   /**
@@ -53,26 +53,13 @@ async function resourceAndPayloadTypes(req: express.Request) {
   return types
 }
 
-type AnyHook = ResourceHook<unknown[]>
-
 export async function preprocessResource({ req, res, getTypes = hydraResourceTypes, predicate, getResource }: PreprocessResource): Promise<void> {
   const types = await getTypes(req, res)
   const { api } = req.hydra
-  const hooks = await clownface(api)
+  const hookPointers = clownface(api)
     .node([...new TermSet([...types].filter(isNamedNode))])
     .out(predicate)
-    .toArray()
-    .reduce(async (previous: Promise<[AnyHook, unknown[]][]>, pointer): Promise<[AnyHook, unknown[]][]> => {
-      const hook = await req.loadCode<ResourceHook>(pointer)
-      if (!hook) {
-        return previous
-      }
-
-      const args = await argumentsLoader(pointer, {
-        loaderRegistry: api.loaderRegistry,
-      })
-      return [...await previous, [hook, args]]
-    }, Promise.resolve([]))
+  const hooks = await loadAll<ResourceHook<unknown[]>>(hookPointers, req)
 
   if (!hooks.length) {
     return

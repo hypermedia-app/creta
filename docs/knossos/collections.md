@@ -214,8 +214,11 @@ prefix query: <https://hypermedia.app/query#>
     hydra:property schema:title ;
     query:filter
     [
-      a code:EcmaScriptModule ;
-      code:link <file:filters/articles/title.js#startsWith> ;
+      code:implementedBy
+        [
+          a code:EcmaScriptModule ;
+          code:link <file:filters/articles/title.js#startsWith> ;
+        ] ;
     ] ;
   ] ;
 .
@@ -260,6 +263,10 @@ export const startsWith: Filter = ({ subject, predicate, object, variable }) => 
 
 > [!TIP]
 > Consult the package [rdf-loader-code](https://npm.im/rdf-loader-code) for more details about loading modules using RDF declarations.
+
+> [!TIP]
+> A filter funtion can be parametrised. Arguments are provided by assigning `code:arguments` property to the `hydra:mapping` resource.
+> See [here](../advanced/code-arguments.md) for more details.
 
 ## Paging
 
@@ -454,8 +461,11 @@ prefix knossos: <https://hypermedia.app/knossos#>
           hydra:required true ;
           knossos:transformVariable
             [
-                a code:EcmaScript ;
-                code:link <file:lib/article#slugifyTitle> ;
+              code:implementedBy
+                [
+                  a code:EcmaScript ;
+                  code:link <file:lib/article#slugifyTitle> ;
+                ] ;
             ] ;
         ] ;
     ] ;
@@ -477,6 +487,10 @@ export const slugifyTitle: TransformVariable = (term) => {
     return $rdf.literal(slugify(title.substr(0, 10)))
 }
 ```
+
+> [!TIP]
+> A variable transformation function can be parametrised. Arguments are provided by assigning `code:arguments` property.
+> See [here](../advanced/code-arguments.md) for more details.
 
 ### Static member assertions
 
