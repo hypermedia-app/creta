@@ -11,7 +11,6 @@ import { ex } from '@labyrinth/testing/namespace'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
 import $rdf from 'rdf-ext'
 import { rdf } from '@tpluscode/rdf-ns-builders'
-import { CodeLoader } from 'labyrinth/lib/code'
 import TermSet from '@rdfjs/term-set'
 import { knossosMock } from '@labyrinth/testing/knossos'
 import { code } from '@hydrofoil/vocabularies/builders'
@@ -20,7 +19,6 @@ import { preprocessMiddleware, preprocessPayload } from '../../../lib/middleware
 describe('@hydrofoil/labyrinth/lib/middleware/preprocessResource', () => {
   let preprocessHook: sinon.SinonSpy
   let app: express.Express
-  let loadCode: CodeLoader
 
   beforeEach(() => {
     preprocessHook = sinon.spy()
@@ -33,17 +31,17 @@ describe('@hydrofoil/labyrinth/lib/middleware/preprocessResource', () => {
           })
           .addOut(ns.hydra.supportedClass, ex.Project, clas => {
             clas.addOut(knossos.preprocessResource, parametrisedHook => {
+              parametrisedHook.addOut(code.implementedBy)
               parametrisedHook.addList(code.arguments, ['foo', 'bar', 'baz'])
             })
           })
       },
     }))
-    loadCode = sinon.stub().resolves(preprocessHook)
-    knossosMock(app)
     app.use((req, res, next) => {
-      req.loadCode = loadCode
+      (req.hydra.api.loaderRegistry.load as sinon.SinonStub).onFirstCall().resolves(preprocessHook)
       next()
     })
+    knossosMock(app)
   })
 
   it('loads and calls hook function', async () => {
@@ -89,6 +87,10 @@ describe('@hydrofoil/labyrinth/lib/middleware/preprocessResource', () => {
   it('loads and calls hook function uniquely', async () => {
     // given
     app.use((req, res, next) => {
+      (req.hydra.api.loaderRegistry.load as sinon.SinonStub).resolves(preprocessHook)
+      next()
+    })
+    app.use((req, res, next) => {
       clownface(req.hydra.api)
         .namedNode(ex.Agent)
         .addOut(knossos.preprocessResource, hook => hook.addOut(code.implementedBy, ex.TestHookAgent))
@@ -106,7 +108,6 @@ describe('@hydrofoil/labyrinth/lib/middleware/preprocessResource', () => {
     await request(app).get('/')
 
     // then
-    expect(loadCode).to.have.been.calledTwice
     expect(preprocessHook).to.have.been.calledTwice
   })
 
@@ -167,6 +168,11 @@ describe('@hydrofoil/labyrinth/lib/middleware/preprocessResource', () => {
         next()
       })
       app.use(preprocessPayload)
+      let loadCode
+      app.use((req, res, next) => {
+        loadCode = req.hydra.api.loaderRegistry.load
+        next()
+      })
 
       // when
       await request(app).post('/')

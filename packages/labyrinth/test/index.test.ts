@@ -8,6 +8,7 @@ import TermSet from '@rdfjs/term-set'
 import { hydra } from '@tpluscode/rdf-ns-builders'
 import { loader, testApi } from '@labyrinth/testing/hydra-box'
 import { ex } from '@labyrinth/testing/namespace'
+import sinon from 'sinon'
 import { hydraBox } from '../index'
 
 describe('@hydrofoil/labyrinth', () => {
@@ -105,11 +106,12 @@ describe('@hydrofoil/labyrinth', () => {
   it('sets default page size', async () => {
     // given
     const app = express()
+    const api = testApi()
+    ;(api.loaderRegistry.load as sinon.SinonStub)
+      .resolves((req: express.Request, res: express.Response) => res.send(req.labyrinth))
     app.use(await hydraBox({
       path: '/api',
-      api: testApi({
-        code: (req: express.Request, res: express.Response) => res.send(req.labyrinth),
-      }),
+      api,
       codePath,
       loader: loader({
         classResource: [{
@@ -143,11 +145,12 @@ describe('@hydrofoil/labyrinth', () => {
   it('sets overridden page size', async () => {
     // given
     const app = express()
+    const api = testApi()
+    ;(api.loaderRegistry.load as sinon.SinonStub)
+      .resolves((req: express.Request, res: express.Response) => res.send(req.labyrinth))
     app.use(await hydraBox({
       path: '/api',
-      api: testApi({
-        code: (req: express.Request, res: express.Response) => res.send(req.labyrinth),
-      }),
+      api,
       codePath,
       loader: loader({
         classResource: [{

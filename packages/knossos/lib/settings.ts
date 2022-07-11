@@ -107,16 +107,17 @@ export async function loadResourceLoader(
     return undefined
   }
 
-  const [[loaderFactory, , node]] = await loadImplementations<ResourceLoaderFactory>(
+  const [loaded] = await loadImplementations<ResourceLoaderFactory>(
     config.out(knossos.resourceLoader),
     { api, log },
     { throwWhenLoadFails: true, single: true },
   )
 
-  if (!loaderFactory) {
+  if (!loaded) {
     return undefined
   }
 
+  const [loaderFactory, , node] = loaded
   const loader = await loaderFactory(context)
 
   log(`Loaded resource loader ${node.out(code.link).value}`)

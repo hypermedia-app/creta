@@ -24,16 +24,7 @@ interface MiddlewareOptions {
   query?: AnyPointer
 }
 
-interface ApiSetup<T> {
-  code?: T
-}
-
-export const api = <Code = RequestHandler>({ code }: ApiSetup<Code> = {}): Api => {
-  const load = sinon.stub()
-  if (code) {
-    load.resolves(code)
-  }
-
+export const api = (): Api => {
   return {
     codePath: '',
     dataset: $rdf.dataset(),
@@ -42,14 +33,12 @@ export const api = <Code = RequestHandler>({ code }: ApiSetup<Code> = {}): Api =
     initialized: true,
     path: '/api',
     term: $rdf.namedNode('api'),
-    loaderRegistry: sinon.createStubInstance(LoaderRegistry, {
-      load,
-    }),
+    loaderRegistry: sinon.createStubInstance(LoaderRegistry),
   }
 }
 
-export function testApi<Code>(opts?: ApiSetup<Code>): Api {
-  const copy = api(opts)
+export function testApi(): Api {
+  const copy = api()
 
   clownface(copy)
     .addOut(hydra.supportedClass, ex.Config, Config => {

@@ -133,7 +133,7 @@ describe('@hydrofoil/knossos/resource', () => {
       const agentHook = sinon.spy()
       const personHook = sinon.spy()
       app.use((req, res, next) => {
-        req.loadCode = sinon.stub()
+        (req.hydra.api.loaderRegistry.load as sinon.SinonStub)
           .onFirstCall().resolves(personHook)
           .onSecondCall().resolves(agentHook)
         next()
@@ -164,7 +164,7 @@ describe('@hydrofoil/knossos/resource', () => {
       // given
       const personHook = sinon.spy()
       app.use((req, res, next) => {
-        req.loadCode = sinon.stub()
+        (req.hydra.api.loaderRegistry.load as sinon.SinonStub)
           .onFirstCall().resolves(personHook)
           .onSecondCall().resolves(null)
         next()
@@ -281,7 +281,7 @@ describe('@hydrofoil/knossos/resource', () => {
       const agentHook = sinon.spy()
       const personHook = sinon.spy()
       app.use((req, res, next) => {
-        req.loadCode = sinon.stub()
+        (req.hydra.api.loaderRegistry.load as sinon.SinonStub)
           .onFirstCall().resolves(personHook)
           .onSecondCall().resolves(agentHook)
         next()
@@ -304,7 +304,7 @@ describe('@hydrofoil/knossos/resource', () => {
       // given
       const personHook = sinon.spy()
       app.use((req, res, next) => {
-        req.loadCode = sinon.stub()
+        (req.hydra.api.loaderRegistry.load as sinon.SinonStub)
           .onFirstCall().resolves(personHook)
           .onSecondCall().resolves(null)
         next()
@@ -328,7 +328,7 @@ describe('@hydrofoil/knossos/resource', () => {
         throw new httpError.Conflict()
       })
       app.use((req, res, next) => {
-        req.loadCode = sinon.stub().resolves(personHook)
+        (req.hydra.api.loaderRegistry.load as sinon.SinonStub).resolves(personHook)
         next()
       })
       app.use(setBeforeHooks)

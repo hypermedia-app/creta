@@ -173,7 +173,7 @@ describe('@hydrofoil/knossos/collection', () => {
           .out(hydra.mapping)
           .addOut(ns.knossos.transformVariable, hook => hook.addOut(code.implementedBy))
 
-        ;({ loadCode } = req as any)
+        loadCode = req.hydra.api.loaderRegistry.load as any
         loadCode.resolves((term: Term) => $rdf.literal(`${term.value}-and-jane`))
 
         next()
@@ -207,8 +207,10 @@ describe('@hydrofoil/knossos/collection', () => {
             hook.addOut(code.implementedBy).addList(code.arguments, 'jane')
           })
 
-        ;({ loadCode } = req as any)
-        loadCode.resolves((term: Term, jane: string) => $rdf.literal(`${term.value}-and-${jane}`))
+        loadCode = req.hydra.api.loaderRegistry.load as any
+        loadCode
+          .onFirstCall()
+          .resolves((term: Term, jane: string) => $rdf.literal(`${term.value}-and-${jane}`))
 
         next()
       })
@@ -410,7 +412,8 @@ describe('@hydrofoil/knossos/collection', () => {
       // given
       const hook = sinon.spy()
       app.use((req, res, next) => {
-        req.loadCode = sinon.stub().resolves(hook)
+        const loadCode = req.hydra.api.loaderRegistry.load as any
+        loadCode.resolves(hook)
         next()
       })
       app.use(async (req, res, next) => {
@@ -447,7 +450,8 @@ describe('@hydrofoil/knossos/collection', () => {
       // given
       const hook = sinon.spy()
       app.use((req, res, next) => {
-        req.loadCode = sinon.stub().resolves(hook)
+        const loadCode = req.hydra.api.loaderRegistry.load as any
+        loadCode.resolves(hook)
         next()
       })
       app.use(async (req, res, next) => {

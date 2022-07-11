@@ -38,7 +38,7 @@ export async function loadImplementations<T>(pointers: MultiPointer, context: Co
     ({ api, log } = context)
   } else {
     api = context.hydra.api
-    log = context.knossos.log
+    log = context.knossos?.log
   }
 
   const { loaderRegistry } = api
@@ -53,9 +53,10 @@ export async function loadImplementations<T>(pointers: MultiPointer, context: Co
     .reduce(async (previous: Promise<LoadedTuple<T>[]>, pointer): Promise<LoadedTuple<T>[]> => {
       const impl = pointer.out(code.implementedBy)
       if (!isGraphPointer(impl)) {
-        log?.('Missing code:implementedBy for node %s', pointer.value)
+        const jsonLd = RdfResource.factory.createEntity(pointer).toJSON()
+        log?.('Missing code:implementedBy for node %O', jsonLd)
         if (throwWhenLoadFails) {
-          throw new Error('Missing code:implementedBy')
+          throw new Error(`Missing code:implementedBy on ${JSON.stringify(jsonLd)}`)
         }
         return previous
       }

@@ -7,7 +7,7 @@ import sinon from 'sinon'
 import TermSet from '@rdfjs/term-set'
 import { rdf } from '@tpluscode/rdf-ns-builders'
 import clownface from 'clownface'
-import { knossos } from '@hydrofoil/vocabularies/builders/strict'
+import { knossos, code } from '@hydrofoil/vocabularies/builders/strict'
 import { knossosMock } from '@labyrinth/testing/knossos'
 import { ex } from '../../testing/namespace'
 import { get } from '../resource'
@@ -54,12 +54,14 @@ describe('@hydrofoil/labyrinth/resource', () => {
             .addOut(rdf.type, ex.Person)
           clownface(api.api)
             .namedNode(ex.Person)
-            .addOut(knossos.preprocessResponse, null)
+            .addOut(knossos.preprocessResponse, hook => {
+              hook.addOut(code.implementedBy, null)
+            })
         },
       }))
       knossosMock(app)
       app.use((req, res, next) => {
-        req.loadCode = sinon.stub().resolves(representationHook)
+        (req.hydra.api.loaderRegistry.load as sinon.SinonStub).resolves(representationHook)
         next()
       })
       app.use(get)

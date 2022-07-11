@@ -72,7 +72,7 @@ describe('@hydrofoil/labyrinth/collection', () => {
       }))
       knossosMock(app)
       app.use((req, res, next) => {
-        req.loadCode = sinon.stub().resolves(representationHook)
+        (req.hydra.api.loaderRegistry.load as sinon.SinonStub).resolves(representationHook)
         next()
       })
       app.use(createGetHandler({
