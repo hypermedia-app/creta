@@ -11,7 +11,7 @@ import { rdf } from '@tpluscode/rdf-ns-builders'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
 import TermSet from '@rdfjs/term-set'
 import { getPayload, getRepresentation } from '../request'
-import { loadAll } from '@hydrofoil/labyrinth/lib/code'
+import { loadImplementations } from '@hydrofoil/labyrinth/lib/code'
 
 export interface ResourceHook<Args extends unknown[] = []> {
   /**
@@ -59,7 +59,7 @@ export async function preprocessResource({ req, res, getTypes = hydraResourceTyp
   const hookPointers = clownface(api)
     .node([...new TermSet([...types].filter(isNamedNode))])
     .out(predicate)
-  const hooks = await loadAll<ResourceHook<unknown[]>>(hookPointers, req)
+  const hooks = await loadImplementations<ResourceHook<unknown[]>>(hookPointers, req)
 
   if (!hooks.length) {
     return

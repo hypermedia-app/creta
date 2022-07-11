@@ -6,7 +6,7 @@ import { knossos } from '@hydrofoil/vocabularies/builders/strict'
 import { Request } from 'express'
 import $rdf from 'rdf-ext'
 import clownface from 'clownface'
-import { loadAll } from '@hydrofoil/labyrinth/lib/code'
+import { loadImplementations } from '@hydrofoil/labyrinth/lib/code'
 
 export interface TransformVariable<Args extends unknown[] = []> {
   (term: Term, ...args: Args): Term
@@ -34,7 +34,7 @@ export async function applyTransformations(req: Request, resource: GraphPointer,
 
     const transformed = resource.out(property).toArray()
       .map(async object => {
-        const transformations = await loadAll<TransformVariable<unknown[]>>(transformationPtrs, req, {
+        const transformations = await loadImplementations<TransformVariable<unknown[]>>(transformationPtrs, req, {
           throwWhenLoadFails: true,
         })
 

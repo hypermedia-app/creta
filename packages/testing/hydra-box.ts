@@ -42,7 +42,9 @@ export const api = <Code = RequestHandler>({ code }: ApiSetup<Code> = {}): Api =
     initialized: true,
     path: '/api',
     term: $rdf.namedNode('api'),
-    loaderRegistry: sinon.createStubInstance(LoaderRegistry),
+    loaderRegistry: sinon.createStubInstance(LoaderRegistry, {
+      load,
+    }),
   }
 }
 

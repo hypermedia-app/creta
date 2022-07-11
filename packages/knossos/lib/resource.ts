@@ -10,7 +10,7 @@ import express from 'express'
 import { Debugger } from 'debug'
 import TermSet from '@rdfjs/term-set'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
-import { loadAll } from '@hydrofoil/labyrinth/lib/code'
+import { loadImplementations } from '@hydrofoil/labyrinth/lib/code'
 import { Knossos } from '..'
 
 export interface BeforeSaveParams {
@@ -62,7 +62,7 @@ export async function save({ resource, req }: Save): Promise<void> {
 
   const before = await req.knossos.store.load(resource.term)
   const hookPointers = api.node(resource.out(rdf.type)).out(knossos.beforeSave)
-  const beforeSaveHooks = await loadAll<BeforeSave<unknown[]>>(hookPointers, req)
+  const beforeSaveHooks = await loadImplementations<BeforeSave<unknown[]>>(hookPointers, req)
 
   const promises = beforeSaveHooks.reduce((promises, [hook, args, node]) => {
     req.knossos.log('Running before save hook %s', hook.name)
