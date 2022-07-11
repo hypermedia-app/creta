@@ -171,7 +171,7 @@ describe('@hydrofoil/knossos/collection', () => {
           .node(ex.Collection)
           .out(ns.knossos.memberTemplate)
           .out(hydra.mapping)
-          .addOut(ns.knossos.transformVariable)
+          .addOut(ns.knossos.transformVariable, hook => hook.addOut(code.implementedBy))
 
         ;({ loadCode } = req as any)
         loadCode.resolves((term: Term) => $rdf.literal(`${term.value}-and-jane`))
@@ -193,9 +193,6 @@ describe('@hydrofoil/knossos/collection', () => {
         expect(value.out(schema.name).value).to.eq('john')
         return true
       }))
-      expect(loadCode).to.have.been.calledWith(sinon.match.any, sinon.match({
-        basePath: sinon.match.string,
-      }))
     })
 
     it('creates identifier from template with parametrised transforms', async () => {
@@ -206,8 +203,9 @@ describe('@hydrofoil/knossos/collection', () => {
           .node(ex.Collection)
           .out(ns.knossos.memberTemplate)
           .out(hydra.mapping)
-          .addOut(ns.knossos.transformVariable)
-          .addList(code.arguments, 'jane')
+          .addOut(ns.knossos.transformVariable, hook => {
+            hook.addOut(code.implementedBy).addList(code.arguments, 'jane')
+          })
 
         ;({ loadCode } = req as any)
         loadCode.resolves((term: Term, jane: string) => $rdf.literal(`${term.value}-and-${jane}`))
@@ -228,9 +226,6 @@ describe('@hydrofoil/knossos/collection', () => {
         expect(value.term).to.deep.eq(ex('foo/john-and-jane'))
         expect(value.out(schema.name).value).to.eq('john')
         return true
-      }))
-      expect(loadCode).to.have.been.calledWith(sinon.match.any, sinon.match({
-        basePath: sinon.match.string,
       }))
     })
 

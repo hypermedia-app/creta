@@ -34,7 +34,9 @@ export async function applyTransformations(req: Request, resource: GraphPointer,
 
     const transformed = resource.out(property).toArray()
       .map(async object => {
-        const transformations = await loadAll<TransformVariable<unknown[]>>(transformationPtrs, req)
+        const transformations = await loadAll<TransformVariable<unknown[]>>(transformationPtrs, req, {
+          throwWhenLoadFails: true,
+        })
 
         return transformations.reduce((promise, [transformFunc, args]) => {
           return promise.then(async previous => {

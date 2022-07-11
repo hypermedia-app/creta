@@ -29,7 +29,7 @@ describe('@hydrofoil/labyrinth/lib/middleware/preprocessResource', () => {
       setup: async hydra => {
         clownface(hydra.api)
           .addOut(ns.hydra.supportedClass, ex.Person, clas => {
-            clas.addOut(knossos.preprocessResource, literal('loads and call enrichment function', ex.TestHook))
+            clas.addOut(knossos.preprocessResource, hook => hook.addOut(code.implementedBy, literal('loads and call enrichment function', ex.TestHook)))
           })
           .addOut(ns.hydra.supportedClass, ex.Project, clas => {
             clas.addOut(knossos.preprocessResource, parametrisedHook => {
@@ -91,7 +91,7 @@ describe('@hydrofoil/labyrinth/lib/middleware/preprocessResource', () => {
     app.use((req, res, next) => {
       clownface(req.hydra.api)
         .namedNode(ex.Agent)
-        .addOut(knossos.preprocessResource, ex.TestHookAgent)
+        .addOut(knossos.preprocessResource, hook => hook.addOut(code.implementedBy, ex.TestHookAgent))
       next()
     })
     app.use(preprocessMiddleware({
@@ -161,9 +161,9 @@ describe('@hydrofoil/labyrinth/lib/middleware/preprocessResource', () => {
         req.hydra.resource.types = new TermSet([ex.Agent])
         clownface(req.hydra.api)
           .namedNode(ex.Person)
-          .addOut(knossos.preprocessPayload, $rdf.blankNode('person-hook'))
+          .addOut(knossos.preprocessPayload, hook => hook.addOut(code.implementedBy, $rdf.blankNode('person-hook')))
           .namedNode(ex.Agent)
-          .addOut(knossos.preprocessPayload, $rdf.blankNode('agent-hook'))
+          .addOut(knossos.preprocessPayload, hook => hook.addOut(code.implementedBy, $rdf.blankNode('agent-hook')))
         next()
       })
       app.use(preprocessPayload)
