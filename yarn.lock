@@ -1726,10 +1726,10 @@
     "@tpluscode/rdf-ns-builders" "^2"
     "@zazuko/rdf-vocabularies" "*"
 
-"@tpluscode/rdfine@^0.5.27", "@tpluscode/rdfine@^0.5.39":
-  version "0.5.39"
-  resolved "https://registry.yarnpkg.com/@tpluscode/rdfine/-/rdfine-0.5.39.tgz#0023c9bfd8c0e0b4d5fd441ce501736433a5b02f"
-  integrity sha512-BviMCXx19E7sD6gmTpXYj7RagUEs2vj+u5H5NcvllXtnnSEIGLKM4T64Q5MrPq44Akr2B2RiQxXWA56x3Xdnjg==
+"@tpluscode/rdfine@^0.5.27", "@tpluscode/rdfine@^0.5.39", "@tpluscode/rdfine@^0.5.41":
+  version "0.5.41"
+  resolved "https://registry.yarnpkg.com/@tpluscode/rdfine/-/rdfine-0.5.41.tgz#3100cc1feb065174fe243222e6e5223bd02b2b7e"
+  integrity sha512-C6f+zE7KCDO0BbpM15p889umolQgmHPyOOuVBjYtMxpJ/w8dwUHAmvNG01RArDUVEnS71TabIEaduCYWlS/zNg==
   dependencies:
     "@rdf-esm/data-model" "^0.5.3"
     "@rdf-esm/namespace" "^0.5.2"
@@ -4725,6 +4725,13 @@ is-glob@^4.0.0, is-glob@^4.0.1, is-glob@^4.0.3, is-glob@~4.0.1:
   integrity sha512-xelSayHH36ZgE7ZWhli7pW34hNbNl8Ojv5KVmkJD4hBdD3th8Tfk9vYasLM+mXWOZhFkgZfxhLSnrwRr4elSSg==
   dependencies:
     is-extglob "^2.1.1"
+
+is-graph-pointer@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/is-graph-pointer/-/is-graph-pointer-1.2.2.tgz#1517f8f99f5347b2a02b92943df9d442771fdf6a"
+  integrity sha512-lF59hoMoZxh9T1bRrjQEiifS+FNJC0cw2rlKCOlDMCfrpwgDbHmhkKE1L3NfVQBF8eNgm6U40rdy0M9SzwCS2A==
+  dependencies:
+    "@types/clownface" "^1.5.0"
 
 is-installed-globally@^0.3.1:
   version "0.3.2"

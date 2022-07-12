@@ -214,12 +214,19 @@ prefix query: <https://hypermedia.app/query#>
     hydra:property schema:title ;
     query:filter
     [
-      a code:EcmaScriptModule ;
-      code:link <file:filters/articles/title.js#startsWith> ;
+      code:implementedBy
+        [
+          a code:EcmaScriptModule ;
+          code:link <file:filters/articles/title.js#startsWith> ;
+        ] ;
     ] ;
   ] ;
 .
 ```
+
+> [!TIP]
+> The `query:filter` predicate can be omitted, in which case the collection will be filtered by exact pattern. In the above
+> example this would translate to a pattern similar to `?member schema:title "search string"`.
 
 Then, add a `hydra:search` link to a queryable instance. This will instruct the client what are the supported query filters.
 
@@ -233,23 +240,33 @@ prefix hydra: <http://www.w3.org/ns/hydra/core#>
 
 Finally, implement the `query:filter` code link, which will be loaded when the mapped query params is set. It must be a module exporting a function which returns a string, or a `SparqlTemplateResult`, as shown in the example below.
 
-```js
+```ts
 import { sparql } from '@tpluscode/rdf-string'
+import { Filter } from '@hydrofoil/labyrinth/collection'
 
 /**
 * Create a graph pattern to get article title and
 * filter where the title starts with the provided value
 */
-export function startsWith({ subject, predicate, object }) {
+export const startsWith: Filter = ({ subject, predicate, object, variable }) => {
   return sparql`
-  ${subject} ${predicate} ?title .
+  ${subject} ${predicate} ${variable('title')} .
 
-  FILTER ( REGEX (?title, "^${object.value}", "i") )`
+  FILTER ( REGEX (${variable('title')}, "^${object.value}", "i") )`
 }
 ```
 
+> [!WARNING]
+> Notice that the `title` variable is not created using a standard RDF/JS factory. Doing so could inadvertently lead to
+> name clashes across multiple filters. Instead, the `Filter` delegate is called with a factory method which ensures that
+> every invocation generates unique names. In the above example it would be similar to `?filter1_title`.
+
 > [!TIP]
 > Consult the package [rdf-loader-code](https://npm.im/rdf-loader-code) for more details about loading modules using RDF declarations.
+
+> [!TIP]
+> A filter funtion can be parametrised. Arguments are provided by assigning `code:arguments` property to the `hydra:mapping` resource.
+> See [here](../advanced/code-arguments.md) for more details.
 
 ## Paging
 
@@ -444,8 +461,11 @@ prefix knossos: <https://hypermedia.app/knossos#>
           hydra:required true ;
           knossos:transformVariable
             [
-                a code:EcmaScript ;
-                code:link <file:lib/article#slugifyTitle> ;
+              code:implementedBy
+                [
+                  a code:EcmaScript ;
+                  code:link <file:lib/article#slugifyTitle> ;
+                ] ;
             ] ;
         ] ;
     ] ;
@@ -467,6 +487,10 @@ export const slugifyTitle: TransformVariable = (term) => {
     return $rdf.literal(slugify(title.substr(0, 10)))
 }
 ```
+
+> [!TIP]
+> A variable transformation function can be parametrised. Arguments are provided by assigning `code:arguments` property.
+> See [here](../advanced/code-arguments.md) for more details.
 
 ### Static member assertions
 

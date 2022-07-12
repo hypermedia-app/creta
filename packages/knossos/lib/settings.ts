@@ -7,7 +7,7 @@ import { Term } from 'rdf-js'
 import * as express from 'express'
 import { Api } from 'hydra-box/Api'
 import { Debugger } from 'debug'
-import { codeLoader } from '@hydrofoil/labyrinth/lib/code'
+import { loadImplementations } from '@hydrofoil/labyrinth/lib/code'
 import { knossos, code } from '@hydrofoil/vocabularies/builders'
 import { hydra, schema } from '@tpluscode/rdf-ns-builders'
 import { AuthorizationPatterns } from 'rdf-web-access-control'
@@ -16,6 +16,7 @@ import toArray from 'stream-to-array'
 import { SELECT } from '@tpluscode/sparql-builder'
 import { ResourceLoader } from 'hydra-box'
 import { MinimalRepresentationLoader } from '@hydrofoil/labyrinth/lib/middleware/returnMinimal'
+import { isGraphPointer } from 'is-graph-pointer'
 import type { Context } from '..'
 
 /**
@@ -52,29 +53,25 @@ export async function loadMiddlewares(
   context: Context,
   { config }: { config?: GraphPointer },
 ): Promise<Record<string, express.RequestHandler[]>> {
-  const loadCode = codeLoader(api)
+  if (!isGraphPointer(config)) {
+    return {}
+  }
 
-  const middlewares = config?.out(knossos.middleware).toArray() || []
+  const middlewares = await loadImplementations<MiddlewareFactory>(
+    config.out(knossos.middleware),
+    { api, log },
+    { throwWhenLoadFails: true },
+  )
 
-  return middlewares.reduce(async (previous, next) => {
+  return middlewares.reduce(async (previous, [factory, , node]) => {
     const map = await previous
-    const [name] = next.out(schema.name).values
-    const [link] = next.out(code.implementedBy).toArray()
-    if (!link) {
-      throw new Error(`Missing implementation for middleware '${name}'`)
-    }
-
+    const [name] = node.out(schema.name).values
     if (!(name in map)) {
       map[name] = []
     }
 
-    const factory = await loadCode<MiddlewareFactory>(link)
-    if (!factory) {
-      throw new Error(`Failed to load ${name} middleware from ${link.out(code.link).value}`)
-    } else {
-      log(`Loaded ${name} middleware from ${link.out(code.link).value}`)
-      map[name].push(await factory(context))
-    }
+    log(`Loaded ${name} middleware from ${node.out(code.link).value}`)
+    map[name].push(await factory(context))
 
     return map
   }, Promise.resolve<Record<string, express.RequestHandler[]>>({}))
@@ -85,25 +82,19 @@ export async function loadAuthorizationPatterns(
   log: Debugger,
   { config }: { config?: GraphPointer },
 ): Promise<AuthorizationPatterns[]> {
-  const loadCode = codeLoader(api)
+  if (!isGraphPointer(config)) {
+    return []
+  }
 
-  const authorizationPattern = config?.out(knossos.authorizationRule).toArray() || []
+  const authorizationPattern = await loadImplementations<AuthorizationPatterns>(
+    config.out(knossos.authorizationRule),
+    { api, log },
+    { throwWhenLoadFails: true })
 
-  return authorizationPattern.reduce(async (previous, next) => {
-    const arr = await previous
-    const [link] = next.out(code.implementedBy).toArray()
-
-    const patternFactory = await loadCode<AuthorizationPatterns>(link)
-    if (!patternFactory) {
-      throw new Error(`Failed to load ${link.out(code.link).value}`)
-    }
-
-    log(`Loaded authorization rule ${link.out(code.link).value}`)
-    return [
-      ...arr,
-      patternFactory,
-    ]
-  }, Promise.resolve<AuthorizationPatterns[]>([]))
+  return authorizationPattern.map(([patternFactory, , node]) => {
+    log(`Loaded authorization rule ${node.out(code.link).value}`)
+    return patternFactory
+  })
 }
 
 export async function loadResourceLoader(
@@ -112,37 +103,42 @@ export async function loadResourceLoader(
   context: Context,
   { config }: { config?: GraphPointer },
 ): Promise<ResourceLoader | undefined> {
-  const loadCode = codeLoader(api)
-
-  const loaderFactoryLoader = config?.out(knossos.resourceLoader).toArray().shift()
-  if (!loaderFactoryLoader) {
+  if (!isGraphPointer(config)) {
     return undefined
   }
 
-  const loaderFactory = await loadCode<ResourceLoaderFactory>(loaderFactoryLoader)
-  if (!loaderFactory) {
-    throw new Error(`Failed to load loader factory ${loaderFactoryLoader.out(code.link).value}`)
+  const [loaded] = await loadImplementations<ResourceLoaderFactory>(
+    config.out(knossos.resourceLoader),
+    { api, log },
+    { throwWhenLoadFails: true, single: true },
+  )
+
+  if (!loaded) {
+    return undefined
   }
 
+  const [loaderFactory, , node] = loaded
   const loader = await loaderFactory(context)
 
-  log(`Loaded resource loader ${loaderFactoryLoader.out(code.link).value}`)
+  log(`Loaded resource loader ${node.out(code.link).value}`)
   return loader
 }
 
 export async function loadMinimalRepresentation(api: Api, log: Debugger, config?: GraphPointer): Promise<MinimalRepresentationLoader | undefined> {
-  const loadCode = codeLoader(api)
-
-  const loaderFactoryLoader = config?.out(knossos.minimalRepresentationLoader).toArray().shift()
-  if (!loaderFactoryLoader) {
+  if (!isGraphPointer(config)) {
     return undefined
   }
 
-  const minimalRepresentation = await loadCode<MinimalRepresentationLoader>(loaderFactoryLoader)
+  const [[minimalRepresentation, , node]] = await loadImplementations<MinimalRepresentationLoader>(
+    config.out(knossos.resourceLoader),
+    { api, log },
+    { throwWhenLoadFails: true, single: true },
+  )
+
   if (!minimalRepresentation) {
-    throw new Error(`Failed to load minimal representation factory ${loaderFactoryLoader.out(code.link).value}`)
+    return undefined
   }
 
-  log(`Loaded minimal representation factory ${loaderFactoryLoader.out(code.link).value}`)
+  log(`Loaded minimal representation factory ${node.out(code.link).value}`)
   return minimalRepresentation
 }

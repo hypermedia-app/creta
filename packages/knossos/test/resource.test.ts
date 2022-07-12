@@ -19,9 +19,9 @@ import * as shacl from '../shacl'
 const setBeforeHooks: express.RequestHandler = (req, res, next) => {
   const graph = clownface(req.hydra.api)
   graph.node(schema.Person)
-    .addOut(ns.knossos.beforeSave, graph.blankNode('beforePerson'))
+    .addOut(ns.knossos.beforeSave, hook => hook.addOut(ns.code.implementedBy, graph.blankNode('beforePerson')))
   graph.node(foaf.Agent)
-    .addOut(ns.knossos.beforeSave, graph.blankNode('beforeAgent'))
+    .addOut(ns.knossos.beforeSave, hook => hook.addOut(ns.code.implementedBy, graph.blankNode('beforeAgent')))
   next()
 }
 
@@ -133,7 +133,7 @@ describe('@hydrofoil/knossos/resource', () => {
       const agentHook = sinon.spy()
       const personHook = sinon.spy()
       app.use((req, res, next) => {
-        req.loadCode = sinon.stub()
+        (req.hydra.api.loaderRegistry.load as sinon.SinonStub)
           .onFirstCall().resolves(personHook)
           .onSecondCall().resolves(agentHook)
         next()
@@ -164,7 +164,7 @@ describe('@hydrofoil/knossos/resource', () => {
       // given
       const personHook = sinon.spy()
       app.use((req, res, next) => {
-        req.loadCode = sinon.stub()
+        (req.hydra.api.loaderRegistry.load as sinon.SinonStub)
           .onFirstCall().resolves(personHook)
           .onSecondCall().resolves(null)
         next()
@@ -281,7 +281,7 @@ describe('@hydrofoil/knossos/resource', () => {
       const agentHook = sinon.spy()
       const personHook = sinon.spy()
       app.use((req, res, next) => {
-        req.loadCode = sinon.stub()
+        (req.hydra.api.loaderRegistry.load as sinon.SinonStub)
           .onFirstCall().resolves(personHook)
           .onSecondCall().resolves(agentHook)
         next()
@@ -304,7 +304,7 @@ describe('@hydrofoil/knossos/resource', () => {
       // given
       const personHook = sinon.spy()
       app.use((req, res, next) => {
-        req.loadCode = sinon.stub()
+        (req.hydra.api.loaderRegistry.load as sinon.SinonStub)
           .onFirstCall().resolves(personHook)
           .onSecondCall().resolves(null)
         next()
@@ -328,7 +328,7 @@ describe('@hydrofoil/knossos/resource', () => {
         throw new httpError.Conflict()
       })
       app.use((req, res, next) => {
-        req.loadCode = sinon.stub().resolves(personHook)
+        (req.hydra.api.loaderRegistry.load as sinon.SinonStub).resolves(personHook)
         next()
       })
       app.use(setBeforeHooks)

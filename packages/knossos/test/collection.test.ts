@@ -15,6 +15,7 @@ import httpStatus from 'http-status'
 import * as ns from '@hydrofoil/vocabularies/builders'
 import $rdf from 'rdf-ext'
 import * as describeResource from '@hydrofoil/labyrinth/lib/query/describeResource'
+import { code } from '@hydrofoil/vocabularies/builders/strict'
 import { CreateMember } from '../collection'
 
 describe('@hydrofoil/knossos/collection', () => {
@@ -170,9 +171,9 @@ describe('@hydrofoil/knossos/collection', () => {
           .node(ex.Collection)
           .out(ns.knossos.memberTemplate)
           .out(hydra.mapping)
-          .addOut(ns.knossos.transformVariable)
+          .addOut(ns.knossos.transformVariable, hook => hook.addOut(code.implementedBy))
 
-        ;({ loadCode } = req as any)
+        loadCode = req.hydra.api.loaderRegistry.load as any
         loadCode.resolves((term: Term) => $rdf.literal(`${term.value}-and-jane`))
 
         next()
@@ -192,8 +193,41 @@ describe('@hydrofoil/knossos/collection', () => {
         expect(value.out(schema.name).value).to.eq('john')
         return true
       }))
-      expect(loadCode).to.have.been.calledWith(sinon.match.any, sinon.match({
-        basePath: sinon.match.string,
+    })
+
+    it('creates identifier from template with parametrised transforms', async () => {
+      // given
+      let loadCode!: sinon.SinonStub
+      app.use((req, res, next) => {
+        clownface(req.hydra.api)
+          .node(ex.Collection)
+          .out(ns.knossos.memberTemplate)
+          .out(hydra.mapping)
+          .addOut(ns.knossos.transformVariable, hook => {
+            hook.addOut(code.implementedBy).addList(code.arguments, 'jane')
+          })
+
+        loadCode = req.hydra.api.loaderRegistry.load as any
+        loadCode
+          .onFirstCall()
+          .resolves((term: Term, jane: string) => $rdf.literal(`${term.value}-and-${jane}`))
+
+        next()
+      })
+      app.post('/collection', CreateMember)
+
+      // when
+      await request(app)
+        .post('/collection')
+        .send(turtle`<> ${schema.name} "john" .`.toString())
+        .set('content-type', 'text/turtle')
+        .set('host', 'example.com')
+
+      // then
+      expect(knossos.store.save).to.have.been.calledWith(sinon.match((value: GraphPointer) => {
+        expect(value.term).to.deep.eq(ex('foo/john-and-jane'))
+        expect(value.out(schema.name).value).to.eq('john')
+        return true
       }))
     })
 
@@ -378,7 +412,8 @@ describe('@hydrofoil/knossos/collection', () => {
       // given
       const hook = sinon.spy()
       app.use((req, res, next) => {
-        req.loadCode = sinon.stub().resolves(hook)
+        const loadCode = req.hydra.api.loaderRegistry.load as any
+        loadCode.resolves(hook)
         next()
       })
       app.use(async (req, res, next) => {
@@ -393,9 +428,9 @@ describe('@hydrofoil/knossos/collection', () => {
 
         clownface(req.hydra.api)
           .node(foaf.Person)
-          .addOut(ns.knossos.preprocessPayload, ex.PersonHook)
+          .addOut(ns.knossos.preprocessPayload, hook => hook.addOut(code.implementedBy, ex.PersonHook))
           .node(foaf.Agent)
-          .addOut(ns.knossos.preprocessPayload, ex.AgentHook)
+          .addOut(ns.knossos.preprocessPayload, hook => hook.addOut(code.implementedBy, ex.AgentHook))
         next()
       })
       app.post('/collection', CreateMember)
@@ -415,7 +450,8 @@ describe('@hydrofoil/knossos/collection', () => {
       // given
       const hook = sinon.spy()
       app.use((req, res, next) => {
-        req.loadCode = sinon.stub().resolves(hook)
+        const loadCode = req.hydra.api.loaderRegistry.load as any
+        loadCode.resolves(hook)
         next()
       })
       app.use(async (req, res, next) => {
@@ -427,7 +463,7 @@ describe('@hydrofoil/knossos/collection', () => {
 
         clownface(req.hydra.api)
           .node(schema.Person)
-          .addOut(ns.knossos.preprocessResponse, ex.PersonHook)
+          .addOut(ns.knossos.preprocessResponse, hook => hook.addOut(code.implementedBy, ex.PersonHook))
         next()
       })
       app.post('/collection', CreateMember)

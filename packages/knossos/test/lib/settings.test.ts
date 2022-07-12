@@ -87,12 +87,12 @@ describe('@hydrofoil/knossos/lib/settings', () => {
         })
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       function middleware() {}
+      const api = testApi()
+      ;(api.loaderRegistry.load as sinon.SinonStub).resolves(() => middleware)
 
       // when
       const result = await loadMiddlewares(
-        testApi({
-          code: () => middleware,
-        }),
+        api,
         log,
         context,
         { config },
@@ -117,12 +117,12 @@ describe('@hydrofoil/knossos/lib/settings', () => {
                 .addOut(code.link, $rdf.namedNode('foo:bar'))
             })
         })
+      const api = testApi()
+      ;(api.loaderRegistry.load as sinon.SinonStub).onFirstCall().resolves(null)
 
       // when
       const result = loadMiddlewares(
-        testApi({
-          code: null,
-        }),
+        api,
         log,
         context,
         { config },
@@ -148,7 +148,7 @@ describe('@hydrofoil/knossos/lib/settings', () => {
       )
 
       // then
-      await expect(result).to.be.eventually.rejectedWith(/Missing implementation/)
+      await expect(result).to.be.eventually.rejectedWith(/Missing code:implementedBy/)
     })
   })
 
@@ -178,12 +178,12 @@ describe('@hydrofoil/knossos/lib/settings', () => {
             })
         })
       const authRule = () => ({})
+      const api = testApi()
+      ;(api.loaderRegistry.load as sinon.SinonStub).onFirstCall().resolves(authRule)
 
       // when
       const result = await loadAuthorizationPatterns(
-        testApi({
-          code: authRule,
-        }),
+        api,
         log,
         { config },
       )
@@ -204,18 +204,18 @@ describe('@hydrofoil/knossos/lib/settings', () => {
                 .addOut(code.link, $rdf.namedNode('foo:bar'))
             })
         })
+      const api = testApi()
+      ;(api.loaderRegistry.load as sinon.SinonStub).onFirstCall().resolves(null)
 
       // when
       const result = loadAuthorizationPatterns(
-        testApi({
-          code: null,
-        }),
+        api,
         log,
         { config },
       )
 
       // then
-      await expect(result).to.be.eventually.rejectedWith('Failed to load foo:bar')
+      await expect(result).to.be.eventually.rejectedWith(/Failed to load .+/)
     })
   })
 
@@ -239,15 +239,15 @@ describe('@hydrofoil/knossos/lib/settings', () => {
     it('throws when no loader factory fails to load', async () => {
       // given
       const config = namedNode('/config')
-      config.addOut(knossos.resourceLoader, impl => {
-        impl.addOut(code.link, config.blankNode())
+      config.addOut(knossos.resourceLoader, loader => {
+        loader.addOut(code.implementedBy, impl => impl.addOut(code.link, config.blankNode()))
       })
+      const api = testApi()
+      ;(api.loaderRegistry.load as sinon.SinonStub).onFirstCall().resolves(null)
 
       // when
       const promise = loadResourceLoader(
-        testApi({
-          code: null,
-        }),
+        api,
         log,
         context,
         { config },
@@ -260,17 +260,17 @@ describe('@hydrofoil/knossos/lib/settings', () => {
     it('calls factory, returns created loader', async () => {
       // given
       const config = namedNode('/config')
-      config.addOut(knossos.resourceLoader, impl => {
-        impl.addOut(code.link, config.blankNode())
+      config.addOut(knossos.resourceLoader, loader => {
+        loader.addOut(code.implementedBy, impl => impl.addOut(code.link, config.blankNode()))
       })
       const loader = {}
       const factory = sinon.stub().resolves(loader)
+      const api = testApi()
+      ;(api.loaderRegistry.load as sinon.SinonStub).onFirstCall().resolves(factory)
 
       // when
       const loaded = await loadResourceLoader(
-        testApi({
-          code: factory,
-        }),
+        api,
         log,
         context,
         { config },

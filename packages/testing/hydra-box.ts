@@ -9,6 +9,7 @@ import sinon from 'sinon'
 import setLink from 'set-link'
 import { Api } from 'hydra-box/Api'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
+import LoaderRegistry from 'rdf-loaders-registry'
 import { namedNode } from './nodeFactory'
 import { ex } from './namespace'
 import { client } from './sparql'
@@ -23,16 +24,7 @@ interface MiddlewareOptions {
   query?: AnyPointer
 }
 
-interface ApiSetup<T> {
-  code?: T
-}
-
-export const api = <Code = RequestHandler>({ code }: ApiSetup<Code> = {}): Api => {
-  const load = sinon.stub()
-  if (code) {
-    load.resolves(code)
-  }
-
+export const api = (): Api => {
   return {
     codePath: '',
     dataset: $rdf.dataset(),
@@ -41,14 +33,12 @@ export const api = <Code = RequestHandler>({ code }: ApiSetup<Code> = {}): Api =
     initialized: true,
     path: '/api',
     term: $rdf.namedNode('api'),
-    loaderRegistry: {
-      load,
-    } as any,
+    loaderRegistry: sinon.createStubInstance(LoaderRegistry),
   }
 }
 
-export function testApi<Code>(opts?: ApiSetup<Code>): Api {
-  const copy = api(opts)
+export function testApi(): Api {
+  const copy = api()
 
   clownface(copy)
     .addOut(hydra.supportedClass, ex.Config, Config => {

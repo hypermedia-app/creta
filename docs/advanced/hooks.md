@@ -22,8 +22,10 @@ When resources are created or updated, knossos can run user code right before. T
 <api/Article>
   a hydra:Class ;
   knossos:beforeSave [
-    a code:EcmaScript ;
-    code:link <file:lib/article#cannotUnpublish> ;
+    code:implementedBy [  
+      a code:EcmaScript ;
+      code:link <file:lib/article#cannotUnpublish> ;
+    ] ;
   ] ;
 .
 ```
@@ -82,18 +84,27 @@ The snippet below shows the `Article` class with all available preprocess hooks 
   a hydra:Class ;
   knossos:preprocessPayload
     [
-      a code:EcmaScript ;
-      code:link <file:lib/article#draftByDefault> ;
+      code:implementedBy
+        [
+          a code:EcmaScript ;
+          code:link <file:lib/article#draftByDefault> ;
+        ] ;
     ] ;
   knossos:preprocessResource
     [
-      a code:EcmaScript ;
-      code:link <file:lib/article#modifyResource> ;
+      code:implementedBy
+        [
+          a code:EcmaScript ;
+          code:link <file:lib/article#modifyResource> ;
+        ] ;
     ] ;
   knossos:preprocessResponse
     [
-      a code:EcmaScript ;
-      code:link <file:lib/article#modifyResponse> ;
+      code:implementedBy
+        [
+          a code:EcmaScript ;
+          code:link <file:lib/article#modifyResponse> ;
+        ] ;
     ] ;
 .
 ```
@@ -142,3 +153,10 @@ Use `knossos:preprocessResource` to modify the representation of the current res
 ### preprocessResponse
 
 Finally, `knossos:preprocessResponse` can be used to modify the final contents of the response just before sending it to the client. It is by called when executing the generic `GET` handlers `@hydrofoil/knossos/resource#get` and `@hydrofoil/knossos/collection#get`, and when creating collection members with `@hydrofoil/knossos/collection#CreateMember`.
+
+
+## Hook arguments
+
+> [!TIP]
+> Resource hooks functions can be parametrised. Arguments are provided by attaching `code:arguments` to it.
+> See [here](./code-arguments.md) for more details.
