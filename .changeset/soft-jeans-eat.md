@@ -5,6 +5,14 @@
 
 All code references in RDF must use `code:implementedBy`
 
+Affected predicates:
+
+- `knossos:beforeSave`
+- `knossos:preprocessPayload`
+- `knossos:preprocessResource`
+- `knossos:preprocessResponse`
+- `query:filter`
+
 For example, a which query used to be
 
 ```turtle
