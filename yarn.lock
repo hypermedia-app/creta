@@ -1690,9 +1690,9 @@
     defer-to-connect "^1.0.1"
 
 "@tpluscode/eslint-config@^0.3":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@tpluscode/eslint-config/-/eslint-config-0.3.1.tgz#96de473079feab6884bb1dea829698e3f005fe83"
-  integrity sha512-E6ksZoUtT+Ncer18izm2FivjUKM/qq4DsimK9/aRsbAO4q8yldt5iBy4UHGG7EtYPqnqHhwbQ5fA42WSBk2o0A==
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@tpluscode/eslint-config/-/eslint-config-0.3.2.tgz#0bc80d71c80426a32aad277d40d5f8ca748b6a3c"
+  integrity sha512-ojKLVb0/DEfeD4Kw4rBnQTQSEsE2ndKJD4AG7c/SV8MKNVUqNbzIbZfH+T3MHfsKv/LAJ3LGNpvF1p1eYWk6yQ==
 
 "@tpluscode/rdf-ns-builders@^1.0.0":
   version "1.1.0"
