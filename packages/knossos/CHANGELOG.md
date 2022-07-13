@@ -1,5 +1,62 @@
 # @hydrofoil/knossos
 
+## 0.8.0
+
+### Minor Changes
+
+- 0ec3dde: All code references in RDF must use `code:implementedBy`
+
+  Affected predicates:
+
+  - `knossos:beforeSave`
+  - `knossos:preprocessPayload`
+  - `knossos:preprocessResource`
+  - `knossos:preprocessResponse`
+  - `query:filter`
+
+  For example, a which query used to be
+
+  ```turtle
+  prefix code: <https://code.described.at/>
+  prefix query: <https://hypermedia.app/query#>
+
+  [
+    query:filter
+    [
+      a code:EcmaScriptModule ;
+      code:link <file:filters/articles/title.js#startsWith> ;
+    ] ;
+  ] .
+  ```
+
+  must now become
+
+  ```turtle
+  prefix code: <https://code.described.at/>
+  prefix query: <https://hypermedia.app/query#>
+
+  [
+    query:filter
+    [
+      code:implementedBy
+        [
+          a code:EcmaScriptModule ;
+          code:link <file:filters/articles/title.js#startsWith> ;
+        ] ;
+    ] ;
+  ] .
+  ```
+
+### Patch Changes
+
+- 0ec3dde: Support for `code:arguments` on `knossos:transformVariable` hooks (fixes #390)
+- Updated dependencies [0ec3dde]
+- Updated dependencies [0ec3dde]
+- Updated dependencies [0ec3dde]
+- Updated dependencies [0ec3dde]
+- Updated dependencies [0ec3dde]
+  - @hydrofoil/labyrinth@0.12.0
+
 ## 0.7.2
 
 ### Patch Changes
