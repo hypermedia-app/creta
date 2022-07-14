@@ -12,11 +12,10 @@ import toArray from 'stream-to-array'
 import { toSparql } from 'clownface-shacl-path'
 import { toRdf } from 'rdf-literal'
 import TermSet from '@rdfjs/term-set'
-import argumentsLoader from 'rdf-loader-code/arguments'
-import { exactMatch } from '../query/filters'
+import { loadImplementations } from '../code'
+import { exactMatch, Filter } from '../query/filters'
 import { log, warn } from '../logger'
 import { loadResourceWithLinks } from '../query/eagerLinks'
-import { ToSparqlPatterns } from './index'
 
 function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPointer, api: Api) {
   return async (mapping: IriTemplateMapping, index: number): Promise<string | SparqlTemplateResult> => {
@@ -37,22 +36,21 @@ function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPoin
       return ''
     }
 
-    let createPattern: ToSparqlPatterns<unknown[]> | undefined
+    let createPattern: Filter<unknown[]>
+    let args: any[] = []
     const queryFilters = mapping.pointer.out(hyper_query.filter)
     if (!queryFilters.value) {
       log('Applying implicit exact match filter for %s', property.id.value)
       createPattern = exactMatch
     } else {
-      createPattern = await api.loaderRegistry.load<ToSparqlPatterns>(queryFilters.toArray()[0], { basePath: api.codePath })
-      if (!createPattern) {
+      const [loaded] = await loadImplementations<Filter>(queryFilters, { api, log }, { single: true })
+      if (!loaded) {
         warn('Failed to load pattern function')
         return ''
       }
-    }
 
-    const args = await argumentsLoader(mapping.pointer, {
-      loaderRegistry: api.loaderRegistry,
-    })
+      ([createPattern, args] = loaded)
+    }
 
     return createPattern({
       subject,
