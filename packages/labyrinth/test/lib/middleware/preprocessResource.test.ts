@@ -76,8 +76,7 @@ describe('@hydrofoil/labyrinth/lib/middleware/preprocessResource', () => {
 
     // then
     expect(preprocessHook).to.have.been.calledWith(
-      sinon.match.object,
-      sinon.match.object,
+      { req: sinon.match.object, pointer: sinon.match.object },
       'foo',
       'bar',
       'baz',

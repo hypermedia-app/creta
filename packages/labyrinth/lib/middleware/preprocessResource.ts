@@ -13,6 +13,11 @@ import TermSet from '@rdfjs/term-set'
 import { getPayload, getRepresentation } from '../request'
 import { loadImplementations } from '@hydrofoil/labyrinth/lib/code'
 
+interface ResourceHookParams {
+  req: Request
+  pointer: GraphPointer<NamedNode>
+}
+
 export interface ResourceHook<Args extends unknown[] = []> {
   /**
    * Delegate for hooks which allow modifying request payloads, loaded resource representation and response representations
@@ -21,7 +26,7 @@ export interface ResourceHook<Args extends unknown[] = []> {
    * @param pointer resource to modify (depends on kind of hook)
    * @param args optional arguments configured in RDF
    */
-  (req: Request, pointer: GraphPointer<NamedNode>, ...args: Args): Promise<void> | void
+  ({ req, pointer }: ResourceHookParams, ...args: Args): Promise<void> | void
 }
 
 interface PreprocessResource {
@@ -65,12 +70,12 @@ export async function preprocessResource({ req, res, getTypes = hydraResourceTyp
     return
   }
 
-  const resourcePointer = await getResource(req, res)
+  const pointer = await getResource(req, res)
 
-  if (resourcePointer) {
+  if (pointer) {
     await Promise.all(hooks.map(([hook, args]) => {
       req.knossos.log(`Running resource hook ${hook.name} <${predicate.value}>`)
-      return hook(req, resourcePointer, ...args)
+      return hook({ req, pointer }, ...args)
     }))
   }
 }
