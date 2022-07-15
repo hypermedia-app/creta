@@ -83,12 +83,11 @@ describe('@hydrofoil/labyrinth/collection', () => {
       await request(app).get('/movies')
 
       // then
-      expect(representationHook).to.have.been.calledWithMatch(
-        sinon.match.any,
-        sinon.match(pointer => {
+      expect(representationHook).to.have.been.calledWithMatch({
+        pointer: sinon.match(pointer => {
           return pointer.term.equals(ex.movies)
         }),
-      )
+      })
     })
   })
 })
