@@ -260,12 +260,14 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
         mapping: {
           variable: 'title',
           property: schema.title,
-          [hyper_query.filter.value]: {},
+          [hyper_query.filter.value]: {
+            [code.implementedBy.value]: {},
+          },
         },
       })
       query.addOut(schema.title, 'Titanic')
-      const code = sinon.stub().returns(sparql`filter(REGEX("Titanic"))`)
-      loaderRegistry.load.resolves(code)
+      const filterImpl = sinon.stub().returns(sparql`filter(REGEX("Titanic"))`)
+      loaderRegistry.load.resolves(filterImpl)
       const queries = await testInstance()
 
       // when
@@ -279,7 +281,7 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
         filter(REGEX("Titanic"))
         filter(isiri(?member))
       }`)
-      expect(code).to.have.been.calledWith(sinon.match({
+      expect(filterImpl).to.have.been.calledWith(sinon.match({
         subject: $rdf.variable('member'),
         predicate: schema.title,
         object: sinon.match({
@@ -574,11 +576,15 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
         mapping: [{
           variable: 'title',
           property: schema.title,
-          [hyper_query.filter.value]: {},
+          [hyper_query.filter.value]: {
+            [code.implementedBy.value]: {},
+          },
         }, {
           variable: 'label',
           property: schema.name,
-          [hyper_query.filter.value]: {},
+          [hyper_query.filter.value]: {
+            [code.implementedBy.value]: {},
+          },
         }],
       })
       const filterFake: ToSparqlPatterns = ({ subject, predicate, variable, object }) => {
@@ -587,8 +593,7 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
           filter (strlen(${variable('var')}) > ${object.term})
         `
       }
-      const code = sinon.stub().callsFake(filterFake)
-      loaderRegistry.load.resolves(code)
+      loaderRegistry.load.resolves(sinon.stub().callsFake(filterFake))
       query.addOut(schema.name, 10)
       query.addOut(schema.title, 20)
 
@@ -613,10 +618,12 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
         mapping: [{
           variable: 'title',
           property: schema.title,
-          [hyper_query.filter.value]: {},
-          [code.arguments.value]: {
-            [code.name.value]: 'flags',
-            [code.value.value]: 'i',
+          [hyper_query.filter.value]: {
+            [code.implementedBy.value]: {},
+            [code.arguments.value]: {
+              [code.name.value]: 'flags',
+              [code.value.value]: 'i',
+            },
           },
         }],
       })
@@ -647,8 +654,10 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
         mapping: [{
           variable: 'title',
           property: schema.title,
-          [hyper_query.filter.value]: {},
-          [code.arguments.value]: rdfList('ig'),
+          [hyper_query.filter.value]: {
+            [code.implementedBy.value]: {},
+            [code.arguments.value]: rdfList('ig'),
+          },
         }],
       })
       const regexFilter: ToSparqlPatterns = ({ subject, predicate, variable, object }, flags = '') => {
