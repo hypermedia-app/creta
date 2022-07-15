@@ -1,6 +1,6 @@
 {
   "name": "@hydrofoil/labyrinth",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "description": "Build Hydra APIs on top of hydra-box",
   "scripts": {
     "prepare": "tsc"

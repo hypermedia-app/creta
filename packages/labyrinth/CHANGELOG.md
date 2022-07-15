@@ -1,5 +1,17 @@
 # @hydrofoil/labyrinth
 
+## 0.13.0
+
+### Minor Changes
+
+- 8d360ac: **BREAKING** combine `ResourceHook` params in a single object to simplify future extensions
+- 01cda12: **BREAKING** Removes `ToSparqlPatterns` interface. Instead, `import { Filter } from '@hydrofoil/labyrinth/query'`
+
+### Patch Changes
+
+- 8bb9f2c: `Filter` should be generic
+- 8720692: `query:filter` were not loaded correctly
+
 ## 0.12.0
 
 ### Minor Changes
