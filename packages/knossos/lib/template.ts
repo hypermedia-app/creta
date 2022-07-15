@@ -8,8 +8,13 @@ import $rdf from 'rdf-ext'
 import clownface from 'clownface'
 import { loadImplementations } from '@hydrofoil/labyrinth/lib/code'
 
+interface Context {
+  term: Term
+  req: Request
+}
+
 export interface TransformVariable<Args extends unknown[] = []> {
-  (term: Term, ...args: Args): Term
+  (arg: Context, ...args: Args): Term | Promise<Term>
 }
 
 export function hasAllRequiredVariables({ mapping }: IriTemplate, variables: GraphPointer): boolean {
@@ -39,8 +44,8 @@ export async function applyTransformations(req: Request, resource: GraphPointer,
         })
 
         return transformations.reduce((promise, [transformFunc, args]) => {
-          return promise.then(async previous => {
-            return transformFunc(previous, ...args)
+          return promise.then(async term => {
+            return transformFunc({ term, req }, ...args)
           })
         }, Promise.resolve(object.term))
       })

@@ -174,7 +174,39 @@ describe('@hydrofoil/knossos/collection', () => {
           .addOut(ns.knossos.transformVariable, hook => hook.addOut(code.implementedBy))
 
         loadCode = req.hydra.api.loaderRegistry.load as any
-        loadCode.resolves((term: Term) => $rdf.literal(`${term.value}-and-jane`))
+        loadCode.resolves(({ term }: {term: Term}) => $rdf.literal(`${term.value}-and-jane`))
+
+        next()
+      })
+      app.post('/collection', CreateMember)
+
+      // when
+      await request(app)
+        .post('/collection')
+        .send(turtle`<> ${schema.name} "john" .`.toString())
+        .set('content-type', 'text/turtle')
+        .set('host', 'example.com')
+
+      // then
+      expect(knossos.store.save).to.have.been.calledWith(sinon.match((value: GraphPointer) => {
+        expect(value.term).to.deep.eq(ex('foo/john-and-jane'))
+        expect(value.out(schema.name).value).to.eq('john')
+        return true
+      }))
+    })
+
+    it('creates identifier from template with async transforms', async () => {
+      // given
+      let loadCode!: sinon.SinonStub
+      app.use((req, res, next) => {
+        clownface(req.hydra.api)
+          .node(ex.Collection)
+          .out(ns.knossos.memberTemplate)
+          .out(hydra.mapping)
+          .addOut(ns.knossos.transformVariable, hook => hook.addOut(code.implementedBy))
+
+        loadCode = req.hydra.api.loaderRegistry.load as any
+        loadCode.resolves(async ({ term }: {term: Term}) => $rdf.literal(`${term.value}-and-jane`))
 
         next()
       })
@@ -210,7 +242,7 @@ describe('@hydrofoil/knossos/collection', () => {
         loadCode = req.hydra.api.loaderRegistry.load as any
         loadCode
           .onFirstCall()
-          .resolves((term: Term, jane: string) => $rdf.literal(`${term.value}-and-${jane}`))
+          .resolves(({ term }: { term: Term }, jane: string) => $rdf.literal(`${term.value}-and-${jane}`))
 
         next()
       })
