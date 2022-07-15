@@ -1,5 +1,12 @@
 # @hydrofoil/talos
 
+## 0.4.14
+
+### Patch Changes
+
+- Updated dependencies [ce82f9c]
+  - @hydrofoil/knossos@0.9.0
+
 ## 0.4.13
 
 ### Patch Changes

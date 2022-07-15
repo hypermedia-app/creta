@@ -1,5 +1,23 @@
 # @hydrofoil/knossos
 
+## 0.9.0
+
+### Minor Changes
+
+- ce82f9c: Changes to `TransformVariable`
+
+  - **BREAKING** - the first argument became an object
+  - `express.Request` added to the first argument
+  - return value can now be a promise
+
+### Patch Changes
+
+- Updated dependencies [8bb9f2c]
+- Updated dependencies [8d360ac]
+- Updated dependencies [01cda12]
+- Updated dependencies [8720692]
+  - @hydrofoil/labyrinth@0.13.0
+
 ## 0.8.0
 
 ### Minor Changes
