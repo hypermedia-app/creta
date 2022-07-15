@@ -7,7 +7,6 @@ import { preprocessMiddleware, returnMinimal } from './lib/middleware'
 import * as lib from './lib/collection'
 
 export type CollectionResponse = Response<any, Partial<lib.CollectionLocals>>
-export { Filter } from './collection/filters'
 
 function assertLocals<T extends keyof lib.CollectionLocals>(locals: Partial<lib.CollectionLocals>, ...keys: T[]): asserts locals is Pick<lib.CollectionLocals, T> & Partial<lib.CollectionLocals> {
   const missingKeys = keys.filter(key => !(key in locals))

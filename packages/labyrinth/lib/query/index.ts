@@ -28,6 +28,6 @@ export interface Pattern {
   variable(name: string): Variable
 }
 
-export interface ToSparqlPatterns<Args extends unknown[] = []> {
+export interface Filter<Args extends unknown[] = []> {
   (options: Pattern, ...args: Args): string | SparqlTemplateResult
 }

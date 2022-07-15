@@ -19,7 +19,7 @@ import toStream from 'into-stream'
 import { toRdf } from 'rdf-literal'
 import { SELECT } from '@tpluscode/sparql-builder'
 import dynamicCollection, { createFilters } from '../../../lib/query/dynamicCollection'
-import { ToSparqlPatterns } from '../../../lib/query'
+import { Filter } from '../../../lib/query'
 
 RdfResource.factory.addMixin(...Object.values(Hydra))
 
@@ -587,7 +587,7 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
           },
         }],
       })
-      const filterFake: ToSparqlPatterns = ({ subject, predicate, variable, object }) => {
+      const filterFake: Filter = ({ subject, predicate, variable, object }) => {
         return sparql`
           ${subject} ${predicate} ${variable('var')} .
           filter (strlen(${variable('var')}) > ${object.term})
@@ -627,7 +627,7 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
           },
         }],
       })
-      const regexFilter: ToSparqlPatterns = ({ subject, predicate, variable, object }, { flags = '' } = {}) => {
+      const regexFilter: Filter = ({ subject, predicate, variable, object }, { flags = '' } = {}) => {
         return sparql`
           ${subject} ${predicate} ${variable('var')} .
           filter (regex("${object.value}", ${variable('var')}, "${flags}"))
@@ -660,7 +660,7 @@ describe('@hydrofoil/labyrinth/lib/query/dynamicCollection', () => {
           },
         }],
       })
-      const regexFilter: ToSparqlPatterns = ({ subject, predicate, variable, object }, flags = '') => {
+      const regexFilter: Filter = ({ subject, predicate, variable, object }, flags = '') => {
         return sparql`
           ${subject} ${predicate} ${variable('var')} .
           filter (regex("${object.value}", ${variable('var')}, "${flags}"))
