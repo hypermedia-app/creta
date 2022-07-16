@@ -481,7 +481,7 @@ import URLSlugify from 'url-slugify'
 
 const slugify = new URLSlugify()
 
-export const slugifyTitle: TransformVariable = (term) => {
+export const slugifyTitle: TransformVariable = ({ term }) => {
     const title = term.value
 
     return $rdf.literal(slugify(title.substr(0, 10)))
