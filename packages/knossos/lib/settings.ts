@@ -107,11 +107,11 @@ export async function loadResourceLoader(
     return undefined
   }
 
-  const [loaded] = await loadImplementations<ResourceLoaderFactory>(
+  const loaded = (await loadImplementations<ResourceLoaderFactory>(
     config.out(knossos.resourceLoader),
     { api, log },
     { throwWhenLoadFails: true, single: true },
-  )
+  )).shift()
 
   if (!loaded) {
     return undefined
@@ -129,16 +129,17 @@ export async function loadMinimalRepresentation(api: Api, log: Debugger, config?
     return undefined
   }
 
-  const [[minimalRepresentation, , node]] = await loadImplementations<MinimalRepresentationLoader>(
+  const loaded = (await loadImplementations<MinimalRepresentationLoader>(
     config.out(knossos.minimalRepresentationLoader),
     { api, log },
     { throwWhenLoadFails: true, single: true },
-  )
+  )).shift()
 
-  if (!minimalRepresentation) {
+  if (!loaded) {
     return undefined
   }
 
+  const [minimalRepresentation, , node] = loaded
   log(`Loaded minimal representation factory ${node.out(code.link).value}`)
   return minimalRepresentation
 }
