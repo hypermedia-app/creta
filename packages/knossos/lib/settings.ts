@@ -130,7 +130,7 @@ export async function loadMinimalRepresentation(api: Api, log: Debugger, config?
   }
 
   const [[minimalRepresentation, , node]] = await loadImplementations<MinimalRepresentationLoader>(
-    config.out(knossos.resourceLoader),
+    config.out(knossos.minimalRepresentationLoader),
     { api, log },
     { throwWhenLoadFails: true, single: true },
   )
