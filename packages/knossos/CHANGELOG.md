@@ -1,5 +1,11 @@
 # @hydrofoil/knossos
 
+## 0.9.2
+
+### Patch Changes
+
+- e08aadc: API would fail to start when there is no custom minimal representation loader
+
 ## 0.9.1
 
 ### Patch Changes
