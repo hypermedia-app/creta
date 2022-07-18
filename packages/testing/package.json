@@ -21,6 +21,6 @@
     "set-link": "^1.0.0",
     "sinon": "^14.0.0",
     "sparqljs": "^3.4.1",
-    "sparql-http-client": "^2.4.0"
+    "sparql-http-client": "^2.4.1"
   }
 }
