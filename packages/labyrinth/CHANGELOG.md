@@ -1,5 +1,12 @@
 # @hydrofoil/labyrinth
 
+## 0.13.1
+
+### Patch Changes
+
+- 6870988: build(deps): bump sparql-http-client from 2.4.0 to 2.4.1
+- 37642c3: Looking up `hydra:supportedProperty` was very slow because it potentially returned a large result of useless links
+
 ## 0.13.0
 
 ### Minor Changes

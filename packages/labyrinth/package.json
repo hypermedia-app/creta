@@ -1,6 +1,6 @@
 {
   "name": "@hydrofoil/labyrinth",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "Build Hydra APIs on top of hydra-box",
   "scripts": {
     "prepare": "tsc"
@@ -46,7 +46,7 @@
     "valid-url": "^1.0.9"
   },
   "devDependencies": {
-    "@labyrinth/testing": "^0.0.14",
+    "@labyrinth/testing": "^0.0.15",
     "@rdfjs/formats-common": "^2.2.0",
     "@types/parse-prefer-header": "^1.0.1",
     "@types/rdf-loader-code": "^0.3.3",
