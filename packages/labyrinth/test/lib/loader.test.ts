@@ -7,6 +7,7 @@ import $rdf from 'rdf-ext'
 import { PropertyResource } from 'hydra-box'
 import clownface from 'clownface'
 import { ex } from '@labyrinth/testing/namespace'
+import TermSet from '@rdfjs/term-set'
 import { SparqlQueryLoader } from '../../lib/loader'
 
 describe('@hydrofoil/labbyrinth/lib/loader/SparqlQueryLoader', function () {
@@ -45,13 +46,28 @@ describe('@hydrofoil/labbyrinth/lib/loader/SparqlQueryLoader', function () {
         ${ex.Leonard} 
           ${rdf.type} ${schema.Person}, ${hydra.Resource} ;
           ${foaf.knows} ${ex.Bernadette}, ${ex.Howard}, ${ex.Penny} ;
+          ${schema.knows} ${ex.Penny} ;
           ${schema.spouse} ${ex.Penny} ;
           ${schema.name} "Leonard Hofstadter" ; 
       }
       
       graph ${ex.Amy} {
-        ${ex.Amy} ${schema.name} "Amy Farrah-Folwer"
+        ${ex.Amy} ${schema.name} "Amy Farrah-Fowler"
       }
+      
+      [
+        a ${hydra.Class} ;
+        ${hydra.supportedProperty} [
+          ${hydra.property} ${foaf.knows} ;
+        ] ;
+      ] .
+      
+      [
+        a ${hydra.Class} ;
+        ${hydra.supportedProperty} [
+          ${hydra.property} ${schema.knows} ;
+        ] ;
+      ] .
     `.execute(new StreamClient(endpoint).query)
   })
 
@@ -144,7 +160,7 @@ describe('@hydrofoil/labbyrinth/lib/loader/SparqlQueryLoader', function () {
   })
 
   describe('.forPropertyOperation', () => {
-    it('returns objects for each property usage', async () => {
+    it('returns objects for each supported property usage', async () => {
       // given
       const term = ex.Bernadette
 
@@ -157,7 +173,6 @@ describe('@hydrofoil/labbyrinth/lib/loader/SparqlQueryLoader', function () {
         ex.Sheldon.value,
         ex.Leonard.value,
         ex.Penny.value,
-        ex.Howard.value,
       ])
     })
 
@@ -174,7 +189,7 @@ describe('@hydrofoil/labbyrinth/lib/loader/SparqlQueryLoader', function () {
       expect(properties).to.have.length(2)
       expect(properties).to.deep.contain.all.members([
         foaf.knows,
-        schema.spouse,
+        schema.knows,
       ])
     })
 
@@ -189,6 +204,18 @@ describe('@hydrofoil/labbyrinth/lib/loader/SparqlQueryLoader', function () {
       expect(resources).to.containAll<PropertyResource>(item => {
         return item.object.equals(ex.Howard) && item.property.equals(foaf.knows)
       })
+    })
+
+    it('does not return links which are not supported properties', async () => {
+      // given
+      const term = ex.Penny
+
+      // when
+      const resources = await loader.forPropertyOperation(term)
+
+      // then
+      const properties = new TermSet([...resources.map(p => p.property)])
+      expect(properties.has(schema.spouse)).to.be.false
     })
 
     it('returns dataset getter for containing graph', async () => {
