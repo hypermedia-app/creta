@@ -7011,10 +7011,10 @@ source-map@^0.6.0:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
   integrity sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==
 
-sparql-http-client@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/sparql-http-client/-/sparql-http-client-2.4.0.tgz#ebc8373dc16da06a557a344e82052d4b814d6985"
-  integrity sha512-/mOs4l2tfXJ2DnjmXMe3Gzihp68JGT239OZLiO678xSXU2g6ZZbcCmImkCy9zs6hw3ft6exFo4NIJn6sIDMoIA==
+sparql-http-client@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/sparql-http-client/-/sparql-http-client-2.4.1.tgz#7181eed360fc777f3263b0e00777e9e789f433e5"
+  integrity sha512-w1rsSZW/0/byHml/veP4A1IZjEzjzphPr/iee1c20aG+RDEJC+2lAefXGTKZH58E7SSUoXqFW+hfwjVl5K2ecQ==
   dependencies:
     "@rdfjs/data-model" "^1.1.2"
     "@rdfjs/parser-n3" "^1.1.3"
