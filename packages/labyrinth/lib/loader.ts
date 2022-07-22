@@ -9,7 +9,7 @@ import StreamClient from 'sparql-http-client/StreamClient'
 import once from 'once'
 import TermMap from '@rdfjs/term-map'
 import TermSet from '@rdfjs/term-set'
-import { rdf } from '@tpluscode/rdf-ns-builders'
+import { rdf, hydra } from '@tpluscode/rdf-ns-builders'
 
 const log = debug('hydra:store')
 
@@ -73,6 +73,7 @@ export class SparqlQueryLoader implements ResourceLoader {
     const bindings = await SELECT.DISTINCT`*`
       .WHERE`
         ?parent ?link ${term} .
+        [] ${hydra.supportedProperty}/${hydra.property} ?link .
         ?parent ${rdf.type} ?type .
       `
       .execute(this.__client.query)
