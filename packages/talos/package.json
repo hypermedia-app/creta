@@ -24,7 +24,7 @@
     "@tpluscode/sparql-builder": "^0.3.22",
     "@zazuko/rdf-vocabularies": "*",
     "clownface": "^1.5.1",
-    "commander": "^9.3.0",
+    "commander": "^9.4.0",
     "debug": "^4.3.4",
     "is-absolute-url": "^3",
     "mime-types": "^2.1.35",
