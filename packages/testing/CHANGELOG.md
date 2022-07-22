@@ -1,5 +1,11 @@
 # @labyrinth/testing
 
+## 0.0.15
+
+### Patch Changes
+
+- 6870988: build(deps): bump sparql-http-client from 2.4.0 to 2.4.1
+
 ## 0.0.14
 
 ### Patch Changes

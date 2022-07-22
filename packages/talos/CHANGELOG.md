@@ -1,5 +1,15 @@
 # @hydrofoil/talos
 
+## 0.4.15
+
+### Patch Changes
+
+- 6870988: build(deps): bump sparql-http-client from 2.4.0 to 2.4.1
+- 6ab0d14: build(deps): bump commander from 9.3.0 to 9.4.0
+- Updated dependencies [6870988]
+- Updated dependencies [6ab0d14]
+  - @hydrofoil/knossos@0.9.3
+
 ## 0.4.14
 
 ### Patch Changes
