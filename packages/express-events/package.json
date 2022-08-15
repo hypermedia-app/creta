@@ -11,6 +11,11 @@
     "*.js",
     "*.d.ts"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hypermedia-app/creta",
+    "directory": "packages/knossos-events"
+  },
   "dependencies": {
     "@hydrofoil/vocabularies": "^0.3.1",
     "@rdfjs/namespace": "^1.1.0",

@@ -14,6 +14,11 @@
   "peerDependencies": {
     "hydra-box": "^0.6.1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hypermedia-app/creta",
+    "directory": "packages/labyrinth"
+  },
   "dependencies": {
     "@hydrofoil/vocabularies": "^0.3",
     "@rdfine/hydra": "^0.8.4",

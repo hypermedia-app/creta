@@ -14,6 +14,11 @@
     "*.js",
     "*.d.ts"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hypermedia-app/creta",
+    "directory": "packages/knossos"
+  },
   "dependencies": {
     "@fcostarodrigo/walk": "^5.0.1",
     "@hydrofoil/knossos-events": "^0.3.11",
