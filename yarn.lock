@@ -7041,10 +7041,10 @@ sparql-http-client@^2.4.1:
     readable-stream "^3.5.0"
     separate-stream "^1.0.0"
 
-sparqljs@^3.4.1:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/sparqljs/-/sparqljs-3.4.1.tgz#1da48bd1b7d71507108417a7fc111e8949c1ce23"
-  integrity sha512-JKcKPFdpPLiNnZU4i3f2MUk3LBIh0pCd1mWIP1Zi+Te7umurJLDBYCygsRNPK9Pz8ZI5n66StiQRxzSPYqdxjQ==
+sparqljs@^3.5.2:
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/sparqljs/-/sparqljs-3.5.2.tgz#033db2d2cb7b0e7b7e32bb32dee39ac9953e9901"
+  integrity sha512-HPe2H6WcEJyZ5sRYRdFE7bWCGqtVf8BZJRD7P1uBCeoYtGPDs7Kcn+BZQ7NLVd6L5OfaP2XFuD1X/xER+hF0uQ==
   dependencies:
     rdf-data-factory "^1.0.4"
 
