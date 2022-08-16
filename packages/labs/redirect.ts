@@ -3,7 +3,7 @@ import type { Request } from 'express'
 import asyncMiddleware from 'middleware-async'
 
 type WebPageRedirectParams = {
-  rewrite(path: string, req: Request): string | Promise<string>
+  rewrite(path: string, req: Request): string | null | undefined | Promise<string | null | undefined>
   status?: number
 }
 
@@ -14,7 +14,9 @@ export const webPage: MiddlewareFactory<[WebPageRedirectParams]> = (context, { r
       return next(new Error('Redirect path cannot be same as resource path'))
     }
 
-    return res.redirect(status, webPageUrl)
+    if (webPageUrl) {
+      return res.redirect(status, webPageUrl)
+    }
   }
 
   return next()

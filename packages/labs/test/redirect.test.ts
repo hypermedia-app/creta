@@ -47,6 +47,22 @@ describe('@hydrofoil/creta-labs/redirect', () => {
       await response.expect(200).expect('representation')
     })
 
+    it('calls next middleware when callback returns null', async () => {
+      // given
+      app.use(await redirect.webPage({} as any, {
+        rewrite: () => null,
+      }))
+      app.use((req, res) => res.send('representation'))
+
+      // when
+      const response = request(app)
+        .get('/foo/bar')
+        .accept('text/html')
+
+      // then
+      await response.expect(200).expect('representation')
+    })
+
     it('does a redirect with configured status', async () => {
       // given
       app.use(await redirect.webPage({} as any, {
