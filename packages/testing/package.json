@@ -1,7 +1,7 @@
 {
   "name": "@labyrinth/testing",
   "private": true,
-  "version": "0.0.15",
+  "version": "0.0.16",
   "dependencies": {
     "@hydrofoil/vocabularies": "^0.3.1",
     "@rdfjs/express-handler": "^1.2.1",

@@ -1,5 +1,11 @@
 # @hydrofoil/minotaur
 
+## 0.2.5
+
+### Patch Changes
+
+- 323edb2: Missing package metadata
+
 ## 0.2.4
 
 ### Patch Changes

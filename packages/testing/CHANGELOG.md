@@ -1,5 +1,11 @@
 # @labyrinth/testing
 
+## 0.0.16
+
+### Patch Changes
+
+- 03d7bcb: build(deps): bump @tpluscode/sparql-builder from 0.3.22 to 0.3.23
+
 ## 0.0.15
 
 ### Patch Changes

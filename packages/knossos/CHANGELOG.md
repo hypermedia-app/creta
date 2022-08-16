@@ -1,5 +1,17 @@
 # @hydrofoil/knossos
 
+## 0.9.4
+
+### Patch Changes
+
+- 278f654: Support `code:arguments` on middleware and resource loader configured using `knossos:Configuration` resource
+- 03d7bcb: build(deps): bump @tpluscode/sparql-builder from 0.3.22 to 0.3.23
+- 323edb2: Missing package metadata
+- Updated dependencies [03d7bcb]
+- Updated dependencies [323edb2]
+  - @hydrofoil/knossos-events@0.3.12
+  - @hydrofoil/labyrinth@0.13.2
+
 ## 0.9.3
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @hydrofoil/knossos-events
 
+## 0.3.12
+
+### Patch Changes
+
+- 03d7bcb: build(deps): bump @tpluscode/sparql-builder from 0.3.22 to 0.3.23
+- 323edb2: Missing package metadata
+
 ## 0.3.11
 
 ### Patch Changes
