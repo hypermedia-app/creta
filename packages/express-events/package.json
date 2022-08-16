@@ -22,7 +22,7 @@
     "@rdfine/as": "^0.2.4",
     "@tpluscode/rdf-ns-builders": "^2.0.0",
     "@tpluscode/rdf-string": "^0.2.26",
-    "@tpluscode/sparql-builder": "^0.3.22",
+    "@tpluscode/sparql-builder": "^0.3.23",
     "clownface": "^1.5.1",
     "nanoid": "^3.3.3",
     "queue": "^6.0.2",
