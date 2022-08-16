@@ -22,12 +22,12 @@ import type { Context } from '..'
 /**
  * Creates express middleware to be loaded by knossos
  */
-export interface MiddlewareFactory {
-  (context: Context): express.RequestHandler | Promise<express.RequestHandler>
+export interface MiddlewareFactory<Args extends unknown[] = []> {
+  (context: Context, ...args: Args): express.RequestHandler | Promise<express.RequestHandler>
 }
 
-export interface ResourceLoaderFactory {
-  (context: Context): ResourceLoader | Promise<ResourceLoader>
+export interface ResourceLoaderFactory<Args extends unknown[] = []> {
+  (context: Context, ...args: Args): ResourceLoader | Promise<ResourceLoader>
 }
 
 async function getConfigurationId(api: Api, context: Context): Promise<Term | undefined> {
@@ -57,13 +57,13 @@ export async function loadMiddlewares(
     return {}
   }
 
-  const middlewares = await loadImplementations<MiddlewareFactory>(
+  const middlewares = await loadImplementations<MiddlewareFactory<unknown[]>>(
     config.out(knossos.middleware),
     { api, log },
     { throwWhenLoadFails: true },
   )
 
-  return middlewares.reduce(async (previous, [factory, , node]) => {
+  return middlewares.reduce(async (previous, [factory, args, node]) => {
     const map = await previous
     const [name] = node.out(schema.name).values
     if (!(name in map)) {
@@ -71,7 +71,7 @@ export async function loadMiddlewares(
     }
 
     log(`Loaded ${name} middleware from ${node.out(code.link).value}`)
-    map[name].push(await factory(context))
+    map[name].push(await factory(context, ...args))
 
     return map
   }, Promise.resolve<Record<string, express.RequestHandler[]>>({}))
@@ -107,7 +107,7 @@ export async function loadResourceLoader(
     return undefined
   }
 
-  const loaded = (await loadImplementations<ResourceLoaderFactory>(
+  const loaded = (await loadImplementations<ResourceLoaderFactory<unknown[]>>(
     config.out(knossos.resourceLoader),
     { api, log },
     { throwWhenLoadFails: true, single: true },
@@ -117,8 +117,8 @@ export async function loadResourceLoader(
     return undefined
   }
 
-  const [loaderFactory, , node] = loaded
-  const loader = await loaderFactory(context)
+  const [loaderFactory, args, node] = loaded
+  const loader = await loaderFactory(context, ...args)
 
   log(`Loaded resource loader ${node.out(code.link).value}`)
   return loader

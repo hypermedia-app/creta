@@ -7,6 +7,8 @@ this includes:
 * [Resource hooks](./hooks.md#preprocess-hooks) (as of `@hydrofoil/knossos@0.8`)
 * [Collection filters](../knossos/collections.md#queries) (as of `@hydrofoil/labyrinth@0.12`)
 * [Template variable transform](../knossos/collections.md#transforming-variables) (as of `@hydrofoil/labyrinth@0.12`)
+* [Middleware](../knossos/configuration.md#middleware) (as of `@hydrofoil/knossos@0.9.4`)
+* [Resource loader](../knossos/configuration.md#resource-loader) (as of `@hydrofoil/knossos@0.9.4`)
 
 All code import blocks follow the same pattern. They are objects of their respective property and require at least a 
 `code:implementedBy` property. For example, a [before save hook](./hooks.md#before-save-hook) could look like:
