@@ -28,7 +28,7 @@
     "@tpluscode/rdf-ns-builders": "^2.0.0",
     "@tpluscode/rdf-string": "^0.2.26",
     "@tpluscode/rdfine": "^0.5.41",
-    "@tpluscode/sparql-builder": "^0.3.22",
+    "@tpluscode/sparql-builder": "^0.3.23",
     "@types/hydra-box": "^0.6.4",
     "clownface": "^1.5.1",
     "clownface-shacl-path": "^1.3.2",
