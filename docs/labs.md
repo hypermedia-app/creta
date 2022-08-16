@@ -14,7 +14,7 @@ Parameters:
 
 | Parameter | Type | Required? | Default |
 | -- |-- |-- | -- |
-| `rewrite` | `(string) => string | Promise<string>` | yes | |
+| `rewrite` | `(string, req) => string | Promise<string>` | yes | |
 | `status` | 'number' | no | 303 |
 
 Example configuration:
