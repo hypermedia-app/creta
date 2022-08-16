@@ -1,6 +1,6 @@
 {
   "name": "@hydrofoil/talos",
-  "version": "0.4.15",
+  "version": "0.4.16",
   "main": "index.js",
   "bin": {
     "talos": "bin/talos.js"
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@fcostarodrigo/walk": "^5.0.1",
-    "@hydrofoil/knossos": "^0.9.3",
+    "@hydrofoil/knossos": "^0.9.4",
     "@hydrofoil/vocabularies": "^0.3",
     "@rdfjs/formats-common": "^2.2.0",
     "@rdfjs/term-map": "^1",

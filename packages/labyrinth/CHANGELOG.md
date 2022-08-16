@@ -1,5 +1,12 @@
 # @hydrofoil/labyrinth
 
+## 0.13.2
+
+### Patch Changes
+
+- 03d7bcb: build(deps): bump @tpluscode/sparql-builder from 0.3.22 to 0.3.23
+- 323edb2: Missing package metadata
+
 ## 0.13.1
 
 ### Patch Changes
