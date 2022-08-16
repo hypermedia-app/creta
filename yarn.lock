@@ -5532,12 +5532,7 @@ micromatch@^4.0.2, micromatch@^4.0.4, micromatch@^4.0.5:
     braces "^3.0.2"
     picomatch "^2.3.1"
 
-middleware-async@^1.2.6, middleware-async@^1.2.7, middleware-async@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/middleware-async/-/middleware-async-1.3.1.tgz#ac1043e6f173048c82dd5fb6683eecca096034d3"
-  integrity sha512-vFlOr3D3GIvv9FeoDRrqHEetFPkJCJmHerf8j1aFDL/SyyJk3f6GCT2mKZHH+iEIWB4PszFTjJuwipMZjjmZAQ==
-
-middleware-async@^1.3.0:
+middleware-async@^1.2.6, middleware-async@^1.2.7, middleware-async@^1.3.0, middleware-async@^1.3.1:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/middleware-async/-/middleware-async-1.3.5.tgz#7e0047a7147c987a6aceb42201f589c76e5a2d63"
   integrity sha512-lprF7UUdDV+0EfREXARoNJUExNkupIMPzqgQaJnfUvxYH4iJuInJsDcE2r4vY9ec6wJ6vg63XWImCkKk4n1e4A==
