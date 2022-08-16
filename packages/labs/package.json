@@ -1,0 +1,29 @@
+{
+  "name": "@hydrofoil/creta-labs",
+  "version": "0.0.0",
+  "scripts": {
+    "prepare": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hypermedia-app/creta",
+    "directory": "packages/labs"
+  },
+  "files": [
+    "*.js",
+    "*.d.ts"
+  ],
+  "dependencies": {
+    "middleware-async": "^1.3.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "express": "^4.18.1",
+    "mocha": "^10.0.0",
+    "sinon": "^14.0.0",
+    "supertest": "^6.2.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

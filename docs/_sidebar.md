@@ -12,3 +12,4 @@
   * [Setup from code](knossos/middleware.md "Setup from code | Knossos | Creta")
   * [Declarative code arguments](advanced/code-arguments.md "Declarative code arguments | Knossos | Creta")
 * [Talos](talos.md "Talos | Creta")
+* [Labs](labs.md "Labs | Creta")
