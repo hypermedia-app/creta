@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.13.3
+
+### Patch Changes
+
+- 454dc08: Loading code referred from `code:arguments` would fail because it resolved incorrect module path
+
 ## 0.13.2
 
 ### Patch Changes
