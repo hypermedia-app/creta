@@ -73,6 +73,7 @@ export async function loadImplementations<T>(pointers: MultiPointer, context: Co
 
       const args = await argumentsLoader(pointer, {
         loaderRegistry,
+        basePath: api.codePath,
       })
       return [...await previous, [hook, args, pointer]]
     }, Promise.resolve([]))
