@@ -51,6 +51,6 @@ Implementation:
 // lib/webPage.js
 
 export function getPageForResource(path: string): string {
-  return `/app/${path}`
+  return `/app${path}`
 }
 ```
