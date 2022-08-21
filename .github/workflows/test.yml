@@ -15,7 +15,7 @@ jobs:
         uses: docker-practice/actions-setup-docker@1.0.4
         with:
           docker_version: 20.10.3
-      - uses: tpluscode/setup-lando@v0.1.1
+      - uses: tpluscode/setup-lando@v0.1.2
         with:
           version: v3.0.26
           healthcheck: http://db.labyrinth.lndo.site/
