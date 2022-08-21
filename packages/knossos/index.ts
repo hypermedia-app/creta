@@ -39,7 +39,7 @@ export interface Authentication {
 export interface Options {
   name?: string
   endpointUrl: string
-  updateUrl: string | undefined
+  updateUrl?: string
   codePath?: string
   path?: string
   resourceBase?: string
