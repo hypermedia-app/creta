@@ -1,7 +1,7 @@
 import { GraphPointer, MultiPointer } from 'clownface'
 import { NamedNode } from 'rdf-js'
 import { SparqlGraphQueryExecutable } from '@tpluscode/sparql-builder/lib'
-import { CONSTRUCT } from '@tpluscode/sparql-builder'
+import { CONSTRUCT, sparql } from '@tpluscode/sparql-builder'
 import DatasetExt from 'rdf-ext/lib/Dataset'
 import $rdf from 'rdf-ext'
 import type StreamClient from 'sparql-http-client/StreamClient'
@@ -14,13 +14,18 @@ function getLinkedResources(resource: MultiPointer, property: NamedNode): Sparql
     return null
   }
 
-  return [...linked.terms].reduce((current, graph) => {
-    if (graph.termType === 'NamedNode') {
-      return current.FROM(graph)
+  return [...linked.terms].reduce((current, graph, index) => {
+    if (graph.termType !== 'NamedNode') {
+      return current
     }
 
-    return current
-  }, CONSTRUCT`?s ?p ?o`.WHERE`?s ?p ?o`)
+    const graphClause = sparql`{ GRAPH ${graph} { ?s ?p ?o } }`
+    if (index === 0) {
+      return current.WHERE`${graphClause}`
+    }
+
+    return current.WHERE`UNION ${graphClause}`
+  }, CONSTRUCT`?s ?p ?o`)
 }
 
 export async function loadLinkedResources(resource: MultiPointer, links: GraphPointer[], sparql: StreamClient): Promise<DatasetExt> {
