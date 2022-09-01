@@ -1,5 +1,12 @@
 # @hydrofoil/labyrinth
 
+## 0.4.3
+
+### Patch Changes
+
+- 7effd29: A query with many `FROM` clauses proved slow and was replaced with a `UNION` of `GRAPH { }` blocks
+- 3ee0398: Update `@tpluscode/sparql-builder`
+
 ## 0.4.2
 
 ### Patch Changes
