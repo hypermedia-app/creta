@@ -14,11 +14,11 @@
     "start": "node -r ts-node/register --inspect packages/knossos/index.ts serve http://db.labyrinth.lndo.site/repositories/labyrinth?infer=true --name conduit --codePath ./apps/conduit --user minos --password password"
   },
   "devDependencies": {
-    "@babel/core": "^7.18.10",
+    "@babel/core": "^7.18.13",
     "@babel/preset-env": "^7.18.10",
     "@babel/preset-typescript": "^7.18.6",
     "@babel/register": "^7.18.9",
-    "@changesets/cli": "^2.23.0",
+    "@changesets/cli": "^2.24.3",
     "@tpluscode/eslint-config": "^0.3",
     "@types/chai": "^4.3.1",
     "@types/chai-as-promised": "^7.1.5",
@@ -60,7 +60,7 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
-    "husky": "^7.0.0",
+    "husky": "^8.0.1",
     "lint-staged": "^13.0.2",
     "sinon-chai": "^3.7.0",
     "standard": "^17.0.0",
