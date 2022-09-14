@@ -1,5 +1,15 @@
 # @hydrofoil/knossos
 
+## 0.9.6
+
+### Patch Changes
+
+- 3133613: Configurable overrides using `knossos:override`
+- 3133613: Opiton to replace the SHACL-loading query used by validation middleware
+- 949fc8b: build(deps): bump hydra-box from 0.6.5 to 0.6.6
+- Updated dependencies [949fc8b]
+  - @hydrofoil/labyrinth@0.13.4
+
 ## 0.9.5
 
 ### Patch Changes

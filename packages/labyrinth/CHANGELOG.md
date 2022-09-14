@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.13.4
+
+### Patch Changes
+
+- 949fc8b: build(deps): bump hydra-box from 0.6.5 to 0.6.6
+
 ## 0.13.3
 
 ### Patch Changes
