@@ -1,5 +1,11 @@
 # @hydrofoil/minotaur
 
+## 0.2.6
+
+### Patch Changes
+
+- 949fc8b: build(deps): bump hydra-box from 0.6.5 to 0.6.6
+
 ## 0.2.5
 
 ### Patch Changes
