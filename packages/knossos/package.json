@@ -35,7 +35,7 @@
     "@tpluscode/sparql-builder": "^0.3.23",
     "@types/debug": "^4",
     "absolute-url": "^1.2.2",
-    "camouflage-rewrite": "^1.2.0",
+    "camouflage-rewrite": "^1.4.0",
     "clownface": "^1.5.1",
     "commander": "^9.4.0",
     "fs-extra": "^10.1.0",
