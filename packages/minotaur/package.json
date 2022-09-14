@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@fcostarodrigo/walk": "^5.0.0",
-    "hydra-box": "^0.6.5"
+    "hydra-box": "^0.6.6"
   },
   "devDependencies": {
     "@rdfjs/namespace": "^1.1.0",
