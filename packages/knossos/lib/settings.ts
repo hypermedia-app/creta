@@ -3,7 +3,7 @@
  * @module @hydrofoil/knossos/lib/settings
  */
 
-import { Term } from 'rdf-js'
+import { NamedNode, Term } from 'rdf-js'
 import * as express from 'express'
 import { Api } from 'hydra-box/Api'
 import { Debugger } from 'debug'
@@ -17,6 +17,7 @@ import { SELECT } from '@tpluscode/sparql-builder'
 import { ResourceLoader } from 'hydra-box'
 import { MinimalRepresentationLoader } from '@hydrofoil/labyrinth/lib/middleware/returnMinimal'
 import { isGraphPointer } from 'is-graph-pointer'
+import asyncMiddleware from 'middleware-async'
 import type { Context } from '..'
 
 /**
@@ -142,4 +143,21 @@ export async function loadMinimalRepresentation(api: Api, log: Debugger, config?
   const [minimalRepresentation, , node] = loaded
   log(`Loaded minimal representation factory ${node.out(code.link).value}`)
   return minimalRepresentation
+}
+
+export function overrideLoader({ term, name }: { term: NamedNode; name: string }): express.RequestHandler {
+  return asyncMiddleware(async (req, res, next) => {
+    if (!res.locals[name]) {
+      const codeNode = req.knossos.config
+        .out(knossos.override)
+        .has(schema.identifier, term)
+        .out(code.implementedBy)
+
+      if (isGraphPointer(codeNode)) {
+        res.locals[name] = await req.loadCode(codeNode)
+      }
+    }
+
+    next()
+  })
 }

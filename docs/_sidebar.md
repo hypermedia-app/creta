@@ -3,6 +3,7 @@
 * [Knossos](knossos/cli.md "Knossos | Creta")
   * [Resources](knossos/resources.md "Resources | Knossos | Creta")
   * [Collections](knossos/collections.md "Collections | Knossos | Creta")
+  * [Validation](knossos/validation.md "Validation | Knossos | Creta")
   * [Security](knossos/auth.md "Security | Knossos | Creta")
   * [Configuration](knossos/configuration.md "Configuration | Knossos | Creta")
   * [Resource URLs](knossos/resource-url.md "Resource URLs | Knossos | Creta")

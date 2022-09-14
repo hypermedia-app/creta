@@ -1,13 +1,15 @@
 import { expect } from 'chai'
 import sinon from 'sinon'
 import { testApi } from '@labyrinth/testing/hydra-box'
-import { namedNode } from '@labyrinth/testing/nodeFactory'
+import { blankNode, namedNode } from '@labyrinth/testing/nodeFactory'
 import { Debugger } from 'debug'
 import $rdf from 'rdf-ext'
 import { knossos, code } from '@hydrofoil/vocabularies/builders'
 import { rdf, schema } from '@tpluscode/rdf-ns-builders'
+import express from 'express'
+import { GraphPointer } from 'clownface'
 import { ResourcePerGraphStore, ResourceStore } from '../../lib/store'
-import { loadAuthorizationPatterns, loadMiddlewares, loadResourceLoader } from '../../lib/settings'
+import { loadAuthorizationPatterns, loadMiddlewares, loadResourceLoader, overrideLoader } from '../../lib/settings'
 import { Context } from '../..'
 
 describe('@hydrofoil/knossos/lib/settings', () => {
@@ -279,6 +281,107 @@ describe('@hydrofoil/knossos/lib/settings', () => {
       // then
       expect(loaded).to.eq(loader)
       expect(factory).to.have.been.calledWith(context)
+    })
+  })
+
+  describe('overrideLoader', () => {
+    let req: express.Request
+    let res: express.Response
+    let next: express.NextFunction
+    let loader: sinon.SinonStub
+    let config: GraphPointer
+
+    beforeEach(() => {
+      config = blankNode()
+      loader = sinon.stub()
+      req = {
+        loadCode: loader,
+        knossos: { config },
+      } as any
+      res = {
+        locals: {},
+      } as any
+      next = sinon.spy()
+    })
+
+    it('loads code from knossos:override and sets to locals', async () => {
+      // given
+      const term = $rdf.namedNode('test-override')
+      const name = 'localName'
+      function func() { return '' }
+      loader.resolves(func)
+      config.addOut(knossos.override, override => {
+        override
+          .addOut(schema.identifier, term)
+          .addOut(code.implementedBy, config.namedNode('impl'))
+      })
+
+      // when
+      await overrideLoader({ term, name })(req, res, next)
+
+      // then
+      expect(req.loadCode).to.have.been.calledWith(
+        sinon.match(ptr => ptr.term.equals(config.namedNode('impl').term)),
+      )
+      expect(res.locals.localName).to.eq(func)
+      expect(next).to.have.been.called
+    })
+
+    it('does nothing when local is already set', async () => {
+      // given
+      const term = $rdf.namedNode('test-override')
+      const name = 'localName'
+      function func() { return '' }
+      res.locals.localName = func
+      config.addOut(knossos.override, override => {
+        override
+          .addOut(schema.identifier, term)
+          .addOut(code.implementedBy, config.namedNode('impl'))
+      })
+
+      // when
+      await overrideLoader({ term, name })(req, res, next)
+
+      // then
+      expect(req.loadCode).not.to.have.been.called
+      expect(res.locals.localName).to.eq(func)
+      expect(next).to.have.been.called
+    })
+
+    it('does nothing when implementation is not found', async () => {
+      // given
+      const term = $rdf.namedNode('test-override')
+      const name = 'localName'
+      function func() { return '' }
+      res.locals.localName = func
+      config.addOut(knossos.override, override => {
+        override
+          .addOut(schema.identifier, term)
+      })
+
+      // when
+      await overrideLoader({ term, name })(req, res, next)
+
+      // then
+      expect(req.loadCode).not.to.have.been.called
+      expect(res.locals.localName).to.eq(func)
+      expect(next).to.have.been.called
+    })
+
+    it('does nothing when override is not found', async () => {
+      // given
+      const term = $rdf.namedNode('test-override')
+      const name = 'localName'
+      function func() { return '' }
+      res.locals.localName = func
+
+      // when
+      await overrideLoader({ term, name })(req, res, next)
+
+      // then
+      expect(req.loadCode).not.to.have.been.called
+      expect(res.locals.localName).to.eq(func)
+      expect(next).to.have.been.called
     })
   })
 })
