@@ -215,7 +215,7 @@ export function returnMinimal({ req, term }) {
 ## Code overrides
 
 Middleware which intend to expose extension points for their specific functionality may do so by looking for overrides
-in the configuration resource. First, in the configuration graph add a `knossos:override` node. It must have aunique
+in the configuration resource. First, in the configuration graph add a `knossos:override` node. It must have a unique
 identifier and a `code:implementedBy` object:
 
 ```turtle
@@ -242,7 +242,7 @@ Then, add a `overrideLoader` middleware before the middleware which uses the ext
 
 ```js
 import $rdf from 'rdf-ext'
-import { overrideLoader} from '@hydrofoil/knossos/configuration'
+import { overrideLoader } from '@hydrofoil/knossos/configuration'
 
 const extensionPoint = $rdf.namedNode('urn:override:extensionPoint')
 

@@ -13,7 +13,7 @@ which match the given payload resource.
 The default function which loads the shapes is fairly complex, trying to find shapes using deep nesting of `sh:and`, etc.,
 and different possible targets by `sh:targetNode`, `sh:targetClass` and others.
 
-It is possible to [override](./configuration.md#code-overrides) the function which loads these shape. For example, here's
+It is possible to [override](./configuration.md#code-overrides) the function which loads these shapes. For example, here's
 a simpler implementation which only does a `DESCRIBE` of shapes matching target class.
 
 ```js
