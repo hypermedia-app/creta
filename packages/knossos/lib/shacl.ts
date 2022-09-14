@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module @hydrofoil/knossos/lib/shacl
+ */
+
 import { NamedNode, Stream, Term, Variable } from 'rdf-js'
 import $rdf from 'rdf-ext'
 import { DESCRIBE } from '@tpluscode/sparql-builder'
@@ -5,14 +10,30 @@ import { rdf, rdfs, sh, hydra } from '@tpluscode/rdf-ns-builders'
 import { StreamClient } from 'sparql-http-client/StreamClient'
 import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
 
-interface ShapesQuery {
+export interface ShapesQueryParams {
+  /**
+  The URI of the current requested resource
+   */
   term: NamedNode
+  /**
+   * RDF types of the payload
+   */
   types: Term[]
+  /**
+   * SPARQL client
+   */
   sparql: StreamClient
+  /**
+   * Hydra ApiDocumentation identifier
+   */
   api: NamedNode
 }
 
-export function shapesQuery({ term, types, api, ...arg }: ShapesQuery): Promise<Stream> {
+export interface ShapesQuery {
+  (arg: ShapesQueryParams): Promise<Stream>
+}
+
+export const shapesQuery: ShapesQuery = ({ term, types, api, ...arg }) => {
   const shape = $rdf.variable('shape')
   const parent = $rdf.variable('parent')
   const parentShape = $rdf.variable('parentShape')

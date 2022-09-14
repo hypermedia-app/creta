@@ -10,6 +10,7 @@ import $rdf from 'rdf-ext'
 import clownface, { AnyContext } from 'clownface'
 import { expect } from 'chai'
 import { ex } from '@labyrinth/testing/namespace'
+import { blankNode } from '@labyrinth/testing/nodeFactory'
 import { shaclValidate } from '../shacl'
 import * as shacl from '../lib/shacl'
 
@@ -40,6 +41,9 @@ describe('@hydrofoil/knossos/shacl', () => {
       } as any
       req.labyrinth = {
         sparql,
+      } as any
+      req.knossos = {
+        config: blankNode(),
       } as any
 
       sinon.stub(shacl, 'shapesQuery').callsFake(async () => shapesGraph.dataset.toStream())
@@ -90,5 +94,27 @@ describe('@hydrofoil/knossos/shacl', () => {
       types: sinon.match((types: Term[]) => types.every(t => t.equals(schema.Person) || t.equals(foaf.Person))),
       sparql,
     }))
+  })
+
+  describe('shapesQuery overrides', () => {
+    it('uses query provided by custom function', async () => {
+      // given
+      const shapesQuery = sinon.stub().returns($rdf.dataset().toStream())
+      app.use((req, res, next) => {
+        res.locals.shapesQuery = shapesQuery
+        next()
+      })
+      app.post('*', shaclValidate(), ok)
+
+      // when
+      await request(app)
+        .post('/')
+        .send(turtle`<> a ${foaf.Person} .`.toString())
+        .set('content-type', 'text/turtle')
+
+      // then
+      expect(shacl.shapesQuery).not.to.have.been.called
+      expect(shapesQuery).to.have.been.called
+    })
   })
 })

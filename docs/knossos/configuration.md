@@ -212,6 +212,49 @@ export function returnMinimal({ req, term }) {
 }
 ```
 
+## Code overrides
+
+Middleware which intend to expose extension points for their specific functionality may do so by looking for overrides
+in the configuration resource. First, in the configuration graph add a `knossos:override` node. It must have a unique
+identifier and a `code:implementedBy` object:
+
+```turtle
+PREFIX code: <https://code.described.at/>
+PREFIX schema: <http://schema.org/>
+PREFIX knossos: <https://hypermedia.app/knossos#>
+
+<>
+a knossos:Configuration ;
+  knossos:override
+    [
+      schema:identifier <urn:override:extensionPoint> ;
+      code:implementedBy
+        [
+          a code:EcmaScriptModule ;
+          code:link <file:path/to/extensionPoint.js#default> ;
+        ] ;
+    ];
+.
+```
+
+Then, add a `overrideLoader` middleware before the middleware which uses the extension point. It takes two parameter values:
+`term`, which must match the `schema:identifier` and a `name`, which will be the key to set in `res.locals`.
+
+```js
+import $rdf from 'rdf-ext'
+import { overrideLoader } from '@hydrofoil/knossos/configuration'
+
+const extensionPoint = $rdf.namedNode('urn:override:extensionPoint')
+
+const extensibleMiddleware = Router()
+  .use(overrideLoader({ term: extensionPoint, name: 'foobar' }))
+  .use((req, res, next) => {
+    const extension = res.locals.foobar
+    
+    // rest of your handler
+  })
+```
+
 ## Accessing configuration
 
 The configuration resource loaded by knossos gets attached as a `GraphPointer` to  a `req.knossos.config` property. 
