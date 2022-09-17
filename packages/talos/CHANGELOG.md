@@ -1,5 +1,13 @@
 # @hydrofoil/talos
 
+## 0.4.17
+
+### Patch Changes
+
+- 0792046: Option to skip resources which already exist
+- Updated dependencies [dd368d1]
+  - @hydrofoil/knossos@0.9.7
+
 ## 0.4.16
 
 ### Patch Changes
