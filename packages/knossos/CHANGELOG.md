@@ -1,5 +1,11 @@
 # @hydrofoil/knossos
 
+## 0.9.7
+
+### Patch Changes
+
+- dd368d1: build(deps): bump camouflage-rewrite from 1.2.0 to 1.4.0
+
 ## 0.9.6
 
 ### Patch Changes
