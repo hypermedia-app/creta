@@ -19,7 +19,7 @@ type Options = StreamClientOptions & {
 }
 
 interface ResourceOptions {
-  existingResource: 'merge' | 'overwrite'
+  existingResource: 'merge' | 'overwrite' | 'skip'
 }
 
 export async function bootstrap({ api, apiUri, cwd, ...options }: Options): Promise<void> {
@@ -66,7 +66,13 @@ export async function bootstrap({ api, apiUri, cwd, ...options }: Options): Prom
         .namedNode(resource)
         .addOut(hydra.apiDocumentation, apiUri)
 
-      if (await store.exists(pointer.term)) {
+      const exists = await store.exists(pointer.term)
+      if (exists && resourceOptions.existingResource === 'skip') {
+        log(`Skipping resource ${resource}`)
+        continue
+      }
+
+      if (exists) {
         if (resourceOptions.existingResource === 'overwrite') {
           log(`Replacing resource ${resource}`)
         } else {

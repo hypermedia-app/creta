@@ -54,6 +54,8 @@ prefix vcard: <http://www.w3.org/2006/vcard/ns#>
 > [!WARNING]
 > Merging resources which contain blank nodes will result in duplicate values
 
+To skip resources which already exist, use `prefix talos: <existingResource:skip>` instead.
+
 ### Splitting resource directories
 
 A project can save its resources in multiple directories to keep its API-specific set separate from the default generated from `knossos init` or to prepare environment-specific sets so that developers can  quickly populate their local database.
