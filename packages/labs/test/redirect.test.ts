@@ -78,6 +78,22 @@ describe('@hydrofoil/creta-labs/redirect', () => {
       await response.expect(200).expect('representation')
     })
 
+    it('calls next middleware when accept header is wildcard', async () => {
+      // given
+      app.use(await redirect.webPage({} as any, {
+        rewrite: prefixPath,
+      }))
+      app.use((req, res) => res.send('representation'))
+
+      // when
+      const response = request(app)
+        .get('/foo/bar')
+        .accept('*/*')
+
+      // then
+      await response.expect(200).expect('representation')
+    })
+
     it('does a redirect with configured status', async () => {
       // given
       app.use(await redirect.webPage({} as any, {
