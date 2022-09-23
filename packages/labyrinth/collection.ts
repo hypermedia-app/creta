@@ -5,6 +5,7 @@ import asyncMiddleware from 'middleware-async'
 import { hydra } from '@tpluscode/rdf-ns-builders'
 import { preprocessMiddleware, returnMinimal } from './lib/middleware'
 import * as lib from './lib/collection'
+import { sendResponse } from './lib/middleware/sendResponse'
 
 export type CollectionResponse = Response<any, Partial<lib.CollectionLocals>>
 
@@ -13,12 +14,6 @@ function assertLocals<T extends keyof lib.CollectionLocals>(locals: Partial<lib.
   if (missingKeys.length) {
     throw new Error(`Missing values for ${missingKeys.join(', ')} in response locals`)
   }
-}
-
-const sendResponse: RequestHandler = (req, res) => {
-  const { dataset } = res.locals.collection
-  res.setLink(req.hydra.resource.term.value, 'canonical')
-  return res.dataset(dataset)
 }
 
 export function createGetHandler({
@@ -75,7 +70,13 @@ export function createGetHandler({
       },
       predicate: knossos.preprocessResponse,
     }))
-    .use(sendResponse)
+    .use((req, res: CollectionResponse, next) => {
+      assertLocals(res.locals, 'collection')
+
+      const { dataset } = res.locals.collection
+      res.setLink(req.hydra.resource.term.value, 'canonical')
+      sendResponse(dataset)(req, res, next)
+    })
 }
 
 export const get = createGetHandler()

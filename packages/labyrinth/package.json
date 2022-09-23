@@ -20,7 +20,7 @@
     "directory": "packages/labyrinth"
   },
   "dependencies": {
-    "@hydrofoil/vocabularies": "^0.3",
+    "@hydrofoil/vocabularies": "^0.3.2",
     "@rdfine/hydra": "^0.8.4",
     "@rdfjs/data-model": "^1.2",
     "@rdfjs/term-map": "^1.0.0",
