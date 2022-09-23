@@ -8,7 +8,9 @@ import asyncMiddleware from 'middleware-async'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
 import { preprocessResource } from './lib/middleware/preprocessResource'
 import { returnMinimal } from './lib/middleware'
+import { sendResponse } from './lib/middleware/sendResponse'
 
+export type { BeforeSend } from './lib/middleware/sendResponse'
 export type { ResourceHook } from './lib/middleware/preprocessResource'
 
 /**
@@ -16,7 +18,7 @@ export type { ResourceHook } from './lib/middleware/preprocessResource'
  */
 export const get = Router()
   .use(returnMinimal)
-  .use(asyncMiddleware(async (req, res) => {
+  .use(asyncMiddleware(async (req, res, next) => {
     const pointer = await req.labyrinth.fullRepresentation()
 
     await preprocessResource({
@@ -26,5 +28,5 @@ export const get = Router()
       predicate: knossos.preprocessResponse,
     })
 
-    return res.dataset(pointer.dataset)
+    sendResponse(pointer.dataset)(req, res, next)
   }))

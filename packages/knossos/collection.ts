@@ -13,7 +13,7 @@ import clownface, { AnyPointer, GraphPointer, MultiPointer } from 'clownface'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
 import { describeResource } from '@hydrofoil/labyrinth/lib/query/describeResource'
 import * as rdfRequest from 'express-rdf-request'
-import { preprocessMiddleware } from '@hydrofoil/labyrinth/lib/middleware'
+import { preprocessMiddleware, sendResponse } from '@hydrofoil/labyrinth/lib/middleware'
 import { getPayload } from '@hydrofoil/labyrinth/lib/request'
 import TermSet from '@rdfjs/term-set'
 import { payloadTypes, shaclValidate } from './shacl'
@@ -160,10 +160,6 @@ const dereferenceNewMember = asyncMiddleware(async (req, res: CreateMemberRespon
   next()
 })
 
-const setResponse: express.RequestHandler = (req, res: CreateMemberResponse) => {
-  return res.dataset(res.locals.member!.dataset)
-}
-
 export const CreateMember = Router()
   .use(rdfRequest.resource())
   .use(loadCollection)
@@ -197,4 +193,6 @@ export const CreateMember = Router()
     getTypes: async (_, res) => res.locals.member.out(rdf.type).terms,
     predicate: knossos.preprocessResponse,
   }))
-  .use(setResponse)
+  .use((req, res: CreateMemberResponse, next) => {
+    sendResponse(res.locals.member!.dataset)(req, res, next)
+  })

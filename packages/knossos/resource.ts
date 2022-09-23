@@ -1,6 +1,7 @@
 import asyncMiddleware from 'middleware-async'
 import clownface from 'clownface'
 import { created, updated } from '@hydrofoil/knossos-events/activity'
+import { sendResponse } from '@hydrofoil/labyrinth/lib/middleware'
 import { as, acl, rdf } from '@tpluscode/rdf-ns-builders/loose'
 import { StreamClient } from 'sparql-http-client/StreamClient'
 import httpStatus from 'http-status'
@@ -12,7 +13,7 @@ import { shaclValidate } from './shacl'
 import { canBeCreatedWithPut, save } from './lib/resource'
 import '@hydrofoil/labyrinth'
 
-const saveResource = ({ create }: { create: boolean }) => asyncMiddleware(async (req, res) => {
+const saveResource = ({ create }: { create: boolean }) => asyncMiddleware(async (req, res, next) => {
   const resource = await req.resource()
 
   await save({ resource, req })
@@ -28,7 +29,8 @@ const saveResource = ({ create }: { create: boolean }) => asyncMiddleware(async 
 
   await res.event.handleImmediate()
 
-  return res.resource(await req.knossos.store.load(resource.term))
+  const loaded = await req.knossos.store.load(resource.term)
+  sendResponse(loaded.dataset)(req, res, next)
 })
 
 const ensureNotExists = asyncMiddleware(async (req, res, next) => {
@@ -70,9 +72,15 @@ const checkPermissions = (client: StreamClient) => asyncMiddleware(async (req, r
   next()
 })
 
-export const create = (client: StreamClient) => Router().use(ensureNotExists, checkPermissions(client), shaclValidate(), saveResource({ create: true }))
+export const create = (client: StreamClient) => Router()
+  .use(ensureNotExists)
+  .use(checkPermissions(client))
+  .use(shaclValidate())
+  .use(saveResource({ create: true }))
 
-export const PUT = Router().use(shaclValidate(), saveResource({ create: false }))
+export const PUT = Router()
+  .use(shaclValidate())
+  .use(saveResource({ create: false }))
 
 export const DELETE = Router().use(asyncMiddleware(async (req, res) => {
   await req.knossos.store.delete(req.hydra.resource.term)

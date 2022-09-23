@@ -14,6 +14,7 @@
     "packages/labyrinth/lib/middleware/preprocessResource.ts",
     "packages/labyrinth/lib/middleware/removeHydraOperations.ts",
     "packages/labyrinth/lib/middleware/returnMinimal.ts",
+    "packages/labyrinth/lib/middleware/sendResponse.ts",
     "packages/labyrinth/lib/query/filters.ts",
     "packages/labyrinth/resource.ts",
     "packages/minotaur/index.ts"

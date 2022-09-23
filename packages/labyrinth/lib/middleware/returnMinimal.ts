@@ -7,7 +7,9 @@ import { NamedNode, Stream } from 'rdf-js'
 import express from 'express'
 import { DESCRIBE } from '@tpluscode/sparql-builder'
 import asyncMiddleware from 'middleware-async'
+import $rdf from 'rdf-ext'
 import { prefersMinimal } from '../request'
+import { sendResponse } from './sendResponse'
 
 /**
  * Function to load a minimal representation of the given term.
@@ -27,7 +29,9 @@ export const returnMinimal: express.RequestHandler = asyncMiddleware(async (req,
   res.setHeader('Preference-Applied', 'return=minimal')
 
   const minimalRepresentation = req.labyrinth.minimalRepresentation || defaultMinimalRepresentation
-  return res.quadStream(await minimalRepresentation({ req, term: req.hydra.resource.term }))
+  const dataset = await $rdf.dataset().import(await minimalRepresentation({ req, term: req.hydra.resource.term }))
+
+  sendResponse(dataset)(req, res, next)
 })
 
 function defaultMinimalRepresentation(...[{ req, term }]: Parameters<MinimalRepresentationLoader>) {
