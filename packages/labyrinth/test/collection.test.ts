@@ -89,5 +89,32 @@ describe('@hydrofoil/labyrinth/collection', () => {
         }),
       })
     })
+
+    it('calls before send hooks', async () => {
+      // given
+      const beforeSendHook = sinon.spy()
+      const app = express()
+      app.use(hydraBox({
+        setup: async api => {
+          api.operation.addOut(knossos.beforeSend, bs => {
+            bs.addOut(code.implementedBy, null)
+          })
+        },
+      }))
+      knossosMock(app)
+      app.use((req, res, next) => {
+        (req.hydra.api.loaderRegistry.load as sinon.SinonStub).resolves(beforeSendHook)
+        next()
+      })
+      app.use(createGetHandler({
+        initQueries,
+      }))
+
+      // when
+      await request(app).get('/movies')
+
+      // then
+      expect(beforeSendHook).to.have.been.called
+    })
   })
 })
