@@ -2110,10 +2110,10 @@
     "@types/chai" "*"
     "@types/sinon" "*"
 
-"@types/sinon@*", "@types/sinon@^10.0.11":
-  version "10.0.11"
-  resolved "https://registry.yarnpkg.com/@types/sinon/-/sinon-10.0.11.tgz#8245827b05d3fc57a6601bd35aee1f7ad330fc42"
-  integrity sha512-dmZsHlBsKUtBpHriNjlK0ndlvEh8dcb9uV9Afsbt89QIyydpC7NcR+nWlAhASfy3GHnxTl4FX/aKE7XZUt/B4g==
+"@types/sinon@*", "@types/sinon@^10.0.13":
+  version "10.0.13"
+  resolved "https://registry.yarnpkg.com/@types/sinon/-/sinon-10.0.13.tgz#60a7a87a70d9372d0b7b38cc03e825f46981fb83"
+  integrity sha512-UVjDqJblVNQYvVNUsj0PuYYw0ELRmgt1Nt5Vk0pT5f16ROGfcKJY8o1HVuMOJOpD727RrGB9EGvoaTQE5tgxZQ==
   dependencies:
     "@types/sinonjs__fake-timers" "*"
 
@@ -2914,10 +2914,10 @@ clone@^1.0.2:
   resolved "https://registry.yarnpkg.com/clone/-/clone-1.0.4.tgz#da309cc263df15994c688ca902179ca3c7cd7c7e"
   integrity sha1-2jCcwmPfFZlMaIypAheco8fNfH4=
 
-clownface-shacl-path@^1.3.2:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/clownface-shacl-path/-/clownface-shacl-path-1.3.2.tgz#9be8cf0e21785e711d8031d58cf8845768ec1da3"
-  integrity sha512-/X0V1lJbNwocxuZ8PHxMeSAXExqGNhdE9F5AscKUvWa8poj6lPiLn15IPXK8NfW1HPizxzdow0IBoinGdrYLkQ==
+clownface-shacl-path@^1.3.2, clownface-shacl-path@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/clownface-shacl-path/-/clownface-shacl-path-1.4.0.tgz#28a307570d329c05a980a5b992b07856ce458121"
+  integrity sha512-87AFtxaJzIYxC+cJ7AsayDRkiubxFrBhSWpxF60d8EFOJU3I8T4c/DpaYjurbebZuxOslHuBPtfZSDJqERLm5g==
   dependencies:
     "@rdf-esm/term-set" "^0.5.0"
     "@tpluscode/rdf-ns-builders" "^2.0.0"
