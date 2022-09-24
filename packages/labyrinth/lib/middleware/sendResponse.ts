@@ -9,7 +9,7 @@ import asyncMiddleware from 'middleware-async'
 import { knossos } from '@hydrofoil/vocabularies/builders/strict'
 import { loadImplementations } from '../code'
 
-interface BeforeSendParams {
+export interface BeforeSendParams {
   req: Request
   res: Response
   dataset: DatasetCore

@@ -1833,6 +1833,20 @@
   dependencies:
     "@types/ms" "*"
 
+"@types/etag@^1.8.1":
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/@types/etag/-/etag-1.8.1.tgz#593ca8ddb43acb3db049bd0955fd64d281ab58b9"
+  integrity sha512-bsKkeSqN7HYyYntFRAmzcwx/dKW4Wa+KVMTInANlI72PWLQmOpZu96j0OqHZGArW4VQwCmJPteQlXaUDeOB0WQ==
+  dependencies:
+    "@types/node" "*"
+
+"@types/express-preconditions@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@types/express-preconditions/-/express-preconditions-1.0.0.tgz#0413751f7bfcdc1d5e40d5b07455ee9ee628c84a"
+  integrity sha512-crgD5tCYI71orP+hYj23uqvRK6xNfqHROF3P+owzoOktFMF5up+sFBTeaAOYHKAKbgLp+Ap+XbS6NS2mnBmGbg==
+  dependencies:
+    "@types/express" "*"
+
 "@types/express-serve-static-core@^4.17.18":
   version "4.17.24"
   resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.17.24.tgz#ea41f93bf7e0d59cd5a76665068ed6aab6815c07"
@@ -1871,10 +1885,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/http-errors@^1.8.0":
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/@types/http-errors/-/http-errors-1.8.1.tgz#e81ad28a60bee0328c6d2384e029aec626f1ae67"
-  integrity sha512-e+2rjEwK6KDaNOm5Aa9wNGgyS9oSZU/4pfSMMPYNOfjvFI0WVXm29+ITRFr6aKDvvKo7uU1jV68MW4ScsfDi7Q==
+"@types/http-errors@^1.8.0", "@types/http-errors@^1.8.1":
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/@types/http-errors/-/http-errors-1.8.2.tgz#7315b4c4c54f82d13fa61c228ec5c2ea5cc9e0e1"
+  integrity sha512-EqX+YQxINb+MeXaIqYDASb6U6FCHbWjkj4a1CKDBks3d/QiB2+PqBLyO72vLDgAO1wUI4O+9gweRcQK11bTL/w==
 
 "@types/hydra-box@*", "@types/hydra-box@^0.6.4":
   version "0.6.4"
@@ -1994,6 +2008,14 @@
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.3.tgz#7ee330ba7caafb98090bece86a5ee44115904c2c"
   integrity sha512-ewFXqrQHlFsgc09MK5jP5iR7vumV/BYayNC6PgJO2LPe8vrnNFyjQjSppfEngITi0qvfKtzFvgKymGheFM9UOA==
 
+"@types/rdf-dataset-ext@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@types/rdf-dataset-ext/-/rdf-dataset-ext-1.0.2.tgz#7c228758962e3290f10bf3ca1b546b92763bf252"
+  integrity sha512-vANWZnimHzdP0Kz+JOXpdEKlo1PSHl91NYloEh4H4lBaj60bjc7i5u1Pf9sJGZQppj21b8EzVPQf9MfIe68M8A==
+  dependencies:
+    "@types/readable-stream" "*"
+    rdf-js "^4.0.2"
+
 "@types/rdf-dataset-indexed@*":
   version "0.4.5"
   resolved "https://registry.yarnpkg.com/@types/rdf-dataset-indexed/-/rdf-dataset-indexed-0.4.5.tgz#23ced6eda037575bedb9479485efe9fb965b9cac"
@@ -2076,6 +2098,14 @@
   integrity sha512-+BNhhBuDeYwR7yNDetqkaTbHIZ1Tt++vSfuzOdFGORxSLs1bxSl6Ae31jA2E+ePgZGbKRSGjLlWyUv1k7krjww==
   dependencies:
     rdf-js "^4.0.2"
+
+"@types/readable-stream@*":
+  version "2.3.14"
+  resolved "https://registry.yarnpkg.com/@types/readable-stream/-/readable-stream-2.3.14.tgz#1282cdc03a1fc9ed52982aa8f0553d7c251070b9"
+  integrity sha512-8jQ5Mp7bsDJEnW/69i6nAaQMoLwAVJVc7ZRAVTrdh/o6XueQsX38TEvKuYyoQj76/mg7WdlRfMrtl9pDLCJWsg==
+  dependencies:
+    "@types/node" "*"
+    safe-buffer "*"
 
 "@types/replacestream@^4.0.1":
   version "4.0.1"
@@ -3812,7 +3842,7 @@ esutils@^2.0.2:
   resolved "https://registry.yarnpkg.com/esutils/-/esutils-2.0.3.tgz#74d2eb4de0b8da1293711910d50775b9b710ef64"
   integrity sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==
 
-etag@~1.8.1:
+etag@^1.8.1, etag@~1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
@@ -3876,6 +3906,11 @@ express-middleware-shacl@^1.3.2:
     rdf-validate-shacl "^0.2.6"
     set-link "^1.0.0"
 
+express-preconditions@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/express-preconditions/-/express-preconditions-1.0.5.tgz#4f8ee6bd60dd2baf10764bb3637d3464ff7af700"
+  integrity sha512-RcGmKrrLKUyDIpxSPXeHzU5TQy7mSthzhkeaMvEGGTA+Jj8BIvVZCEnm7hvU7QNaLyYrEi5A85fimAiGBVrT4Q==
+
 express-rdf-problem-details@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/express-rdf-problem-details/-/express-rdf-problem-details-1.0.1.tgz#b49987d90916b263d5485d1c98372530397706b1"
@@ -3898,6 +3933,13 @@ express-rdf-request@^1.1.2:
     middleware-async "^1.3.1"
     once "^1.4.0"
     rdf-ext "^1.3.0"
+
+express-request-mock@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/express-request-mock/-/express-request-mock-3.1.0.tgz#fbe3d58e17d72f4af1cc625712ddf7b283bacd32"
+  integrity sha512-Ep1uuqCRUc2nTjwAeaVuviDGPCOU2xIhyVHQoN6+xDc9ANJJY42auiAO0guJTvnyyHY/8Q3/hZWEjHf1eo6hSQ==
+  dependencies:
+    node-mocks-http "^1.9.0"
 
 express-unless@^2.0.2:
   version "2.1.0"
@@ -5500,7 +5542,7 @@ meow@^6.0.0:
     type-fest "^0.13.1"
     yargs-parser "^18.1.3"
 
-merge-descriptors@1.0.1:
+merge-descriptors@1.0.1, merge-descriptors@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/merge-descriptors/-/merge-descriptors-1.0.1.tgz#b00aaa556dd8b44568150ec9d1b953f3f90cbb61"
   integrity sha1-sAqqVW3YtEVoFQ7J0blT8/kMu2E=
@@ -5716,6 +5758,22 @@ node-fetch@3.0.0-beta.9:
   dependencies:
     data-uri-to-buffer "^3.0.1"
     fetch-blob "^2.1.1"
+
+node-mocks-http@^1.9.0:
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/node-mocks-http/-/node-mocks-http-1.11.0.tgz#defc0febf6b935f08245397d47534a8de592996e"
+  integrity sha512-jS/WzSOcKbOeGrcgKbenZeNhxUNnP36Yw11+hL4TTxQXErGfqYZ+MaYNNvhaTiGIJlzNSqgQkk9j8dSu1YWSuw==
+  dependencies:
+    accepts "^1.3.7"
+    content-disposition "^0.5.3"
+    depd "^1.1.0"
+    fresh "^0.5.2"
+    merge-descriptors "^1.0.1"
+    methods "^1.1.2"
+    mime "^1.3.4"
+    parseurl "^1.3.3"
+    range-parser "^1.2.0"
+    type-is "^1.6.18"
 
 node-releases@^2.0.3:
   version "2.0.5"
@@ -6072,7 +6130,7 @@ parse-prefer-header@^1.0.0:
   dependencies:
     lodash.camelcase "^4.3.0"
 
-parseurl@~1.3.3:
+parseurl@^1.3.3, parseurl@~1.3.3:
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/parseurl/-/parseurl-1.3.3.tgz#9da19e7bee8d12dff0513ed5b76957793bc2e8d4"
   integrity sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==
@@ -6335,7 +6393,7 @@ randombytes@^2.1.0:
   dependencies:
     safe-buffer "^5.1.0"
 
-range-parser@~1.2.1:
+range-parser@^1.2.0, range-parser@~1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.1.tgz#3cf37023d199e1c24d1a55b84800c2f3e6468031"
   integrity sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==
@@ -6374,7 +6432,7 @@ rdf-data-factory@^1.0.4, rdf-data-factory@^1.1.0:
   dependencies:
     "@rdfjs/types" "*"
 
-rdf-dataset-ext@^1.0.0:
+rdf-dataset-ext@^1.0.0, rdf-dataset-ext@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/rdf-dataset-ext/-/rdf-dataset-ext-1.0.1.tgz#9df48566e57748f321e19c9ec713811badbd7ca5"
   integrity sha512-I08/j+w0zqNRmFXbFhqxexmKsdS9nGDno/cG/OaF5sLxkDNrhyP82OxWx35ZPrjd4FG8T+TsGaxZFZkVIS85eA==
@@ -6391,7 +6449,7 @@ rdf-express-node-factory@^1.0.1, rdf-express-node-factory@^1.1:
     is-absolute-url "^3.0.3"
     rdf-ext "^1.3.1"
 
-rdf-ext@^1.3.0, rdf-ext@^1.3.1, rdf-ext@^1.3.5:
+rdf-ext@1.3.5, rdf-ext@^1.3.0, rdf-ext@^1.3.1, rdf-ext@^1.3.5:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/rdf-ext/-/rdf-ext-1.3.5.tgz#89706abec64657d744b478d3a33d40fe5a6aa249"
   integrity sha512-LS/waItwp5aGY9Ay7y147HxWLIaSvw4r172S995aGwVkvg0KwUA0NY8w61p/LoFdQ4V6mzxQdVoRN6x/6OaK0w==

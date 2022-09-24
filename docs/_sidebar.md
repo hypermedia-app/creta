@@ -8,6 +8,7 @@
   * [Configuration](knossos/configuration.md "Configuration | Knossos | Creta")
   * [Resource URLs](knossos/resource-url.md "Resource URLs | Knossos | Creta")
 * Advanced
+  * [Cache](advanced/caching.md "Cache | Knossos | Kreta") 
   * [Multi-tenancy](advanced/multi-tenancy.md "Multi-tenancy | Knossos | Creta")
   * [Resource hooks](advanced/hooks.md "Resource hooks | Knossos | Creta")
   * [Setup from code](knossos/middleware.md "Setup from code | Knossos | Creta")
