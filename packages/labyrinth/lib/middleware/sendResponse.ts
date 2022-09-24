@@ -19,7 +19,7 @@ export interface BeforeSendParams {
  * Runs just before the response triples are sent. The best moment to set final headers, such as cache-control
  */
 export interface BeforeSend<Args extends unknown[] = []> {
-  (arg: BeforeSendParams, ...args: Args): void | Promise<void>
+  (arg: BeforeSendParams, ...args: Partial<Args>): void | Promise<void>
 }
 
 export const sendResponse = (dataset: DatasetCore): RequestHandler => asyncMiddleware(async (req, res) => {

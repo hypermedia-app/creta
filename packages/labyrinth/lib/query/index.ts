@@ -29,5 +29,5 @@ export interface Pattern {
 }
 
 export interface Filter<Args extends unknown[] = []> {
-  (options: Pattern, ...args: Args): string | SparqlTemplateResult
+  (options: Pattern, ...args: Partial<Args>): string | SparqlTemplateResult
 }
