@@ -46,7 +46,7 @@ export interface BeforeSaveParams {
  * as when handling PUT requests, or POST to a collection
  */
 export interface BeforeSave<Args extends unknown[] = []> {
-  (beforeSave: BeforeSaveParams, ...args: Args): void | Promise<void>
+  (beforeSave: BeforeSaveParams, ...args: Partial<Args>): void | Promise<void>
 }
 
 export interface Save {

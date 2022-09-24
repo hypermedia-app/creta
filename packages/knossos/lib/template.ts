@@ -14,7 +14,7 @@ interface Context {
 }
 
 export interface TransformVariable<Args extends unknown[] = []> {
-  (arg: Context, ...args: Args): Term | Promise<Term>
+  (arg: Context, ...args: Partial<Args>): Term | Promise<Term>
 }
 
 export function hasAllRequiredVariables({ mapping }: IriTemplate, variables: GraphPointer): boolean {

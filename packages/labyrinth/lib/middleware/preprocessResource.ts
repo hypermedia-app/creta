@@ -26,7 +26,7 @@ export interface ResourceHook<Args extends unknown[] = []> {
    * @param pointer resource to modify (depends on kind of hook)
    * @param args optional arguments configured in RDF
    */
-  ({ req, pointer }: ResourceHookParams, ...args: Args): Promise<void> | void
+  ({ req, pointer }: ResourceHookParams, ...args: Partial<Args>): Promise<void> | void
 }
 
 interface PreprocessResource {

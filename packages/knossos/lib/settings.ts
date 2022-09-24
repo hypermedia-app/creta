@@ -24,11 +24,11 @@ import type { Context } from '..'
  * Creates express middleware to be loaded by knossos
  */
 export interface MiddlewareFactory<Args extends unknown[] = []> {
-  (context: Context, ...args: Args): express.RequestHandler | Promise<express.RequestHandler>
+  (context: Context, ...args: Partial<Args>): express.RequestHandler | Promise<express.RequestHandler>
 }
 
 export interface ResourceLoaderFactory<Args extends unknown[] = []> {
-  (context: Context, ...args: Args): ResourceLoader | Promise<ResourceLoader>
+  (context: Context, ...args: Partial<Args>): ResourceLoader | Promise<ResourceLoader>
 }
 
 async function getConfigurationId(api: Api, context: Context): Promise<Term | undefined> {
