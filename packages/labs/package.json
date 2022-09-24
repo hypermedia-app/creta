@@ -14,12 +14,24 @@
     "*.d.ts"
   ],
   "dependencies": {
-    "middleware-async": "^1.3.0"
+    "@hydrofoil/labyrinth": "^0.13.4",
+    "etag": "^1.8.1",
+    "express-preconditions": "^1.0.5",
+    "http-errors": "^2.0.0",
+    "middleware-async": "^1.3.0",
+    "node-fetch": "^2.6.7",
+    "rdf-dataset-ext": "^1.0.1"
   },
   "devDependencies": {
+    "@types/etag": "^1.8.1",
+    "@types/express-preconditions": "^1.0.0",
+    "@types/http-errors": "^1.8.1",
+    "@types/rdf-dataset-ext": "^1.0.2",
     "chai": "^4.3.6",
     "express": "^4.18.1",
+    "express-request-mock": "^3.1.0",
     "mocha": "^10.0.0",
+    "rdf-ext": "1.3.5",
     "sinon": "^14.0.0",
     "supertest": "^6.2.4"
   },

@@ -54,3 +54,38 @@ export function getPageForResource(path: string): string {
   return `/app${path}`
 }
 ```
+
+## `cache.js`
+
+Exports function needed to set up [caching](https://webconcepts.info/specs/IETF/RFC/7234) 
+and [conditional requests](https://webconcepts.info/specs/IETF/RFC/7232)
+
+> [!TIP]
+> For in-depth usage instructions see [advanced/caching](advanced/caching.md)
+
+### `setHeaders`
+
+A [`beforeSend` hook](./advanced/hooks.md#before-send-hooks) which sets `Cache-Control` and `eTag` headers. The latter is 
+calculated from [canonical serialization](https://w3c-ccg.github.io/rdf-dataset-canonicalization/spec/) of the response dataset.
+
+Parameters:
+
+| Parameter | Type | Required? | Default |
+| -- |-- |-- | -- |
+| `cache-control` | `string` | no | |
+| `etag` | 'number' | no | |
+
+### `preconditions`
+
+A middleware which executes precondition checks, such as `if-match`. Use is as a [`resource` middleware](knossos/configuration.md#middleware)
+
+Parameters:
+
+| Parameter | Type | Required? | Default |
+| -- |-- |-- | -- |
+| `stateAsync` | `(req) => { etag?: string; lastModified?: string }` | no | Fetches `HEAD` of current `req.hydra.term` |
+| `requiredWith` | 'string[]' | no | `['PUT', 'PATCH', 'DELETE']` |
+
+Implementation of `stateAsync` must return the etag and/ore last modified date of the checked resource in their respective
+lexical form as defined by the specifications.
+`requiredWith` denotes which request methods will require the precondition headers.

@@ -9,6 +9,7 @@
     "packages/knossos/shacl.ts",
     "packages/labyrinth/index.ts",
     "packages/labyrinth/collection/filters.ts",
+    "packages/labyrinth/middleware.ts",
     "packages/labyrinth/lib/middleware.ts",
     "packages/labyrinth/lib/middleware/disambiguateClassHierarchies.ts",
     "packages/labyrinth/lib/middleware/preprocessResource.ts",

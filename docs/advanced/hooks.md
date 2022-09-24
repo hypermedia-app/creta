@@ -1,6 +1,12 @@
 # Resource hooks
 
-## Before save hook
+## Hook arguments
+
+> [!TIP]
+> All resource hooks functions below can be parametrised. Arguments are provided by attaching `code:arguments` to hook's node.
+> See [here](./code-arguments.md) for more details.
+
+## Before save hooks
 
 > [!API]
 > `import type { BeforeSave } from @hydrofoil/knossos/lib/resource`
@@ -154,9 +160,71 @@ Use `knossos:preprocessResource` to modify the representation of the current res
 
 Finally, `knossos:preprocessResponse` can be used to modify the final contents of the response just before sending it to the client. It is by called when executing the generic `GET` handlers `@hydrofoil/knossos/resource#get` and `@hydrofoil/knossos/collection#get`, and when creating collection members with `@hydrofoil/knossos/collection#CreateMember`.
 
+## Before send hooks
 
-## Hook arguments
+> [!API]
+> `import type { BeforeSend } from '@hydrofoil/labyrinth/middleware'`
+>
+> [Open API docs](/api/interfaces/_hydrofoil_labyrinth_lib_middleware_sendResponse.BeforeSend.html)
+
+It is possible to modify the response at the final stage, right before the triples will be sent to the client. A before
+send hook, declared on the class' Hydra operations receive the request and request objects, and the dataset itself. 
+
+Below is an example of a hook which would set `cache-control` and `etag` headers on responses `GET` requests for articles.
+
+```turtle
+PREFIX code: <https://code.described.at/>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX knossos: <https://hypermedia.app/knossos#>
+
+</api/Article>
+    hydra:supportedOperation
+    [
+        hydra:method "GET" ;
+        code:implementedBy
+            [
+                a code:EcmaScript ;
+                code:link <node:@hydrofoil/labyrinth/resource#get> ;
+            ] ;
+        knossos:beforeSend
+            [
+                code:implementedBy
+                    [
+                        a code:EcmaScript ;
+                        code:link <file:lib/cache.js#setHeaders> ;
+                    ] ;
+                code:arguments
+                    [
+                        code:name "cache-control" ; code:value "max-age=600" ;
+                        code:name "etag" ; code:value true ;
+                    ] ;
+            ] ;
+    ] ;
+.
+```
+
+Here's a hypothetical implementation:
+
+```typescript
+import type { BeforeSend } from '@hydrofoil/labyrinth/middleware'
+import toCanonical from 'rdf-dataset-ext/toCanonical.js'
+import etag from 'etag'
+
+type Headers = [{ etag?: boolean; 'cache-control'?: string }]
+
+export const setHeaders: BeforeSend<Headers> = ({ res, dataset }, headers = {}) => {
+    if (headers['cache-control']) {
+        res.setHeader('cache-control', headers['cache-control'])
+    }
+    
+    if (headers.etag) {
+        res.setHeader('etag', etag(toCanonical(dataset)))
+    }
+}
+```
 
 > [!TIP]
-> Resource hooks functions can be parametrised. Arguments are provided by attaching `code:arguments` to it.
-> See [here](./code-arguments.md) for more details.
+> For an actual implementation, see the package `@hydrofoil/creta-labs`
+
+> [!WARNING]
+> Implementors should not modify the dataset. At the time of writing this is not forbidden but may change in a future release

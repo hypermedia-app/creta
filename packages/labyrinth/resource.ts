@@ -10,7 +10,6 @@ import { preprocessResource } from './lib/middleware/preprocessResource'
 import { returnMinimal } from './lib/middleware'
 import { sendResponse } from './lib/middleware/sendResponse'
 
-export type { BeforeSend } from './lib/middleware/sendResponse'
 export type { ResourceHook } from './lib/middleware/preprocessResource'
 
 /**
