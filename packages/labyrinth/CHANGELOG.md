@@ -1,5 +1,12 @@
 # @hydrofoil/labyrinth
 
+## 0.13.5
+
+### Patch Changes
+
+- e62dcba: Loaded code arguments should all be optional
+- db525e7: Added a new "before send" hook which runs at the end of default handlers
+
 ## 0.13.4
 
 ### Patch Changes
