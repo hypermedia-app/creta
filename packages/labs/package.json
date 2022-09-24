@@ -1,6 +1,6 @@
 {
   "name": "@hydrofoil/creta-labs",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "scripts": {
     "prepare": "tsc"
   },
@@ -14,7 +14,7 @@
     "*.d.ts"
   ],
   "dependencies": {
-    "@hydrofoil/labyrinth": "^0.13.4",
+    "@hydrofoil/labyrinth": "^0.13.5",
     "etag": "^1.8.1",
     "express-preconditions": "^1.0.5",
     "http-errors": "^2.0.0",

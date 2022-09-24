@@ -1,5 +1,15 @@
 # @hydrofoil/knossos
 
+## 0.9.8
+
+### Patch Changes
+
+- e62dcba: Loaded code arguments should all be optional
+- db525e7: Added a new "before send" hook which runs at the end of default handlers
+- Updated dependencies [e62dcba]
+- Updated dependencies [db525e7]
+  - @hydrofoil/labyrinth@0.13.5
+
 ## 0.9.7
 
 ### Patch Changes
