@@ -10,7 +10,7 @@ export function fetchHead(_fetch = fetch) {
     if (req.headers.accept) {
       headers.Accept = req.headers.accept
     }
-    if (req.method !== 'GET') {
+    if (req.header('if-match')) {
       headers.Prefer = 'return=minimal'
     }
     const res = await _fetch(req.hydra.term.value, {
