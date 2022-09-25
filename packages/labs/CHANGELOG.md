@@ -1,5 +1,11 @@
 # @hydrofoil/creta-labs
 
+## 0.1.4
+
+### Patch Changes
+
+- 422fbbb: Request `Prefer=minimal` when checking for strong etag (`if-match` header)
+
 ## 0.1.3
 
 ### Patch Changes
