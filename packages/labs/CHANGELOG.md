@@ -1,5 +1,11 @@
 # @hydrofoil/creta-labs
 
+## 0.1.3
+
+### Patch Changes
+
+- d7c5bf5: Add files missing in package
+
 ## 0.1.2
 
 ### Patch Changes
