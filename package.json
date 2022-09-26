@@ -20,7 +20,7 @@
     "@babel/register": "^7.18.9",
     "@changesets/cli": "^2.24.3",
     "@tpluscode/eslint-config": "^0.3",
-    "@types/chai": "^4.3.1",
+    "@types/chai": "^4.3.3",
     "@types/chai-as-promised": "^7.1.5",
     "@types/chai-quantifiers": "^1.0.0",
     "@types/chai-snapshot-matcher": "^1",
