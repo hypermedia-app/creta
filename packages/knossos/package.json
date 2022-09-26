@@ -41,7 +41,7 @@
     "fs-extra": "^10.1.0",
     "debug": "^4.3.4",
     "express": "^4.18.1",
-    "express-middleware-shacl": "^1.3.2",
+    "express-middleware-shacl": "^1.3.3",
     "express-rdf-request": "^1.1.2",
     "http-errors": "^2.0.0",
     "http-status": "^1.5.2",
