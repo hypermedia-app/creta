@@ -2780,10 +2780,10 @@ chai-as-promised@^7.1.1:
   dependencies:
     check-error "^1.0.2"
 
-chai-quantifiers@^1.0.15:
-  version "1.0.15"
-  resolved "https://registry.yarnpkg.com/chai-quantifiers/-/chai-quantifiers-1.0.15.tgz#c0dd015a1ee6dc3154667dca6818394523696180"
-  integrity sha512-QsLPvl6HjJIV8azQ8/Ks9sARPz/RC+xtfWBxoMQpSy8SijyzLufT6eYGARsHX4sedArD6PVkW6GXhSrzy3H4QQ==
+chai-quantifiers@^1.0.17:
+  version "1.0.17"
+  resolved "https://registry.yarnpkg.com/chai-quantifiers/-/chai-quantifiers-1.0.17.tgz#7f9ecf6cc945c16d6bebec04390ab9c371c79b61"
+  integrity sha512-ee9xeWmfjQsDG/UH7QVq97+yStp+SN05dQ51kdric2zgHueWIjphMmG36kwLAhWm9KeZ1PK7Ms4UiPfz6JpASw==
 
 chai-snapshot-matcher@^2.0.2:
   version "2.0.2"
