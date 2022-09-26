@@ -1797,10 +1797,10 @@
     "@types/chai" "*"
     "@types/mocha" "*"
 
-"@types/chai@*", "@types/chai@^4.3.1":
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.3.1.tgz#e2c6e73e0bdeb2521d00756d099218e9f5d90a04"
-  integrity sha512-/zPMqDkzSZ8t3VtxOa4KPq7uzzW978M9Tvh+j7GHKuo6k6GTLxPJ4J5gE5cjfJ26pnXst0N5Hax8Sr0T2Mi9zQ==
+"@types/chai@*", "@types/chai@^4.3.3":
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.3.3.tgz#3c90752792660c4b562ad73b3fbd68bf3bc7ae07"
+  integrity sha512-hC7OMnszpxhZPduX+m+nrx+uFoLkWOMiR4oa/AZF3MuSETYTZmFfJAHqZEM8MVlvfG7BEUcgvtwoCTxBp6hm3g==
 
 "@types/clownface@*", "@types/clownface@^1.2.6", "@types/clownface@^1.5.0":
   version "1.5.0"
@@ -4549,10 +4549,10 @@ http-problem-details@^0.1.2, http-problem-details@^0.1.5:
   resolved "https://registry.yarnpkg.com/http-problem-details/-/http-problem-details-0.1.5.tgz#f8f94f4ab9d4050749e9f8566fb85bb8caa2be56"
   integrity sha512-GHxfQZ0POP4FWbAM0guOyZyJNWwbLUXp+4XOJdmitS2tp3gHVSatrSX59Yyq/dCkhk4KiGtTWIlXZC83yCkBkA==
 
-http-status@^1.5.2:
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/http-status/-/http-status-1.5.2.tgz#22e6ea67b4b5e2a366f49cb1759dc5479cad2fd6"
-  integrity sha512-HzxX+/hV/8US1Gq4V6R6PgUmJ5Pt/DGATs4QhdEOpG8LrdS9/3UG2nnOvkqUpRks04yjVtV5p/NODjO+wvf6vg==
+http-status@^1.5.3:
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/http-status/-/http-status-1.5.3.tgz#9d1f6adcd1a609f535679f6e1b82811b96c3306e"
+  integrity sha512-jCClqdnnwigYslmtfb28vPplOgoiZ0siP2Z8C5Ua+3UKbx410v+c+jT+jh1bbI4TvcEySuX0vd/CfFZFbDkJeQ==
 
 human-id@^1.0.2:
   version "1.0.2"
