@@ -1,5 +1,15 @@
 # @hydrofoil/knossos
 
+## 0.9.9
+
+### Patch Changes
+
+- a099c76: build(deps): bump express-middleware-shacl from 1.3.2 to 1.3.3
+- 86a90d5: Add possibility to set up additional error express handlers
+- 45426d2: build(deps): bump http-status from 1.5.2 to 1.5.3
+- Updated dependencies [86a90d5]
+  - @hydrofoil/labyrinth@0.13.6
+
 ## 0.9.8
 
 ### Patch Changes
