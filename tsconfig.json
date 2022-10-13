@@ -17,6 +17,7 @@
     "strictNullChecks": true,
     "allowSyntheticDefaultImports": true,
     "declaration": true,
+    "skipLibCheck": true,
     "typeRoots": [
       "node_modules/@types",
       "types"
