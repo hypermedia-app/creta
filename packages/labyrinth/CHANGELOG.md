@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.13.6
+
+### Patch Changes
+
+- 86a90d5: Add possibility to set up additional error express handlers
+
 ## 0.13.5
 
 ### Patch Changes
