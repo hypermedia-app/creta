@@ -6,7 +6,7 @@
 import { NamedNode } from 'rdf-js'
 import { HydraBox, middleware, ResourceLoader } from 'hydra-box'
 import { HydraBoxMiddleware } from 'hydra-box/middleware'
-import { RequestHandler, Router } from 'express'
+import { RequestHandler, Router, ErrorRequestHandler } from 'express'
 import rdfFactory from 'rdf-express-node-factory'
 import RdfResource from '@tpluscode/rdfine'
 import * as Hydra from '@rdfine/hydra'
@@ -77,6 +77,10 @@ declare module 'express-serve-static-core' {
 
 type Options = Partial<Pick<Labyrinth, 'collection' | 'minimalRepresentation'>>
 
+export interface CretaMiddleware extends HydraBoxMiddleware {
+  error?: ErrorRequestHandler | ErrorRequestHandler[]
+}
+
 /**
  * Parameters to configure labyrinth middleware
  */
@@ -86,7 +90,7 @@ export type MiddlewareParams = {
   loader?: ResourceLoader
   path: string
   sparql: StreamClient.StreamClientOptions
-  middleware?: HydraBoxMiddleware
+  middleware?: CretaMiddleware
   options?: Options
 }
 
@@ -144,6 +148,9 @@ export async function hydraBox(middlewareInit: MiddlewareParams): Promise<Router
     }))
 
   app.use(logRequestError)
+  if (params.middleware?.error) {
+    app.use(...ensureArray(params.middleware.error))
+  }
 
   return app
 }

@@ -42,6 +42,7 @@ The `schema:name` can be one of the following:
 - `before` - runs before the hydra-box middleware. Use it for example to set up authentication or CORS middlewares
 - `operations` - runs when operation candidates have been selected. It is the last chance to modify the operation which will be invoked
 - `resource` - runs after the operation and resource have been selected and set to `req.hydra` and right before the operation middleware is invoked
+- `error` - runs when an error is thrown in the request pipeline but before the error response is sent
 
 The linked implementation must be a factory function which will return an express request handler or a promise.
 

@@ -64,6 +64,7 @@ export async function createHydraBox({ apiTerm, client, sparql, ...ctx }: Contex
         ...(middleware.resource || []),
       ],
       operations: middleware.operations,
+      error: middleware.error as any,
     },
   }))
 
