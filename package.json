@@ -65,10 +65,10 @@
     "lint-staged": "^13.0.2",
     "sinon-chai": "^3.7.0",
     "standard": "^17.0.0",
-    "ts-node": "^9.1.1",
+    "ts-node": "^10.9.1",
     "tsconfig-paths": "^3.14.1",
     "typedoc": "^0.23.8",
-    "typescript": "^4.7.4"
+    "typescript": "^4.8.4"
   },
   "workspaces": [
     "packages/*",
