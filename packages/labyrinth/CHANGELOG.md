@@ -1,5 +1,13 @@
 # @hydrofoil/labyrinth
 
+## 0.13.7
+
+### Patch Changes
+
+- 990a319: Support shapes in member assertions
+- Updated dependencies [990a319]
+  - @hydrofoil/shape-to-query@0.1.0
+
 ## 0.13.6
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @hydrofoil/knossos
 
+## 0.9.10
+
+### Patch Changes
+
+- 990a319: Ignore member assertions where object is blank node
+- Updated dependencies [990a319]
+  - @hydrofoil/labyrinth@0.13.7
+
 ## 0.9.9
 
 ### Patch Changes
