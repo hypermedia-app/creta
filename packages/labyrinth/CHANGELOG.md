@@ -1,5 +1,13 @@
 # @hydrofoil/labyrinth
 
+## 0.13.8
+
+### Patch Changes
+
+- 0686a29: Reduce empty lines in member assertion patterns
+- Updated dependencies [0686a29]
+  - @hydrofoil/shape-to-query@0.1.2
+
 ## 0.13.7
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @hydrofoil/shape-to-query
 
+## 0.1.2
+
+### Patch Changes
+
+- 0686a29: Unterminated pattern caused invalid SPARQL
+
 ## 0.1.1
 
 ### Patch Changes
