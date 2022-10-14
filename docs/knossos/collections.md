@@ -226,6 +226,20 @@ PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 .
 ```
 
+This will produce SPARQL patterns similar to
+
+```sparql
+PREFIX lexvo: <http://lexvo.org/ontology#>
+PREFIX bibo: <http://purl.org/ontology/bibo/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+SELECT ?member {
+    ?member a lexvo:Language .
+    ?book dcterms:language ?member .
+    ?book a bibo:Book .
+}
+```
+
 [node-shape]: https://www.w3.org/TR/shacl/#node-shapes
 
 ## Queries
