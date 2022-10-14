@@ -45,18 +45,23 @@ function toSparqlPattern(member: Variable) {
   }
 }
 
-function * createPatterns(subs: MultiPointer, preds: MultiPointer, objs: MultiPointer, { graph }: { graph?: Variable }) {
+function * createPatterns(subs: MultiPointer, preds: MultiPointer, objs: MultiPointer, { graph }: { graph?: Variable }): Generator<SparqlTemplateResult> {
   for (const [subject, subjectPatterns] of subs.map(createPatternValue('ma_s'))) {
     for (const [predicate, predicatePatterns] of preds.map(createPatternValue('ma_p'))) {
       for (const [object, objectPatterns] of objs.map(createPatternValue('ma_o'))) {
         if (!object || !subject || !predicate) continue
 
-        const patterns = sparql`
-          ${subject} ${predicate} ${object} .
-          ${subjectPatterns}
-          ${predicatePatterns}
-          ${objectPatterns}
-        `
+        const patterns = [
+          subjectPatterns,
+          predicatePatterns,
+          objectPatterns]
+          .reduce((previousValue: SparqlTemplateResult, currentValue) => {
+            if (!currentValue) {
+              return previousValue
+            }
+
+            return sparql`${previousValue}\n${currentValue}`
+          }, sparql`${subject} ${predicate} ${object} .`)
 
         yield graph ? sparql`GRAPH ${graph} { ${patterns} }` : patterns
       }

@@ -4,5 +4,5 @@ import { sh } from '@tpluscode/rdf-ns-builders'
 
 export function shapeToPatterns(shape: GraphPointer, variablePrefix: string): SparqlTemplateResult {
   const targetClass = shape.out(sh.targetClass).term
-  return sparql`?${variablePrefix} a ${targetClass}`
+  return sparql`?${variablePrefix} a ${targetClass} .`
 }
