@@ -192,6 +192,42 @@ This will wrap such a member assertion in a `GRAPH ?member` pattern
 > [!TIP]
 > This technique is useful to exclude inferred terms from matching the query. Only the resources self-asserted properties will be matched.
 
+## Advanced member assertions
+
+A more advanced feature allows blank nodes to be used with member assertions. At the time of writing they can represent
+[SHACL NodeShapes][node-shape], which will be used to add complex static filters to collections.
+
+For example, the following collection will return `lexvo:Language` resources but only those which are used as objects
+of `bibo:Book` resources.
+
+```turtle
+PREFIX bibo: <http://purl.org/ontology/bibo/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX lexvo: <http://lexvo.org/ontology#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+
+</book-langs>
+    a hydra:Collection ;
+    hydra:memberAssertion
+        [
+            hydra:property rdf:type ;
+            hydra:object lexvo:Language ;
+        ],
+        [
+            hydra:property dcterms:language ;
+            hydra:subject
+                [
+                    a sh:NodeShape ;
+                    sh:targetClass bibo:Book ;
+                ];
+        ] ;
+.
+```
+
+[node-shape]: https://www.w3.org/TR/shacl/#node-shapes
+
 ## Queries
 
 Collections can also be queries dynamically using `GET` requests with query strings. The variables passed by the client need to be mapped to URI Template variables which gets reconstructed into an RDF graph of filters on the server. The filters are then transformed into SPARQL query patterns using JS code.
@@ -387,6 +423,10 @@ A collection can be used to create new instances of its type, typically by sendi
 To enable this feature, the collection class has to support the `POST` operation, implemented by a generic `knossos` handler. It also has to be annotated with an IRI Template for the new instance identifiers.
 
 Member assertions which have `hydra:predicate` and `hydra:object` will be implicitly added to the newly created resource. Other member assertions will be ignored.
+
+> [!NOTE]
+> For a member assertion to be applied to a new member, the `hydra:property` MUST be an IRI and `hydra:object` MUST be
+> an IRI or Literal
 
 ```turtle
 prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
