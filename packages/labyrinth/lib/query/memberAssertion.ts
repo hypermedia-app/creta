@@ -49,6 +49,8 @@ function * createPatterns(subs: MultiPointer, preds: MultiPointer, objs: MultiPo
   for (const [subject, subjectPatterns] of subs.map(createPatternValue('ma_s'))) {
     for (const [predicate, predicatePatterns] of preds.map(createPatternValue('ma_p'))) {
       for (const [object, objectPatterns] of objs.map(createPatternValue('ma_o'))) {
+        if (!object || !subject || !predicate) continue
+
         const patterns = sparql`
           ${subject} ${predicate} ${object} .
           ${subjectPatterns}
