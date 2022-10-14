@@ -6,17 +6,16 @@ import cf, { AnyPointer, GraphPointer, MultiPointer } from 'clownface'
 import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
 import { IriTemplate, IriTemplateMapping } from '@rdfine/hydra'
 import { Api } from 'hydra-box/Api'
-import { hyper_query, knossos } from '@hydrofoil/vocabularies/builders'
+import { hyper_query } from '@hydrofoil/vocabularies/builders'
 import type { StreamClient } from 'sparql-http-client/StreamClient'
 import toArray from 'stream-to-array'
 import { toSparql } from 'clownface-shacl-path'
-import { toRdf } from 'rdf-literal'
-import TermSet from '@rdfjs/term-set'
 import { loadImplementations } from '../code'
-import { exactMatch } from '../query/filters'
-import { Filter } from '../query'
 import { log, warn } from '../logger'
-import { loadResourceWithLinks } from '../query/eagerLinks'
+import { exactMatch } from './filters'
+import { loadResourceWithLinks } from './eagerLinks'
+import { memberAssertionPatterns } from './memberAssertion'
+import { Filter } from '.'
 
 function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPointer, api: Api) {
   return async (mapping: IriTemplateMapping, index: number): Promise<string | SparqlTemplateResult> => {
@@ -61,48 +60,6 @@ function createTemplateVariablePatterns(subject: Variable, queryPointer: AnyPoin
         return $rdf.variable(`filter${index + 1}_${name}`)
       },
     }, ...args)
-  }
-}
-
-function * createPatterns(subs: Term[], preds: Term[], objs: Term[], { graph }: { graph?: Variable }) {
-  for (const subject of subs) {
-    for (const predicate of preds) {
-      for (const object of objs) {
-        const pattern = sparql`${subject} ${predicate} ${object} .`
-
-        yield graph ? sparql`GRAPH ${graph} { ${pattern} }` : pattern
-      }
-    }
-  }
-}
-
-function toSparqlPattern(member: Variable) {
-  const seen = new TermSet()
-
-  return function (previous: SparqlTemplateResult[], memberAssertion: GraphPointer): SparqlTemplateResult[] {
-    if (seen.has(memberAssertion.term)) {
-      return previous
-    }
-
-    seen.add(memberAssertion.term)
-    const subject = memberAssertion.out(hydra.subject).terms
-    const predicate = memberAssertion.out(hydra.property).terms
-    const object = memberAssertion.out(hydra.object).terms
-    const graph = memberAssertion.out(knossos.ownGraphOnly).term?.equals(toRdf(true)) ? member : undefined
-
-    if (subject.length && predicate.length && !object.length) {
-      return [...previous, ...createPatterns(subject, predicate, [member], { graph })]
-    }
-    if (subject.length && object.length && !predicate.length) {
-      return [...previous, ...createPatterns(subject, [member], object, { graph })]
-    }
-    if (predicate.length && object.length && !subject.length) {
-      return [...previous, ...createPatterns([member], predicate, object, { graph })]
-    }
-
-    log('Skipping invalid member assertion')
-
-    return previous
   }
 }
 
@@ -170,8 +127,8 @@ export default async function ({ api, collection, client, pageSize, query, varia
   const collectionTypes = apiPointer.node(collection.out(rdf.type))
 
   const memberAssertions = [
-    ...collectionTypes.out(memberAssertionPredicates).toArray().reduce(toSparqlPattern(subject), []),
-    ...collection.out(memberAssertionPredicates).toArray().reduce(toSparqlPattern(subject), []),
+    ...memberAssertionPatterns(collectionTypes.out(memberAssertionPredicates), subject),
+    ...memberAssertionPatterns(collection.out(memberAssertionPredicates), subject),
   ]
 
   const managesBlockPatterns = memberAssertions.reduce((combined, next) => sparql`${combined}\n${next}`, sparql``)

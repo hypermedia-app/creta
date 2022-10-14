@@ -16,6 +16,7 @@ import * as rdfRequest from 'express-rdf-request'
 import { preprocessMiddleware, sendResponse } from '@hydrofoil/labyrinth/lib/middleware'
 import { getPayload } from '@hydrofoil/labyrinth/lib/request'
 import TermSet from '@rdfjs/term-set'
+import { isBlankNode, isNamedNode } from 'is-graph-pointer'
 import { payloadTypes, shaclValidate } from './shacl'
 import { save } from './lib/resource'
 import { applyTransformations, hasAllRequiredVariables } from './lib/template'
@@ -64,9 +65,9 @@ const assertMemberAssertions = asyncMiddleware(async (req, res: CreateMemberResp
   const member = res.locals.member!
 
   for (const assertion of res.locals.memberAssertions!.toArray()) {
-    const predicate = assertion.out(hydra.property).term
-    const object = assertion.out(hydra.object).term
-    if (predicate && object) {
+    const predicate = assertion.out(hydra.property)
+    const object = assertion.out(hydra.object)
+    if (isNamedNode(predicate) && !isBlankNode(object)) {
       member.addOut(predicate, object)
     }
   }

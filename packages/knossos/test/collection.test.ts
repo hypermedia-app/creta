@@ -379,6 +379,72 @@ describe('@hydrofoil/knossos/collection', () => {
       }))
     })
 
+    it('ignores member assertions with blank nodes', async () => {
+      // given
+      app.use(async (req, res, next) => {
+        const collection = await req.hydra.resource.clownface()
+        collection.addOut(rdf.type, ex.Collection)
+        clownface(req.hydra.api)
+          .node(ex.Collection)
+          .addOut(hydra.memberAssertion, assert => {
+            assert.addOut(hydra.property, rdf.type)
+            assert.addOut(hydra.object, foaf.Person)
+          })
+        collection.addOut(hydra.memberAssertion, assert => {
+          assert.addOut(hydra.property, foaf.knows)
+          assert.addOut(hydra.object, collection.blankNode())
+        })
+        next()
+      })
+      app.post('/collection', CreateMember)
+
+      // when
+      await request(app)
+        .post('/collection')
+        .send(turtle`<> ${schema.name} "john" .`.toString())
+        .set('content-type', 'text/turtle')
+        .set('host', 'example.com')
+
+      // then
+      expect(knossos.store.save).to.have.been.calledWith(sinon.match((value: GraphPointer) => {
+        expect(value.out(foaf.knows).terms).to.be.empty
+        return true
+      }))
+    })
+
+    it('asserts member assertions with literal object', async () => {
+      // given
+      app.use(async (req, res, next) => {
+        const collection = await req.hydra.resource.clownface()
+        collection.addOut(rdf.type, ex.Collection)
+        clownface(req.hydra.api)
+          .node(ex.Collection)
+          .addOut(hydra.memberAssertion, assert => {
+            assert.addOut(hydra.property, rdf.type)
+            assert.addOut(hydra.object, foaf.Person)
+          })
+        collection.addOut(hydra.memberAssertion, assert => {
+          assert.addOut(hydra.property, foaf.gender)
+          assert.addOut(hydra.object, 'M')
+        })
+        next()
+      })
+      app.post('/collection', CreateMember)
+
+      // when
+      await request(app)
+        .post('/collection')
+        .send(turtle`<> ${schema.name} "john" .`.toString())
+        .set('content-type', 'text/turtle')
+        .set('host', 'example.com')
+
+      // then
+      expect(knossos.store.save).to.have.been.calledWith(sinon.match((value: GraphPointer) => {
+        expect(value.out(foaf.gender).term).to.deep.eq($rdf.literal('M'))
+        return true
+      }))
+    })
+
     it('does not mistake self reference in member assertion for new item id', async () => {
       // given
       app.use(async (req, res, next) => {
