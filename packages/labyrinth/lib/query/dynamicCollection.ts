@@ -10,10 +10,11 @@ import { hyper_query } from '@hydrofoil/vocabularies/builders'
 import type { StreamClient } from 'sparql-http-client/StreamClient'
 import toArray from 'stream-to-array'
 import { toSparql } from 'clownface-shacl-path'
+import { isGraphPointer } from 'is-graph-pointer'
+import { DescribeStrategy, DescribeStrategyFactory, unionGraphDescribeStrategy } from '../../describeStrategy'
 import { loadImplementations } from '../code'
 import { log, warn } from '../logger'
 import { exactMatch } from './filters'
-import { loadResourceWithLinks } from './eagerLinks'
 import { memberAssertionPatterns } from './memberAssertion'
 import { Filter } from '.'
 
@@ -104,13 +105,6 @@ function createOrdering(collectionTypes: MultiPointer, collection: GraphPointer,
   }
 }
 
-function resourceIncludePaths(api: AnyPointer, collection: GraphPointer) {
-  const classIncludes = api.node(collection.out(rdf.type)).out(hyper_query.memberInclude).toArray()
-  const instanceIncludes = collection.out(hyper_query.memberInclude).toArray()
-
-  return [...classIncludes, ...instanceIncludes]
-}
-
 interface DynamicCollection {
   api: Api
   collection: GraphPointer
@@ -182,12 +176,35 @@ export default async function ({ api, collection, client, pageSize, query, varia
       if (!members.length) {
         return $rdf.dataset().toStream()
       }
-
-      const includePaths = resourceIncludePaths(apiPointer, collection)
-
-      return loadResourceWithLinks(members, includePaths, client)
+      const describeMembers = await getMembersDescribe(api, collection, collectionTypes, client)
+      const query = await describeMembers(...members)
+      return query.execute(client.query)
     },
   }
+}
+
+async function getMembersDescribe(
+  api: Api,
+  collection: GraphPointer,
+  collectionTypes: MultiPointer,
+  client: StreamClient): Promise<DescribeStrategy> {
+  let pointer = collection.out(hyper_query.memberDescribeStrategy)
+  if (!isGraphPointer(pointer)) {
+    pointer = collectionTypes.out(hyper_query.memberDescribeStrategy)
+  }
+
+  const [strategy] = await loadImplementations<DescribeStrategyFactory<unknown[]>>(pointer, { api, log }, {
+    throwWhenLoadFails: true,
+    single: true,
+  })
+
+  const apiPtr = cf(api) as GraphPointer
+  if (strategy) {
+    const [impl, args] = strategy
+    return impl({ api: apiPtr, resource: collection, client }, ...args)
+  }
+
+  return unionGraphDescribeStrategy({ api: apiPtr, resource: collection, client }, hyper_query.memberInclude)
 }
 
 export async function createFilters({ subject, query, api, variables }: {

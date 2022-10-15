@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@hydrofoil/shape-to-query": "^0.1.2",
-    "@hydrofoil/vocabularies": "^0.3.2",
+    "@hydrofoil/vocabularies": "^0.3.3",
     "@rdfine/hydra": "^0.8.4",
     "@rdfjs/data-model": "^1.2",
     "@rdfjs/term-map": "^1.0.0",
