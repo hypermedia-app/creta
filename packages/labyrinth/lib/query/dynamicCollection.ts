@@ -11,7 +11,7 @@ import type { StreamClient } from 'sparql-http-client/StreamClient'
 import toArray from 'stream-to-array'
 import { toSparql } from 'clownface-shacl-path'
 import { isGraphPointer } from 'is-graph-pointer'
-import { DescribeStrategy, DescribeStrategyFactory, unionGraphDescribeStrategy } from '../../describeStrategy'
+import { DescribeStrategy, DescribeStrategyFactory, unionGraphDescribe } from '../../describeStrategy'
 import { loadImplementations } from '../code'
 import { log, warn } from '../logger'
 import { exactMatch } from './filters'
@@ -203,7 +203,7 @@ async function getMembersDescribe(
     return impl({ api: apiPtr, resource: collection, client }, ...args)
   }
 
-  return unionGraphDescribeStrategy({ api: apiPtr, resource: collection, client }, hyper_query.memberInclude)
+  return unionGraphDescribe({ api: apiPtr, resource: collection, client }, hyper_query.memberInclude)
 }
 
 export async function createFilters({ subject, query, api, variables }: {
