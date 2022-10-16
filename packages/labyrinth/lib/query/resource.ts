@@ -5,11 +5,11 @@ import express from 'express'
 import once from 'once'
 import { isGraphPointer } from 'is-graph-pointer'
 import { rdf } from '@tpluscode/rdf-ns-builders'
-import { DescribeStrategy, DescribeStrategyFactory, unionGraphDescribeStrategy } from '../../describeStrategy'
+import { DescribeStrategy, DescribeStrategyFactory, unionGraphDescribe } from '../../describeStrategy'
 import { log } from '../logger'
 import { loadImplementations } from '../code'
 
-export function loadRepresentation(req: Pick<express.Request, 'hydra' | 'labyrinth'>, defaultStrategyFactory = unionGraphDescribeStrategy) {
+export function loadRepresentation(req: Pick<express.Request, 'hydra' | 'labyrinth'>, defaultStrategyFactory = unionGraphDescribe) {
   return once(async () => {
     const api = req.hydra.api
     const apiPtr = clownface(api) as GraphPointer

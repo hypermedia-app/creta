@@ -26,7 +26,7 @@ export interface DescribeStrategyFactory<Args extends unknown[] = []> {
 /**
  * Default describe strategy which queries `DESCRIBE` from union graph
  */
-export const unionGraphDescribeStrategy: DescribeStrategyFactory<[NamedNode]> = ({ api, resource, client }, includeProperty) =>
+export const unionGraphDescribe: DescribeStrategyFactory<[NamedNode]> = ({ api, resource, client }, includeProperty) =>
   (...members) => {
     const classIncludes = api.node(resource.out(rdf.type)).out(includeProperty).toArray()
     const instanceIncludes = resource.out(includeProperty).toArray()
