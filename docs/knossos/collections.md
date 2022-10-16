@@ -132,14 +132,16 @@ When called, the function arguments will be the URIs of the collection members b
 may execute a query for each member in parallel rather than all combined into a single query
 
 ```ts
-import type { DescribeStrategyFactory } from '@hydrofoil/labyrinth/describeStrategy'
+import { DescribeStrategyFactory, unionGraphDescribe } from '@hydrofoil/labyrinth/describeStrategy'
+import { hyper_query } from '@hydrofoil/vocabularies/builders'
 import { CONSTRUCT } from '@tpluscode/sparql-builder'
 import { concatStreams } from './lib/stream.js'
 
-export const parallelMembers: DescribeStrategyFactory = ({ api, resource, client }) => {
+export const parallelMembers: DescribeStrategyFactory = ({api, resource, client}) => {
+    const describeMember = unionGraphDescribe({api, resource, client}, hyper_query.memberInclude)
     return (...terms) => {
-        const quadStreams = terms.map(term => CONSTRUCT`?s ?p ?o`.FROM(term).WHERE`?s ?p ?o`.execute(client.query))
-      
+        const quadStreams = terms.map(term => describeMember(term).execute(client.query))
+
         return concatStreams(quadStreams)
     }
 }
