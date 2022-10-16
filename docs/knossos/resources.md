@@ -176,6 +176,49 @@ PREFIX query: <https://hypermedia.app/query#>
 > .
 > ```
 
+## Resource describe strategy
+
+> [!API]
+> `import type { DescribeStrategyFactory } from '@hydrofoil/labyrinth/describeStrategy'`
+>
+> [Open API docs](/api/interfaces/_hydrofoil_labyrinth_describeStrategy.DescribeStrategyFactory.html)
+
+In some scenarios, the default strategy for loading resource using `DESCRIBE` may be a performance bottleneck or result
+in unnecessarily verbose responses. In such cases it may be required to replace how a given resource or type of resource
+is loaded from the triple store.
+
+To do that, first set the `knossos:describeStrategy` to an instance or class
+
+```turtle
+@prefix knossos: <https://hypermedia.app/knossos#> .
+@prefix code: <https://code.described.at/> .
+
+</api/Article>
+    knossos:describeStrategy
+        [
+            code:implementedBy
+                [
+                    a code:EcmaScriptModule ;
+                    code:link <file:lib/article.js#construct> ;
+                ] ;
+        ] ;
+.
+```
+
+The implementation must be a function, which will return another function, which will in turn return a quad stream. For
+example, the implementation below
+
+```ts
+import type { DescribeStrategyFactory } from '@hydrofoil/labyrinth/describeStrategy'
+import { CONSTRUCT } from '@tpluscode/sparql-builder'
+
+export const construct: DescribeStrategyFactory = ({ api, resource, client }) => {
+    return (term) => {
+        return CONSTRUCT`?s ?p ?o`.FROM(term).WHERE`?s ?p ?o`.execute(client.query)
+    }
+}
+```
+
 ## Creating resources
 
 New resources are created with a `PUT` HTTP request with an RDF body. The request target is assumed to be the base URI for the parser and thus an empty named node can be used to refer to the creates resource.

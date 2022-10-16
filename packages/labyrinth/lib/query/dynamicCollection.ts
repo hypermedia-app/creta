@@ -177,8 +177,7 @@ export default async function ({ api, collection, client, pageSize, query, varia
         return $rdf.dataset().toStream()
       }
       const describeMembers = await getMembersDescribe(api, collection, collectionTypes, client)
-      const query = await describeMembers(...members)
-      return query.execute(client.query)
+      return describeMembers(...members)
     },
   }
 }

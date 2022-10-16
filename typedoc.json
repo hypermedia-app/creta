@@ -8,6 +8,7 @@
     "packages/knossos/index.ts",
     "packages/knossos/shacl.ts",
     "packages/labyrinth/index.ts",
+    "packages/labyrinth/describeStrategy.ts",
     "packages/labyrinth/collection/filters.ts",
     "packages/labyrinth/middleware.ts",
     "packages/labyrinth/lib/middleware.ts",

@@ -1,12 +1,19 @@
-import { NamedNode } from 'rdf-js'
-import { Construct } from '@tpluscode/sparql-builder'
+/**
+ * @packageDocumentation
+ * @module @hydrofoil/labyrinth/describeStrategy
+ */
+
+import { NamedNode, Stream } from 'rdf-js'
 import { GraphPointer } from 'clownface'
 import StreamClient from 'sparql-http-client'
 import { rdf } from '@tpluscode/rdf-ns-builders'
 import { loadResourceWithLinks } from './lib/query/eagerLinks'
 
+/**
+ * Returns an RDF/JS quad stream with the representation of the given term(s)
+ */
 export interface DescribeStrategy {
-  (...members: NamedNode[]): Promise<Construct> | Construct
+  (...terms: NamedNode[]): Promise<Stream> | Stream
 }
 
 export interface DescribeStrategyFactory<Args extends unknown[] = []> {
@@ -16,12 +23,14 @@ export interface DescribeStrategyFactory<Args extends unknown[] = []> {
   ): Promise<DescribeStrategy> | DescribeStrategy
 }
 
-export const unionGraphDescribeStrategy: DescribeStrategyFactory<[NamedNode]> = ({ api, resource }, includeProperty) => {
-  return (...members) => {
+/**
+ * Default describe strategy which queries `DESCRIBE` from union graph
+ */
+export const unionGraphDescribeStrategy: DescribeStrategyFactory<[NamedNode]> = ({ api, resource, client }, includeProperty) =>
+  (...members) => {
     const classIncludes = api.node(resource.out(rdf.type)).out(includeProperty).toArray()
     const instanceIncludes = resource.out(includeProperty).toArray()
 
     const includePaths = [...classIncludes, ...instanceIncludes]
-    return loadResourceWithLinks(members, includePaths)
+    return loadResourceWithLinks(members, includePaths, client)
   }
-}
