@@ -77,6 +77,7 @@ export async function loadLinkedResources(terms: Term[], includes: GraphPointer[
   return query?.execute(client.query) || $rdf.dataset().toStream()
 }
 
-export async function loadResourceWithLinks(terms: Term[], includes: GraphPointer[]): Promise<Construct> {
-  return createDescribe(terms, includes, false)
+export async function loadResourceWithLinks(terms: Term[], includes: GraphPointer[], client: StreamClient): Promise<Stream> {
+  const query = await createDescribe(terms, includes, false)
+  return query.execute(client.query)
 }

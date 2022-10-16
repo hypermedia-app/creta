@@ -122,6 +122,29 @@ PREFIX hyper-query: <https://hypermedia.app/query#>
 .
 ```
 
+## Member describe strategy
+
+It is possible to completely change the way collection members are loaded, similar to how it's done to standard
+[resources](resources.md#resource-describe-strategy). Do that by implementing a `DescribeStrategyFactory` but attach it
+to the collection with `knossos:memberDescribeStrategy` instead.
+
+When called, the function arguments will be the URIs of the collection members being loaded. For example, an implementation
+may execute a query for each member in parallel rather than all combined into a single query
+
+```ts
+import type { DescribeStrategyFactory } from '@hydrofoil/labyrinth/describeStrategy'
+import { CONSTRUCT } from '@tpluscode/sparql-builder'
+import { concatStreams } from './lib/stream.js'
+
+export const parallelMembers: DescribeStrategyFactory = ({ api, resource, client }) => {
+    return (...terms) => {
+        const quadStreams = terms.map(term => CONSTRUCT`?s ?p ?o`.FROM(term).WHERE`?s ?p ?o`.execute(client.query))
+      
+        return concatStreams(quadStreams)
+    }
+}
+```
+
 ## Static filters
 
 By adding more objects to the `hydra:memberAssertion` property, the collection can be statically narrowed down to a subset of members.
