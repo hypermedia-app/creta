@@ -1,5 +1,13 @@
 # @hydrofoil/labyrinth
 
+## 0.13.9
+
+### Patch Changes
+
+- 7c08048: Overridable strategy for loading resource and collection member data (fixes #31)
+- Updated dependencies [abe0fbc]
+  - @hydrofoil/shape-to-query@0.2.0
+
 ## 0.13.8
 
 ### Patch Changes

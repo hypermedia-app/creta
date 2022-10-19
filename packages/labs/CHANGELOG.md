@@ -1,5 +1,15 @@
 # @hydrofoil/creta-labs
 
+## 0.1.5
+
+### Patch Changes
+
+- abe0fbc: Describe Strategy which generates a construct from annotated shape
+- Updated dependencies [abe0fbc]
+- Updated dependencies [7c08048]
+  - @hydrofoil/shape-to-query@0.2.0
+  - @hydrofoil/labyrinth@0.13.9
+
 ## 0.1.4
 
 ### Patch Changes
