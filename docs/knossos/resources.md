@@ -219,6 +219,9 @@ export const construct: DescribeStrategyFactory = ({ api, resource, client }) =>
 }
 ```
 
+> [!TIP]
+> See the [labs package](labs.md#constructbynodeshape) for an implementation for a `CONSTRUCT` strategy
+
 ## Creating resources
 
 New resources are created with a `PUT` HTTP request with an RDF body. The request target is assumed to be the base URI for the parser and thus an empty named node can be used to refer to the creates resource.

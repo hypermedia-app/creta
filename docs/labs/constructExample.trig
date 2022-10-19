@@ -1,0 +1,60 @@
+PREFIX ex: <http://example.org/>
+PREFIX code: <https://code.described.at/>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX dash: <http://datashapes.org/dash#>
+PREFIX knossos: <https://hypermedia.app/knossos#>
+PREFIX hyper_query: <https://hypermedia.app/query#>
+
+GRAPH </article/shacl-101> {
+  </article/shacl-101> a </api/Article> .
+}
+
+GRAPH </api/Article> {
+  </api/Article>
+    a hydra:Class ;
+    knossos:describeStrategy
+      [
+        code:implementedBy
+          [
+            a code:EcmaScript ;
+            code:link <node:@hydrofoil/creta-labs/describeStrategy#constructByNodeShape> ;
+          ] ;
+      ] ;
+    hyper_query:constructShape
+    [
+        sh:property
+          [
+            sh:path dcterms:title ;
+          ] ;
+      ] ;
+  .
+}
+
+GRAPH </api/ArticleCollection> {
+  </api/Article>
+    rdfs:subClassOf hydra:Collection ;
+    knossos:memberDescribeStrategy
+      [
+        code:implementedBy
+          [
+            a code:EcmaScript ;
+            code:link <node:@hydrofoil/creta-labs/describeStrategy#constructByNodeShape> ;
+          ] ;
+        code:arguments
+          [
+            code:name "shapePath" ;
+            code:value hyper_query:memberConstructShape ;
+          ] ;
+      ] ;
+    hyper_query:memberConstructShape
+      [
+        sh:property
+          [
+            sh:path dcterms:title ;
+          ] ;
+      ]
+  .
+}

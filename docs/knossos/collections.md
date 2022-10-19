@@ -125,7 +125,7 @@ PREFIX hyper-query: <https://hypermedia.app/query#>
 ## Member describe strategy
 
 It is possible to completely change the way collection members are loaded, similar to how it's done to standard
-[resources](resources.md#resource-describe-strategy). Do that by implementing a `DescribeStrategyFactory` but attach it
+[resources](knossos/resources.md#resource-describe-strategy). Do that by implementing a `DescribeStrategyFactory` but attach it
 to the collection with `knossos:memberDescribeStrategy` instead.
 
 When called, the function arguments will be the URIs of the collection members being loaded. For example, an implementation

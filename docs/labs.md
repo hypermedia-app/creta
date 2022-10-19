@@ -89,3 +89,26 @@ Parameters:
 Implementation of `stateAsync` must return the etag and/ore last modified date of the checked resource in their respective
 lexical form as defined by the specifications.
 `requiredWith` denotes which request methods will require the precondition headers.
+
+
+## `describeStrategy.js`
+
+### `constructByNodeShape`
+
+Implements the [`DescribeStrategyFactory`](knossos/resources.md#resource-describe-strategy) so that resources are loaded
+using a `CONSTRUCT` built from a `NodeShape`. By default, will expect `dash:shape` set to the resource but the predicate
+can be changed, as would be a good idea in the case of collections.
+
+Parameters:
+
+| Parameter | Type | Required? | Default |
+| -- |-- |-- | -- |
+| `shapePath` | 'NamedNode' | no | `hyper_query:constructShape` |
+
+Here's an example of how an `Article` and `ArticleCollection` classes would be configured to construct a specific shape 
+for the instances and collection members respectively.
+
+[filename](labs/constructExample.trig ':include :type=code turtle')
+
+> [!NOTE]
+> The query will always include patterns for resources' `rdf:type` types
