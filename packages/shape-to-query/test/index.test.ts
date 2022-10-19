@@ -19,7 +19,7 @@ describe('@hydrofoil/shape-to-query', () => {
           `
 
           // when
-          const patterns = shapeToPatterns(shape, 'node')
+          const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
           const query = SELECT.ALL.WHERE`${patterns}`.build()
 
           // then
@@ -44,7 +44,7 @@ describe('@hydrofoil/shape-to-query', () => {
         `
 
         // when
-        const patterns = shapeToPatterns(shape, 'node')
+        const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
         const query = SELECT.ALL.WHERE`${patterns}`.build()
 
         // then
@@ -69,7 +69,7 @@ describe('@hydrofoil/shape-to-query', () => {
         `
 
         // when
-        const patterns = shapeToPatterns(shape, 'node')
+        const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
         const query = SELECT.ALL.WHERE`${patterns}`.build()
 
         // then

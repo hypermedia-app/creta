@@ -73,9 +73,9 @@ function createPatternValue(variable: string) {
   return (ptr: GraphPointer, index: number): [Term | null, SparqlTemplateResult] | [Term | null] => {
     if (isBlankNode(ptr)) {
       if (isNodeShape(ptr)) {
-        const variableName = `${variable}${index}`
+        const subjectVariable = `${variable}${index}`
 
-        return [$rdf.variable(variableName), shapeToPatterns(ptr, variableName)]
+        return [$rdf.variable(subjectVariable), shapeToPatterns(ptr, { subjectVariable })]
       }
 
       return [null]

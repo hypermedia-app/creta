@@ -1,5 +1,6 @@
 ---
-"@hydrofoil/shape-to-query": patch
+"@hydrofoil/shape-to-query": minor
 ---
 
-Simplest possible support for predicate paths
+Simplest possible support for predicate paths.
+BREAKING: change the options parameter
