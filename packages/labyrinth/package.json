@@ -1,6 +1,6 @@
 {
   "name": "@hydrofoil/labyrinth",
-  "version": "0.13.8",
+  "version": "0.13.9",
   "description": "Build Hydra APIs on top of hydra-box",
   "scripts": {
     "prepare": "tsc"
@@ -20,7 +20,7 @@
     "directory": "packages/labyrinth"
   },
   "dependencies": {
-    "@hydrofoil/shape-to-query": "^0.1.2",
+    "@hydrofoil/shape-to-query": "^0.2.0",
     "@hydrofoil/vocabularies": "^0.3.3",
     "@rdfine/hydra": "^0.8.4",
     "@rdfjs/data-model": "^1.2",

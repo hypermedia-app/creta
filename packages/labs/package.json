@@ -1,6 +1,6 @@
 {
   "name": "@hydrofoil/creta-labs",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "scripts": {
     "prepare": "tsc"
   },
@@ -16,8 +16,8 @@
     "lib/*.d.ts"
   ],
   "dependencies": {
-    "@hydrofoil/labyrinth": "^0.13.5",
-    "@hydrofoil/shape-to-query": "^0.1.2",
+    "@hydrofoil/labyrinth": "^0.13.9",
+    "@hydrofoil/shape-to-query": "^0.2.0",
     "@hydrofoil/vocabularies": "^0.3.3",
     "@rdfjs/dataset": "^1",
     "@tpluscode/rdf-ns-builders": "^2.0.1",
