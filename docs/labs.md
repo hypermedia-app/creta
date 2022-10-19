@@ -105,6 +105,8 @@ Parameters:
 | -- |-- |-- | -- |
 | `shapePath` | 'NamedNode' | no | `hyper_query:constructShape` |
 
+When multiple shapes are found, they are combined in a `UNION`. 
+
 Here's an example of how an `Article` and `ArticleCollection` classes would be configured to construct a specific shape 
 for the instances and collection members respectively.
 

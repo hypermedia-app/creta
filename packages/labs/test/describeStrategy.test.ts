@@ -105,5 +105,51 @@ describe('@hydrofoil/creta-labs/describeStrategy', () => {
         }
       `)
     })
+
+    it('combines multiple shapes', async () => {
+      // given
+      await append`
+        ${ex.ClassA}
+          ${hyper_query.constructShape} [
+            ${sh.property} [
+              ${sh.path} ${foaf.name} ;
+            ] ;
+          ] .
+        ${ex.ClassB}
+          ${hyper_query.constructShape} [
+            ${sh.property} [
+              ${sh.path} ${schema.name} ;
+            ] ;
+          ] .
+      `.to(api)
+      const resource = await parse`<> a ${ex.ClassA}, ${ex.ClassB} .`
+      const describe = await constructByNodeShape({ api, client, resource })
+
+      // when
+      await describe(ex.foobar)
+
+      // then
+      expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`
+        CONSTRUCT {
+          ?resource ${rdf.type} ?resource_0_0 .
+          ?resource ${foaf.name} ?resource_1_0 .
+          ?resource ${schema.name} ?resource_2_0 .
+        } WHERE {
+          VALUES ?resource { ${ex.foobar} }
+        
+          {
+            ?resource ${rdf.type} ?resource_0_0 .
+          }
+          UNION 
+          {
+            ?resource ${foaf.name} ?resource_1_0 .
+          }
+          UNION 
+          {
+            ?resource ${schema.name} ?resource_2_0 .
+          }
+        }
+      `)
+    })
   })
 })
