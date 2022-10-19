@@ -19,7 +19,7 @@ describe('@hydrofoil/shape-to-query', () => {
           `
 
           // when
-          const patterns = shapeToPatterns(shape, 'node')
+          const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
           const query = SELECT.ALL.WHERE`${patterns}`.build()
 
           // then
@@ -27,6 +27,56 @@ describe('@hydrofoil/shape-to-query', () => {
             ?node a ${foaf.Person}
           }`)
         })
+      })
+    })
+
+    context('property constraints', () => {
+      it('creates a simple pattern for predicate path', async () => {
+        // given
+        const shape = await parse`
+          <>
+            a ${sh.NodeShape} ;
+            ${sh.property}
+            [
+              ${sh.path} ${foaf.name} ;
+            ] ; 
+          .
+        `
+
+        // when
+        const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
+        const query = SELECT.ALL.WHERE`${patterns}`.build()
+
+        // then
+        expect(query).to.be.a.query(sparql`SELECT * WHERE {
+          ?node ${foaf.name} ?node_0 .
+        }`)
+      })
+
+      it('creates patterns for multiple properties', async () => {
+        // given
+        const shape = await parse`
+          <>
+            a ${sh.NodeShape} ;
+            ${sh.property}
+            [
+              ${sh.path} ${foaf.name} ;
+            ],
+            [
+              ${sh.path} ${foaf.lastName} ;
+            ] ; 
+          .
+        `
+
+        // when
+        const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
+        const query = SELECT.ALL.WHERE`${patterns}`.build()
+
+        // then
+        expect(query).to.be.a.query(sparql`SELECT * WHERE {
+          ?node ${foaf.name} ?node_0 .
+          ?node ${foaf.lastName} ?node_1 .
+        }`)
       })
     })
   })

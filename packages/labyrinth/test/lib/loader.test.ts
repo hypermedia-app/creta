@@ -10,7 +10,7 @@ import { ex } from '@labyrinth/testing/namespace'
 import TermSet from '@rdfjs/term-set'
 import { SparqlQueryLoader } from '../../lib/loader'
 
-describe('@hydrofoil/labbyrinth/lib/loader/SparqlQueryLoader', function () {
+describe('@hydrofoil/labyrinth/lib/loader/SparqlQueryLoader', function () {
   this.timeout(200000)
 
   const endpoint = {

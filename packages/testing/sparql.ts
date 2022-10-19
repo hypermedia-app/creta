@@ -1,5 +1,5 @@
 import { Assertion, AssertionError } from 'chai'
-import { Parser, SparqlQuery } from 'sparqljs'
+import { Generator, Parser, SparqlQuery } from 'sparqljs'
 import type { SparqlTemplateResult } from '@tpluscode/rdf-string'
 import sinon from 'sinon'
 import $rdf from 'rdf-ext'
@@ -7,6 +7,7 @@ import Endpoint from 'sparql-http-client/Endpoint'
 import StreamStore from 'sparql-http-client/StreamStore'
 
 const sparqlParser = new Parser()
+const generator = new Generator()
 
 export const client = () => ({
   store: sinon.createStubInstance(StreamStore) as any,
@@ -25,7 +26,7 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Chai {
     interface TypeComparison {
-      query(expected: string | SparqlTemplateResult): void
+      query(expected: string | SparqlTemplateResult | SparqlQuery): void
     }
   }
 }
@@ -60,5 +61,5 @@ Query was:
 ${this._obj.toString()}`)
   }
 
-  new Assertion(actualQuery).deep.eq(expectedQuery)
+  new Assertion(generator.stringify(actualQuery)).deep.eq(generator.stringify(expectedQuery))
 })
