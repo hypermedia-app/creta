@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.13.10
+
+### Patch Changes
+
+- fcf8dd8: Support for `hydra:variableRepresentation` on template mapping level
+
 ## 0.13.9
 
 ### Patch Changes
