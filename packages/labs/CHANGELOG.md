@@ -1,5 +1,11 @@
 # @hydrofoil/creta-labs
 
+## 0.1.6
+
+### Patch Changes
+
+- 7598ee7: `describeStrategy.js`: it is now possible to set the `query:constructShape` in an anonymous class directly in the resource
+
 ## 0.1.5
 
 ### Patch Changes
