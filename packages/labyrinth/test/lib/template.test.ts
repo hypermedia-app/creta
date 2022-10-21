@@ -76,5 +76,67 @@ describe('@hydrofoil/labyrinth/lib/template', () => {
       expect(graph.out(schema.age).term).to.deep.eq($rdf.literal('20', xsd.unsignedInt))
       expect(graph.out(schema.identifier).term).to.deep.eq(schema.Person)
     })
+
+    it('supports variable representation override by variable', () => {
+      // given
+      const template = fromPointer(blankNode(), {
+        template: '/{name},{age},{type}',
+        variableRepresentation: hydra.BasicRepresentation,
+        mapping: [{
+          variable: 'name',
+          property: schema.name,
+        }, {
+          variable: 'age',
+          property: schema.age,
+        }, {
+          variableRepresentation: hydra.ExplicitRepresentation,
+          variable: 'type',
+          property: schema.identifier,
+        }],
+      })
+
+      // when
+      const graph = toPointer(template.pointer, {
+        age: `"20"^^${xsd.unsignedInt.value}`,
+        name: '"John"@en',
+        type: schema.Person.value,
+      })
+
+      // then
+      expect(graph.out(schema.age).term).to.deep.eq($rdf.literal(`"20"^^${xsd.unsignedInt.value}`))
+      expect(graph.out(schema.name).term).to.deep.eq($rdf.literal('"John"@en'))
+      expect(graph.out(schema.identifier).term).to.deep.eq(schema.Person)
+    })
+
+    it('supports variable representation override by variable', () => {
+      // given
+      const template = fromPointer(blankNode(), {
+        template: '/{name},{age},{type}',
+        variableRepresentation: hydra.ExplicitRepresentation,
+        mapping: [{
+          variable: 'name',
+          property: schema.name,
+        }, {
+          variable: 'age',
+          property: schema.age,
+        }, {
+          variableRepresentation: hydra.BasicRepresentation,
+          variable: 'type',
+          property: schema.identifier,
+        }],
+      })
+
+      // when
+      const graph = toPointer(template.pointer, {
+        age: `"20"^^${xsd.unsignedInt.value}`,
+        name: '"John"@en',
+        type: schema.Person.value,
+      })
+
+      // then
+      expect(graph.out(schema.name).term).to.deep.eq($rdf.literal('John', 'en'))
+      expect(graph.out(schema.age).term).to.deep.eq($rdf.literal('20', xsd.unsignedInt))
+      expect(graph.out(schema.identifier).term).to.deep.eq($rdf.literal(schema.Person.value))
+    })
   })
 })
