@@ -1,6 +1,6 @@
 import { DescribeStrategyFactory } from '@hydrofoil/labyrinth/describeStrategy'
 import { CONSTRUCT } from '@tpluscode/sparql-builder'
-import type { GraphPointer } from 'clownface'
+import clownface, { GraphPointer } from 'clownface'
 import { shapeToPatterns } from '@hydrofoil/shape-to-query'
 import { VALUES } from '@tpluscode/sparql-builder/expressions'
 import { hyper_query } from '@hydrofoil/vocabularies/builders'
@@ -14,7 +14,13 @@ interface Options {
 
 export const constructByNodeShape: DescribeStrategyFactory<[Options]> =
   ({ api, resource, client }, { shapePath = hyper_query.constructShape } = {}) => {
-    const shapes = api
+    const combinedPointer = clownface({
+      _context: [
+        ...api._context,
+        ...resource._context,
+      ],
+    })
+    const shapes = combinedPointer
       .node(resource.out(rdf.type))
       .out(shapePath)
       .toArray()

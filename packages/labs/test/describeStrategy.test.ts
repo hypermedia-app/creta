@@ -61,6 +61,42 @@ describe('@hydrofoil/creta-labs/describeStrategy', () => {
       `)
     })
 
+    it('allows shapePath on inlined RDF type', async () => {
+      // given
+      const resource = await parse`<> a [
+        ${hyper_query.constructShape} [
+          ${sh.targetClass} ${foaf.Person} ;
+          ${sh.property} [
+            ${sh.path} ${foaf.name} ;
+          ] ;
+        ]
+      ] .`
+      const describe = await constructByNodeShape({ api, client, resource })
+
+      // when
+      await describe(ex.foobar)
+
+      // then
+      expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`
+        CONSTRUCT {
+          ?resource ${rdf.type} ?resource_0_0 .
+          ?resource a ${foaf.Person} .
+          ?resource ${foaf.name} ?resource_1_0 .
+        } WHERE {
+          VALUES ?resource { ${ex.foobar} }
+        
+          {
+            ?resource ${rdf.type} ?resource_0_0 .
+          }
+          UNION 
+          {
+            ?resource a ${foaf.Person} .
+            ?resource ${foaf.name} ?resource_1_0 .
+          }
+        }
+      `)
+    })
+
     it('constructs from alternative shape', async () => {
       // given
       await append`
