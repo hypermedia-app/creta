@@ -1,6 +1,6 @@
 {
   "name": "@hydrofoil/creta-labs",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "scripts": {
     "prepare": "tsc"
   },
