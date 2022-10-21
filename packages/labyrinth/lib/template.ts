@@ -10,8 +10,8 @@ import { isUri } from 'valid-url'
 const literalValueRegex = /^"(?<value>.+)"(@|\^\^)?((?<=@)(?<language>.*))?((?<=\^\^)(?<datatype>.*))?$/
 const TRUE = $rdf.literal('true', xsd.boolean)
 
-function createTermFromVariable({ template, value }: {template: GraphPointer; value: string}) {
-  if (!hydra.ExplicitRepresentation.equals(template.out(hydra.variableRepresentation).term)) {
+function createTermFromVariable({ variableRepresentation, value }: { variableRepresentation: Term | undefined; value: string}) {
+  if (!hydra.ExplicitRepresentation.equals(variableRepresentation)) {
     return value
   }
 
@@ -30,19 +30,21 @@ function createTermFromVariable({ template, value }: {template: GraphPointer; va
 
 export function toPointer(template: GraphPointer, queryParams: ParsedQs): GraphPointer<BlankNode, DatasetExt> {
   const templateParams = clownface({ dataset: $rdf.dataset() }).blankNode()
+  const templateVariableRepresentation = template.out(hydra.variableRepresentation).term
 
-  const variablePropertyMap = new Map<string, Term>()
+  const variablePropertyMap = new Map<string, { property: Term; variableRepresentation: Term | undefined }>()
   template.out(hydra.mapping).forEach(mapping => {
     const variable = mapping.out(hydra.variable).value
     const property = mapping.out(hydra.property).term
     const required = mapping.out(hydra.required).term?.equals(TRUE)
+    const variableRepresentation = mapping.out(hydra.variableRepresentation).term
 
     if (variable && required && !queryParams[variable]) {
       throw new httpError.BadRequest(`Missing required template variable ${variable}`)
     }
 
     if (variable && property) {
-      variablePropertyMap.set(variable, property)
+      variablePropertyMap.set(variable, { property, variableRepresentation })
     }
   })
 
@@ -53,14 +55,18 @@ export function toPointer(template: GraphPointer, queryParams: ParsedQs): GraphP
         ? param.map((item: any) => item.toString())
         : []
 
-    const property = variablePropertyMap.get(key)
+    const mapping = variablePropertyMap.get(key)
 
-    if (!property) {
+    if (!mapping) {
       return
     }
 
-    const terms = values.map(value => createTermFromVariable({ template, value }))
-    templateParams.addOut(property, terms)
+    const variableRepresentation = mapping.variableRepresentation || templateVariableRepresentation
+    const terms = values.map(value => createTermFromVariable({
+      variableRepresentation,
+      value,
+    }))
+    templateParams.addOut(mapping.property, terms)
   })
 
   return templateParams
