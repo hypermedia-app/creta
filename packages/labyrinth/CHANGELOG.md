@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.13.11
+
+### Patch Changes
+
+- b6e9e5e: Missing pattern terminator caused broken collection queries when there were multiple implicit filters
+
 ## 0.13.10
 
 ### Patch Changes
