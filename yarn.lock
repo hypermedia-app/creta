@@ -2840,10 +2840,10 @@ chai-quantifiers@^1.0.17:
   resolved "https://registry.yarnpkg.com/chai-quantifiers/-/chai-quantifiers-1.0.17.tgz#7f9ecf6cc945c16d6bebec04390ab9c371c79b61"
   integrity sha512-ee9xeWmfjQsDG/UH7QVq97+yStp+SN05dQ51kdric2zgHueWIjphMmG36kwLAhWm9KeZ1PK7Ms4UiPfz6JpASw==
 
-chai-snapshot-matcher@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/chai-snapshot-matcher/-/chai-snapshot-matcher-2.0.2.tgz#8156cbb352dbc9646775f43d4239096eb8a11dba"
-  integrity sha512-Mr/FWOC/pxXyseP+OFSt6Z7bVDnOROJ676yQ4X8JEm2GTd99c+/Qc1JNvMID3hQkpf6McSYfnCYH9hd2V4jb1w==
+chai-snapshot-matcher@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/chai-snapshot-matcher/-/chai-snapshot-matcher-2.0.3.tgz#48f43a120a261610cbfa811dc7d1d5608a4a112c"
+  integrity sha512-2XLWeTT2DFSGF2+gPsZT9k3SqszehKg2m7p9PLCaTsdTdZVdEbGhjoboCksb4KZD5JQuM3o3JZiOPcsH1VXasg==
   dependencies:
     chai "^4.2.0"
     lodash "^4.17.20"
