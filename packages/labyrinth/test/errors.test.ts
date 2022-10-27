@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import express from 'express'
+import express, { Request } from 'express'
 import request from 'supertest'
 import error from 'http-errors'
 import { IErrorMapper } from 'http-problem-details-mapper'
@@ -179,6 +179,35 @@ describe('errors', () => {
 
       // then
       await response.expect(999)
+    })
+
+    it('allows mappers created from a factory', async () => {
+      // given
+      const errorMappers = async ({ req }: { req: Request }) => [class CatchallMapper implements IErrorMapper {
+        get error() {
+          return 'Error'
+        }
+
+        mapError() {
+          return new ProblemDocument({
+            detail: req.path,
+            status: 500,
+          })
+        }
+      }]
+
+      const app = express()
+      app.use((req, res, next) => next(new Error()))
+      app.use(problemJson({
+        errorMappers,
+      }))
+
+      // when
+      const response = request(app).get('/foo/bar')
+
+      // then
+      const { body } = await response
+      expect(body).to.have.property('detail', '/foo/bar')
     })
   })
 })
