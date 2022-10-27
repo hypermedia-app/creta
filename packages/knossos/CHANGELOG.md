@@ -1,5 +1,14 @@
 # @hydrofoil/knossos
 
+## 0.9.11
+
+### Patch Changes
+
+- 9df7729: Possibility to configure own error mappers
+- Updated dependencies [9df7729]
+- Updated dependencies [9df7729]
+  - @hydrofoil/labyrinth@0.13.12
+
 ## 0.9.10
 
 ### Patch Changes

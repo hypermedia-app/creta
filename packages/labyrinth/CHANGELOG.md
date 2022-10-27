@@ -1,5 +1,12 @@
 # @hydrofoil/labyrinth
 
+## 0.13.12
+
+### Patch Changes
+
+- 9df7729: Possibility to configure own error mappers
+- 9df7729: Do not return Problem documents with `tempuri.org` URLs
+
 ## 0.13.11
 
 ### Patch Changes
