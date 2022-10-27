@@ -4,6 +4,7 @@ import express from 'express'
 import type StreamClient from 'sparql-http-client/StreamClient'
 import { Debugger } from 'debug'
 import absoluteUrl from 'absolute-url'
+import asyncMiddleware from 'middleware-async'
 import { createHydraBox } from './middleware/hydraBox'
 import { ResourceStore } from './store'
 
@@ -20,7 +21,7 @@ interface Options {
 export const coreMiddleware = ({ name, path, codePath, client, sparql, store, log }: Options, createApi = createHydraBox): express.RequestHandler => {
   const apisMiddlewares = new Map()
 
-  return async (req, res, next) => {
+  return asyncMiddleware(async (req, res, next) => {
     absoluteUrl.attach(req)
 
     const proxyPrefix = req.header('X-Forwarded-Prefix') || ''
@@ -47,5 +48,5 @@ export const coreMiddleware = ({ name, path, codePath, client, sparql, store, lo
     }
 
     hydraMiddleware(req, res, next)
-  }
+  })
 }

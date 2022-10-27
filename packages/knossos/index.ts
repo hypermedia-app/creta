@@ -11,13 +11,13 @@ import debug, { Debugger } from 'debug'
 import { knossosEvents } from '@hydrofoil/knossos-events'
 import camo from 'camouflage-rewrite'
 import { problemJson } from '@hydrofoil/labyrinth/errors'
-import asyncMiddleware from 'middleware-async'
 import absoluteUrl from 'absolute-url'
 import clownface, { GraphPointer } from 'clownface'
 import $rdf from 'rdf-ext'
 import { coreMiddleware } from './lib/coreMiddleware'
 import { ResourcePerGraphStore, ResourceStore } from './lib/store'
 import { create } from './resource'
+import { loadErrorMappers } from './lib/settings'
 import '@hydrofoil/labyrinth'
 
 export interface Knossos {
@@ -98,7 +98,7 @@ export default function knossosMiddleware({
   router.use(knossosEvents())
 
   router.use(absoluteUrl())
-  router.use(asyncMiddleware(coreMiddleware({
+  router.use(coreMiddleware({
     sparql,
     client,
     store,
@@ -106,9 +106,12 @@ export default function knossosMiddleware({
     codePath,
     path,
     log,
-  })))
+  }))
   router.put('/*', create(client))
-  router.use(problemJson({ captureNotFound: true }))
+  router.use(problemJson({
+    errorMappers: loadErrorMappers,
+    captureNotFound: true,
+  }))
 
   return router
 }
