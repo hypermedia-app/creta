@@ -5,7 +5,10 @@ prefix knossos: <https://hypermedia.app/knossos#>
   a knossos:Configuration ;
   knossos:errorMapper
   [
-    a code:EcmaScriptModule ;
-    code:implementedBy <file:app/errorMappers.js#ShaclValidationMapper>
+    code:implementedBy
+    [
+      a code:EcmaScriptModule ;
+      code:implementedBy <file:app/errorMappers.js#ShaclValidationMapper> ;
+    ] ;
   ] ;
 .
