@@ -18,6 +18,7 @@ import { ResourceLoader } from 'hydra-box'
 import { MinimalRepresentationLoader } from '@hydrofoil/labyrinth/lib/middleware/returnMinimal'
 import { isGraphPointer } from 'is-graph-pointer'
 import asyncMiddleware from 'middleware-async'
+import type { ErrorMapperConstructor } from '@hydrofoil/labyrinth/lib/error'
 import type { Context } from '..'
 
 /**
@@ -160,4 +161,16 @@ export function overrideLoader({ term, name }: { term: NamedNode; name: string }
 
     next()
   })
+}
+
+export async function loadErrorMappers({ req }: {req: express.Request}): Promise<ErrorMapperConstructor[]> {
+  try {
+    const config = req.knossos.config
+    const loaded = await loadImplementations<ErrorMapperConstructor>(config.out(knossos.errorMapper), req)
+    return loaded.map(([ErrorMapper]) => ErrorMapper)
+  } catch (e) {
+    req.knossos.log('An error occurred when loading error mappers')
+    req.knossos.log(e)
+    return []
+  }
 }
