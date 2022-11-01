@@ -1,5 +1,5 @@
 import { parse } from '@labyrinth/testing/nodeFactory'
-import { foaf, sh } from '@tpluscode/rdf-ns-builders'
+import { foaf, schema, sh } from '@tpluscode/rdf-ns-builders'
 import { SELECT } from '@tpluscode/sparql-builder'
 import { expect } from 'chai'
 import { sparql } from '@tpluscode/rdf-string'
@@ -26,6 +26,25 @@ describe('@hydrofoil/shape-to-query', () => {
           // then
           expect(query).to.be.a.query(sparql`SELECT * WHERE {
             ?node a ${foaf.Person}
+          }`)
+        })
+
+        it('creates an rdf:type pattern for multiple targets', async () => {
+          // given
+          const shape = await parse`
+            <>
+              a ${sh.NodeShape} ;
+              ${sh.targetClass} ${foaf.Person}, ${schema.Person} .
+          `
+
+          // when
+          const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
+          const query = SELECT.ALL.WHERE`${patterns}`.build()
+
+          // then
+          expect(query).to.be.a.query(sparql`SELECT * WHERE {
+            ?node a ?node_targetClass .
+            FILTER ( ?node_targetClass IN (${foaf.Person}, ${schema.Person}) )
           }`)
         })
       })
