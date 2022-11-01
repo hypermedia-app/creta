@@ -11,6 +11,7 @@ export interface Options {
   focusNode?: NamedNode
   objectVariablePrefix?: string
   strict?: boolean
+  patternsOnly?: true
 }
 
 type PropertyShapeOptions = Pick<Options, 'objectVariablePrefix' | 'strict'>
@@ -23,11 +24,11 @@ export function shapeToPatterns(shape: GraphPointer, options: Options): SparqlTe
     prefix: options.subjectVariable || 'resource',
   })
 
-  return sparql`${targetClass(shape, focusNode)}
+  return sparql`${targetClass(shape, focusNode, options.patternsOnly)}
   ${propertyShapes(shape, focusNode, options)}`
 }
 
-function targetClass(shape: GraphPointer, focusNode: PrefixedVariable) {
+function targetClass(shape: GraphPointer, focusNode: PrefixedVariable, patternsOnly?: boolean) {
   const targetClass = shape.out(sh.targetClass).terms
   if (!targetClass.length) {
     return ''
@@ -38,6 +39,10 @@ function targetClass(shape: GraphPointer, focusNode: PrefixedVariable) {
   }
 
   const typeVar = focusNode.extend('targetClass')
+  if (patternsOnly) {
+    return sparql`${focusNode()} a ${typeVar()} .`
+  }
+
   return sparql`
   ${focusNode()} a ${typeVar()} .
   FILTER ( ${typeVar()} ${IN(...targetClass)} )
@@ -55,7 +60,7 @@ function propertyShapes(shape: GraphPointer, focusNode: PrefixedVariable, option
       return sparql`${focusNode()} ${propShape.out(sh.path).term} ${variable()} .`
     })
 
-  if (options.strict === false) {
+  if (propertyPatterns.length > 1 && options.strict === false) {
     return propertyPatterns.reduce((union, next, index) => {
       if (index === 0) {
         return sparql`{ ${next} }`

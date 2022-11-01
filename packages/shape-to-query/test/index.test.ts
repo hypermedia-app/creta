@@ -217,6 +217,34 @@ describe('@hydrofoil/shape-to-query', () => {
           { ${ex.John} ${foaf.lastName} ?resource_1 . }
         }`)
       })
+
+      it('generates a query with multiple target types', async () => {
+        // given
+        const shape = await parse`
+          <>
+            a ${sh.NodeShape} ;
+            ${sh.targetClass} ${foaf.Person}, ${schema.Person} ;
+            ${sh.property}
+            [
+              ${sh.path} ${foaf.name} ;
+            ] ; 
+          .
+        `
+
+        // when
+        const focusNode = ex.John
+        const query = construct(shape, { focusNode }).build()
+
+        // then
+        expect(query).to.be.a.query(sparql`CONSTRUCT {
+          ${ex.John} a ?resource_targetClass .
+          ${ex.John} ${foaf.name} ?resource_0 .
+        } WHERE {
+            ${ex.John} a ?resource_targetClass .
+            FILTER ( ?resource_targetClass IN (${foaf.Person}, ${schema.Person}) )
+            ${ex.John} ${foaf.name} ?resource_0 .
+        }`)
+      })
     })
   })
 })
