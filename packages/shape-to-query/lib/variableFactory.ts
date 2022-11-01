@@ -1,14 +1,17 @@
-import { Variable } from 'rdf-js'
+import { NamedNode, Variable } from 'rdf-js'
 import factory from '@rdfjs/data-model'
-import { sparql } from '@tpluscode/rdf-string'
 
 export interface PrefixedVariable {
-  (name?: string): Variable
+  (name?: string): NamedNode | Variable
   extend(suffix: unknown): PrefixedVariable
 }
 
-export function create(prefix: string): PrefixedVariable {
+export function create({ prefix, focusNode }: { focusNode?: NamedNode; prefix: string }): PrefixedVariable {
   const variable = function (name = '') {
+    if (focusNode) {
+      return focusNode
+    }
+
     if (!name) {
       return factory.variable(prefix)
     }
@@ -17,11 +20,7 @@ export function create(prefix: string): PrefixedVariable {
   }
 
   variable.extend = (suffix: unknown) => {
-    return create(`${prefix}_${suffix}`)
-  }
-
-  variable._toPartialString = (options: any) => {
-    return sparql`${variable()}`._toPartialString(options)
+    return create({ prefix: `${prefix}_${suffix}` })
   }
 
   return variable
