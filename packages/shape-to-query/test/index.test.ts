@@ -78,6 +78,32 @@ describe('@hydrofoil/shape-to-query', () => {
           ?node ${foaf.lastName} ?node_1 .
         }`)
       })
+
+      it('skips deactivated properties', async () => {
+        // given
+        const shape = await parse`
+          <>
+            a ${sh.NodeShape} ;
+            ${sh.property}
+            [
+              ${sh.path} ${foaf.name} ;
+              ${sh.deactivated} true ;
+            ],
+            [
+              ${sh.path} ${foaf.lastName} ;
+            ] ; 
+          .
+        `
+
+        // when
+        const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
+        const query = SELECT.ALL.WHERE`${patterns}`.build()
+
+        // then
+        expect(query).to.be.a.query(sparql`SELECT * WHERE {
+          ?node ${foaf.lastName} ?node_0 .
+        }`)
+      })
     })
   })
 })
