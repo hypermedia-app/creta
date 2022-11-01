@@ -1,5 +1,11 @@
 # @hydrofoil/shape-to-query
 
+## 0.2.2
+
+### Patch Changes
+
+- b0f42ce: When there are multiple `sh:targetClass`, add an `IN` filter
+
 ## 0.2.1
 
 ### Patch Changes
