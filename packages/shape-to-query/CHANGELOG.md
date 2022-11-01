@@ -1,5 +1,11 @@
 # @hydrofoil/shape-to-query
 
+## 0.2.3
+
+### Patch Changes
+
+- 5792668: `FILTER` was added to the `CONSTRUCT` clause when there were multiple `sh:targetClass`
+
 ## 0.2.2
 
 ### Patch Changes
