@@ -3,6 +3,7 @@ import type { GraphPointer } from 'clownface'
 import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
 import { sh, xsd } from '@tpluscode/rdf-ns-builders'
 import $rdf from '@rdfjs/data-model'
+import { IN } from '@tpluscode/sparql-builder/expressions'
 import { create, PrefixedVariable } from './variableFactory'
 
 export interface Options {
@@ -27,12 +28,20 @@ export function shapeToPatterns(shape: GraphPointer, options: Options): SparqlTe
 }
 
 function targetClass(shape: GraphPointer, focusNode: PrefixedVariable) {
-  const targetClass = shape.out(sh.targetClass).term
-  if (!targetClass) {
+  const targetClass = shape.out(sh.targetClass).terms
+  if (!targetClass.length) {
     return ''
   }
 
-  return sparql`${focusNode()} a ${targetClass} .`
+  if (targetClass.length === 1) {
+    return sparql`${focusNode()} a ${targetClass} .`
+  }
+
+  const typeVar = focusNode.extend('targetClass')
+  return sparql`
+  ${focusNode()} a ${typeVar()} .
+  FILTER ( ${typeVar()} ${IN(...targetClass)} )
+  `
 }
 
 function propertyShapes(shape: GraphPointer, focusNode: PrefixedVariable, options: PropertyShapeOptions) {
