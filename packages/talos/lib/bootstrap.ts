@@ -1,90 +1,47 @@
-import path from 'path'
-import { NamedNode, DefaultGraph } from 'rdf-js'
-import walk from '@fcostarodrigo/walk'
+import { NamedNode } from 'rdf-js'
 import StreamClient, { StreamClientOptions } from 'sparql-http-client'
-import $rdf from 'rdf-ext'
+import type DatasetExt from 'rdf-ext/lib/Dataset'
 import clownface from 'clownface'
 import { ResourcePerGraphStore } from '@hydrofoil/knossos/lib/store'
 import { hydra } from '@tpluscode/rdf-ns-builders'
-import TermMap from '@rdfjs/term-map'
-import type DatasetExt from 'rdf-ext/lib/Dataset'
-import { getPatchedStream } from './fileStream'
+import { isNamedNode } from 'is-graph-pointer'
 import { log } from './log'
-import { optionsFromPrefixes } from './prefixHandler'
+import { talosNs } from './ns'
 
-type Options = StreamClientOptions & {
-  api: string
+type Bootstrap = StreamClientOptions & {
+  dataset: DatasetExt
   apiUri: NamedNode
-  cwd: string
 }
 
-interface ResourceOptions {
-  existingResource: 'merge' | 'overwrite' | 'skip'
-}
-
-export async function bootstrap({ api, apiUri, cwd, ...options }: Options): Promise<void> {
+export async function bootstrap({ dataset, apiUri, ...options }: Bootstrap): Promise<void> {
   const store = new ResourcePerGraphStore(new StreamClient(options))
 
-  for await (const file of walk(cwd)) {
-    const relative = path.relative(cwd, file)
-    const resourcePath = path.relative(cwd, file)
-      .replace(/\.[^.]+$/, '')
-      .replace(/\/?index$/, '')
+  const graph = clownface({ dataset, graph: talosNs.resources })
+  const resources = graph.has(talosNs.action)
+  for (const resource of resources.toArray().filter(isNamedNode)) {
+    const pointer = clownface({ dataset })
+      .namedNode(resource)
+      .addOut(hydra.apiDocumentation, apiUri)
 
-    const url = resourcePath === ''
-      ? encodeURI(api)
-      : encodeURI(`${api}/${resourcePath}`)
-
-    const parserStream = getPatchedStream(file, cwd, api, url)
-    if (!parserStream) {
+    const action = resource.out(talosNs.action).value
+    const exists = await store.exists(pointer.term)
+    if (exists && action === 'skip') {
+      log(`Skipping resource ${resource}`)
       continue
     }
 
-    const resourceOptions: ResourceOptions = {
-      existingResource: 'overwrite',
-    }
-    parserStream.on('prefix', optionsFromPrefixes(resourceOptions))
-    const graphs = new TermMap<NamedNode | DefaultGraph, DatasetExt>()
-    try {
-      for await (const { subject, predicate, object, graph } of parserStream) {
-        let dataset = graphs.get(graph)
-        if (!dataset) {
-          dataset = $rdf.dataset()
-          graphs.set(graph, dataset)
-        }
-
-        dataset.add($rdf.quad(subject, predicate, object))
-      }
-    } catch (e: any) {
-      log('Failed to parse %s: %s', relative, e.message)
-      continue
-    }
-
-    for (const [graph, dataset] of graphs) {
-      const resource = graph.termType === 'DefaultGraph' ? url : graph.value
-      const pointer = clownface({ dataset })
-        .namedNode(resource)
-        .addOut(hydra.apiDocumentation, apiUri)
-
-      const exists = await store.exists(pointer.term)
-      if (exists && resourceOptions.existingResource === 'skip') {
-        log(`Skipping resource ${resource}`)
-        continue
-      }
-
-      if (exists) {
-        if (resourceOptions.existingResource === 'overwrite') {
-          log(`Replacing resource ${resource}`)
-        } else {
-          log(`Merging existing resource ${resource}`)
-          const current = await store.load(pointer.term)
-          pointer.dataset.addAll(current.dataset)
-        }
+    if (exists) {
+      if (action === 'overwrite') {
+        log(`Replacing resource ${resource}`)
       } else {
-        log(`Creating resource ${resource}`)
+        log(`Merging existing resource ${resource}`)
+        const current = await store.load(pointer.term)
+        pointer.dataset.addAll(current.dataset)
       }
-
-      await store.save(pointer)
+    } else {
+      log(`Creating resource ${resource}`)
     }
+
+    await store.save(pointer)
   }
 }
