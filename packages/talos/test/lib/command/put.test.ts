@@ -279,16 +279,16 @@ template
 
       it('merges statements from multiple graph documents', async () => {
         const ask = ASK`
-          ${ns()}
+          <${api}>
             ${schema.name} "Bar environment" ;
             ${schema.hasPart} [
               ${schema.minValue} 10 ;
               ${schema.maxValue} 100 ;
             ] ;
           .
-        `.execute(client.query)
+        `
 
-        await expect(ask).to.eventually.be.true
+        await expect(ask.execute(client.query)).to.eventually.be.true
       })
 
       it('merges statements from multiple dataset documents', async () => {

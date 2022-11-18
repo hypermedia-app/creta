@@ -5,6 +5,7 @@ import clownface from 'clownface'
 import { ResourcePerGraphStore } from '@hydrofoil/knossos/lib/store'
 import { hydra } from '@tpluscode/rdf-ns-builders'
 import { isNamedNode } from 'is-graph-pointer'
+import $rdf from 'rdf-ext'
 import { log } from './log'
 import { talosNs } from './ns'
 
@@ -19,7 +20,9 @@ export async function bootstrap({ dataset, apiUri, ...options }: Bootstrap): Pro
   const graph = clownface({ dataset, graph: talosNs.resources })
   const resources = graph.has(talosNs.action)
   for (const resource of resources.toArray().filter(isNamedNode)) {
-    const pointer = clownface({ dataset })
+    const resourceData = dataset.match(null, null, null, resource.term)
+      .map(({ subject, predicate, object }) => $rdf.quad(subject, predicate, object))
+    const pointer = clownface({ dataset: resourceData })
       .namedNode(resource)
       .addOut(hydra.apiDocumentation, apiUri)
 
