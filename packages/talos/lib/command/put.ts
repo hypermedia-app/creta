@@ -1,4 +1,6 @@
 import $rdf from 'rdf-ext'
+import { ResourcePerGraphStore } from '@hydrofoil/knossos/lib/store'
+import StreamClient from 'sparql-http-client'
 import { bootstrap } from '../bootstrap'
 import { deleteApi } from '../deleteApi'
 import { fromDirectories } from '../resources'
@@ -17,10 +19,12 @@ export async function put(directories: string[], { token, api, endpoint, updateE
   await bootstrap({
     dataset,
     apiUri,
-    endpointUrl: endpoint,
-    updateUrl: updateEndpoint || endpoint,
-    user,
-    password,
+    store: new ResourcePerGraphStore(new StreamClient({
+      endpointUrl: endpoint,
+      updateUrl: updateEndpoint || endpoint,
+      user,
+      password,
+    })),
   })
 
   await deleteApi({ apiUri, token })

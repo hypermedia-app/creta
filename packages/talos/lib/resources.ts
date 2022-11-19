@@ -1,6 +1,6 @@
 import path from 'path'
 import fs from 'fs'
-import { NamedNode } from 'rdf-js'
+import { NamedNode, DatasetCore } from 'rdf-js'
 import walk from '@fcostarodrigo/walk'
 import $rdf from 'rdf-ext'
 import type DatasetExt from 'rdf-ext/lib/Dataset'
@@ -19,7 +19,18 @@ interface ResourceOptions {
 
 export async function fromDirectories(directories: string[], api: string): Promise<DatasetExt> {
   const validDirs = directories.filter(isValidDir)
-  return validDirs.reduce(toGraphs(api), Promise.resolve($rdf.dataset()))
+  const dataset = await validDirs.reduce(toGraphs(api), Promise.resolve($rdf.dataset()))
+
+  setDefaultAction(dataset)
+
+  return dataset
+}
+
+function setDefaultAction(dataset: DatasetCore) {
+  clownface({ dataset, graph: talosNs.resources })
+    .has(talosNs.action, talosNs.default)
+    .deleteOut(talosNs.action, talosNs.default)
+    .addOut(talosNs.action, talosNs.overwrite)
 }
 
 function toGraphs(api: string) {

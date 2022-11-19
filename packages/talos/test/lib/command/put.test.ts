@@ -1,6 +1,6 @@
 import * as path from 'path'
 import { put, Put } from 'talos/lib/command/put'
-import { ASK, DELETE, INSERT, SELECT } from '@tpluscode/sparql-builder'
+import { ASK, CONSTRUCT, DELETE, SELECT } from '@tpluscode/sparql-builder'
 import ParsingClient from 'sparql-http-client/ParsingClient'
 import { expect } from 'chai'
 import { dash, doap, hydra, schema, vcard, sh, foaf } from '@tpluscode/rdf-ns-builders/loose'
@@ -8,6 +8,7 @@ import namespace from '@rdfjs/namespace'
 import * as NodeFetch from 'node-fetch'
 import sinon from 'sinon'
 import $rdf from 'rdf-ext'
+import { testData } from '@labyrinth/testing/client'
 
 const apis = [
   'http://example.com',
@@ -36,11 +37,15 @@ for (const api of apis) {
     before(async () => {
       await DELETE`?s ?p ?o`.WHERE`?s ?p ?o`.execute(client.query)
 
-      await INSERT.DATA`
+      await testData`          
         GRAPH ${ns('project/creta/user.group/admins')} {
           ${ns('project/creta/user.group/admins')} ${vcard.hasMember} ${ns('project/creta/user/tpluscode')}
         }
-      `.execute(client.query)
+
+        GRAPH ${ns('project')} {
+          ${ns('project')} ${schema.name} "DELETE" .
+        }
+      `
     })
 
     it('ignores paths which do not exist', async () => {
@@ -57,6 +62,24 @@ for (const api of apis) {
       })
 
       context('turtle', () => {
+        it('replaces entire graph by default', async function () {
+          const dataset = $rdf.dataset().addAll(await CONSTRUCT`?s ?p ?o`
+            .FROM(ns('project'))
+            .WHERE`?s ?p ?o`
+            .execute(client.query))
+
+          expect(dataset.toCanonical()).to.matchSnapshot(this)
+        })
+
+        it('merge existing graph when annotated', async function () {
+          const dataset = $rdf.dataset().addAll(await CONSTRUCT`?s ?p ?o`
+            .FROM(ns('project/creta/user.group/admins'))
+            .WHERE`?s ?p ?o`
+            .execute(client.query))
+
+          expect(dataset.toCanonical()).to.matchSnapshot(this)
+        })
+
         it('inserts into graph constructed from path', async () => {
           const userCreated = ASK`${ns('project/creta/user/tpluscode')} a ${schema.Person}`
             .FROM(ns('project/creta/user/tpluscode'))
