@@ -4,3 +4,9 @@ exports["@hydrofoil/talos/lib/resources fromDirectories merges resources from da
 
 exports["@hydrofoil/talos/lib/resources fromDirectories merges resources from multiple dataset documents"] = "<https://example.com/trig/users/jane-doe> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <https://example.com/trig/users/jane-doe> .\n<https://example.com/trig/users/jane-doe> <http://www.w3.org/ns/earl#test> \"trig\" <https://example.com/trig/users/jane-doe> .\n<https://example.com/trig/users/jane-doe> <http://xmlns.com/foaf/0.1/name> \"Jane Doe\" <https://example.com/trig/users/jane-doe> .\n";
 
+exports["@hydrofoil/talos/lib/resources fromDirectories uses the last representation when is marked to replace other envs"] = "<https://example.com/only/one> <http://schema.org/name> \"bar\" <https://example.com/only/one> .\n";
+
+exports["@hydrofoil/talos/lib/resources fromDirectories uses the last representation when is marked in another env"] = "<https://example.com/only/two> <http://schema.org/name> \"bar\" <https://example.com/only/two> .\n";
+
+exports["@hydrofoil/talos/lib/resources fromDirectories uses the last representation when is marked in a dataset document"] = "<https://example.com/only/three> <http://schema.org/name> \"bar\" <https://example.com/only/three> .\n";
+

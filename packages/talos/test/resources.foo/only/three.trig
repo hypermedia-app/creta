@@ -1,0 +1,7 @@
+PREFIX schema: <http://schema.org/>
+PREFIX talos: <environmentRepresentation:replace>
+
+# Tests that environmentRepresentation can be set in dataset documents
+graph </only/three> {
+  </only/three> schema:name "foo" ;
+}

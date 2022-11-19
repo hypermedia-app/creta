@@ -45,15 +45,33 @@ describe('@hydrofoil/talos/lib/resources', () => {
     it('marks a resource for "default" by default', () => {
       const [{ object: action }, ...more] = dataset.match(ns(), talosNs.action, null, talosNs.resources)
 
-      expect(action.value).to.eq('default')
+      expect(action).to.deep.eq(talosNs.default)
       expect(more).to.be.empty
     })
 
     it('marks a resource for "merge" when prefix is used', () => {
       const [{ object: action }, ...more] = dataset.match(ns('/project/creta/user.group/admins'), talosNs.action, null, talosNs.resources)
 
-      expect(action.value).to.eq('merge')
+      expect(action).to.deep.eq(talosNs.merge)
       expect(more).to.be.empty
+    })
+
+    it('uses the last representation when is marked to replace other envs', function () {
+      const resource = dataset.match(null, null, null, ns('/only/one'))
+
+      expect(toCanonical(resource)).to.matchSnapshot(this)
+    })
+
+    it('uses the last representation when is marked in another env', function () {
+      const resource = dataset.match(null, null, null, ns('/only/two'))
+
+      expect(toCanonical(resource)).to.matchSnapshot(this)
+    })
+
+    it('uses the last representation when is marked in a dataset document', function () {
+      const resource = dataset.match(null, null, null, ns('/only/three'))
+
+      expect(toCanonical(resource)).to.matchSnapshot(this)
     })
   })
 })

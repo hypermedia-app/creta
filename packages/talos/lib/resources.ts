@@ -6,6 +6,7 @@ import $rdf from 'rdf-ext'
 import type DatasetExt from 'rdf-ext/lib/Dataset'
 import TermSet from '@rdfjs/term-set'
 import clownface from 'clownface'
+import { deleteMatch } from 'rdf-dataset-ext'
 import { log, debug } from './log'
 import { getPatchedStream } from './fileStream'
 import { optionsFromPrefixes } from './prefixHandler'
@@ -13,6 +14,7 @@ import { talosNs } from './ns'
 
 interface ResourceOptions {
   existingResource: 'merge' | 'overwrite' | 'skip'
+  environmentRepresentation: 'default' | 'replace'
 }
 
 export async function fromDirectories(directories: string[], api: string): Promise<DatasetExt> {
@@ -21,8 +23,9 @@ export async function fromDirectories(directories: string[], api: string): Promi
 }
 
 function toGraphs(api: string) {
-  return async function (previous: Promise<DatasetExt>, dir: string): Promise<DatasetExt> {
-    const dataset = await previous
+  return async function (previousPromise: Promise<DatasetExt>, dir: string): Promise<DatasetExt> {
+    let previous = await previousPromise
+    const dataset = $rdf.dataset()
 
     debug('Processing dir %s', dir)
 
@@ -46,7 +49,7 @@ function toGraphs(api: string) {
       parserStream.on('prefix', optionsFromPrefixes(parsedResourceOptions))
 
       const resources = new TermSet<NamedNode>()
-      const resourceOptions = clownface({ dataset, graph: talosNs.resources })
+      const resourceOptions = clownface({ dataset: previous, graph: talosNs.resources })
       try {
         for await (const { subject, predicate, object, ...quad } of parserStream) {
           const graph: NamedNode = quad.graph.equals($rdf.defaultGraph()) ? $rdf.namedNode(url) : quad.graph
@@ -57,20 +60,28 @@ function toGraphs(api: string) {
           resources.add(graph)
           dataset.add($rdf.quad(subject, predicate, object, graph))
         }
-
-        resources.forEach(id => {
-          const action = parsedResourceOptions.existingResource || 'default'
-          resourceOptions
-            .node(id)
-            .deleteOut(talosNs.action, $rdf.literal('default'))
-            .addOut(talosNs.action, action)
-        })
       } catch (e: any) {
         log('Failed to parse %s: %s', relative, e.message)
       }
+
+      resources.forEach(id => {
+        const action = parsedResourceOptions.existingResource || 'default'
+        const environmentRepresentation = parsedResourceOptions.environmentRepresentation || 'default'
+        const options = resourceOptions.node(id)
+        options
+          .deleteOut(talosNs.action, talosNs.default)
+          .addOut(talosNs.action, talosNs(action))
+          .deleteOut(talosNs.environmentRepresentation, talosNs.default)
+          .addOut(talosNs.environmentRepresentation, talosNs(environmentRepresentation))
+
+        if (options.has(talosNs.environmentRepresentation, talosNs.replace).terms.length) {
+          previous = deleteMatch(previous, undefined, undefined, undefined, id)
+        }
+      })
     }
 
-    return dataset
+    previous.addAll(dataset)
+    return previous
   }
 }
 

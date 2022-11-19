@@ -1,0 +1,7 @@
+PREFIX talos: <environmentRepresentation:replace>
+PREFIX schema: <http://schema.org/>
+
+# Tests that environmentRepresentation can be set in any environment's representation
+<>
+  schema:name "bar" ;
+.
