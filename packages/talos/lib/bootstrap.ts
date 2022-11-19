@@ -1,22 +1,20 @@
 import { NamedNode } from 'rdf-js'
-import StreamClient, { StreamClientOptions } from 'sparql-http-client'
 import type DatasetExt from 'rdf-ext/lib/Dataset'
 import clownface from 'clownface'
-import { ResourcePerGraphStore } from '@hydrofoil/knossos/lib/store'
+import type { ResourceStore } from '@hydrofoil/knossos/lib/store'
 import { hydra } from '@tpluscode/rdf-ns-builders'
 import { isNamedNode } from 'is-graph-pointer'
 import $rdf from 'rdf-ext'
 import { log } from './log'
 import { talosNs } from './ns'
 
-type Bootstrap = StreamClientOptions & {
+type Bootstrap = {
+  store: ResourceStore
   dataset: DatasetExt
   apiUri: NamedNode
 }
 
-export async function bootstrap({ dataset, apiUri, ...options }: Bootstrap): Promise<void> {
-  const store = new ResourcePerGraphStore(new StreamClient(options))
-
+export async function bootstrap({ dataset, apiUri, store }: Bootstrap): Promise<void> {
   const graph = clownface({ dataset, graph: talosNs.resources })
   const resources = graph.has(talosNs.action)
   for (const resource of resources.toArray().filter(isNamedNode)) {
@@ -26,20 +24,20 @@ export async function bootstrap({ dataset, apiUri, ...options }: Bootstrap): Pro
       .namedNode(resource)
       .addOut(hydra.apiDocumentation, apiUri)
 
-    const action = resource.out(talosNs.action).value
+    const action = resource.out(talosNs.action).term
     const exists = await store.exists(pointer.term)
-    if (exists && action === 'skip') {
+    if (exists && talosNs.skip.equals(action)) {
       log(`Skipping resource ${resource}`)
       continue
     }
 
     if (exists) {
-      if (action === 'overwrite') {
-        log(`Replacing resource ${resource}`)
-      } else {
+      if (talosNs.merge.equals(action)) {
         log(`Merging existing resource ${resource}`)
         const current = await store.load(pointer.term)
         pointer.dataset.addAll(current.dataset)
+      } else {
+        log(`Replacing resource ${resource}`)
       }
     } else {
       log(`Creating resource ${resource}`)

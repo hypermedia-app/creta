@@ -42,10 +42,10 @@ describe('@hydrofoil/talos/lib/resources', () => {
       expect(toCanonical(resource)).to.matchSnapshot(this)
     })
 
-    it('marks a resource for "default" by default', () => {
+    it('marks a resource for "overwrite" by default', () => {
       const [{ object: action }, ...more] = dataset.match(ns(), talosNs.action, null, talosNs.resources)
 
-      expect(action).to.deep.eq(talosNs.default)
+      expect(action).to.deep.eq(talosNs.overwrite)
       expect(more).to.be.empty
     })
 

@@ -43,6 +43,7 @@
     "sparql-http-client": "^2.4.1"
   },
   "devDependencies": {
+    "@labyrinth/testing": "*",
     "@types/mime-types": "^2.1.1",
     "@types/replacestream": "^4.0.1",
     "@wikibus/vocabularies": "^0.2.2",
