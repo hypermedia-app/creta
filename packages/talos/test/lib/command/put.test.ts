@@ -56,7 +56,7 @@ for (const api of apis) {
         await put([dir], params)
       })
 
-      describe('turtle', () => {
+      context('turtle', () => {
         it('inserts into graph constructed from path', async () => {
           const userCreated = ASK`${ns('project/creta/user/tpluscode')} a ${schema.Person}`
             .FROM(ns('project/creta/user/tpluscode'))
@@ -198,7 +198,7 @@ template
         })
       })
 
-      describe('n-quads', () => {
+      context('n-quads', () => {
         it('inserts into graph constructed from path', async () => {
           const userCreated = ASK`${ns('project/creta/project/creta')} a ${doap.Project}`
             .FROM(ns('project/creta/project/creta'))
@@ -218,7 +218,7 @@ template
         })
       })
 
-      describe('JSON-LD', () => {
+      context('JSON-LD', () => {
         it('correctly applies absolute URIs to base paths', async () => {
           const hasExpectedType = ASK`
             ${ns('project/roadshow')} ${schema.related} ${ns('project/creta')}
@@ -230,7 +230,7 @@ template
         })
       })
 
-      describe('n-triples', () => {
+      context('n-triples', () => {
         it('correctly applies absolute URIs to base paths', async () => {
           const hasExpectedType = ASK`
             ${ns('project/shaperone')} ${schema.related} ${ns('project/roadshow')}, ${ns('project/creta')}
@@ -242,7 +242,7 @@ template
         })
       })
 
-      describe('trig', () => {
+      context('trig', () => {
         it('inserts into graphs constructed from path', async () => {
           const results = await SELECT`?resource ?graph ?type`
             .WHERE`
@@ -266,6 +266,51 @@ template
             type: foaf.Person,
           }])
         })
+      })
+    })
+
+    context('with multiple directories', () => {
+      before(async () => {
+        const fooDir = path.resolve(__dirname, '../../resources.foo')
+        const barDir = path.resolve(__dirname, '../../resources.bar')
+
+        await put([dir, fooDir, barDir], params)
+      })
+
+      it('merges statements from multiple graph documents', async () => {
+        const ask = ASK`
+          <${api}>
+            ${schema.name} "Bar environment" ;
+            ${schema.hasPart} [
+              ${schema.minValue} 10 ;
+              ${schema.maxValue} 100 ;
+            ] ;
+          .
+        `
+
+        await expect(ask.execute(client.query)).to.eventually.be.true
+      })
+
+      it('merges statements from multiple dataset documents', async () => {
+        const ask = ASK`
+          ${ns('trig/users/jane-doe')}
+            a ${foaf.Person} ;
+            ${foaf.name} "Jane Doe" ;
+          .
+        `.execute(client.query)
+
+        await expect(ask).to.eventually.be.true
+      })
+
+      it('merges statements from a mix of dataset and graph documents', async () => {
+        const ask = ASK`
+          ${ns('trig/users/john-doe')}
+            a ${foaf.Person} ;
+            ${foaf.name} "John Doe" ;
+          .
+        `.execute(client.query)
+
+        await expect(ask).to.eventually.be.true
       })
     })
   })

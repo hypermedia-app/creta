@@ -1,4 +1,6 @@
-import debug from 'debug'
+import Debugger from 'debug'
 
-export const log = debug('talos')
+export const log = Debugger('talos')
 log.enabled = true
+
+export const debug = log.extend('debug')

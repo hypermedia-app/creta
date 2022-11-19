@@ -1,0 +1,6 @@
+PREFIX talos: <environmentRepresentation:replace>
+PREFIX schema: <http://schema.org/>
+
+<>
+  schema:name "base" ;
+.

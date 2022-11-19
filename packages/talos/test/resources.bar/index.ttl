@@ -1,0 +1,5 @@
+PREFIX schema: <http://schema.org/>
+
+<>
+  schema:name "Bar environment" ;
+.

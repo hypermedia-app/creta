@@ -1,0 +1,5 @@
+PREFIX ex: <http://example.org/>
+PREFIX schema: <http://schema.org/>
+
+<> ex:envNameSetting <#env-name> .
+<#env-name> schema:name "environment" .
