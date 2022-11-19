@@ -76,6 +76,56 @@ Pass one or more directory names to the `put` command to choose which resources 
 talos put ./resources ./resources.dev
 ```
 
+### Describing partial resources in multiple environments
+
+Any given resource can have its representation's sources distributed across environment files. For example, an `/api/config`
+resource can define its required triples in the base environment and optional overrides. 
+
+```
+.
+├── lib/
+├── resources/
+│   └── api/
+│       └── config.ttl
+├── resources.dev/
+│   └── api/
+│       └── config.ttl
+├── resources.prod/
+│   └── api/
+│       └── config.ttl
+└── package.json
+```
+
+As of `v0.5`, talos will merge these representations across selected source directories passed to the `put` command.
+
+In `resources/api/config.ttl` create a hash URI "placeholder" for env-specific extension:
+
+[config](talos/put/base-config.ttl ':include :type=code turtle')
+
+In `resources.dev/api/config.ttl` and `resources.prod/api/config.ttl` add the triples to merge with the base representation.
+
+[config](talos/put/dev-config.ttl ':include :type=code turtle')
+
+[config](talos/put/prod-config.ttl ':include :type=code turtle')
+
+Calling `talos put resources resource.dev` or `talos put resources resource.prod` will set the value of `<#env-name>` to
+`"DEV"` or `"PROD"` respectively.
+
+### Replacing representations of other resources
+
+In case the merging of environment representation is not desired, add a configuration prefix to the document in any 
+environment
+
+```turtle
+PREFIX talos: <environmentRepresentation:replace>
+```
+
+Marked this way, only the last representation will be used when loading resources from multiple directories, determined 
+by the order of them being passed to `talos put`.
+
+> [!TIP]
+> This configuration can also be used in `.trig` documents, affecting all resource graphs.
+
 ### `talos put --help`
 
 [filename](talos/put.txt ':include')
