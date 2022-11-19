@@ -1,5 +1,11 @@
 # @hydrofoil/talos
 
+## 0.5.0
+
+### Minor Changes
+
+- 7f52095: Resources across multiple source directories are now merged in memory and saved as a whole (resolves #271)
+
 ## 0.4.17
 
 ### Patch Changes
