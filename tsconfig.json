@@ -25,8 +25,7 @@
     "baseUrl": ".",
     "paths": {
       "knossos/*": ["packages/knossos/*"],
-      "labyrinth/*": ["packages/labyrinth/*"],
-      "talos/*": ["packages/talos/*"]
+      "labyrinth/*": ["packages/labyrinth/*"]
     }
   },
   "include": [

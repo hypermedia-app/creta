@@ -1,3 +1,0 @@
-PREFIX schema: <http://schema.org/>
-
-<> a schema:Thing ; schema:parentItem <..> .

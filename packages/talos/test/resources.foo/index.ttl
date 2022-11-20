@@ -1,3 +1,0 @@
-PREFIX schema: <http://schema.org/>
-
-<#part> schema:maxValue 100 .

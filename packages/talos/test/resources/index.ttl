@@ -1,8 +1,0 @@
-PREFIX schema: <http://schema.org/>
-
-<>
-  a schema:Thing ;
-  schema:hasPart <#part> ;
-.
-
-<#part> schema:minValue 10 .
