@@ -1,5 +1,11 @@
 # @hydrofoil/talos
 
+## 0.5.1
+
+### Patch Changes
+
+- bf1280d: Regression: existing resources would have been merged instead of rewritten
+
 ## 0.5.0
 
 ### Minor Changes
