@@ -25,9 +25,9 @@ type ExpectedQuerySetup = SparqlTemplateResult | {
 
 const expectedQuery = (options: ExpectedQuerySetup) => {
   const patterns = 'patterns' in options ? options.patterns : options
-  let select = SELECT`?g`
+  let select = SELECT`?member`
     .WHERE`
-      GRAPH ?g { 
+      GRAPH ?member { 
         ${patterns}
       }
     `
@@ -41,7 +41,7 @@ const expectedQuery = (options: ExpectedQuerySetup) => {
       ${select}
     }
     
-    GRAPH ?g { ?s ?p ?o }`
+    GRAPH ?member { ?s ?p ?o }`
 
   return query.build()
 }
