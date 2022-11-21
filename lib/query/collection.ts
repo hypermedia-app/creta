@@ -153,8 +153,8 @@ export async function getSparqlQuery({ api, basePath, collection, pageSize, quer
 
   const memberPatterns = sparql`${managesBlockPatterns}\n${filterPatters}`
 
-  let subselect = SELECT`?g`.WHERE` 
-              GRAPH ?g {
+  let subselect = SELECT`${subject}`.WHERE` 
+              GRAPH ${subject} {
                 ${memberPatterns}
                 
                 ${order.patterns}
@@ -175,7 +175,7 @@ export async function getSparqlQuery({ api, basePath, collection, pageSize, quer
             ${subselect}
         }
         
-        GRAPH ?g { ?s ?p ?o }`,
-    totals: SELECT`(count(${subject}) as ?count)`.WHERE`GRAPH ?g { ${memberPatterns} }`,
+        GRAPH ${subject} { ?s ?p ?o }`,
+    totals: SELECT`(count(${subject}) as ?count)`.WHERE`GRAPH ${subject} { ${memberPatterns} }`,
   }
 }
