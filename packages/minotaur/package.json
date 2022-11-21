@@ -20,7 +20,7 @@
   "devDependencies": {
     "@rdfjs/namespace": "^1.1.0",
     "@tpluscode/rdf-ns-builders": "^2.0.0",
-    "chai": "^4.3.6",
+    "chai": "^4.3.7",
     "clownface": "^1.5.1",
     "mocha": "^10.0.0"
   }
