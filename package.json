@@ -21,7 +21,7 @@
     "@changesets/cli": "^2.25.0",
     "@hydrofoil/talos": "^0.5.1",
     "@tpluscode/eslint-config": "^0.3.3",
-    "@types/chai": "^4.3.3",
+    "@types/chai": "^4.3.4",
     "@types/chai-as-promised": "^7.1.5",
     "@types/chai-quantifiers": "^1.0.0",
     "@types/chai-snapshot-matcher": "^1",

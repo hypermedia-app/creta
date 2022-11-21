@@ -10,7 +10,7 @@
     "@tpluscode/rdf-ns-builders": "^2.0.0",
     "@tpluscode/rdf-string": "^0.2.26",
     "@tpluscode/sparql-builder": "^0.3.23",
-    "chai": "^4.3.6",
+    "chai": "^4.3.7",
     "clownface": "^1.5.1",
     "debug": "^4.3.4",
     "express": "^4.18.1",
