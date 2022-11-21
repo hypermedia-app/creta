@@ -1,5 +1,11 @@
 # @hydrofoil/labyrinth
 
+## 0.4.4
+
+### Patch Changes
+
+- 56fdf31: Collection query would load data from unrelated resources' graphs
+
 ## 0.4.3
 
 ### Patch Changes
