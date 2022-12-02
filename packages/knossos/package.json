@@ -49,7 +49,7 @@
     "hydra-box-web-access-control": "^1.2.1",
     "is-graph-pointer": "^1.2.2",
     "middleware-async": "^1.3.1",
-    "nanoid": "^3.3.3",
+    "nanoid": "^4.0.0",
     "path-to-regexp": "^6.2.1",
     "rdf-ext": "^1.3.5",
     "rdf-web-access-control": "^1.3.2",
