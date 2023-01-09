@@ -75,7 +75,7 @@ function createPatternValue(variable: string) {
       if (isNodeShape(ptr)) {
         const subjectVariable = `${variable}${index}`
 
-        return [$rdf.variable(subjectVariable), shapeToPatterns(ptr, { subjectVariable })]
+        return [$rdf.variable(subjectVariable), sparql`${shapeToPatterns(ptr, { subjectVariable })}`]
       }
 
       return [null]
