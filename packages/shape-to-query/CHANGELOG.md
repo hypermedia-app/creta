@@ -1,5 +1,12 @@
 # @hydrofoil/shape-to-query
 
+## 0.3.0
+
+### Minor Changes
+
+- d2d5996: Support for deep `sh:node` which get combined with parent property shapes' paths
+- d2d5996: Changed the signature of `shapeToPatterns`. Now it returns an object with functions to create full `CONSTRUCT` and `WHERE` clauses and implements the `Iterable<SparqlTemplateResult>` interface
+
 ## 0.2.3
 
 ### Patch Changes

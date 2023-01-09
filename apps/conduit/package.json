@@ -1,7 +1,7 @@
 {
   "name": "@hydrofoil/conduit",
   "private": true,
-  "version": "0.1.54",
+  "version": "0.1.55",
   "scripts": {
     "resources": "../../packages/knossos/bin/knossos.ts init",
     "bootstrap": "run-s bootstrap:*",

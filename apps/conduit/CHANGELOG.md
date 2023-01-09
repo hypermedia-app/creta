@@ -1,5 +1,11 @@
 # @hydrofoil/conduit
 
+## 0.1.55
+
+### Patch Changes
+
+- 01cace9: build(deps): bump jwks-rsa from 2.1.5 to 3.0.0
+
 ## 0.1.54
 
 ### Patch Changes
