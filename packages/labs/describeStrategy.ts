@@ -1,5 +1,5 @@
 import { DescribeStrategyFactory } from '@hydrofoil/labyrinth/describeStrategy'
-import { CONSTRUCT } from '@tpluscode/sparql-builder'
+import { CONSTRUCT, sparql } from '@tpluscode/sparql-builder'
 import clownface, { GraphPointer } from 'clownface'
 import { shapeToPatterns } from '@hydrofoil/shape-to-query'
 import { VALUES } from '@tpluscode/sparql-builder/expressions'
@@ -29,10 +29,10 @@ export const constructByNodeShape: DescribeStrategyFactory<[Options]> =
       throw new Error(`Did not find ${shapePath.value} on any of the resource's classes`)
     }
 
-    const patterns = [typeShape, ...shapes].map((shape, index) => shapeToPatterns(shape, {
+    const patterns = [typeShape, ...shapes].map((shape, index) => [...shapeToPatterns(shape, {
       subjectVariable: 'resource',
       objectVariablePrefix: `${index}`,
-    }))
+    })])
 
     return (...terms) => {
       const resources = terms.map(term => ({ resource: term }))
@@ -40,7 +40,7 @@ export const constructByNodeShape: DescribeStrategyFactory<[Options]> =
       return CONSTRUCT`${patterns}`
         .WHERE`
           ${VALUES(...resources)}
-          ${patterns.reduce(toUnion)}
+          ${patterns.reduce(toUnion, sparql``)}
         `.execute(client.query)
     }
   }

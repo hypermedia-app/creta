@@ -1,5 +1,5 @@
 import { parse } from '@labyrinth/testing/nodeFactory'
-import { hydra, sh } from '@tpluscode/rdf-ns-builders'
+import { hydra, rdf, sh } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
 import $rdf from 'rdf-ext'
 import { ex } from '@labyrinth/testing/namespace'
@@ -54,7 +54,7 @@ describe('@hydrofoil/labyrinth/lib/query/memberAssertion', () => {
     // then
     await expect(patterns).to.be.a.query(sparql`SELECT * {
       ?member ${ex.foo} ?ma_o0 .
-      ?ma_o0 a ${ex.Bar} .
+      ?ma_o0 ${rdf.type} ${ex.Bar} .
     }`)
   })
 })

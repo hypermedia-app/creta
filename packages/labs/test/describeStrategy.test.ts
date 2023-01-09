@@ -44,7 +44,7 @@ describe('@hydrofoil/creta-labs/describeStrategy', () => {
       expect(client.query.construct.firstCall.firstArg).to.be.a.query(sparql`
         CONSTRUCT {
           ?resource ${rdf.type} ?resource_0_0 .
-          ?resource a ${foaf.Person} .
+          ?resource ${rdf.type} ${foaf.Person} .
           ?resource ${foaf.name} ?resource_1_0 .
         } WHERE {
           VALUES ?resource { ${ex.foobar} }
@@ -54,7 +54,7 @@ describe('@hydrofoil/creta-labs/describeStrategy', () => {
           }
           UNION 
           {
-            ?resource a ${foaf.Person} .
+            ?resource ${rdf.type} ${foaf.Person} .
             ?resource ${foaf.name} ?resource_1_0 .
           }
         }

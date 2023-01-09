@@ -1,9 +1,10 @@
 import { parse } from '@labyrinth/testing/nodeFactory'
-import { foaf, schema, sh } from '@tpluscode/rdf-ns-builders'
+import { foaf, rdf, schema, sh } from '@tpluscode/rdf-ns-builders'
 import { SELECT } from '@tpluscode/sparql-builder'
 import { expect } from 'chai'
 import { sparql } from '@tpluscode/rdf-string'
 import { ex } from '@labyrinth/testing/namespace'
+import type { GraphPointer } from 'clownface'
 import { construct, shapeToPatterns } from '..'
 import '@labyrinth/testing/sparql'
 
@@ -21,11 +22,11 @@ describe('@hydrofoil/shape-to-query', () => {
 
           // when
           const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
-          const query = SELECT.ALL.WHERE`${patterns}`.build()
+          const query = SELECT.ALL.WHERE`${patterns.whereClause()}`.build()
 
           // then
           expect(query).to.be.a.query(sparql`SELECT * WHERE {
-            ?node a ${foaf.Person}
+            ?node ${rdf.type} ${foaf.Person}
           }`)
         })
 
@@ -39,11 +40,11 @@ describe('@hydrofoil/shape-to-query', () => {
 
           // when
           const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
-          const query = SELECT.ALL.WHERE`${patterns}`.build()
+          const query = SELECT.ALL.WHERE`${patterns.whereClause()}`.build()
 
           // then
           expect(query).to.be.a.query(sparql`SELECT * WHERE {
-            ?node a ?node_targetClass .
+            ?node ${rdf.type} ?node_targetClass .
             FILTER ( ?node_targetClass IN (${foaf.Person}, ${schema.Person}) )
           }`)
         })
@@ -65,7 +66,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // when
         const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
-        const query = SELECT.ALL.WHERE`${patterns}`.build()
+        const query = SELECT.ALL.WHERE`${patterns.whereClause()}`.build()
 
         // then
         expect(query).to.be.a.query(sparql`SELECT * WHERE {
@@ -90,12 +91,17 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // when
         const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
-        const query = SELECT.ALL.WHERE`${patterns}`.build()
+        const query = SELECT.ALL.WHERE`${patterns.whereClause()}`.build()
 
         // then
         expect(query).to.be.a.query(sparql`SELECT * WHERE {
-          ?node ${foaf.name} ?node_0 .
-          ?node ${foaf.lastName} ?node_1 .
+          {
+            ?node ${foaf.name} ?node_0 .
+          }
+          UNION
+          {
+            ?node ${foaf.lastName} ?node_1 .
+          }
         }`)
       })
 
@@ -117,41 +123,11 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // when
         const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
-        const query = SELECT.ALL.WHERE`${patterns}`.build()
+        const query = SELECT.ALL.WHERE`${patterns.whereClause()}`.build()
 
         // then
         expect(query).to.be.a.query(sparql`SELECT * WHERE {
           ?node ${foaf.lastName} ?node_0 .
-        }`)
-      })
-
-      it('combines properties with union when flag is set', async () => {
-        // given
-        const shape = await parse`
-          <>
-            a ${sh.NodeShape} ;
-            ${sh.property}
-            [
-              ${sh.path} ${foaf.name} ;
-            ],
-            [
-              ${sh.path} ${foaf.lastName} ;
-            ] ; 
-          .
-        `
-
-        // when
-        const patterns = shapeToPatterns(shape, {
-          subjectVariable: 'node',
-          strict: false,
-        })
-        const query = SELECT.ALL.WHERE`${patterns}`.build()
-
-        // then
-        expect(query).to.be.a.query(sparql`SELECT * WHERE {
-          { ?node ${foaf.name} ?node_0 . }
-          union
-          { ?node ${foaf.lastName} ?node_1 . }
         }`)
       })
     })
@@ -237,12 +213,144 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // then
         expect(query).to.be.a.query(sparql`CONSTRUCT {
-          ${ex.John} a ?resource_targetClass .
+          ${ex.John} ${rdf.type} ?resource_targetClass .
           ${ex.John} ${foaf.name} ?resource_0 .
         } WHERE {
-            ${ex.John} a ?resource_targetClass .
+            ${ex.John} ${rdf.type} ?resource_targetClass .
             FILTER ( ?resource_targetClass IN (${foaf.Person}, ${schema.Person}) )
             ${ex.John} ${foaf.name} ?resource_0 .
+        }`)
+      })
+    })
+  })
+
+  context('shape with deep sh:node', () => {
+    let shape: GraphPointer
+
+    before(async () => {
+      shape = await parse`
+        <>
+          a ${sh.NodeShape} ;
+          ${sh.property}
+          [
+            ${sh.path} ${foaf.knows} ;
+            ${sh.node} [
+              ${sh.property} [ ${sh.path} ${foaf.name} ] ;
+              ${sh.property} [
+                ${sh.path} ${schema.address} ;
+                ${sh.node} [
+                  ${sh.property} [
+                    ${sh.path} ${schema.addressLocality} ;
+                  ], [
+                    ${sh.path} ${schema.addressCountry} ;
+                    ${sh.node} [
+                      ${sh.property} [
+                        ${sh.path} ${schema.name} ;
+                      ] ;
+                    ] ;
+                  ] ;
+                ] ;
+              ] ;
+            ] ;
+          ] ; 
+        .
+      `
+    })
+
+    context('shapeToPatterns', () => {
+      it('generates union of deep paths', () => {
+        // when
+        const patterns = shapeToPatterns(shape, {
+          subjectVariable: 'node',
+        })
+        const query = SELECT.ALL.WHERE`${patterns.whereClause()}`.build()
+
+        // then
+        expect(query).to.be.a.query(sparql`SELECT * WHERE {
+          {
+            ?node ${foaf.knows} ?node_0 .
+          }
+          UNION
+          { 
+            ?node ${foaf.knows} ?node_0 .
+            ?node_0 ${foaf.name} ?node_0_0 .
+          }
+          UNION
+          {
+            ?node ${foaf.knows} ?node_0 .
+            ?node_0 ${schema.address} ?node_0_1 .
+          }
+          UNION
+          {
+            ?node ${foaf.knows} ?node_0 .
+            ?node_0 ${schema.address} ?node_0_1 .
+            ?node_0_1 ${schema.addressLocality} ?node_0_1_0 .
+          }
+          UNION
+          {
+            ?node ${foaf.knows} ?node_0 .
+            ?node_0 ${schema.address} ?node_0_1 .
+            ?node_0_1 ${schema.addressCountry} ?node_0_1_1 .
+          }
+          UNION
+          {
+            ?node ${foaf.knows} ?node_0 .
+            ?node_0 ${schema.address} ?node_0_1 .
+            ?node_0_1 ${schema.addressCountry} ?node_0_1_1 .
+            ?node_0_1_1 ${schema.name} ?node_0_1_1_0 .
+          }
+        }`)
+      })
+    })
+
+    context('construct', () => {
+      it('does not produce duplicate patterns in CONSTRUCT clause', () => {
+        // when
+        const query = construct(shape, {
+          subjectVariable: 'node',
+        })
+
+        // then
+        expect(query.build()).to.be.a.query(sparql`CONSTRUCT {
+          ?node ${foaf.knows} ?node_0 .
+          ?node_0 ${foaf.name} ?node_0_0 .
+          ?node_0 ${schema.address} ?node_0_1 .
+          ?node_0_1 ${schema.addressLocality} ?node_0_1_0 .
+          ?node_0_1 ${schema.addressCountry} ?node_0_1_1 .
+          ?node_0_1_1 ${schema.name} ?node_0_1_1_0 .
+        } WHERE {
+          {
+            ?node ${foaf.knows} ?node_0 .
+          }
+          UNION
+          {
+            ?node ${foaf.knows} ?node_0 .
+            ?node_0 ${foaf.name} ?node_0_0 .
+          }
+          UNION
+          {
+            ?node ${foaf.knows} ?node_0 .
+            ?node_0 ${schema.address} ?node_0_1 .
+          }
+          UNION
+          {
+            ?node ${foaf.knows} ?node_0 .
+            ?node_0 ${schema.address} ?node_0_1 .
+            ?node_0_1 ${schema.addressLocality} ?node_0_1_0 .
+          }
+          UNION
+          {
+            ?node ${foaf.knows} ?node_0 .
+            ?node_0 ${schema.address} ?node_0_1 .
+            ?node_0_1 ${schema.addressCountry} ?node_0_1_1 .
+          }
+          UNION
+          {
+            ?node ${foaf.knows} ?node_0 .
+            ?node_0 ${schema.address} ?node_0_1 .
+            ?node_0_1 ${schema.addressCountry} ?node_0_1_1 .
+            ?node_0_1_1 ${schema.name} ?node_0_1_1_0 .
+          }
         }`)
       })
     })

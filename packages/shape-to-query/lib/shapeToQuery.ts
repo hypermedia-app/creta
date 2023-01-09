@@ -3,9 +3,11 @@ import { CONSTRUCT } from '@tpluscode/sparql-builder'
 import { shapeToPatterns, Options } from './shapeToPatterns'
 
 export function construct(shape: GraphPointer, options: Omit<Options, 'strict'> = {}) {
+  const patterns = shapeToPatterns(shape, options)
+
   return CONSTRUCT`
-    ${shapeToPatterns(shape, { ...options, strict: true, patternsOnly: true })}
+    ${patterns.constructClause()}
   `.WHERE`
-    ${shapeToPatterns(shape, { ...options, strict: false })}
+    ${patterns.whereClause()}
   `
 }
