@@ -1,5 +1,14 @@
 # @hydrofoil/creta-labs
 
+## 0.1.7
+
+### Patch Changes
+
+- Updated dependencies [d2d5996]
+- Updated dependencies [d2d5996]
+  - @hydrofoil/shape-to-query@0.3.0
+  - @hydrofoil/labyrinth@0.13.13
+
 ## 0.1.6
 
 ### Patch Changes

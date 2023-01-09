@@ -1,5 +1,13 @@
 # @hydrofoil/labyrinth
 
+## 0.13.13
+
+### Patch Changes
+
+- Updated dependencies [d2d5996]
+- Updated dependencies [d2d5996]
+  - @hydrofoil/shape-to-query@0.3.0
+
 ## 0.13.12
 
 ### Patch Changes
