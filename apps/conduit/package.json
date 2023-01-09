@@ -23,7 +23,7 @@
     "jwks-rsa": "^3.0.0",
     "middleware-async": "^1.3.1",
     "node-fetch": "^2.6.7",
-    "rdf-ext": "^1.3.5"
+    "rdf-ext": "^2.1.1"
   },
   "devDependencies": {
     "@hydrofoil/talos": "0.5.1",
