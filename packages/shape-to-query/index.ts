@@ -1,2 +1,9 @@
 export { shapeToPatterns } from './lib/shapeToPatterns'
-export { construct } from './lib/shapeToQuery'
+export {
+  /**
+   * @deprecated
+   */
+  constructQuery as construct,
+  constructQuery,
+  deleteQuery,
+} from './lib/shapeToQuery'

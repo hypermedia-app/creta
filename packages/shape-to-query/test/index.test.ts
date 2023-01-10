@@ -5,7 +5,7 @@ import { expect } from 'chai'
 import { sparql } from '@tpluscode/rdf-string'
 import { ex } from '@labyrinth/testing/namespace'
 import type { GraphPointer } from 'clownface'
-import { construct, shapeToPatterns } from '..'
+import { constructQuery, deleteQuery, shapeToPatterns } from '..'
 import '@labyrinth/testing/sparql'
 
 describe('@hydrofoil/shape-to-query', () => {
@@ -151,7 +151,7 @@ describe('@hydrofoil/shape-to-query', () => {
         `
 
         // when
-        const query = construct(shape, { subjectVariable: 'person' }).build()
+        const query = constructQuery(shape, { subjectVariable: 'person' }).build()
 
         // then
         expect(query).to.be.a.query(sparql`CONSTRUCT {
@@ -181,7 +181,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // when
         const focusNode = ex.John
-        const query = construct(shape, { focusNode }).build()
+        const query = constructQuery(shape, { focusNode }).build()
 
         // then
         expect(query).to.be.a.query(sparql`CONSTRUCT {
@@ -209,7 +209,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // when
         const focusNode = ex.John
-        const query = construct(shape, { focusNode }).build()
+        const query = constructQuery(shape, { focusNode }).build()
 
         // then
         expect(query).to.be.a.query(sparql`CONSTRUCT {
@@ -220,6 +220,75 @@ describe('@hydrofoil/shape-to-query', () => {
             FILTER ( ?resource_targetClass IN (${foaf.Person}, ${schema.Person}) )
             ${ex.John} ${foaf.name} ?resource_0 .
         }`)
+      })
+    })
+
+    describe('delete', () => {
+      it('deletes from default graph', async () => {
+        // given
+        const shape = await parse`
+          <>
+            a ${sh.NodeShape} ;
+            ${sh.property}
+            [
+              ${sh.path} ${foaf.name} ;
+            ],
+            [
+              ${sh.path} ${foaf.lastName} ;
+            ] ; 
+          .
+        `
+
+        // when
+        const query = deleteQuery(shape)
+
+        // then
+        expect(query).to.be.a.query(sparql`
+          DELETE {
+            ?resource ${foaf.name} ?resource_0 .
+            ?resource ${foaf.lastName} ?resource_1 .
+          }
+          WHERE {
+            { ?resource ${foaf.name} ?resource_0 . }
+            union
+            { ?resource ${foaf.lastName} ?resource_1 . }
+          }
+        `)
+      })
+
+      it('adds a WITH clause when graph is passed', async () => {
+        // given
+        const shape = await parse`
+          <>
+            a ${sh.NodeShape} ;
+            ${sh.property}
+            [
+              ${sh.path} ${foaf.name} ;
+            ],
+            [
+              ${sh.path} ${foaf.lastName} ;
+            ] ; 
+          .
+        `
+
+        // when
+        const query = deleteQuery(shape, {
+          graph: ex.Resource,
+        })
+
+        // then
+        expect(query).to.be.a.query(sparql`
+          WITH ${ex.Resource}
+          DELETE {
+            ?resource ${foaf.name} ?resource_0 .
+            ?resource ${foaf.lastName} ?resource_1 .
+          }
+          WHERE {
+            { ?resource ${foaf.name} ?resource_0 . }
+            union
+            { ?resource ${foaf.lastName} ?resource_1 . }
+          }
+        `)
       })
     })
   })
@@ -306,7 +375,7 @@ describe('@hydrofoil/shape-to-query', () => {
     context('construct', () => {
       it('does not produce duplicate patterns in CONSTRUCT clause', () => {
         // when
-        const query = construct(shape, {
+        const query = constructQuery(shape, {
           subjectVariable: 'node',
         })
 
