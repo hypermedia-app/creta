@@ -1,5 +1,12 @@
 # @hydrofoil/shape-to-query
 
+## 0.3.1
+
+### Patch Changes
+
+- 6737111: Add a builder for `DELETE` queries
+- 6737111: Depretcate `construct` export. It will be removed in future breaking release. Use `constructQuery` instead
+
 ## 0.3.0
 
 ### Minor Changes
