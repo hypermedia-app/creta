@@ -1,5 +1,11 @@
 # @hydrofoil/shape-to-query
 
+## 0.3.2
+
+### Patch Changes
+
+- 7eb7ae4: Support for `sh:oneOrMorePath` and `sh:zeroOrMorePath`
+
 ## 0.3.1
 
 ### Patch Changes
