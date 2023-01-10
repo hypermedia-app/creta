@@ -1,11 +1,11 @@
-import { NamedNode, Quad } from 'rdf-js'
-import type { GraphPointer } from 'clownface'
+import { BaseQuad, NamedNode } from 'rdf-js'
+import type { AnyPointer, GraphPointer } from 'clownface'
 import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
 import { rdf, sh, xsd } from '@tpluscode/rdf-ns-builders'
 import $rdf from '@rdfjs/data-model'
 import { IN } from '@tpluscode/sparql-builder/expressions'
 import TermSet from '@rdfjs/term-set'
-import { isNamedNode } from 'is-graph-pointer'
+import { isBlankNode, isNamedNode } from 'is-graph-pointer'
 import { create, PrefixedVariable } from './variableFactory'
 
 export interface Options {
@@ -38,6 +38,7 @@ export function shapeToPatterns(shape: GraphPointer, options: Options): ShapePat
 
   const flatPatterns = () => [targetClassPattern, ...resourcePatterns
     .flat()
+    .filter((quad): quad is BaseQuad => 'subject' in quad)
     .reduce((set, quad) => set.add(quad), new TermSet()),
   ].map(quad => sparql`${quad}`)
 
@@ -80,7 +81,9 @@ function targetClass(shape: GraphPointer, focusNode: PrefixedVariable) {
   }
 }
 
-function toUnion(propertyPatterns: Quad[][]) {
+type Pattern = BaseQuad | SparqlTemplateResult
+
+function toUnion(propertyPatterns: Pattern[][]) {
   if (propertyPatterns.length > 1) {
     return propertyPatterns.reduce((union, next, index) => {
       if (index === 0) {
@@ -100,10 +103,10 @@ interface PropertyShapePatterns {
   shape: GraphPointer
   focusNode: PrefixedVariable
   options: PropertyShapeOptions
-  parentPatterns?: Quad[]
+  parentPatterns?: Pattern[]
 }
 
-function * deepPropertyShapePatterns({ shape, focusNode, options, parentPatterns = [] }: PropertyShapePatterns): Generator<Quad[]> {
+function * deepPropertyShapePatterns({ shape, focusNode, options, parentPatterns = [] }: PropertyShapePatterns): Generator<Pattern[]> {
   const activeProperties = shape.out(sh.property)
     .filter(propShape => !propShape.has(sh.deactivated, TRUE).term)
     .toArray()
@@ -114,13 +117,25 @@ function * deepPropertyShapePatterns({ shape, focusNode, options, parentPatterns
       : focusNode.extend(index)
 
     const path = propShape.out(sh.path)
-    if (!isNamedNode(path)) {
+
+    let selfPatterns: Pattern[] = []
+    if (isNamedNode(path)) {
+      selfPatterns = [$rdf.quad(focusNode(), path.term, variable())]
+    } else if (isDeepPathPattern(path)) {
+      const property = <NamedNode>path.out([sh.zeroOrMorePath, sh.oneOrMorePath]).term
+      const intermediateNode = variable.extend('i')()
+
+      selfPatterns = [
+        sparql`${focusNode()} ${property}* ${intermediateNode} .`,
+        $rdf.quad(intermediateNode, property, variable()),
+      ]
+    } else {
       continue
     }
 
-    const selfPatterns = [...parentPatterns, $rdf.quad(focusNode(), path.term, variable())]
+    const combinedPatterns = [...parentPatterns, ...selfPatterns]
 
-    yield selfPatterns
+    yield combinedPatterns
 
     const shNodes = propShape.out(sh.node).toArray()
     for (const shNode of shNodes) {
@@ -128,11 +143,15 @@ function * deepPropertyShapePatterns({ shape, focusNode, options, parentPatterns
         shape: shNode,
         focusNode: variable,
         options,
-        parentPatterns: selfPatterns,
+        parentPatterns: combinedPatterns,
       })
       for (const deepPattern of deepPatterns) {
         yield deepPattern
       }
     }
   }
+}
+
+function isDeepPathPattern(pointer: AnyPointer) {
+  return isBlankNode(pointer) && isNamedNode(pointer.out([sh.zeroOrMorePath, sh.oneOrMorePath]))
 }
