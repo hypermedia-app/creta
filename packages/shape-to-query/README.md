@@ -9,4 +9,6 @@ Generate SPARQL patterns (and later queries) from SHACL Node Shapes. Starting sm
   * [] other targets
 * Property constraints
   * [] TBD
-* Other?
+* Query forms
+  * [x] `CONSTRUCT`
+  * [x] `DELETE`
