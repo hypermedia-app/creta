@@ -21,7 +21,7 @@
     "rdf-loader-code": "^0.3.2",
     "rdf-loaders-registry": "^0.3.0",
     "set-link": "^1.0.0",
-    "sinon": "^14.0.1",
+    "sinon": "^15.0.2",
     "sparqljs": "^3.5.2",
     "sparql-http-client": "^2.4.1",
     "string-to-stream": "^3.0.1"
