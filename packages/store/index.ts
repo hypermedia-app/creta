@@ -9,6 +9,7 @@ import { StreamClient } from 'sparql-http-client/StreamClient'
 import { ASK, CONSTRUCT, INSERT } from '@tpluscode/sparql-builder'
 import $rdf from '@zazuko/env'
 import { sparql } from '@tpluscode/rdf-string'
+import fromStream from 'rdf-dataset-ext/fromStream.js'
 
 /**
  * Provides functions to work with individual resources.
@@ -49,7 +50,7 @@ export class ResourcePerGraphStore implements ResourceStore {
   async load(term: Term): Promise<GraphPointer<NamedNode>> {
     assertNamedNode(term)
 
-    const dataset = await $rdf.dataset().import(await CONSTRUCT`?s ?p ?o`
+    const dataset = await fromStream($rdf.dataset(), await CONSTRUCT`?s ?p ?o`
       .FROM(term)
       .WHERE`?s ?p ?o`
       .execute(this.client.query))
