@@ -3,7 +3,7 @@
   "entryPoints": [
     "packages/knossos/lib/resource.ts",
     "packages/knossos/lib/settings.ts",
-    "packages/knossos/lib/store.ts",
+    "packages/store/index.ts",
     "packages/knossos/server.ts",
     "packages/knossos/index.ts",
     "packages/knossos/shacl.ts",
